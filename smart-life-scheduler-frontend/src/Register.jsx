@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "./api";
-import axios from "axios";
 import { User, Mail, Lock, Github, CheckCircle2, Phone } from "lucide-react";
 
 function Register() {
@@ -29,7 +28,7 @@ function Register() {
   const handleGithubRegister = async (code) => {
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:5000/api/auth/github", { code });
+      const res = await API.post("/auth/github", { code });
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {

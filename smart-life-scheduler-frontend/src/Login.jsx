@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "./api";
 import { Mail, Lock, Github, CheckCircle2, Phone } from "lucide-react";
 
 function Login() {
@@ -30,7 +30,7 @@ function Login() {
   const handleGithubLogin = async (code) => {
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:5000/api/auth/github", { code });
+      const res = await api.post("/auth/github", { code });
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
@@ -46,7 +46,7 @@ function Login() {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", { email, password });
+      const res = await api.post("/auth/login", { email, password });
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
@@ -66,7 +66,7 @@ function Login() {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/phone", { phno: phone });
+      const res = await api.post("/auth/phone", { phno: phone });
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
