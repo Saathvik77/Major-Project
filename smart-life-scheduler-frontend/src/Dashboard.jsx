@@ -31,6 +31,8 @@ function Dashboard() {
     todayTotal: 0,
   });
 
+  const [userName, setUserName] = useState("");
+
   useEffect(() => {
     // Fetch user tasks directly via API instead of passing them as props from context 
     // to keep it simple and consistent with other pages
@@ -59,6 +61,18 @@ function Dashboard() {
       }
     };
 
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get("/auth/profile");
+        // Get first name or default to User
+        const fullName = res.data.user?.name || "User";
+        setUserName(fullName.split(" ")[0]);
+      } catch (err) {
+        console.error("Failed to fetch profile info:", err);
+      }
+    };
+
+    fetchProfile();
     fetchTasks();
     
     // Add event listener for tasksUpdated
@@ -98,7 +112,6 @@ function Dashboard() {
   };
   
   const greeting = getGreeting();
-  const userName = "Pehlaj"; // Ideally fetched from profile, hardcoded per request mock
 
   const getBannerSuggestionAndIcon = () => {
     let suggestion = "Take a moment to plan your day!";
