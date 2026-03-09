@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "smart-life-scheduler-frontend/.vscode"
+		},
+		{
+			"path": "smart-life-scheduler-frontend/dist"
+		},
+		{
+			"path": "smart-life-scheduler-frontend/node_modules"
+		},
+		{
+			"path": "smart-life-scheduler-frontend/public"
+		},
+		{
+			"path": "smart-life-scheduler-frontend/src"
+		},
+		{
+			"path": "smart-life-scheduler-frontend/temporary files"
+		}
+	]
+}
