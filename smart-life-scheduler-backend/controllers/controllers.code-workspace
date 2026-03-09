@@ -1,0 +1,34 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../intelligence"
+		},
+		{
+			"path": "../Jobs"
+		},
+		{
+			"path": "../logs"
+		},
+		{
+			"path": "../middleware"
+		},
+		{
+			"path": "../models"
+		},
+		{
+			"path": "../node_modules"
+		},
+		{
+			"path": "../routes"
+		},
+		{
+			"path": "../services"
+		},
+		{
+			"path": "../utils"
+		}
+	]
+}
