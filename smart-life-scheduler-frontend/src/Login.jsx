@@ -78,7 +78,7 @@ function Login() {
 
   const handleSocialLogin = (provider) => {
     if (provider === "GitHub") {
-      window.location.href = "https://github.com/login/oauth/authorize?client_id=Ov23liCRvpsWvmnJTeVp&scope=user:email";
+      window.location.href = "https://github.com/login/oauth/authorize?client_id=Ov23liCRvpsWvmnJTeVp&scope=user:email&prompt=consent";
     } else {
       setError(`${provider} login will be available soon!`);
     }

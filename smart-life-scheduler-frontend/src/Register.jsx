@@ -61,7 +61,7 @@ function Register() {
 
   const handleSocialRegister = (provider) => {
     if (provider === "GitHub") {
-      window.location.href = "https://github.com/login/oauth/authorize?client_id=Ov23liCRvpsWvmnJTeVp&scope=user:email";
+      window.location.href = "https://github.com/login/oauth/authorize?client_id=Ov23liCRvpsWvmnJTeVp&scope=user:email&prompt=consent";
     } else {
       setError(`${provider} registration will be available soon!`);
     }
