@@ -1,0 +1,34 @@
+{
+	"folders": [
+		{
+			"path": "smart-life-scheduler-backend/controllers"
+		},
+		{
+			"path": "smart-life-scheduler-backend/intelligence"
+		},
+		{
+			"path": "smart-life-scheduler-backend/Jobs"
+		},
+		{
+			"path": "smart-life-scheduler-backend/logs"
+		},
+		{
+			"path": "smart-life-scheduler-backend/middleware"
+		},
+		{
+			"path": "smart-life-scheduler-backend/models"
+		},
+		{
+			"path": "smart-life-scheduler-backend/node_modules"
+		},
+		{
+			"path": "smart-life-scheduler-backend/routes"
+		},
+		{
+			"path": "smart-life-scheduler-backend/services"
+		},
+		{
+			"path": "smart-life-scheduler-backend/utils"
+		}
+	]
+}

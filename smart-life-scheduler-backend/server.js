@@ -1,11 +1,11 @@
-require("dotenv").config();  
+require("dotenv").config();
 
 const helmet = require("helmet");
 const express = require("express");
 const mongoose = require("mongoose");
 
 const limiter = require("./middleware/rateLimiter");
-const startAutoRescheduler = require("./Jobs/autoRescheduler"); 
+const startAutoRescheduler = require("./Jobs/autoRescheduler");
 
 const app = express();
 
@@ -17,9 +17,9 @@ const cors = require("cors");
 
 app.use(cors({
   origin: [
-    "http://localhost:5173", 
-    "http://localhost:5174", 
-    "http://localhost:5175", 
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
     "http://localhost:5176",
     "https://smart-life-scheduler.vercel.app"
   ],
