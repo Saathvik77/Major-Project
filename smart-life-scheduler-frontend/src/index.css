@@ -26,12 +26,12 @@
   /* fuchsia-500 */
   --highlight: #f59e0b;
   /* amber-500 */
-  --bg-top: #f1f5f9;
-  /* slate-100 */
-  --bg-mid: #ffffff;
-  /* white */
-  --bg-bottom: #f1f5f9;
-  /* slate-100 */
+  --bg-top: #e2e8f0;
+  /* slate-200 */
+  --bg-mid: #f8fafc;
+  /* slate-50 */
+  --bg-bottom: #e2e8f0;
+  /* slate-200 */
 }
 
 [data-theme="neon"] {

@@ -18,13 +18,17 @@ import {
   Brain,
   User,
   LogOut,
-  Moon
+  Moon,
+  Zap,
+  Waves,
+  Flame,
+  Palette
 } from "lucide-react";
 import { ThemeContext } from "./ThemeContext";
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { isLightMode, toggleTheme } = useContext(ThemeContext);
+  const { theme, setAppTheme } = useContext(ThemeContext);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -116,6 +120,16 @@ function Dashboard() {
     return "Good Evening";
   };
 
+  const themes = [
+    { id: 'auto', name: 'Auto', icon: <Activity size={14} /> },
+    { id: 'default', name: 'Dark', icon: <Moon size={14} /> },
+    { id: 'cyberpunk', name: 'Cyber', icon: <Zap size={14} /> },
+    { id: 'ocean', name: 'Ocean', icon: <Waves size={14} /> },
+    { id: 'sunset', name: 'Sunset', icon: <Flame size={14} /> },
+    { id: 'neon', name: 'Neon', icon: <Palette size={14} /> },
+    { id: 'light', name: 'Light', icon: <Sun size={14} /> }
+  ];
+
   const greeting = getGreeting();
 
   const getBannerSuggestionAndIcon = () => {
@@ -170,8 +184,8 @@ function Dashboard() {
             Settings
           </button>
 
-          <div className="absolute right-0 mt-3 w-48 bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right group-hover:translate-y-0 translate-y-2 group-hover:scale-100 scale-95 overflow-hidden z-50">
-            <div className="p-2 space-y-1">
+          <div className="absolute right-0 mt-3 w-64 bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right group-hover:translate-y-0 translate-y-2 group-hover:scale-100 scale-95 overflow-hidden z-[100]">
+            <div className="p-3 space-y-2">
               <button
                 onClick={() => navigate('/profile')}
                 className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-indigo-500/30 hover:to-purple-500/30 hover:text-indigo-200 transition-all duration-300 text-gray-200 font-medium group/btn"
@@ -180,24 +194,31 @@ function Dashboard() {
                 Profile
               </button>
 
-              <button
-                onClick={toggleTheme}
-                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-amber-500/30 hover:to-orange-500/30 hover:text-amber-200 transition-all duration-300 text-gray-200 font-medium group/btn"
-              >
-                {isLightMode ? (
-                  <>
-                    <Moon className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-300 text-slate-400" />
-                    Dark Mode
-                  </>
-                ) : (
-                  <>
-                    <Sun className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-300 text-amber-400" />
-                    Light Mode
-                  </>
-                )}
-              </button>
+              <div className="px-2 pt-2">
+                <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2 mb-2">
+                  <Palette size={12} className="text-neonPrimary" />
+                  App Theme
+                </span>
+                <div className="grid grid-cols-2 gap-2">
+                  {themes.map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => setAppTheme(t.id)}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all border ${theme === t.id
+                        ? 'bg-neonPrimary/20 border-neonPrimary text-white shadow-[0_0_10px_rgba(124,108,255,0.3)]'
+                        : 'bg-slate-900/60 border-white/5 text-gray-400 hover:bg-white/5 hover:text-gray-200'
+                        }`}
+                    >
+                      <div className={theme === t.id ? 'text-neonPrimary' : 'text-gray-500'}>
+                        {t.icon}
+                      </div>
+                      <span className="text-[11px] font-bold tracking-wide">{t.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-              <div className="h-px w-full bg-white/5 my-1"></div>
+              <div className="h-px w-full bg-white/5 my-2"></div>
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-red-500/30 hover:to-orange-500/30 hover:text-red-200 transition-all duration-300 text-gray-200 font-medium group/btn"
@@ -211,10 +232,7 @@ function Dashboard() {
       </div>
 
       {/* 🔥 SMART WELCOME BANNER */}
-      <div className="mb-12 bg-gradient-to-r from-neonPrimary/30 via-neonAccent/20 to-neonSecondary/30 border border-t-neonSecondary/30 border-l-neonPrimary/30 border-b-black/50 border-r-black/50 shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-3xl p-8 relative overflow-hidden backdrop-blur-xl group hover:shadow-[0_8px_40px_rgba(124,108,255,0.3)] transition-all duration-500">
-        {/* Decorative Background Effects */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-neonAccent/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-neonSecondary/10 rounded-full blur-[60px] translate-y-1/3 -translate-x-1/4"></div>
+      <div className="mb-12 bg-slate-900/40 border border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.2)] rounded-3xl p-8 relative overflow-hidden backdrop-blur-xl group transition-all duration-500">
 
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between relative z-10 gap-8">
 
@@ -283,12 +301,12 @@ function Dashboard() {
         </div>
 
         {/* Right Content */}
-        <div className="flex justify-center relative pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-tr from-neonPrimary/20 to-neonSecondary/20 blur-3xl rounded-full scale-75"></div>
+        <div className="flex justify-center relative pointer-events-none opacity-30">
+          <div className="absolute inset-0 bg-white/5 blur-3xl rounded-full scale-75"></div>
           {/* Decorative floating shapes */}
-          <div className="relative w-80 h-80 rounded-full border-4 border-neonAccent/20 flex items-center justify-center animate-[spin_30s_linear_infinite]">
-            <div className="absolute top-0 right-10 w-16 h-16 bg-gradient-to-br from-neonSecondary to-neonPrimary rounded-full blur-sm drop-shadow-[0_0_15px_rgba(0,229,255,0.8)]"></div>
-            <div className="absolute bottom-10 left-0 w-24 h-24 bg-gradient-to-br from-neonPrimary to-neonAccent rounded-full blur-sm drop-shadow-[0_0_15px_rgba(124,108,255,0.8)]"></div>
+          <div className="relative w-80 h-80 rounded-full border border-white/10 flex items-center justify-center animate-[spin_40s_linear_infinite]">
+            <div className="absolute top-0 right-10 w-8 h-8 bg-white/20 rounded-full blur-[2px]"></div>
+            <div className="absolute bottom-10 left-0 w-12 h-12 bg-white/10 rounded-full blur-sm"></div>
           </div>
         </div>
       </div>

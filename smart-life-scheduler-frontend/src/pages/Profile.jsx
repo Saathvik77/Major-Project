@@ -157,8 +157,8 @@ export default function Profile() {
           <div className="flex-1 mr-4">
             {message.text && (
               <p className={`text-xs font-bold px-4 py-2 rounded-xl backdrop-blur-md border animate-in slide-in-from-left-2 fade-in ${message.type === 'success'
-                  ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'
-                  : 'bg-red-500/10 text-red-300 border-red-500/20'
+                ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'
+                : 'bg-red-500/10 text-red-300 border-red-500/20'
                 }`}>
                 {message.text}
               </p>
@@ -167,8 +167,8 @@ export default function Profile() {
           <button
             onClick={() => isEditing ? handleSave() : setIsEditing(true)}
             className={`text-sm font-bold px-5 py-2 rounded-xl transition-all flex items-center gap-2 border shadow-lg shrink-0 outline-none ${isEditing
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-transparent hover:scale-105 active:scale-95'
-                : 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20 hover:bg-indigo-500/20 active:scale-95'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-transparent hover:scale-105 active:scale-95'
+              : 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20 hover:bg-indigo-500/20 active:scale-95'
               }`}
           >
             {isEditing ? (
@@ -294,31 +294,6 @@ export default function Profile() {
           </div>
 
           <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent w-full my-4"></div>
-
-          {/* App Theme Picker */}
-          <div className="flex flex-col gap-4 relative z-10">
-            <label className="text-[11px] uppercase font-black text-gray-400 tracking-widest flex items-center gap-2 ml-1">
-              <Palette size={14} className="text-neonPrimary transition-colors" />
-              App Theme
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              {themes.map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => setAppTheme(t.id)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all border ${theme === t.id
-                      ? 'bg-neonPrimary/20 border-neonPrimary text-white shadow-[0_0_15px_rgba(124,108,255,0.3)]'
-                      : 'bg-slate-900/60 border-white/5 text-gray-400 hover:bg-white/5 hover:text-gray-200'
-                    }`}
-                >
-                  <div className={theme === t.id ? 'text-neonPrimary' : 'text-gray-500'}>
-                    {t.icon}
-                  </div>
-                  <span className="text-sm font-bold tracking-wide">{t.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
 
         </GlassCard>
       </div>
