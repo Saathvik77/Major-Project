@@ -45,11 +45,7 @@ export default function AnimatedBackground() {
                 value: ["#7C6CFF", "#00E5FF", "#FF7AF6", "#FFD166"],
             },
             links: {
-                color: "#ffffff",
-                distance: 150,
-                enable: true,
-                opacity: 0.2,
-                width: 1,
+                enable: false, // Turn off web lines
             },
             move: {
                 direction: "none",
@@ -57,24 +53,24 @@ export default function AnimatedBackground() {
                 outModes: {
                     default: "bounce",
                 },
-                random: false,
-                speed: 1.5,
+                random: true,
+                speed: 0.5, // Much slower
                 straight: false,
             },
             number: {
                 density: {
                     enable: true,
                 },
-                value: 120,
+                value: 30, // Dramatically reduced count
             },
             opacity: {
-                value: 0.5,
+                value: { min: 0.1, max: 0.4 }, // Softer visibility
             },
             shape: {
                 type: "circle",
             },
             size: {
-                value: { min: 1, max: 3 },
+                value: { min: 1, max: 2 },
             },
         },
         detectRetina: true,
