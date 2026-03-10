@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { Send, Bot, User, Sparkles, X, MessageSquareHeart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
+import { ThemeContext } from "../ThemeContext";
 
 function FloatingAICoach({ weatherData, tasks, stats, userName }) {
   const navigate = useNavigate();
+  const { setAppTheme } = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -61,6 +63,25 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
     const text = userInput.toLowerCase();
 
     try {
+      // AI Mood & Theme Switcher
+      if (text.includes("tired") || text.includes("stress") || text.includes("calm") || text.includes("relax")) {
+        addBotMessage("I see you're tired. Let's slow things down...\n\nSwitching to Calm Mode 🌙");
+        setTimeout(() => setAppTheme('calm'), 1500);
+        return;
+      }
+
+      if (text.includes("hype") || text.includes("energy") || text.includes("activate") || text.includes("cyberpunk") || text.includes("hacker")) {
+        addBotMessage("System Overload detected. Initializing hyper-productivity protocols ⚡\n\nSwitching to Cyberpunk Mode 🤖");
+        setTimeout(() => setAppTheme('cyberpunk'), 1500);
+        return;
+      }
+
+      if (text.includes("focus") || text.includes("deep work") || text.includes("ocean") || text.includes("flow")) {
+        addBotMessage("Entering a state of deep flow. Erasing distractions 🌊\n\nSwitching to Ocean Mode 🐬");
+        setTimeout(() => setAppTheme('ocean'), 1500);
+        return;
+      }
+
       // Create Task
       if (text.includes("add ") || text.includes("create ") || text.includes("new ")) {
         let taskTitle = "";
@@ -275,15 +296,15 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                 className={`flex items-start gap-3 ${msg.type === "user" ? "flex-row-reverse" : ""}`}
               >
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.type === "bot"
-                    ? "bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_10px_rgba(99,102,241,0.3)]"
-                    : "bg-slate-700 border border-white/10"
+                  ? "bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_10px_rgba(99,102,241,0.3)]"
+                  : "bg-slate-700 border border-white/10"
                   }`}>
                   {msg.type === "bot" ? <Bot size={15} className="text-white" /> : <User size={15} className="text-gray-300" />}
                 </div>
 
                 <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${msg.type === "bot"
-                    ? "bg-white/10 border border-white/5 text-gray-200 rounded-tl-none shadow-lg"
-                    : "bg-indigo-600 text-white rounded-tr-none shadow-md shadow-indigo-500/20"
+                  ? "bg-white/10 border border-white/5 text-gray-200 rounded-tl-none shadow-lg"
+                  : "bg-indigo-600 text-white rounded-tr-none shadow-md shadow-indigo-500/20"
                   }`}>
                   <p className="text-[14px] leading-relaxed whitespace-pre-line font-medium drop-shadow-sm">{msg.text}</p>
                 </div>

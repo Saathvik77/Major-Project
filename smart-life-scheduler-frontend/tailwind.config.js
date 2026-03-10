@@ -16,11 +16,11 @@ export default {
         statusLow: "#10B981",
         statusLowBg: "#D1FAE5",
 
-        // New Neon Palette
-        neonPrimary: "#7C6CFF",
-        neonSecondary: "#00E5FF",
-        neonAccent: "#FF7AF6",
-        neonHighlight: "#FFD166",
+        // Dynamic Adaptive Palette Mapping
+        neonPrimary: "var(--primary)",
+        neonSecondary: "var(--secondary)",
+        neonAccent: "var(--accent)",
+        neonHighlight: "var(--highlight)",
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

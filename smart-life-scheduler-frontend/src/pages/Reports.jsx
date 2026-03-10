@@ -1,13 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { ChevronLeft, BrainCircuit, Activity, HeartPulse } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { ThemeContext } from "../ThemeContext";
 
 export default function Reports() {
   const navigate = useNavigate();
+  const { theme, activeTheme } = useContext(ThemeContext);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Dynamic theme colors for charts
+  const [primaryColor, setPrimaryColor] = useState("#7C6CFF");
+  const [secondaryColor, setSecondaryColor] = useState("#00E5FF");
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -22,6 +28,20 @@ export default function Reports() {
     };
     fetchTasks();
   }, []);
+
+  // Update chart colors whenever the theme changes
+  useEffect(() => {
+    const root = document.documentElement;
+    const computedStyles = getComputedStyle(root);
+
+    // Tiny timeout ensures custom properties are applied first
+    setTimeout(() => {
+      const primary = computedStyles.getPropertyValue('--primary').trim() || "#7C6CFF";
+      const secondary = computedStyles.getPropertyValue('--secondary').trim() || "#00E5FF";
+      setPrimaryColor(primary);
+      setSecondaryColor(secondary);
+    }, 50);
+  }, [theme, activeTheme]);
 
   if (loading) {
     return (
@@ -70,8 +90,8 @@ export default function Reports() {
   }
 
   const pieData = [
-    { name: "Completed", value: completed, color: "#34d399" }, // emerald-400
-    { name: "Pending", value: pending, color: "#f87171" }, // red-400
+    { name: "Completed", value: completed, color: primaryColor },
+    { name: "Pending", value: pending, color: secondaryColor },
   ];
 
   // Mocked historical data for bar chart since backend only provides current tasks right now
@@ -121,95 +141,96 @@ export default function Reports() {
             </div>
 
             <div className="flex-1 text-center md:text-left">
-              <h2 className="text-sm font-bold tracking-widest uppercase text-gray-400 mb-2">Overall Condition</h2>
-              <h3 className={`text-4xl md:text-5xl font-black tracking-tight mb-4 ${conditionColor} drop-shadow-md`}>
-                {condition}
-              </h3>
-              <p className="text-lg text-gray-200 leading-relaxed max-w-2xl">
-                {message}
-              </p>
+              <h2 className="text-xl font-bold text-white/50 uppercase tracking-[0.2em] mb-2 text-sm">Vital Status</h2>
+              <div className="flex items-center gap-3 justify-center md:justify-start mb-3">
+                <h3 className={`text-5xl font-black tracking-tight ${conditionColor} drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]`}>{condition}</h3>
+                {condition === "Excellent" && <div className="px-3 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full text-xs font-bold shadow-lg animate-pulse">PRIME</div>}
+              </div>
+              <p className="text-gray-300 font-medium text-lg leading-relaxed max-w-lg">{message}</p>
             </div>
 
-            {/* Efficiency Meter (Mini gauge fake) */}
-            <div className="flex flex-col items-center justify-center bg-black/20 p-6 rounded-2xl border border-white/5 shadow-inner min-w-[160px]">
-              <div className="relative w-24 h-24 flex items-center justify-center mb-2">
-                <svg className="w-full h-full transform -rotate-90">
-                  <circle cx="48" cy="48" r="40" fill="transparent" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
-                  <circle cx="48" cy="48" r="40" fill="transparent" stroke={efficiency >= 80 ? "#34d399" : efficiency >= 50 ? "#22d3ee" : "#f87171"} strokeWidth="8" strokeDasharray={251.2} strokeDashoffset={251.2 - (251.2 * efficiency) / 100} className="transition-all duration-1000 ease-out" />
-                </svg>
-                <span className="absolute text-2xl font-black text-white">{efficiency}%</span>
+            {/* Efficiency Meter */}
+            <div className="relative w-32 h-32 flex-shrink-0 hidden md:flex items-center justify-center">
+              <svg className="w-full h-full transform -rotate-90">
+                <circle cx="64" cy="64" r="56" className="stroke-white/10 fill-none" strokeWidth="12" />
+                <circle cx="64" cy="64" r="56" className={`fill-none transition-all duration-1000 ease-out`} strokeWidth="12" strokeDasharray={`${efficiency * 3.51} 351`} strokeLinecap="round" stroke={condition === "Excellent" ? "#34d399" : condition === "Stable" ? "#22d3ee" : "#f87171"} />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-2xl font-black text-white">{efficiency}%</span>
+                <span className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Efficiency</span>
               </div>
-              <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold">Efficiency</p>
             </div>
           </div>
         </div>
-
-        {/* Charts Section */}
 
         {/* Task Distribution (Donut Chart) */}
-        <div className="lg:col-span-1 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-2xl flex flex-col items-center">
-          <h3 className="text-lg font-bold text-white mb-6 w-full text-center">Task Distribution</h3>
-
-          {total === 0 ? (
-            <div className="h-48 flex items-center text-gray-500 font-medium">No tasks available</div>
-          ) : (
-            <div className="w-full h-56 relative">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
-                    dataKey="value"
-                    stroke="none"
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
-              {/* Center Text */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-3xl font-black text-white">{total}</span>
-                <span className="text-xs text-gray-400 uppercase">Total</span>
-              </div>
+        <div className="lg:col-span-1 p-7 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 shadow-xl relative overflow-hidden group hover:border-white/20 transition-colors">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-indigo-500 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+          <h2 className="text-lg font-bold text-gray-200 uppercase tracking-wider mb-6">Task Load Distribution</h2>
+          <div className="h-64 mt-4 relative">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={70}
+                  outerRadius={90}
+                  paddingAngle={8}
+                  dataKey="value"
+                  stroke="none"
+                  animationDuration={1500}
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} className="hover:opacity-80 transition-opacity outline-none" style={{ filter: `drop-shadow(0px 0px 8px ${entry.color}80)` }} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+            {/* Center Label */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span className="text-4xl font-black text-white drop-shadow-md">{total}</span>
+              <span className="text-xs font-bold uppercase text-gray-400 tracking-widest mt-1">Total</span>
             </div>
-          )}
-
-          <div className="flex gap-6 mt-4">
+          </div>
+          <div className="flex justify-center gap-6 mt-6">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
-              <span className="text-sm text-gray-300 font-medium">Completed ({completed})</span>
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: primaryColor, boxShadow: `0_0_8px ${primaryColor}` }}></div>
+              <span className="text-sm font-semibold text-gray-300">Completed ({completed})</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-400"></div>
-              <span className="text-sm text-gray-300 font-medium">Pending ({pending})</span>
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: secondaryColor, boxShadow: `0_0_8px ${secondaryColor}` }}></div>
+              <span className="text-sm font-semibold text-gray-300">Pending ({pending})</span>
             </div>
           </div>
         </div>
 
-        {/* Productivity Trends (Bar Chart) */}
-        <div className="lg:col-span-2 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-2xl">
-          <h3 className="text-lg font-bold text-white mb-6">Productivity Trends (Tasks Completed)</h3>
-          <div className="w-full h-64">
+        {/* Historical Productivity (Bar Chart) */}
+        <div className="lg:col-span-2 p-7 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 shadow-xl relative overflow-hidden group hover:border-white/20 transition-colors">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-lg font-bold text-gray-200 uppercase tracking-wider">Productivity Trend</h2>
+            <span className="text-xs font-bold px-3 py-1 bg-white/10 rounded-full text-indigo-300 tracking-widest uppercase">Last 5 Days</span>
+          </div>
+
+          <div className="h-72 mt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                <XAxis dataKey="name" stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} allowDecimals={false} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                  itemStyle={{ color: '#fff', fontWeight: 'bold' }}
-                  cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-                />
-                <Bar dataKey="tasks" fill="#6366f1" radius={[6, 6, 0, 0]} maxBarSize={40}>
+              <BarChart data={barData} margin={{ top: 20, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                <XAxis dataKey="name" stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 13, fontWeight: 600 }} axisLine={false} tickLine={false} dy={10} />
+                <YAxis stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 13, fontWeight: 600 }} axisLine={false} tickLine={false} dx={-10} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#ffffff05' }} />
+                {/* Dynamically reading the primary theme color from the document root */}
+                <Bar
+                  dataKey="tasks"
+                  fill="var(--primary, #00E5FF)"
+                  radius={[8, 8, 8, 8]}
+                  barSize={40}
+                  animationDuration={1500}
+                >
                   {barData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={index === barData.length - 1 ? '#8b5cf6' : '#6366f1'} />
+                    <Cell key={`cell-${index}`} className="hover:opacity-80 transition-opacity" style={{ filter: `drop-shadow(0px 0px 10px var(--primary))` }} />
                   ))}
                 </Bar>
               </BarChart>

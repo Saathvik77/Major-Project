@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import API from "../api";
 import { ChevronLeft, Droplets, Dumbbell, Brain, Zap, Trophy, Target, Award, Infinity, MessageSquare, AlertCircle, HeartPulse, CheckCircle2, Bot } from "lucide-react";
+import { ThemeContext } from "../ThemeContext";
 import {
   PieChart,
   Pie,
@@ -18,6 +19,7 @@ import {
 
 function Analytics() {
   const navigate = useNavigate();
+  const { theme, activeTheme } = useContext(ThemeContext);
   const [summary, setSummary] = useState(null);
   const [productivity, setProductivity] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
@@ -25,6 +27,11 @@ function Analytics() {
   const [completedTasks, setCompletedTasks] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Dynamic theme colors for charts
+  const [primaryColor, setPrimaryColor] = useState("#22c55e");
+  const [secondaryColor, setSecondaryColor] = useState("#eab308");
+  const [accentColor, setAccentColor] = useState("#ef4444");
 
   const fetchAnalytics = async () => {
     try {
@@ -85,6 +92,21 @@ function Analytics() {
     };
   }, []);
 
+  // Update chart colors whenever the theme changes
+  useEffect(() => {
+    const root = document.documentElement;
+    const computedStyles = getComputedStyle(root);
+
+    setTimeout(() => {
+      const primary = computedStyles.getPropertyValue('--primary').trim() || "#22c55e";
+      const secondary = computedStyles.getPropertyValue('--secondary').trim() || "#eab308";
+      const accent = computedStyles.getPropertyValue('--accent').trim() || "#ef4444";
+      setPrimaryColor(primary);
+      setSecondaryColor(secondary);
+      setAccentColor(accent);
+    }, 50);
+  }, [theme, activeTheme]);
+
   if (loading) return <p className="p-6">Loading analytics...</p>;
 
   const chartData = [
@@ -93,7 +115,7 @@ function Analytics() {
     { name: "Overdue", value: summary?.overdue || 0 },
   ];
 
-  const COLORS = ["#22c55e", "#eab308", "#ef4444"];
+  const COLORS = [primaryColor, secondaryColor, accentColor];
 
   // Improve Health Score rendering by ensuring there are values or generating smart mock data
   const historyChartData = [...history]
@@ -394,14 +416,14 @@ function Analytics() {
                 <Line
                   type="monotone"
                   dataKey="productivity"
-                  stroke="#3b82f6"
+                  stroke={primaryColor}
                   strokeWidth={3}
                   name="Productivity"
                 />
                 <Line
                   type="monotone"
                   dataKey="health"
-                  stroke="#10b981"
+                  stroke={secondaryColor}
                   strokeWidth={3}
                   name="Health Score"
                 />
@@ -410,13 +432,13 @@ function Analytics() {
           </div>
 
           {/* NEW Insight Panel */}
-          <div className="mt-6 bg-neonSecondary/10 border border-neonSecondary/20 rounded-xl p-4 flex gap-3 items-start">
-            <div className="w-8 h-8 rounded-full bg-neonSecondary/20 flex items-center justify-center flex-shrink-0 mt-1 relative overflow-hidden">
-              <Brain size={16} className="text-neonSecondary relative z-10" />
-              <div className="absolute inset-0 bg-neonSecondary/20 animate-pulse"></div>
+          <div className="mt-6 border rounded-xl p-4 flex gap-3 items-start" style={{ borderColor: `${secondaryColor}40`, backgroundColor: `${secondaryColor}10` }}>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1 relative overflow-hidden" style={{ backgroundColor: `${secondaryColor}20` }}>
+              <Brain size={16} className="relative z-10" style={{ color: secondaryColor }} />
+              <div className="absolute inset-0 animate-pulse" style={{ backgroundColor: `${secondaryColor}20` }}></div>
             </div>
             <div>
-              <h4 className="text-neonSecondary font-bold text-sm tracking-widest uppercase mb-1">Correlation Insight</h4>
+              <h4 className="font-bold text-sm tracking-widest uppercase mb-1" style={{ color: secondaryColor }}>Correlation Insight</h4>
               <p className="text-cyan-100/90 text-[15px] font-medium leading-snug">
                 Your productivity increases when your health score is above {avgWeeklyHealth || 70}. Maintaining hydration and exercise directly boosts your task completion!
               </p>
@@ -431,11 +453,11 @@ function Analytics() {
             </div>
             <div className="bg-black/20 rounded-lg p-3 text-center border border-white/5">
               <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Avg Prod</p>
-              <p className="text-xl font-black text-blue-400">{avgWeeklyProd}%</p>
+              <p className="text-xl font-black" style={{ color: primaryColor }}>{avgWeeklyProd}%</p>
             </div>
             <div className="bg-black/20 rounded-lg p-3 text-center border border-white/5">
               <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Avg Health</p>
-              <p className="text-xl font-black text-emerald-400">{avgWeeklyHealth}</p>
+              <p className="text-xl font-black" style={{ color: secondaryColor }}>{avgWeeklyHealth}</p>
             </div>
           </div>
         </div>
