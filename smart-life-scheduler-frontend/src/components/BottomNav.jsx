@@ -19,7 +19,7 @@ export default function BottomNav() {
   return (
     <>
       <div className="fixed bottom-6 left-6 right-6 z-40">
-        <div className="bg-slate-900/80 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl p-2 flex items-center justify-between relative px-4 text-gray-400">
+        <div className="bottom-nav-container bg-slate-900/80 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl p-2 flex items-center justify-between relative px-4 text-gray-400">
           <div className="flex items-center justify-between w-full p-2 pr-16 space-x-2">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path || (item.path === '/dashboard' && location.pathname === '/');
@@ -28,9 +28,8 @@ export default function BottomNav() {
                 <button
                   key={item.label}
                   onClick={() => navigate(item.path)}
-                  className={`flex flex-col items-center justify-center w-12 h-12 rounded-2xl transition-all ${
-                    isActive ? 'text-primaryTeal bg-primaryTeal/10' : 'hover:text-gray-200 hover:bg-white/5'
-                  }`}
+                  className={`flex flex-col items-center justify-center w-12 h-12 rounded-2xl transition-all ${isActive ? 'text-primaryTeal bg-primaryTeal/10' : 'hover:text-gray-200 hover:bg-white/5'
+                    }`}
                 >
                   <Icon className={`w-6 h-6 ${isActive ? 'stroke-[2.5px]' : 'stroke-2'}`} />
                   {isActive && <span className="text-[10px] font-bold mt-1">{item.label}</span>}
@@ -38,7 +37,7 @@ export default function BottomNav() {
               );
             })}
           </div>
-          
+
           {/* Floating Action Button */}
           <button
             onClick={() => setIsModalOpen(true)}
