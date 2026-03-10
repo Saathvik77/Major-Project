@@ -15,6 +15,12 @@ export default {
         statusMedBg: "#FEF3C7",
         statusLow: "#10B981",
         statusLowBg: "#D1FAE5",
+
+        // New Neon Palette
+        neonPrimary: "#7C6CFF",
+        neonSecondary: "#00E5FF",
+        neonAccent: "#FF7AF6",
+        neonHighlight: "#FFD166",
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

@@ -18,8 +18,7 @@ import {
   Brain,
   User,
   LogOut,
-  Moon,
-  Sun
+  Moon
 } from "lucide-react";
 import { ThemeContext } from "./ThemeContext";
 
@@ -212,17 +211,17 @@ function Dashboard() {
       </div>
 
       {/* 🔥 SMART WELCOME BANNER */}
-      <div className="mb-12 bg-gradient-to-r from-blue-600/30 via-indigo-600/20 to-purple-600/30 border border-t-teal-400/30 border-l-indigo-400/30 border-b-black/50 border-r-black/50 shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-3xl p-8 relative overflow-hidden backdrop-blur-xl group hover:shadow-[0_8px_40px_rgba(99,102,241,0.3)] transition-all duration-500">
+      <div className="mb-12 bg-gradient-to-r from-neonPrimary/30 via-neonAccent/20 to-neonSecondary/30 border border-t-neonSecondary/30 border-l-neonPrimary/30 border-b-black/50 border-r-black/50 shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-3xl p-8 relative overflow-hidden backdrop-blur-xl group hover:shadow-[0_8px_40px_rgba(124,108,255,0.3)] transition-all duration-500">
         {/* Decorative Background Effects */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/10 rounded-full blur-[60px] translate-y-1/3 -translate-x-1/4"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-neonAccent/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-neonSecondary/10 rounded-full blur-[60px] translate-y-1/3 -translate-x-1/4"></div>
 
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between relative z-10 gap-8">
 
           {/* Greeting & Quick Stats */}
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tight flex items-center gap-3 drop-shadow-lg mb-4">
-              {greeting}, {userName} <span className="animate-wave inline-block origin-bottom-right">👋</span>
+            <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-neonPrimary via-neonAccent to-neonSecondary drop-shadow-sm tracking-tight flex items-center gap-3 mb-4">
+              {greeting}, {userName} <span className="text-white animate-wave inline-block origin-bottom-right">👋</span>
             </h1>
 
             <div className="flex flex-wrap items-center gap-6">
@@ -241,9 +240,9 @@ function Dashboard() {
           </div>
 
           {/* Suggested Activity Box */}
-          <div className="bg-white/10 border border-white/20 rounded-2xl p-5 md:min-w-[320px] shadow-xl flex-shrink-0 group-hover:bg-white-[0.15] transition-colors relative overflow-hidden backdrop-blur-md">
-            <div className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full my-4 mx-5 bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] animate-pulse"></div>
-            <p className="text-xs font-bold uppercase tracking-widest text-indigo-300 mb-2 flex items-center gap-1.5 opacity-90">
+          <div className="bg-white/10 border border-neonPrimary/30 rounded-2xl p-5 md:min-w-[320px] shadow-xl flex-shrink-0 group-hover:bg-white-[0.15] transition-colors relative overflow-hidden backdrop-blur-md">
+            <div className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full my-4 mx-5 bg-neonHighlight shadow-[0_0_12px_rgba(255,209,102,0.8)] animate-pulse"></div>
+            <p className="text-xs font-bold uppercase tracking-widest text-neonPrimary mb-2 flex items-center gap-1.5 opacity-90">
               <Brain size={14} /> AI Context Suggestion
             </p>
             <p className="text-[15px] font-bold text-white leading-relaxed pe-6">
@@ -259,37 +258,37 @@ function Dashboard() {
         {/* Left Cards */}
         <div className="grid grid-cols-2 gap-8">
           <Card
-            icon={<ClipboardList size={50} className="text-primaryTeal drop-shadow-[0_0_15px_rgba(45,212,191,0.6)]" />}
+            icon={<ClipboardList size={50} className="text-neonPrimary drop-shadow-[0_0_15px_rgba(124,108,255,0.6)]" />}
             title="Tasks"
             onClick={() => navigate("/tasks")}
           />
 
           <Card
-            icon={<BarChart3 size={50} className="text-indigo-400 drop-shadow-[0_0_15px_rgba(99,102,241,0.6)]" />}
+            icon={<BarChart3 size={50} className="text-neonSecondary drop-shadow-[0_0_15px_rgba(0,229,255,0.6)]" />}
             title="Analytics"
             onClick={() => navigate("/analytics")}
           />
 
           <Card
-            icon={<FileText size={50} className="text-orange-400 drop-shadow-[0_0_15px_rgba(251,146,60,0.6)]" />}
+            icon={<FileText size={50} className="text-neonAccent drop-shadow-[0_0_15px_rgba(255,122,246,0.6)]" />}
             title="Reports"
             onClick={() => navigate("/reports")}
           />
 
           <Card
-            icon={<HeartPulse size={50} className="text-pink-400 drop-shadow-[0_0_15px_rgba(244,114,182,0.6)]" />}
+            icon={<HeartPulse size={50} className="text-neonHighlight drop-shadow-[0_0_15px_rgba(255,209,102,0.6)]" />}
             title="Health"
             onClick={() => navigate("/health")}
           />
         </div>
 
         {/* Right Content */}
-        <div className="flex justify-center relative">
-          <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 to-cyan-500/20 blur-3xl rounded-full scale-75"></div>
+        <div className="flex justify-center relative pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-tr from-neonPrimary/20 to-neonSecondary/20 blur-3xl rounded-full scale-75"></div>
           {/* Decorative floating shapes */}
-          <div className="relative w-80 h-80 rounded-full border-4 border-indigo-500/20 flex items-center justify-center animate-[spin_30s_linear_infinite]">
-            <div className="absolute top-0 right-10 w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full blur-sm drop-shadow-[0_0_15px_rgba(6,182,212,0.8)]"></div>
-            <div className="absolute bottom-10 left-0 w-24 h-24 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full blur-sm drop-shadow-[0_0_15px_rgba(99,102,241,0.8)]"></div>
+          <div className="relative w-80 h-80 rounded-full border-4 border-neonAccent/20 flex items-center justify-center animate-[spin_30s_linear_infinite]">
+            <div className="absolute top-0 right-10 w-16 h-16 bg-gradient-to-br from-neonSecondary to-neonPrimary rounded-full blur-sm drop-shadow-[0_0_15px_rgba(0,229,255,0.8)]"></div>
+            <div className="absolute bottom-10 left-0 w-24 h-24 bg-gradient-to-br from-neonPrimary to-neonAccent rounded-full blur-sm drop-shadow-[0_0_15px_rgba(124,108,255,0.8)]"></div>
           </div>
         </div>
       </div>

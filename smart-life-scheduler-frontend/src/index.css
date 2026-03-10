@@ -1,13 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
 @layer base {
   body {
-    @apply bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 bg-fixed text-white font-sans antialiased min-h-screen selection:bg-cyan-500/30 selection:text-cyan-100 transition-colors duration-500;
+    @apply text-white font-sans antialiased min-h-screen selection:bg-neonSecondary/30 selection:text-neonSecondary transition-colors duration-500 overflow-x-hidden;
     font-family: 'Inter', sans-serif;
+
+    /* Animated Gradient Background */
+    background: linear-gradient(-45deg, #1A1A2E, #16213E, #0F3460, #1A1A2E);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+  }
+
+  @keyframes gradientBG {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   /* 🔥 GLOBAL LIGHT MODE OVERRIDES 🔥 */
@@ -53,8 +71,8 @@
   .light-mode .bg-slate-900,
   .light-mode .bg-slate-800\/90,
   .light-mode .bg-slate-800\/95,
-  .light-mode .bg-gradient-to-br.from-slate-800\/95,
-  .light-mode .bg-gradient-to-br.from-white\/10 {
+  .light-mode .from-slate-800\/95,
+  .light-mode .from-white\/10 {
     @apply bg-white border-slate-200 shadow-sm !important;
     background-image: none !important;
   }
@@ -78,6 +96,14 @@
   }
 
   /* Ensure Colored Text (like Teal/Emerald) stays vibrant but visible on white */
+  .light-mode .text-neonPrimary,
+  .light-mode .text-neonSecondary,
+  .light-mode .text-neonAccent,
+  .light-mode .text-neonHighlight {
+    /* Keep these slightly darker in light mode so they are visible on white bg */
+    opacity: 0.9;
+  }
+
   .light-mode .text-primaryTeal,
   .light-mode .text-teal-300,
   .light-mode .text-teal-400 {
@@ -120,6 +146,10 @@
   }
 
   /* Specific Components (Badges/Buttons) */
+  .light-mode .bg-neonPrimary\/20,
+  .light-mode .bg-neonSecondary\/20,
+  .light-mode .bg-neonAccent\/20,
+  .light-mode .bg-neonHighlight\/20,
   .light-mode .bg-emerald-500\/20,
   .light-mode .bg-teal-500\/20,
   .light-mode .bg-indigo-500\/20,

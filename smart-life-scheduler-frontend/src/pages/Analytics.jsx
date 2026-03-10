@@ -410,14 +410,14 @@ function Analytics() {
           </div>
 
           {/* NEW Insight Panel */}
-          <div className="mt-6 bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex gap-3 items-start">
-            <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-1 relative overflow-hidden">
-              <Brain size={16} className="text-blue-400 relative z-10" />
-              <div className="absolute inset-0 bg-blue-400/20 animate-pulse"></div>
+          <div className="mt-6 bg-neonSecondary/10 border border-neonSecondary/20 rounded-xl p-4 flex gap-3 items-start">
+            <div className="w-8 h-8 rounded-full bg-neonSecondary/20 flex items-center justify-center flex-shrink-0 mt-1 relative overflow-hidden">
+              <Brain size={16} className="text-neonSecondary relative z-10" />
+              <div className="absolute inset-0 bg-neonSecondary/20 animate-pulse"></div>
             </div>
             <div>
-              <h4 className="text-blue-300 font-bold text-sm tracking-widest uppercase mb-1">Correlation Insight</h4>
-              <p className="text-blue-100/90 text-[15px] font-medium leading-snug">
+              <h4 className="text-neonSecondary font-bold text-sm tracking-widest uppercase mb-1">Correlation Insight</h4>
+              <p className="text-cyan-100/90 text-[15px] font-medium leading-snug">
                 Your productivity increases when your health score is above {avgWeeklyHealth || 70}. Maintaining hydration and exercise directly boosts your task completion!
               </p>
             </div>
@@ -495,15 +495,15 @@ function Analytics() {
       </div>
 
       {/* 🔥 AI Forecast Card */}
-      <div className="bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-md shadow-xl rounded-2xl p-8 relative overflow-hidden flex flex-col justify-between">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl transform translate-x-10 -translate-y-10"></div>
+      <div className="bg-neonPrimary/10 border border-neonPrimary/20 backdrop-blur-md shadow-xl rounded-2xl p-8 relative overflow-hidden flex flex-col justify-between">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-neonPrimary/20 rounded-full blur-3xl transform translate-x-10 -translate-y-10"></div>
 
         <div>
-          <h2 className="text-xl font-bold mb-4 tracking-wide text-indigo-300">
+          <h2 className="text-xl font-bold mb-4 tracking-wide text-neonPrimary">
             AI Forecast (Next Week)
           </h2>
 
-          <p className="text-5xl font-black text-white tracking-tight drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]">
+          <p className="text-5xl font-black text-white tracking-tight drop-shadow-[0_0_15px_rgba(124,108,255,0.5)]">
             {forecastScore || 0}%
           </p>
 
@@ -512,10 +512,10 @@ function Analytics() {
               <span className="text-gray-400 text-sm font-medium">Trend:</span>
               <span
                 className={`font-bold text-sm ${forecastTrend === "improving"
-                    ? "text-emerald-400"
-                    : forecastTrend === "declining"
-                      ? "text-red-400"
-                      : "text-gray-300"
+                  ? "text-emerald-400"
+                  : forecastTrend === "declining"
+                    ? "text-red-400"
+                    : "text-gray-300"
                   }`}
               >
                 {forecastTrend.toUpperCase()}
@@ -524,18 +524,18 @@ function Analytics() {
 
             <div className="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-lg border border-white/5">
               <span className="text-gray-400 text-sm font-medium">Confidence:</span>
-              <span className="font-bold text-sm text-indigo-300">
+              <span className="font-bold text-sm text-neonPrimary">
                 {forecastConfidence.toUpperCase()}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="mt-6 bg-indigo-500/20 border border-indigo-500/30 p-4 rounded-xl relative z-10">
-          <h4 className="text-indigo-300 font-bold text-sm tracking-widest uppercase mb-1 flex items-center gap-2">
+        <div className="mt-6 bg-neonPrimary/20 border border-neonPrimary/30 p-4 rounded-xl relative z-10">
+          <h4 className="text-neonPrimary font-bold text-sm tracking-widest uppercase mb-1 flex items-center gap-2">
             <Bot size={16} /> Suggestion
           </h4>
-          <p className="text-indigo-100 text-sm font-medium leading-relaxed">
+          <p className="text-purple-100 text-sm font-medium leading-relaxed">
             {aiAdvice}
           </p>
         </div>
@@ -545,11 +545,11 @@ function Analytics() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
         {/* Hydration Widget */}
-        <div className="bg-cyan-500/10 border border-cyan-500/20 backdrop-blur-md shadow-xl rounded-2xl p-6 relative overflow-hidden flex flex-col items-start justify-center">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl transform translate-x-10 -translate-y-10"></div>
+        <div className="bg-neonSecondary/10 border border-neonSecondary/20 backdrop-blur-md shadow-xl rounded-2xl p-6 relative overflow-hidden flex flex-col items-start justify-center">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-neonSecondary/10 rounded-full blur-3xl transform translate-x-10 -translate-y-10"></div>
           <div className="flex items-center gap-3 mb-2">
-            <Droplets size={28} className="text-cyan-400 drop-shadow-md" />
-            <h2 className="text-xl font-bold tracking-wide text-cyan-300">Daily Hydration</h2>
+            <Droplets size={28} className="text-neonSecondary drop-shadow-md" />
+            <h2 className="text-xl font-bold tracking-wide text-neonSecondary opacity-90">Daily Hydration</h2>
           </div>
 
           {userWeight ? (
@@ -591,12 +591,12 @@ function Analytics() {
       </div>
 
       {/* 🧠 AI Life Coach */}
-      <div className="bg-purple-500/10 border border-purple-500/20 backdrop-blur-md shadow-xl rounded-2xl p-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl transform translate-x-10 -translate-y-10"></div>
+      <div className="bg-neonAccent/10 border border-neonAccent/20 backdrop-blur-md shadow-xl rounded-2xl p-8 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-neonAccent/20 rounded-full blur-3xl transform translate-x-10 -translate-y-10"></div>
 
         <div className="flex items-center gap-3 mb-6 relative z-10">
-          <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/30">
-            <Brain size={24} className="text-purple-400 drop-shadow-[0_0_10px_rgba(192,132,252,0.6)]" />
+          <div className="w-12 h-12 rounded-full bg-neonAccent/20 flex items-center justify-center border border-neonAccent/30">
+            <Brain size={24} className="text-neonAccent drop-shadow-[0_0_10px_rgba(255,122,246,0.6)]" />
           </div>
           <div>
             <h2 className="text-2xl font-black tracking-tight text-white drop-shadow-sm">AI Life Coach</h2>
@@ -607,11 +607,11 @@ function Analytics() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
           {/* Productivity Insight */}
           <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-colors flex flex-col gap-3">
-            <div className="flex items-center gap-2 text-indigo-400">
+            <div className="flex items-center gap-2 text-neonPrimary">
               <Zap size={18} fill="currentColor" />
               <h3 className="font-bold text-sm tracking-widest uppercase">Productivity</h3>
             </div>
-            <p className="text-indigo-100/90 leading-relaxed font-medium">
+            <p className="text-purple-100/90 leading-relaxed font-medium">
               {completedCount > 0
                 ? `You have knocked out ${completedCount} total tasks so far! You are building great momentum. Try tackling your hardest tasks early.`
                 : `You haven't completed any tasks yet. Tackle one small task today to get the ball rolling!`}

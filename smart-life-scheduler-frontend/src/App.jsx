@@ -10,11 +10,13 @@ import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
 import Health from "./pages/Health";
 import { ThemeProvider } from "./ThemeContext";
+import AnimatedBackground from "./components/AnimatedBackground";
 
 function App() {
   return (
     <ThemeProvider>
       <Router>
+        <AnimatedBackground />
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Landing />} />
@@ -82,7 +84,8 @@ function App() {
           />
         </Routes>
       </Router>
-      );
+    </ThemeProvider>
+  );
 }
 
-      export default App;
+export default App;
