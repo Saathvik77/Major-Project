@@ -259,28 +259,28 @@ function Dashboard() {
         {/* Left Cards */}
         <div className="flex flex-col gap-4 w-full">
           <CompactCard
-            icon={<ClipboardList size={20} className="text-neonPrimary" />}
+            icon={<ClipboardList size={24} className="text-neonPrimary drop-shadow-[0_0_12px_rgba(124,108,255,0.8)]" />}
             title="Tasks"
             value={`${stats.todayTotal - stats.todayCompleted} remaining`}
             onClick={() => navigate("/tasks")}
           />
 
           <CompactCard
-            icon={<BarChart3 size={20} className="text-neonSecondary" />}
+            icon={<BarChart3 size={24} className="text-neonSecondary drop-shadow-[0_0_12px_rgba(0,229,255,0.8)]" />}
             title="Analytics"
             value={`${todaysProductivityStr}%`}
             onClick={() => navigate("/analytics")}
           />
 
           <CompactCard
-            icon={<FileText size={20} className="text-neonAccent" />}
+            icon={<FileText size={24} className="text-neonAccent drop-shadow-[0_0_12px_rgba(255,122,246,0.8)]" />}
             title="Reports"
             value="View Insights"
             onClick={() => navigate("/reports")}
           />
 
           <CompactCard
-            icon={<HeartPulse size={20} className="text-neonHighlight" />}
+            icon={<HeartPulse size={24} className="text-neonHighlight drop-shadow-[0_0_12px_rgba(255,209,102,0.8)]" />}
             title="Health"
             value="Good"
             onClick={() => navigate("/health")}
@@ -289,10 +289,10 @@ function Dashboard() {
 
         {/* Right Content */}
         <div className="flex justify-center relative pointer-events-none w-full">
-          {/* Decorative shapes without extreme glow */}
-          <div className="relative w-[320px] h-[320px] rounded-full border border-white/20 flex items-center justify-center animate-[spin_40s_linear_infinite]">
-            <div className="absolute top-0 right-10 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20"></div>
-            <div className="absolute bottom-10 left-0 w-16 h-16 bg-white/5 backdrop-blur-md rounded-full border border-white/20"></div>
+          {/* Decorative shapes with subtle glow */}
+          <div className="relative w-[320px] h-[320px] rounded-full border border-white/20 flex items-center justify-center animate-[spin_40s_linear_infinite] shadow-[0_0_30px_rgba(255,255,255,0.05)]">
+            <div className="absolute top-0 right-10 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-[0_0_20px_rgba(0,229,255,0.4)]"></div>
+            <div className="absolute bottom-10 left-0 w-16 h-16 bg-white/5 backdrop-blur-md rounded-full border border-white/20 shadow-[0_0_20px_rgba(124,108,255,0.4)]"></div>
           </div>
         </div>
       </div>
