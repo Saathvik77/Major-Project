@@ -5,27 +5,8 @@
 
 @layer base {
   body {
-    @apply text-white font-sans antialiased min-h-screen selection:bg-neonSecondary/30 selection:text-neonSecondary transition-colors duration-500 overflow-x-hidden;
+    @apply bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 bg-fixed text-white font-sans antialiased min-h-screen selection:bg-neonSecondary/30 selection:text-neonSecondary transition-colors duration-500 overflow-x-hidden;
     font-family: 'Inter', sans-serif;
-
-    /* Animated Gradient Background */
-    background: linear-gradient(-45deg, #1A1A2E, #16213E, #0F3460, #1A1A2E);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-  }
-
-  @keyframes gradientBG {
-    0% {
-      background-position: 0% 50%;
-    }
-
-    50% {
-      background-position: 100% 50%;
-    }
-
-    100% {
-      background-position: 0% 50%;
-    }
   }
 
   /* 🔥 GLOBAL LIGHT MODE OVERRIDES 🔥 */
@@ -47,17 +28,32 @@
 
   .light-mode .text-white,
   .light-mode .text-gray-100,
-  .light-mode .text-gray-200 {
-    @apply text-slate-900 !important;
+  .light-mode .text-gray-200,
+  .light-mode .text-purple-100,
+  .light-mode .text-cyan-100,
+  .light-mode .text-indigo-100,
+  .light-mode .text-indigo-200,
+  .light-mode .text-slate-100,
+  .light-mode .text-slate-200,
+  .light-mode .text-purple-200 {
+    color: #0f172a !important;
+    /* slate-900 */
   }
 
   .light-mode .text-gray-300,
-  .light-mode .text-gray-400 {
-    @apply text-slate-700 !important;
+  .light-mode .text-gray-400,
+  .light-mode .text-slate-300,
+  .light-mode .text-slate-400,
+  .light-mode .text-indigo-300,
+  .light-mode .text-cyan-300 {
+    color: #334155 !important;
+    /* slate-700 */
   }
 
-  .light-mode .text-gray-500 {
-    @apply text-slate-500 !important;
+  .light-mode .text-gray-500,
+  .light-mode .text-slate-500 {
+    color: #475569 !important;
+    /* slate-600 */
   }
 
   /* Backgrounds & Cards */
@@ -83,7 +79,8 @@
   }
 
   .light-mode input::placeholder {
-    @apply text-slate-400 !important;
+    color: #94a3b8 !important;
+    /* slate-400 */
   }
 
   /* Borders */
@@ -107,37 +104,37 @@
   .light-mode .text-primaryTeal,
   .light-mode .text-teal-300,
   .light-mode .text-teal-400 {
-    @apply text-teal-600 !important;
+    color: #0891b2 !important;
   }
 
   .light-mode .text-indigo-300,
   .light-mode .text-indigo-400 {
-    @apply text-indigo-600 !important;
+    color: #4f46e5 !important;
   }
 
   .light-mode .text-purple-300,
   .light-mode .text-purple-400 {
-    @apply text-purple-600 !important;
+    color: #9333ea !important;
   }
 
   .light-mode .text-emerald-300,
   .light-mode .text-emerald-400 {
-    @apply text-emerald-600 !important;
+    color: #059669 !important;
   }
 
   .light-mode .text-amber-300,
   .light-mode .text-amber-400 {
-    @apply text-amber-600 !important;
+    color: #d97706 !important;
   }
 
   .light-mode .text-red-300,
   .light-mode .text-red-400 {
-    @apply text-red-600 !important;
+    color: #dc2626 !important;
   }
 
   .light-mode .text-cyan-300,
   .light-mode .text-cyan-400 {
-    @apply text-cyan-600 !important;
+    color: #0891b2 !important;
   }
 
   .light-mode .text-transparent.bg-clip-text {
