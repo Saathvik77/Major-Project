@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api";
-import { ChevronLeft, ChevronRight, Menu, RefreshCcw, MoreHorizontal, Dumbbell, Briefcase, BookOpen, Trash2, Plus, SlidersHorizontal, ChevronDown, CheckCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Menu, RefreshCcw, MoreHorizontal, Dumbbell, Briefcase, BookOpen, Trash2, Plus, SlidersHorizontal, ChevronDown, CheckCircle, Sparkles, Bot } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import GlassCard from "../components/GlassCard";
 import TaskItem from "../components/TaskItem";
@@ -14,6 +14,8 @@ export default function Tasks() {
   const [priority, setPriority] = useState("Medium");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isSyncing, setIsSyncing] = useState(false);
+  const [aiSchedule, setAiSchedule] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   const navigate = useNavigate();
 
   const fetchTasks = async () => {
@@ -125,6 +127,18 @@ export default function Tasks() {
       fetchTasks();
       setIsSyncing(false);
     }, 1000);
+  };
+
+  const generateMyDay = async () => {
+    setIsGenerating(true);
+    try {
+      const res = await api.post("/tasks/generate-schedule");
+      setAiSchedule(res.data.schedule);
+    } catch (err) {
+      console.error("Failed to generate schedule", err);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const onDragEnd = (result) => {
@@ -243,6 +257,64 @@ export default function Tasks() {
             );
           })}
         </div>
+
+        {/* AI Generated Plan Section */}
+        {selectedDate.toDateString() === new Date().toDateString() && (
+          <div className="mb-8 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+            <GlassCard className="p-5 flex flex-col gap-4 bg-gradient-to-br from-indigo-500/10 to-purple-500/5 border-indigo-500/20 relative z-20 overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 blur-3xl rounded-full pointer-events-none"></div>
+
+              <div className="flex items-center justify-between relative z-10">
+                <h3 className="text-[17px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 flex items-center gap-2">
+                  <Sparkles size={18} className="text-indigo-400" />
+                  AI Generated Plan for Today
+                </h3>
+              </div>
+
+              {aiSchedule ? (
+                <div className="space-y-3 mt-2 relative z-10">
+                  {aiSchedule.map((item, idx) => (
+                    <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                      <div className="text-sm font-semibold text-indigo-300 whitespace-nowrap min-w-[95px]">
+                        {item.timeRange}
+                      </div>
+                      <div className="text-sm font-medium text-gray-200">
+                        {item.title}
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => setAiSchedule(null)}
+                    className="w-full mt-2 py-2 text-xs font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Clear Plan
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={generateMyDay}
+                  disabled={isGenerating || tasks.filter(t => !t.completed && new Date(t.date).toDateString() === new Date().toDateString()).length === 0}
+                  className="relative group w-full overflow-hidden rounded-xl bg-white/5 border border-indigo-500/30 p-4 transition-all hover:bg-white/10 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                  <span className="relative z-10 flex items-center justify-center gap-2 text-sm font-bold text-indigo-200 tracking-wide">
+                    {isGenerating ? (
+                      <>
+                        <RefreshCcw size={16} className="animate-spin text-indigo-400" />
+                        Generating Your Schedule...
+                      </>
+                    ) : (
+                      <>
+                        <Bot size={18} className="text-indigo-400" />
+                        Generate My Day
+                      </>
+                    )}
+                  </span>
+                </button>
+              )}
+            </GlassCard>
+          </div>
+        )}
 
         {/* Today section */}
         <div className="mb-6">

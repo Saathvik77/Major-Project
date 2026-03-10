@@ -4,16 +4,17 @@ const Task = require("../models/Task");
 
 const { body } = require("express-validator");
 const { validateTaskCreation, validateTaskUpdate } = require("../middleware/validationMiddleware");
+const { generateSchedule } = require("../services/aiScheduleService");
 
 const asyncHandler = require("../middleware/asyncHandler");
 
 const router = express.Router();
-  
+
 
 /* =========================================
    CREATE TASK (Auto Schedule Optimizer)
 ========================================= */
- router.post(
+router.post(
   "/",
   protect,
   validateTaskCreation,
@@ -110,6 +111,33 @@ const router = express.Router();
 );
 
 /* =========================================
+   GENERATE AI SCHEDULE
+========================================= */
+router.post(
+  "/generate-schedule",
+  protect,
+  asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const pendingTasks = await Task.find({
+      user: userId,
+      completed: false,
+      date: { $gte: startOfDay }
+    }).sort({ priority: 1, date: 1 });
+
+    const schedule = await generateSchedule(pendingTasks);
+
+    res.status(200).json({
+      success: true,
+      schedule,
+    });
+  })
+);
+
+/* =========================================
    GET ALL TASKS
 ========================================= */
 router.get(
@@ -162,10 +190,10 @@ router.get(
       totalPages: Math.ceil(total / limitNumber),
       tasks,
     });
-})
+  })
 );
-   /* =========================================
-   GET SINGLE TASK
+/* =========================================
+GET SINGLE TASK
 ========================================= */
 router.get(
   "/:id",
@@ -189,8 +217,8 @@ router.get(
     });
   })
 );
-   /* =========================================
-   TOGGLE TASK COMPLETE (PATCH)
+/* =========================================
+TOGGLE TASK COMPLETE (PATCH)
 ========================================= */
 router.patch(
   "/:id",
@@ -340,7 +368,7 @@ router.put(
 /* =========================================
    DELETE TASK
 ========================================= */
- router.delete(
+router.delete(
   "/:id",
   protect,
   asyncHandler(async (req, res) => {
@@ -465,8 +493,8 @@ router.get("/dashboard/weekly", protect, async (req, res) => {
     const weeklyProductivity =
       totalWeeklyTasks > 0
         ? Math.round(
-            (completedWeeklyTasks / totalWeeklyTasks) * 100
-          )
+          (completedWeeklyTasks / totalWeeklyTasks) * 100
+        )
         : 0;
 
     res.status(200).json({
