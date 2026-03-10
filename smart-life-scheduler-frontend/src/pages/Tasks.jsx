@@ -213,7 +213,7 @@ export default function Tasks() {
       <div className="fixed bottom-[10%] right-[-10%] w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '2s' }}></div>
       <div className="fixed top-[40%] left-[60%] w-[300px] h-[300px] bg-teal-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '4s' }}></div>
 
-      <div className="max-w-md mx-auto pt-8 px-6 relative z-10">
+      <div className="max-w-md lg:max-w-5xl mx-auto pt-8 px-6 relative z-10 lg:w-full">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <button onClick={() => navigate(-1)} className="p-2 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 hover:bg-white/10 transition text-white">
