@@ -15,7 +15,9 @@ import {
   Snowflake,
   CloudFog,
   Activity,
-  Brain
+  Brain,
+  User,
+  LogOut
 } from "lucide-react";
 
 function Dashboard() {
@@ -51,7 +53,7 @@ function Dashboard() {
           todayCompleted,
           todayTotal: todayTasks.length
         });
-        
+
         setError(null);
       } catch (err) {
         console.error("Failed to fetch tasks dashboard stats", err);
@@ -74,28 +76,28 @@ function Dashboard() {
 
     fetchProfile();
     fetchTasks();
-    
+
     // Add event listener for tasksUpdated
     window.addEventListener("tasksUpdated", fetchTasks);
-    
+
     // Fetch Weather for the Banner
     const fetchWeather = async (lat, lon) => {
-        try {
-            const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-            const data = await response.json();
-            if (data && data.current_weather) setWeatherData(data.current_weather);
-        } catch (err) {
-            console.error("Failed to fetch weather", err);
-        }
+      try {
+        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        const data = await response.json();
+        if (data && data.current_weather) setWeatherData(data.current_weather);
+      } catch (err) {
+        console.error("Failed to fetch weather", err);
+      }
     };
-    
+
     if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude),
-            () => fetchWeather(51.5074, -0.1278) // fallback
-        );
+      navigator.geolocation.getCurrentPosition(
+        (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude),
+        () => fetchWeather(51.5074, -0.1278) // fallback
+      );
     }
-    
+
     return () => window.removeEventListener("tasksUpdated", fetchTasks);
   }, []);
 
@@ -105,40 +107,40 @@ function Dashboard() {
   };
 
   const getGreeting = () => {
-      const hour = new Date().getHours();
-      if (hour < 12) return "Good Morning";
-      if (hour < 18) return "Good Afternoon";
-      return "Good Evening";
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 18) return "Good Afternoon";
+    return "Good Evening";
   };
-  
+
   const greeting = getGreeting();
 
   const getBannerSuggestionAndIcon = () => {
     let suggestion = "Take a moment to plan your day!";
     let Icon = Sun;
     let weatherText = "Clear";
-    
+
     if (weatherData) {
-        const temp = weatherData.temperature;
-        const code = weatherData.weathercode;
-        
-        if (code <= 2 && temp >= 10 && temp <= 32) {
-            suggestion = "Perfect weather for a 30-minute cycling session! 🚲";
-            Icon = Sun;
-            weatherText = "Sunny";
-        } else if (code >= 51) {
-            suggestion = "It's wet outside. Time for a home HIIT session or hitting the indoor gym! 🌧️";
-            Icon = CloudRain;
-            weatherText = "Rainy";
-        } else if (temp < 10 || (code >= 71 && code <= 77)) {
-            suggestion = "Chilly outside. A warm indoor yoga session is highly recommended 🧘‍♂️";
-            Icon = Snowflake;
-            weatherText = "Cold";
-        } else {
-            suggestion = "Mild weather. A brisk 15-minute walk would be great for your health 🚶‍♂️";
-            Icon = CloudFog;
-            weatherText = "Mild";
-        }
+      const temp = weatherData.temperature;
+      const code = weatherData.weathercode;
+
+      if (code <= 2 && temp >= 10 && temp <= 32) {
+        suggestion = "Perfect weather for a 30-minute cycling session! 🚲";
+        Icon = Sun;
+        weatherText = "Sunny";
+      } else if (code >= 51) {
+        suggestion = "It's wet outside. Time for a home HIIT session or hitting the indoor gym! 🌧️";
+        Icon = CloudRain;
+        weatherText = "Rainy";
+      } else if (temp < 10 || (code >= 71 && code <= 77)) {
+        suggestion = "Chilly outside. A warm indoor yoga session is highly recommended 🧘‍♂️";
+        Icon = Snowflake;
+        weatherText = "Cold";
+      } else {
+        suggestion = "Mild weather. A brisk 15-minute walk would be great for your health 🚶‍♂️";
+        Icon = CloudFog;
+        weatherText = "Mild";
+      }
     }
     return { suggestion, Icon, weatherText };
   };
@@ -153,70 +155,81 @@ function Dashboard() {
       <div className="fixed bottom-[10%] right-[-10%] w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '2s' }}></div>
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-16">
-        <h1 className="text-4xl font-bold flex items-center gap-3 text-white tracking-tight">
-          <ClipboardList size={40} className="text-primaryTeal drop-shadow-[0_0_15px_rgba(45,212,191,0.5)]" />
+      <div className="flex justify-between items-center mb-16 relative z-50">
+        <h1 className="text-4xl font-extrabold flex items-center gap-3 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-indigo-500 to-purple-500 tracking-tight drop-shadow-md">
+          <ClipboardList size={40} className="text-teal-400 drop-shadow-[0_0_20px_rgba(45,212,191,0.8)]" />
           Smart Life Scheduler
         </h1>
 
         <div className="relative group">
-          <button onClick={() => navigate('/profile')} className="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 px-6 py-2 rounded-full shadow-lg hover:bg-white/20 transition-all text-white font-medium">
-            <Settings size={18} />
+          <button className="flex items-center gap-2 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md border border-white/20 px-6 py-2.5 rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_25px_rgba(255,255,255,0.15)] hover:bg-white/20 hover:scale-105 active:scale-95 transition-all duration-300 text-white font-medium">
+            <Settings className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
             Settings
           </button>
 
-          <div className="absolute right-0 mt-3 w-40 bg-slate-800/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right group-hover:scale-100 scale-95 overflow-hidden">
-            <button
-              onClick={handleLogout}
-              className="block w-full text-left px-4 py-3 hover:bg-white/10 transition-colors text-white font-medium"
-            >
-              Logout
-            </button>
+          <div className="absolute right-0 mt-3 w-48 bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right group-hover:translate-y-0 translate-y-2 group-hover:scale-100 scale-95 overflow-hidden z-50">
+            <div className="p-2 space-y-1">
+              <button
+                onClick={() => navigate('/profile')}
+                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-indigo-500/30 hover:to-purple-500/30 hover:text-indigo-200 transition-all duration-300 text-gray-200 font-medium group/btn"
+              >
+                <User className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-300 text-indigo-400" />
+                Profile
+              </button>
+              <div className="h-px w-full bg-white/5 my-1"></div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-red-500/30 hover:to-orange-500/30 hover:text-red-200 transition-all duration-300 text-gray-200 font-medium group/btn"
+              >
+                <LogOut className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-300 text-red-500" />
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* 🔥 SMART WELCOME BANNER */}
-      <div className="mb-12 bg-gradient-to-r from-blue-600/20 via-indigo-600/10 to-purple-600/20 border border-t-white/20 border-l-white/10 border-b-black/50 border-r-black/50 shadow-2xl rounded-3xl p-8 relative overflow-hidden backdrop-blur-xl group">
-         {/* Decorative Background Effects */}
-         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3"></div>
-         <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/10 rounded-full blur-[60px] translate-y-1/3 -translate-x-1/4"></div>
+      <div className="mb-12 bg-gradient-to-r from-blue-600/30 via-indigo-600/20 to-purple-600/30 border border-t-teal-400/30 border-l-indigo-400/30 border-b-black/50 border-r-black/50 shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-3xl p-8 relative overflow-hidden backdrop-blur-xl group hover:shadow-[0_8px_40px_rgba(99,102,241,0.3)] transition-all duration-500">
+        {/* Decorative Background Effects */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/10 rounded-full blur-[60px] translate-y-1/3 -translate-x-1/4"></div>
 
-         <div className="flex flex-col md:flex-row items-start md:items-center justify-between relative z-10 gap-8">
-            
-            {/* Greeting & Quick Stats */}
-            <div>
-               <h1 className="text-4xl font-black text-white tracking-tight flex items-center gap-3 drop-shadow-lg mb-4">
-                   {greeting}, {userName} <span className="animate-wave inline-block origin-bottom-right">👋</span>
-               </h1>
-               
-               <div className="flex flex-wrap items-center gap-6">
-                   <div className="flex items-center gap-2.5 bg-black/30 px-4 py-2 rounded-xl border border-white/10 shadow-inner backdrop-blur-md">
-                       <WeatherIcon size={20} className="text-yellow-400" />
-                       <span className="text-[15px] font-semibold text-gray-200">Weather: {weatherText} {weatherData ? `${weatherData.temperature}°C` : ''}</span>
-                   </div>
-                   
-                   <div className="flex items-center gap-2.5 bg-black/30 px-4 py-2 rounded-xl border border-white/10 shadow-inner backdrop-blur-md">
-                       <Activity size={20} className="text-emerald-400" />
-                       <span className="text-[15px] font-semibold text-gray-200">
-                           Today's productivity: <span className="text-white font-black text-lg ml-1">{todaysProductivityStr}%</span>
-                       </span>
-                   </div>
-               </div>
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between relative z-10 gap-8">
+
+          {/* Greeting & Quick Stats */}
+          <div>
+            <h1 className="text-4xl font-black text-white tracking-tight flex items-center gap-3 drop-shadow-lg mb-4">
+              {greeting}, {userName} <span className="animate-wave inline-block origin-bottom-right">👋</span>
+            </h1>
+
+            <div className="flex flex-wrap items-center gap-6">
+              <div className="flex items-center gap-2.5 bg-black/30 px-4 py-2 rounded-xl border border-white/10 shadow-inner backdrop-blur-md">
+                <WeatherIcon size={20} className="text-yellow-400" />
+                <span className="text-[15px] font-semibold text-gray-200">Weather: {weatherText} {weatherData ? `${weatherData.temperature}°C` : ''}</span>
+              </div>
+
+              <div className="flex items-center gap-2.5 bg-black/30 px-4 py-2 rounded-xl border border-white/10 shadow-inner backdrop-blur-md">
+                <Activity size={20} className="text-emerald-400" />
+                <span className="text-[15px] font-semibold text-gray-200">
+                  Today's productivity: <span className="text-white font-black text-lg ml-1">{todaysProductivityStr}%</span>
+                </span>
+              </div>
             </div>
+          </div>
 
-            {/* Suggested Activity Box */}
-            <div className="bg-white/10 border border-white/20 rounded-2xl p-5 md:min-w-[320px] shadow-xl flex-shrink-0 group-hover:bg-white-[0.15] transition-colors relative overflow-hidden backdrop-blur-md">
-                <div className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full my-4 mx-5 bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] animate-pulse"></div>
-                <p className="text-xs font-bold uppercase tracking-widest text-indigo-300 mb-2 flex items-center gap-1.5 opacity-90">
-                   <Brain size={14} /> AI Context Suggestion
-                </p>
-                <p className="text-[15px] font-bold text-white leading-relaxed pe-6">
-                   {bannerSuggestion}
-                </p>
-            </div>
+          {/* Suggested Activity Box */}
+          <div className="bg-white/10 border border-white/20 rounded-2xl p-5 md:min-w-[320px] shadow-xl flex-shrink-0 group-hover:bg-white-[0.15] transition-colors relative overflow-hidden backdrop-blur-md">
+            <div className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full my-4 mx-5 bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.8)] animate-pulse"></div>
+            <p className="text-xs font-bold uppercase tracking-widest text-indigo-300 mb-2 flex items-center gap-1.5 opacity-90">
+              <Brain size={14} /> AI Context Suggestion
+            </p>
+            <p className="text-[15px] font-bold text-white leading-relaxed pe-6">
+              {bannerSuggestion}
+            </p>
+          </div>
 
-         </div>
+        </div>
       </div>
 
       {/* Main Layout */}
@@ -268,14 +281,19 @@ function Card({ icon, title, onClick }) {
   return (
     <GlassCard
       onClick={onClick}
-      className="p-8 flex flex-col items-center justify-center group overflow-hidden relative"
+      className="p-8 flex flex-col items-center justify-center group overflow-hidden relative cursor-pointer hover:shadow-[0_0_30px_rgba(120,119,198,0.3)] transition-all duration-500 border border-white/10 hover:border-white/30"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div className="relative z-10 transform group-hover:-translate-y-2 transition-transform duration-300 flex flex-col items-center">
-        <div className="p-4 bg-white/5 rounded-2xl border border-white/10 shadow-inner mb-6">
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+      {/* Animated Background Blob */}
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:bg-indigo-400/20 transition-all duration-700"></div>
+
+      <div className="relative z-10 transform group-hover:-translate-y-3 group-hover:scale-105 transition-all duration-500 flex flex-col items-center">
+        <div className="p-5 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] mb-6 group-hover:shadow-[0_0_25px_rgba(255,255,255,0.15)] group-hover:border-white/30 transition-all duration-500 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
           {icon}
         </div>
-        <h2 className="text-lg font-semibold text-gray-100 text-center tracking-wide">
+        <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-400 group-hover:from-white group-hover:to-indigo-200 transition-all duration-500 text-center tracking-wide drop-shadow-sm group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
           {title}
         </h2>
       </div>
