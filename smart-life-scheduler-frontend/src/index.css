@@ -2,12 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @layer base {
   body {
-    @apply bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 bg-fixed text-white font-sans antialiased min-h-screen;
+    @apply bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 bg-fixed text-white font-sans antialiased min-h-screen selection:bg-cyan-500/30 selection:text-cyan-100;
+    font-family: 'Inter', sans-serif;
   }
 }
 
+/* Custom Scrollbar for a premium feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(45, 212, 191, 0.2); 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(45, 212, 191, 0.5); 
+}
+
+/* Hide scrollbar for elements that need it */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
 
 @keyframes fadeIn {
   0% {

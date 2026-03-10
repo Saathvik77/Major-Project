@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Send, Bot, User, Sparkles, X, MessageSquareHeart } from "lucide-react";
 import api from "../api";
 
-function FloatingAICoach({ weatherData, tasks, stats }) {
+function FloatingAICoach({ weatherData, tasks, stats, userName }) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -36,7 +36,7 @@ function FloatingAICoach({ weatherData, tasks, stats }) {
           else weatherContext = "• Mild weather, great for a brisk walk 🌤️";
       }
 
-      const suggestionText = `Hello Pehlaj 👋\n\nToday's suggestions:\n• Drink 500ml more water 💧\n• Complete ${pendingCount} pending tasks 📝\n${weatherContext}`;
+      const suggestionText = `Hello ${userName || 'User'} 👋\n\nToday's suggestions:\n• Drink 500ml more water 💧\n• Complete ${pendingCount} pending tasks 📝\n${weatherContext}`;
 
       setTimeout(() => {
         setIsTyping(false);

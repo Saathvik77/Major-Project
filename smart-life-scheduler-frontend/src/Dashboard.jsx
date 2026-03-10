@@ -160,7 +160,7 @@ function Dashboard() {
         </h1>
 
         <div className="relative group">
-          <button className="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 px-6 py-2 rounded-full shadow-lg hover:bg-white/20 transition-all text-white font-medium">
+          <button onClick={() => navigate('/profile')} className="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 px-6 py-2 rounded-full shadow-lg hover:bg-white/20 transition-all text-white font-medium">
             <Settings size={18} />
             Settings
           </button>
@@ -259,7 +259,7 @@ function Dashboard() {
         </div>
       </div>
 
-      <FloatingAICoach weatherData={weatherData} tasks={tasks} stats={stats} />
+      <FloatingAICoach weatherData={weatherData} tasks={tasks} stats={stats} userName={userName} />
     </div>
   );
 }
