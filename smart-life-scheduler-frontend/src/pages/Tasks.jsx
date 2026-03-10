@@ -5,11 +5,13 @@ import BottomNav from "../components/BottomNav";
 import GlassCard from "../components/GlassCard";
 import TaskItem from "../components/TaskItem";
 import { useNavigate } from "react-router-dom";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const [startTime, setStartTime] = useState("");
+  const [priority, setPriority] = useState("Medium");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isSyncing, setIsSyncing] = useState(false);
   const navigate = useNavigate();
@@ -17,7 +19,33 @@ export default function Tasks() {
   const fetchTasks = async () => {
     try {
       const res = await api.get("/tasks?limit=50");
-      setTasks(res.data.tasks || []);
+      let fetchedTasks = res.data.tasks || [];
+
+      // Load saved order from localStorage
+      const dateKey = `task-order-${selectedDate.toDateString()}`;
+      const savedOrderStr = localStorage.getItem(dateKey);
+
+      if (savedOrderStr) {
+        try {
+          const savedOrder = JSON.parse(savedOrderStr);
+          // Sort fetchedTasks based on savedOrder array of IDs
+          fetchedTasks.sort((a, b) => {
+            const idA = a._id || a.id;
+            const idB = b._id || b.id;
+            const indexA = savedOrder.indexOf(idA);
+            const indexB = savedOrder.indexOf(idB);
+
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            return 0; // Keep original order for new tasks not in savedOrder
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      setTasks(fetchedTasks);
     } catch (err) {
       console.error("Fetch error:", err.response?.data || err);
     }
@@ -25,11 +53,15 @@ export default function Tasks() {
 
   useEffect(() => {
     fetchTasks();
-    
+
     // Listen for tasks added/deleted by the AI Coach
     window.addEventListener("tasksUpdated", fetchTasks);
     return () => window.removeEventListener("tasksUpdated", fetchTasks);
   }, []);
+
+  useEffect(() => {
+    fetchTasks(); // Refetch/Resort when selected Date changes
+  }, [selectedDate]);
 
   const addTask = async () => {
     if (!title.trim()) return;
@@ -39,13 +71,14 @@ export default function Tasks() {
         description: "General task",
         date: selectedDate, // Bind to the currently selected calendar date
         duration: 60,
-        priority: "Medium",
+        priority: priority,
         deadline: selectedDate,
         startTime: startTime || "09:00"
       });
       setTasks([...tasks, res.data.task]);
       setTitle("");
       setStartTime("");
+      setPriority("Medium");
 
       // Play success alarm chime
       const audio = new Audio('/success-chime.mp3');
@@ -73,10 +106,10 @@ export default function Tasks() {
       // Optimistic UI update: Remove from this view
       setTasks(tasks.filter(t => t._id !== taskId && t.id !== taskId));
       await api.patch(`/tasks/${taskId}`, { completed: true });
-      
+
       // Dispatch event to update Analytics tab's completed tasks
       window.dispatchEvent(new Event("tasksUpdated"));
-      
+
       // Play success chime
       const audio = new Audio('/success-chime.mp3');
       audio.play().catch(e => console.error("Audio playback error:", e));
@@ -94,12 +127,38 @@ export default function Tasks() {
     }, 1000);
   };
 
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const sourceIndex = result.source.index;
+    const destIndex = result.destination.index;
+
+    // Isolate active (uncompleted) tasks since we only render and drag those
+    const activeTasks = tasks.filter(t => !t.completed);
+
+    // Copy active array and reorder
+    const updatedActiveTasks = Array.from(activeTasks);
+    const [reorderedItem] = updatedActiveTasks.splice(sourceIndex, 1);
+    updatedActiveTasks.splice(destIndex, 0, reorderedItem);
+
+    // Reconstruct full tasks array (keeping completed implicitly at the end or hidden)
+    const completedTasks = tasks.filter(t => t.completed);
+    const newFullTasks = [...updatedActiveTasks, ...completedTasks];
+
+    setTasks(newFullTasks);
+
+    // Persist active tasks order to localStorage for this specific Date
+    const orderedIds = updatedActiveTasks.map(t => t._id || t.id);
+    const dateKey = `task-order-${selectedDate.toDateString()}`;
+    localStorage.setItem(dateKey, JSON.stringify(orderedIds));
+  };
+
   // Generate a dynamic week based on the selected date
   const generateWeek = (baseDate) => {
     const week = [];
     const current = new Date(baseDate);
     current.setDate(current.getDate() - 3); // Start 3 days before selected
-    
+
     for (let i = 0; i < 6; i++) {
       week.push(new Date(current));
       current.setDate(current.getDate() + 1);
@@ -126,7 +185,7 @@ export default function Tasks() {
     if (!time24) return "Anytime";
     const [hours24, minutes] = time24.split(":");
     if (!hours24 || !minutes) return time24;
-    
+
     const h = parseInt(hours24, 10);
     const suffix = h >= 12 ? "PM" : "AM";
     const hours12 = ((h + 11) % 12 + 1).toString().padStart(2, '0');
@@ -158,10 +217,10 @@ export default function Tasks() {
             <h2 className="text-2xl font-bold text-white tracking-tight">{monthName} {dayName}</h2>
             <ChevronDown size={20} className="text-gray-400 group-hover:text-gray-200 mt-1 transition" />
           </div>
-          <button 
+          <button
             onClick={syncCalendar}
             className="flex items-center gap-1.5 text-sm font-medium text-teal-300 bg-teal-500/20 border border-teal-500/30 px-4 py-1.5 rounded-full shadow-sm hover:bg-teal-500/30 transition">
-            <span>{isSyncing ? "Syncing..." : "Sync"}</span> 
+            <span>{isSyncing ? "Syncing..." : "Sync"}</span>
             <RefreshCcw size={14} className={isSyncing ? "animate-spin" : ""} />
           </button>
         </div>
@@ -171,10 +230,10 @@ export default function Tasks() {
           {weekDates.map((d, i) => {
             const isActive = d.getDate() === selectedDate.getDate() && d.getMonth() === selectedDate.getMonth();
             const dayStr = d.toLocaleString('default', { weekday: 'short' });
-            
+
             return (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 onClick={() => handleDateSelect(d)}
                 className={`flex flex-col items-center justify-center w-[52px] h-[76px] rounded-[24px] transition-all cursor-pointer ${isActive ? 'bg-gradient-to-br from-primaryTeal to-secondaryCyan text-white shadow-lg shadow-teal-500/40 transform scale-105 border border-white/20' : 'bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10'}`}
               >
@@ -200,46 +259,65 @@ export default function Tasks() {
           </div>
 
           <div className="space-y-0">
-            {/* Real tasks from DB */}
-            {tasks.filter(t => !t.completed).map(task => (
-              <div key={task._id || task.id} className="relative group">
-                 <TaskItem
-                  title={task.title}
-                  time={formatTime12Hour(task.time || task.startTime)}
-                  priority={task.priority}
-                  status={task.status}
-                  icon={Briefcase}
-                />
-                <div className="absolute right-0 top-0 bottom-0 pr-4 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-20">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      completeTask(task._id || task.id);
-                    }}
-                    className="text-emerald-500 hover:text-emerald-400 hover:scale-110 active:scale-95 transition-transform"
-                    title="Mark as Done"
-                  >
-                    <CheckCircle size={22} className="drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-                  </button>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteTask(task._id || task.id);
-                    }}
-                    className="text-red-500 hover:text-red-400 hover:scale-110 active:scale-95 transition-transform"
-                    title="Delete Task"
-                  >
-                    <Trash2 size={22} className="drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
-                  </button>
-                </div>
-              </div>
-            ))}
+            {/* Real tasks from DB - Drag and Drop Container */}
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="tasks-list">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {tasks.filter(t => !t.completed).map((task, index) => (
+                      <Draggable key={task._id || task.id} draggableId={task._id || task.id} index={index}>
+                        {(provided, snapshot) => (
+                          <div
+                            className={`relative group ${snapshot.isDragging ? 'shadow-2xl shadow-indigo-500/20 scale-[1.02] z-50' : ''}`}
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={{ ...provided.draggableProps.style, transition: snapshot.isDragging ? 'none' : 'all 0.2s cubic-bezier(0.2, 0, 0, 1)' }}
+                          >
+                            <TaskItem
+                              title={task.title}
+                              time={formatTime12Hour(task.time || task.startTime)}
+                              priority={task.priority}
+                              status={task.status}
+                              icon={Briefcase}
+                            />
+                            <div className="absolute right-0 top-0 bottom-0 pr-4 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-20 pointer-events-auto">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  completeTask(task._id || task.id);
+                                }}
+                                className="text-emerald-500 hover:text-emerald-400 hover:scale-110 active:scale-95 transition-transform bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-sm"
+                                title="Mark as Done"
+                              >
+                                <CheckCircle size={22} className="drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteTask(task._id || task.id);
+                                }}
+                                className="text-red-500 hover:text-red-400 hover:scale-110 active:scale-95 transition-transform bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-sm"
+                                title="Delete Task"
+                              >
+                                <Trash2 size={22} className="drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
 
             {/* If no real tasks, show a message */}
             {tasks.filter(t => !t.completed).length === 0 && (
-               <div className="text-center py-8 opacity-60">
-                 <p className="text-sm text-gray-400 italic px-2 bg-white/5 rounded-2xl py-4 border border-white/10 shadow-inner">No tasks available for this date.</p>
-               </div>
+              <div className="text-center py-8 opacity-60">
+                <p className="text-sm text-gray-400 italic px-2 bg-white/5 rounded-2xl py-4 border border-white/10 shadow-inner">No tasks available for this date.</p>
+              </div>
             )}
           </div>
         </div>
@@ -249,27 +327,38 @@ export default function Tasks() {
           <GlassCard className="p-3 flex flex-col gap-3 bg-white/5 border-white/10 relative z-20">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-2xl bg-teal-500/20 flex items-center justify-center text-teal-300 ml-1 border border-teal-500/30">
-                 <Plus size={20} strokeWidth={3} />
+                <Plus size={20} strokeWidth={3} />
               </div>
-              <input 
-                type="text" 
-                placeholder="Add a new task..." 
+              <input
+                type="text"
+                placeholder="Add a new task..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && addTask()}
                 className="flex-1 bg-transparent border-none outline-none text-[15px] font-medium text-white px-2 placeholder:text-gray-500 focus:ring-0"
               />
             </div>
-            
+
             <div className="flex items-center justify-between pl-1">
               <input
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-gray-300 focus:text-white outline-none focus:border-teal-500/50 transition-colors"
+                title="Start Time"
               />
-              <button 
-                onClick={addTask} 
+              <select
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+                className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-gray-300 focus:text-white outline-none focus:border-teal-500/50 transition-colors cursor-pointer appearance-none text-center"
+                title="Priority"
+              >
+                <option value="High" className="bg-slate-800 text-red-400">High</option>
+                <option value="Medium" className="bg-slate-800 text-amber-400">Med</option>
+                <option value="Low" className="bg-slate-800 text-emerald-400">Low</option>
+              </select>
+              <button
+                onClick={addTask}
                 className="bg-gradient-to-r from-secondaryCyan to-primaryTeal text-white font-bold px-6 py-2.5 rounded-[20px] text-sm shadow-md shadow-teal-500/30 hover:scale-[1.02] transition-transform active:scale-95"
               >
                 Add Task
@@ -283,4 +372,4 @@ export default function Tasks() {
       <BottomNav />
     </div>
   );
-}
+}

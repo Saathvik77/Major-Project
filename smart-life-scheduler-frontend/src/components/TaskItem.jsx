@@ -3,15 +3,16 @@ import React from 'react';
 
 export default function TaskItem({ title, time, priority, icon: Icon, onClick }) {
   const priorityStyles = {
-    high: 'text-white bg-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.4)]',
-    low: 'text-emerald-100 bg-emerald-500/30 border border-emerald-500/20',
+    high: 'text-white bg-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.4)] border border-red-500/50',
+    medium: 'text-amber-100 bg-amber-500/30 border border-amber-500/30 shadow-[0_0_8px_rgba(245,158,11,0.2)]',
+    low: 'text-emerald-100 bg-emerald-500/30 border border-emerald-500/20 shadow-[0_0_8px_rgba(16,185,129,0.2)]',
     complete: 'text-white bg-teal-500/80 shadow-[0_0_10px_rgba(45,212,191,0.4)]',
   };
 
   const badgeStyle = priorityStyles[priority?.toLowerCase()] || priorityStyles.low;
 
   return (
-    <div 
+    <div
       onClick={onClick}
       className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-4 shadow-lg flex items-center justify-between cursor-pointer hover:bg-white/10 transition-all hover:shadow-xl hover:-translate-y-0.5 mb-4"
     >

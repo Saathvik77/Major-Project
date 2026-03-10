@@ -6,8 +6,136 @@
 
 @layer base {
   body {
-    @apply bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 bg-fixed text-white font-sans antialiased min-h-screen selection:bg-cyan-500/30 selection:text-cyan-100;
+    @apply bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 bg-fixed text-white font-sans antialiased min-h-screen selection:bg-cyan-500/30 selection:text-cyan-100 transition-colors duration-500;
     font-family: 'Inter', sans-serif;
+  }
+
+  /* 🔥 GLOBAL LIGHT MODE OVERRIDES 🔥 */
+  .light-mode body {
+    @apply bg-gradient-to-br from-slate-100 via-white to-slate-100 text-slate-900 selection:bg-cyan-500/30 selection:text-cyan-900;
+  }
+
+  .light-mode h1,
+  .light-mode h2,
+  .light-mode h3,
+  .light-mode h4,
+  .light-mode p,
+  .light-mode span,
+  .light-mode label,
+  .light-mode div {
+    /* Generally ensure text is dark by default */
+    color: inherit;
+  }
+
+  .light-mode .text-white,
+  .light-mode .text-gray-100,
+  .light-mode .text-gray-200 {
+    @apply text-slate-900 !important;
+  }
+
+  .light-mode .text-gray-300,
+  .light-mode .text-gray-400 {
+    @apply text-slate-700 !important;
+  }
+
+  .light-mode .text-gray-500 {
+    @apply text-slate-500 !important;
+  }
+
+  /* Backgrounds & Cards */
+  .light-mode .bg-white\/5,
+  .light-mode .bg-white\/10,
+  .light-mode .bg-black\/20,
+  .light-mode .bg-black\/30,
+  .light-mode .bg-black\/40,
+  .light-mode .bg-slate-800\/40,
+  .light-mode .bg-slate-900\/60,
+  .light-mode .bg-slate-900,
+  .light-mode .bg-slate-800\/90,
+  .light-mode .bg-slate-800\/95,
+  .light-mode .bg-gradient-to-br.from-slate-800\/95,
+  .light-mode .bg-gradient-to-br.from-white\/10 {
+    @apply bg-white border-slate-200 shadow-sm !important;
+    background-image: none !important;
+  }
+
+  .light-mode input,
+  .light-mode select {
+    @apply bg-white border-slate-300 text-slate-900 !important;
+  }
+
+  .light-mode input::placeholder {
+    @apply text-slate-400 !important;
+  }
+
+  /* Borders */
+  .light-mode .border-white\/10,
+  .light-mode .border-white\/5,
+  .light-mode .border-white\/20,
+  .light-mode .border-slate-700\/50,
+  .light-mode .border-transparent {
+    @apply border-slate-200 !important;
+  }
+
+  /* Ensure Colored Text (like Teal/Emerald) stays vibrant but visible on white */
+  .light-mode .text-primaryTeal,
+  .light-mode .text-teal-300,
+  .light-mode .text-teal-400 {
+    @apply text-teal-600 !important;
+  }
+
+  .light-mode .text-indigo-300,
+  .light-mode .text-indigo-400 {
+    @apply text-indigo-600 !important;
+  }
+
+  .light-mode .text-purple-300,
+  .light-mode .text-purple-400 {
+    @apply text-purple-600 !important;
+  }
+
+  .light-mode .text-emerald-300,
+  .light-mode .text-emerald-400 {
+    @apply text-emerald-600 !important;
+  }
+
+  .light-mode .text-amber-300,
+  .light-mode .text-amber-400 {
+    @apply text-amber-600 !important;
+  }
+
+  .light-mode .text-red-300,
+  .light-mode .text-red-400 {
+    @apply text-red-600 !important;
+  }
+
+  .light-mode .text-cyan-300,
+  .light-mode .text-cyan-400 {
+    @apply text-cyan-600 !important;
+  }
+
+  .light-mode .text-transparent.bg-clip-text {
+    /* Gradients work fine on white if they are dark enough, but we can darken them slightly */
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Specific Components (Badges/Buttons) */
+  .light-mode .bg-emerald-500\/20,
+  .light-mode .bg-teal-500\/20,
+  .light-mode .bg-indigo-500\/20,
+  .light-mode .bg-purple-500\/20,
+  .light-mode .bg-amber-500\/20,
+  .light-mode .bg-red-500\/20,
+  .light-mode .bg-cyan-500\/20,
+  .light-mode .bg-orange-500\/20,
+  .light-mode .bg-yellow-500\/20 {
+    opacity: 0.8;
+    /* Make pastel backgrounds slightly bolder on white */
+  }
+
+  /* Bottom Nav */
+  .light-mode .bottom-nav-container {
+    @apply bg-white/90 border-t border-slate-200 !important;
   }
 }
 
@@ -22,21 +150,22 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(45, 212, 191, 0.2); 
+  background: rgba(45, 212, 191, 0.2);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(45, 212, 191, 0.5); 
+  background: rgba(45, 212, 191, 0.5);
 }
 
 /* Hide scrollbar for elements that need it */
 .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
+
 .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 @keyframes fadeIn {
@@ -78,6 +207,7 @@
     opacity: 0;
     transform: translateY(20px) scale(0.98);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);

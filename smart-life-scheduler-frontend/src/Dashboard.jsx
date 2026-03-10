@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 import GlassCard from "./components/GlassCard";
 import FloatingAICoach from "./components/FloatingAICoach";
 import api from "./api";
@@ -17,11 +17,15 @@ import {
   Activity,
   Brain,
   User,
-  LogOut
+  LogOut,
+  Moon,
+  Sun
 } from "lucide-react";
+import { ThemeContext } from "./ThemeContext";
 
 function Dashboard() {
   const navigate = useNavigate();
+  const { isLightMode, toggleTheme } = useContext(ThemeContext);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -176,6 +180,24 @@ function Dashboard() {
                 <User className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-300 text-indigo-400" />
                 Profile
               </button>
+
+              <button
+                onClick={toggleTheme}
+                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-amber-500/30 hover:to-orange-500/30 hover:text-amber-200 transition-all duration-300 text-gray-200 font-medium group/btn"
+              >
+                {isLightMode ? (
+                  <>
+                    <Moon className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-300 text-slate-400" />
+                    Dark Mode
+                  </>
+                ) : (
+                  <>
+                    <Sun className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-300 text-amber-400" />
+                    Light Mode
+                  </>
+                )}
+              </button>
+
               <div className="h-px w-full bg-white/5 my-1"></div>
               <button
                 onClick={handleLogout}
