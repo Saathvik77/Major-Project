@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect, useContext } from "react";
+import GlassCard from "./components/GlassCard";
 import FloatingAICoach from "./components/FloatingAICoach";
 import api from "./api";
 import {
@@ -165,18 +166,18 @@ function Dashboard() {
   const todaysProductivityStr = stats.todayTotal > 0 ? Math.round((stats.todayCompleted / stats.todayTotal) * 100) : 0;
 
   return (
-    <div className="min-h-screen px-16 py-10 relative z-10 font-sans text-white border-none">
+    <div className="min-h-screen px-6 py-6 md:px-16 md:py-10 relative z-10 font-sans text-white border-none overflow-x-hidden">
       {/* Header */}
-      <div className="flex justify-between items-center mb-16 relative z-50">
-        <h1 className="text-4xl font-extrabold flex items-center gap-3 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-indigo-500 to-purple-500 tracking-tight drop-shadow-md">
-          <ClipboardList size={40} className="text-teal-400 drop-shadow-[0_0_20px_rgba(45,212,191,0.8)]" />
+      <div className="flex justify-between items-center mb-8 md:mb-16 relative z-50">
+        <h1 className="text-2xl md:text-4xl font-extrabold flex items-center gap-2 md:gap-3 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-indigo-500 to-purple-500 tracking-tight drop-shadow-md">
+          <ClipboardList className="text-teal-400 drop-shadow-[0_0_20px_rgba(45,212,191,0.8)] w-8 h-8 md:w-10 md:h-10" />
           Smart Life Scheduler
         </h1>
 
-        <div className="relative group">
-          <button className="flex items-center gap-2 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md border border-white/20 px-6 py-2.5 rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_25px_rgba(255,255,255,0.15)] hover:bg-white/20 hover:scale-105 active:scale-95 transition-all duration-300 text-white font-medium">
-            <Settings className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
-            Settings
+        <div className="relative group shrink-0">
+          <button className="flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md border border-white/20 px-4 py-2 md:px-6 md:py-2.5 rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_25px_rgba(255,255,255,0.15)] hover:bg-white/20 hover:scale-105 active:scale-95 transition-all duration-300 text-white font-medium text-sm md:text-base">
+            <Settings className="w-4 h-4 md:w-5 md:h-5 group-hover:rotate-90 transition-transform duration-500" />
+            <span className="hidden sm:inline">Settings</span>
           </button>
 
           <div className="absolute right-0 mt-3 w-64 bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right group-hover:translate-y-0 translate-y-2 group-hover:scale-100 scale-95 overflow-hidden z-[100]">
@@ -227,27 +228,34 @@ function Dashboard() {
       </div>
 
       {/* 🔥 SMART WELCOME BANNER */}
-      <div className="mb-12 bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-8 relative">
-        <div className="flex flex-col gap-4">
-          <h1 className="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
-            {greeting}, {userName} <span className="animate-wave origin-bottom-right inline-block">👋</span>
-          </h1>
+      <div className="mb-8 md:mb-12 bg-slate-900/40 border border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.2)] rounded-3xl p-6 md:p-8 relative overflow-hidden backdrop-blur-xl group transition-all duration-500">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between relative z-10 gap-6 md:gap-8">
+          <div>
+            <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-neonPrimary via-neonAccent to-neonSecondary drop-shadow-sm tracking-tight flex items-center gap-3 mb-4">
+              {greeting}, {userName} <span className="text-white animate-wave inline-block origin-bottom-right">👋</span>
+            </h1>
 
-          <div className="flex flex-col md:flex-row md:items-center gap-4 text-gray-300 font-medium">
-            <span className="flex items-center gap-2">
-              <WeatherIcon size={18} className="text-gray-400" />
-              Weather: <strong className="text-white ml-1">{weatherText} {weatherData ? `${weatherData.temperature}°C` : ''}</strong>
-            </span>
-            <span className="hidden md:block text-gray-500">•</span>
-            <span className="flex items-center gap-2">
-              <Activity size={18} className="text-gray-400" />
-              Productivity: <strong className="text-white ml-1">{todaysProductivityStr}%</strong>
-            </span>
+            <div className="flex flex-wrap items-center gap-4 md:gap-6">
+              <div className="flex items-center gap-2.5 bg-black/30 px-4 py-2 rounded-xl border border-white/10 shadow-inner backdrop-blur-md">
+                <WeatherIcon className="text-yellow-400 w-[18px] h-[18px] md:w-[20px] md:h-[20px]" />
+                <span className="text-sm md:text-[15px] font-semibold text-gray-200">Weather: {weatherText} {weatherData ? `${weatherData.temperature}°C` : ''}</span>
+              </div>
+
+              <div className="flex items-center gap-2.5 bg-black/30 px-4 py-2 rounded-xl border border-white/10 shadow-inner backdrop-blur-md">
+                <Activity className="text-emerald-400 w-[18px] h-[18px] md:w-[20px] md:h-[20px]" />
+                <span className="text-sm md:text-[15px] font-semibold text-gray-200">
+                  Today's productivity: <span className="text-white font-black text-base md:text-lg ml-1">{todaysProductivityStr}%</span>
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-2 bg-slate-900/40 border border-white/5 rounded-xl px-5 py-3 max-w-xl flex items-start gap-3">
-            <Brain size={18} className="text-neonPrimary shrink-0 mt-0.5" />
-            <p className="text-[15px] font-medium text-gray-200 leading-relaxed">
+          <div className="bg-white/10 border border-neonPrimary/30 rounded-2xl p-4 md:p-5 w-full md:w-auto md:min-w-[320px] shadow-xl flex-shrink-0 group-hover:bg-white/[0.15] transition-colors relative overflow-hidden backdrop-blur-md">
+            <div className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full my-4 mx-5 bg-neonHighlight shadow-[0_0_12px_rgba(255,209,102,0.8)] animate-pulse"></div>
+            <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-neonPrimary mb-2 flex items-center gap-1.5 opacity-90">
+              <Brain size={14} /> AI Context Suggestion
+            </p>
+            <p className="text-sm md:text-[15px] font-bold text-white leading-relaxed pe-6">
               {bannerSuggestion}
             </p>
           </div>
@@ -255,44 +263,41 @@ function Dashboard() {
       </div>
 
       {/* Main Layout */}
-      <div className="grid md:grid-cols-2 gap-20 items-center justify-items-stretch pb-20">
+      <div className="grid md:grid-cols-2 gap-8 md:gap-20 items-center justify-items-stretch pb-24 md:pb-20">
         {/* Left Cards */}
-        <div className="flex flex-col gap-4 w-full">
-          <CompactCard
-            icon={<ClipboardList size={24} className="text-neonPrimary drop-shadow-[0_0_12px_rgba(124,108,255,0.8)]" />}
+        <div className="grid grid-cols-2 gap-4 md:gap-8 w-full">
+          <Card
+            icon={<ClipboardList size={40} className="text-neonPrimary drop-shadow-[0_0_15px_rgba(124,108,255,0.6)] md:w-[50px] md:h-[50px]" />}
             title="Tasks"
-            value={`${stats.todayTotal - stats.todayCompleted} remaining`}
             onClick={() => navigate("/tasks")}
           />
 
-          <CompactCard
-            icon={<BarChart3 size={24} className="text-neonSecondary drop-shadow-[0_0_12px_rgba(0,229,255,0.8)]" />}
+          <Card
+            icon={<BarChart3 size={40} className="text-neonSecondary drop-shadow-[0_0_15px_rgba(0,229,255,0.6)] md:w-[50px] md:h-[50px]" />}
             title="Analytics"
-            value={`${todaysProductivityStr}%`}
             onClick={() => navigate("/analytics")}
           />
 
-          <CompactCard
-            icon={<FileText size={24} className="text-neonAccent drop-shadow-[0_0_12px_rgba(255,122,246,0.8)]" />}
+          <Card
+            icon={<FileText size={40} className="text-neonAccent drop-shadow-[0_0_15px_rgba(255,122,246,0.6)] md:w-[50px] md:h-[50px]" />}
             title="Reports"
-            value="View Insights"
             onClick={() => navigate("/reports")}
           />
 
-          <CompactCard
-            icon={<HeartPulse size={24} className="text-neonHighlight drop-shadow-[0_0_12px_rgba(255,209,102,0.8)]" />}
+          <Card
+            icon={<HeartPulse size={40} className="text-neonHighlight drop-shadow-[0_0_15px_rgba(255,209,102,0.6)] md:w-[50px] md:h-[50px]" />}
             title="Health"
-            value="Good"
             onClick={() => navigate("/health")}
           />
         </div>
 
         {/* Right Content */}
-        <div className="flex justify-center relative pointer-events-none w-full">
-          {/* Decorative shapes with subtle glow */}
-          <div className="relative w-[320px] h-[320px] rounded-full border border-white/20 flex items-center justify-center animate-[spin_40s_linear_infinite] shadow-[0_0_30px_rgba(255,255,255,0.05)]">
-            <div className="absolute top-0 right-10 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-[0_0_20px_rgba(0,229,255,0.4)]"></div>
-            <div className="absolute bottom-10 left-0 w-16 h-16 bg-white/5 backdrop-blur-md rounded-full border border-white/20 shadow-[0_0_20px_rgba(124,108,255,0.4)]"></div>
+        <div className="hidden md:flex justify-center relative pointer-events-none w-full">
+          <div className="absolute inset-0 bg-transparent blur-3xl rounded-full scale-75"></div>
+          {/* Decorative floating shapes with internal glow, subtle outer ring */}
+          <div className="relative w-80 h-80 rounded-full border border-white/10 flex items-center justify-center animate-[spin_30s_linear_infinite]">
+            <div className="absolute top-0 right-10 w-16 h-16 bg-gradient-to-br from-neonSecondary to-neonPrimary rounded-full blur-sm shadow-[0_0_15px_rgba(0,229,255,0.4)]"></div>
+            <div className="absolute bottom-10 left-0 w-24 h-24 bg-gradient-to-br from-neonPrimary to-neonAccent rounded-full blur-sm shadow-[0_0_15px_rgba(124,108,255,0.4)]"></div>
           </div>
         </div>
       </div>
@@ -302,20 +307,27 @@ function Dashboard() {
   );
 }
 
-function CompactCard({ icon, title, value, onClick }) {
+function Card({ icon, title, onClick }) {
   return (
-    <div
+    <GlassCard
       onClick={onClick}
-      className="flex items-center justify-between px-6 py-5 bg-white/[0.03] backdrop-blur-md border border-white/10 hover:bg-white/10 rounded-[1.25rem] cursor-pointer transition-colors"
+      className="p-6 md:p-8 flex flex-col items-center justify-center group overflow-hidden relative cursor-pointer hover:shadow-[0_0_30px_rgba(120,119,198,0.3)] transition-all duration-500 border border-white/10 hover:border-white/30 h-full min-h-[140px] md:min-h-[180px]"
     >
-      <div className="flex items-center gap-4">
-        <div className="p-3 bg-white/5 border border-white/5 rounded-xl">
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+      {/* Animated Background Blob */}
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:bg-indigo-400/20 transition-all duration-700"></div>
+
+      <div className="relative z-10 transform group-hover:-translate-y-2 md:group-hover:-translate-y-3 group-hover:scale-105 transition-all duration-500 flex flex-col items-center">
+        <div className="p-4 md:p-5 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] mb-4 md:mb-6 group-hover:shadow-[0_0_25px_rgba(255,255,255,0.15)] group-hover:border-white/30 transition-all duration-500 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
           {icon}
         </div>
-        <span className="text-[17px] font-bold text-gray-200 tracking-wide">{title}</span>
+        <h2 className="text-base md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-400 group-hover:from-white group-hover:to-indigo-200 transition-all duration-500 text-center tracking-wide drop-shadow-sm group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
+          {title}
+        </h2>
       </div>
-      <span className="text-[15px] font-bold text-gray-400">{value}</span>
-    </div>
+    </GlassCard>
   );
 }
 

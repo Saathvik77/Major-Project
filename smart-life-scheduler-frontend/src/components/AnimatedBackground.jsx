@@ -45,7 +45,11 @@ export default function AnimatedBackground() {
                 value: ["#7C6CFF", "#00E5FF", "#FF7AF6", "#FFD166"],
             },
             links: {
-                enable: false, // Turn off web lines
+                color: "#ffffff",
+                distance: 150,
+                enable: true,
+                opacity: 0.2,
+                width: 1,
             },
             move: {
                 direction: "none",
@@ -54,14 +58,14 @@ export default function AnimatedBackground() {
                     default: "bounce",
                 },
                 random: true,
-                speed: 0.5, // Much slower
+                speed: 0.8,
                 straight: false,
             },
             number: {
                 density: {
                     enable: true,
                 },
-                value: 30, // Dramatically reduced count
+                value: 40,
             },
             opacity: {
                 value: { min: 0.1, max: 0.4 }, // Softer visibility
