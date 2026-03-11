@@ -656,6 +656,8 @@ function Dashboard() {
 
 // ── 3D Tilt Nav Card ──────────────────────────────────────────────────────
 function Card({ icon, title, onClick, image }) {
+  const [imgError, setImgError] = React.useState(false);
+
   return (
     <Tilt
       glareEnable={true}
@@ -682,7 +684,7 @@ function Card({ icon, title, onClick, image }) {
 
         {/* Card Content */}
         <div className="relative z-10 w-full flex flex-col items-center transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-2">
-          {image ? (
+          {image && !imgError ? (
             <div className="w-16 h-16 md:w-24 md:h-24 mb-3 md:mb-4 flex items-center justify-center">
               <motion.img 
                 src={image} 
@@ -690,6 +692,7 @@ function Card({ icon, title, onClick, image }) {
                 className="w-full h-full object-contain filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]" 
                 whileHover={{ y: -6, filter: "drop-shadow(0 20px 20px rgba(124,108,255,0.3))" }}
                 transition={{ type: "spring", stiffness: 300 }}
+                onError={() => setImgError(true)}
               />
             </div>
           ) : (
