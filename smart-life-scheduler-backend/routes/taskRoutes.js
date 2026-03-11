@@ -418,17 +418,43 @@ router.post(
 
     const duration = task.duration || 60;
 
-    // Start from current time (or beginning of day, whichever is later)
-    const now = new Date();
-    const nowMinutes = now.getHours() * 60 + now.getMinutes();
-    let newStartMinutes = nowMinutes;
+    // Use user-chosen date/time if provided, otherwise default to now
+    const { targetDate, targetTime } = req.body;
+
+    // If user picked a different date, update the task's date and re-fetch same-day tasks
+    let resolvedDate = taskDate;
+    let resolvedSameDayTasks = sameDayTasks;
+
+    if (targetDate) {
+      resolvedDate = new Date(targetDate);
+      const rStartOfDay = new Date(resolvedDate);
+      rStartOfDay.setHours(0, 0, 0, 0);
+      const rEndOfDay = new Date(resolvedDate);
+      rEndOfDay.setHours(23, 59, 59, 999);
+
+      resolvedSameDayTasks = await Task.find({
+        user: req.user.id,
+        date: { $gte: rStartOfDay, $lte: rEndOfDay },
+        _id: { $ne: task._id },
+        completed: false,
+      });
+    }
+
+    // Determine start minute: use targetTime if given, else current time
+    let newStartMinutes;
+    if (targetTime) {
+      newStartMinutes = timeToMinutes(targetTime);
+    } else {
+      const now = new Date();
+      newStartMinutes = now.getHours() * 60 + now.getMinutes();
+    }
     let newEndMinutes = newStartMinutes + duration;
 
     // Conflict detection: push forward until no overlap
     let conflictFound = true;
     while (conflictFound) {
       conflictFound = false;
-      for (let t of sameDayTasks) {
+      for (let t of resolvedSameDayTasks) {
         if (!t.startTime) continue;
         const existingStart = timeToMinutes(t.startTime);
         const existingEnd = existingStart + (t.duration || 60);
@@ -445,6 +471,7 @@ router.post(
       newStartMinutes = 23 * 60; // fallback: 23:00
     }
 
+    task.date = resolvedDate;
     task.startTime = minutesToTime(newStartMinutes);
     task.rescheduledCount = (task.rescheduledCount || 0) + 1;
     task.isOverdue = false;
@@ -460,6 +487,7 @@ router.post(
     });
   })
 );
+
 
 /* =========================================
    DELETE TASK
