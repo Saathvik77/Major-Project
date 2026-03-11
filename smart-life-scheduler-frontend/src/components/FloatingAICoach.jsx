@@ -331,11 +331,10 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                     className={`flex items-end gap-2.5 ${msg.type === "user" ? "flex-row-reverse" : ""}`}
                   >
                     <div
-                      className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                        msg.type === "bot"
+                      className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 ${msg.type === "bot"
                           ? "bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_10px_rgba(99,102,241,0.4)]"
                           : "bg-slate-700 border border-white/10"
-                      }`}
+                        }`}
                     >
                       {msg.type === "bot" ? (
                         <Bot size={13} className="text-white" />
@@ -345,11 +344,10 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                     </div>
 
                     <div
-                      className={`max-w-[78%] rounded-2xl px-4 py-3 ${
-                        msg.type === "bot"
+                      className={`max-w-[78%] rounded-2xl px-4 py-3 ${msg.type === "bot"
                           ? "bg-white/[0.07] border border-white/[0.08] text-gray-200 rounded-bl-none shadow-lg"
                           : "bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-br-none shadow-md shadow-indigo-500/20"
-                      }`}
+                        }`}
                     >
                       <p className="text-[13.5px] leading-relaxed whitespace-pre-line font-medium">{msg.text}</p>
                     </div>
@@ -422,9 +420,8 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
-        className={`relative flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-3.5 rounded-2xl shadow-[0_0_24px_rgba(99,102,241,0.45)] hover:shadow-[0_0_32px_rgba(99,102,241,0.65)] font-bold tracking-wide z-50 transition-all duration-300 ${
-          isOpen ? "opacity-0 scale-90 pointer-events-none absolute" : "opacity-100 scale-100"
-        }`}
+        className={`relative flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-3.5 rounded-2xl shadow-[0_0_24px_rgba(99,102,241,0.45)] hover:shadow-[0_0_32px_rgba(99,102,241,0.65)] font-bold tracking-wide z-50 transition-all duration-300 ${isOpen ? "opacity-0 scale-90 pointer-events-none absolute" : "opacity-100 scale-100"
+          }`}
       >
         {/* Pulse ring when not opened yet */}
         {showPulse && (
