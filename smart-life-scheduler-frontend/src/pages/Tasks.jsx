@@ -1,81 +1,243 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import api from "../api";
-import { ChevronLeft, ChevronRight, Menu, RefreshCcw, MoreHorizontal, Dumbbell, Briefcase, BookOpen, Trash2, Plus, SlidersHorizontal, ChevronDown, CheckCircle, Sparkles, Bot } from "lucide-react";
+import {
+  ChevronLeft, ChevronRight, Menu, RefreshCcw, MoreHorizontal,
+  Dumbbell, Briefcase, BookOpen, Trash2, Plus, SlidersHorizontal,
+  ChevronDown, CheckCircle, Sparkles, Bot, CalendarClock, Bell, X
+} from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import GlassCard from "../components/GlassCard";
 import TaskItem from "../components/TaskItem";
 import { useNavigate } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
+// ─── Helpers ───────────────────────────────────────────────────────────────
+const timeToMinutes = (time) => {
+  if (!time) return null;
+  const [h, m] = time.split(":").map(Number);
+  return h * 60 + m;
+};
+
+/** Returns the epoch ms when a task's scheduled window ends, or null if no time set */
+const getTaskEndMs = (task) => {
+  if (!task.startTime || !task.date) return null;
+  const [hh, mm] = task.startTime.split(":").map(Number);
+  const base = new Date(task.date);
+  base.setHours(hh, mm, 0, 0);
+  return base.getTime() + (task.duration || 60) * 60 * 1000;
+};
+
+const ONE_HOUR_MS  = 60 * 60 * 1000;   // 1 hour
+const TWO_HOURS_MS = 2  * 60 * 60 * 1000; // 2 hours
+
+// ─── Notification Toast Component ─────────────────────────────────────────
+function RescheduleNotification({ task, onReschedule, onDismiss }) {
+  return (
+    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[200] w-[92vw] max-w-md animate-slideDown">
+      <div className="bg-slate-900/95 backdrop-blur-xl border border-orange-500/30 rounded-2xl p-4 shadow-[0_0_30px_rgba(249,115,22,0.2)] flex flex-col gap-3">
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center flex-shrink-0">
+            <Bell size={16} className="text-orange-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-white font-semibold text-[14px] leading-tight">Task time ended</p>
+            <p className="text-sm text-gray-400 mt-0.5 truncate">
+              "<span className="text-orange-300 font-medium">{task.title}</span>" wasn't marked complete.
+            </p>
+            <p className="text-xs text-gray-500 mt-1">Do you want to reschedule it to a free slot?</p>
+          </div>
+          <button onClick={onDismiss} className="text-gray-500 hover:text-gray-300 transition-colors flex-shrink-0">
+            <X size={16} />
+          </button>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => onReschedule(task)}
+            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-orange-500/80 to-amber-500/80 text-white text-xs font-bold hover:from-orange-500 hover:to-amber-500 transition-all flex items-center justify-center gap-1.5 shadow-[0_0_12px_rgba(249,115,22,0.3)]"
+          >
+            <CalendarClock size={13} />
+            Reschedule Now
+          </button>
+          <button
+            onClick={onDismiss}
+            className="flex-1 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-400 text-xs font-semibold hover:bg-white/10 hover:text-white transition-all"
+          >
+            Dismiss
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Toast (auto-dismiss) ─────────────────────────────────────────────────
+function Toast({ message, onClose }) {
+  useEffect(() => {
+    const t = setTimeout(onClose, 3500);
+    return () => clearTimeout(t);
+  }, [onClose]);
+
+  return (
+    <div className="fixed bottom-28 left-1/2 -translate-x-1/2 z-[200] animate-slideUp">
+      <div className="bg-slate-900/95 backdrop-blur-xl border border-teal-500/30 rounded-2xl px-5 py-3 shadow-[0_0_20px_rgba(45,212,191,0.2)] text-sm font-semibold text-teal-300 flex items-center gap-2">
+        <CalendarClock size={15} />
+        {message}
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Component ────────────────────────────────────────────────────────
 export default function Tasks() {
-  const [tasks, setTasks] = useState([]);
-  const [title, setTitle] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [priority, setPriority] = useState("Medium");
+  const [tasks, setTasks]               = useState([]);
+  const [title, setTitle]               = useState("");
+  const [startTime, setStartTime]       = useState("");
+  const [priority, setPriority]         = useState("Medium");
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [aiSchedule, setAiSchedule] = useState(null);
+  const [isSyncing, setIsSyncing]       = useState(false);
+  const [aiSchedule, setAiSchedule]     = useState(null);
   const [aiExplanation, setAiExplanation] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingStep, setGeneratingStep] = useState(0);
+
+  // Expiry state
+  const [expiredIds, setExpiredIds]               = useState(new Set());      // task IDs that are expired
+  const [rescheduledIds, setRescheduledIds]       = useState(new Set());     // task IDs auto-rescheduled this session
+  const [pendingNotification, setPendingNotification] = useState(null);      // task to show 1-hour prompt for
+  const [toast, setToast]                         = useState(null);          // auto-dismiss toast message
+  const notifiedRef  = useRef(new Set()); // IDs where 1-hr notification already fired this session
+  const autoRescheduledRef = useRef(new Set()); // IDs where 2-hr auto-reschedule already fired
+
   const navigate = useNavigate();
 
-  const fetchTasks = async () => {
+  // ── Fetch tasks ────────────────────────────────────────────────────────
+  const fetchTasks = useCallback(async () => {
     try {
       const res = await api.get("/tasks?limit=50");
       let fetchedTasks = res.data.tasks || [];
 
-      // Load saved order from localStorage
       const dateKey = `task-order-${selectedDate.toDateString()}`;
       const savedOrderStr = localStorage.getItem(dateKey);
-
       if (savedOrderStr) {
         try {
           const savedOrder = JSON.parse(savedOrderStr);
-          // Sort fetchedTasks based on savedOrder array of IDs
           fetchedTasks.sort((a, b) => {
             const idA = a._id || a.id;
             const idB = b._id || b.id;
-            const indexA = savedOrder.indexOf(idA);
-            const indexB = savedOrder.indexOf(idB);
-
-            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-            if (indexA !== -1) return -1;
-            if (indexB !== -1) return 1;
-            return 0; // Keep original order for new tasks not in savedOrder
+            const iA = savedOrder.indexOf(idA);
+            const iB = savedOrder.indexOf(idB);
+            if (iA !== -1 && iB !== -1) return iA - iB;
+            if (iA !== -1) return -1;
+            if (iB !== -1) return 1;
+            return 0;
           });
-        } catch (e) {
-          console.error(e);
-        }
+        } catch (e) { console.error(e); }
       }
 
       setTasks(fetchedTasks);
     } catch (err) {
       console.error("Fetch error:", err.response?.data || err);
     }
-  };
+  }, [selectedDate]);
 
   useEffect(() => {
     fetchTasks();
-
-    // Listen for tasks added/deleted by the AI Coach
     window.addEventListener("tasksUpdated", fetchTasks);
     return () => window.removeEventListener("tasksUpdated", fetchTasks);
   }, []);
 
-  useEffect(() => {
-    fetchTasks(); // Refetch/Resort when selected Date changes
-  }, [selectedDate]);
+  useEffect(() => { fetchTasks(); }, [selectedDate]);
 
+  // ── Expiry polling (every 30s) ─────────────────────────────────────────
+  useEffect(() => {
+    const checkExpiry = () => {
+      const now = Date.now();
+
+      setTasks(prev => {
+        let changed = false;
+        const nextExpired    = new Set(expiredIds);
+        const nextRescheduled = new Set(rescheduledIds);
+
+        prev.forEach(task => {
+          if (task.completed) return;
+          const id    = task._id || task.id;
+          const endMs = getTaskEndMs(task);
+          if (endMs === null) return;
+
+          const elapsed = now - endMs;
+
+          if (elapsed > 0) {
+            // Mark expired in local state
+            if (!nextExpired.has(id)) {
+              nextExpired.add(id);
+              changed = true;
+            }
+
+            // ── 1-hour notification ──────────────────────────────────
+            if (elapsed >= ONE_HOUR_MS && !notifiedRef.current.has(id) && !pendingNotification) {
+              notifiedRef.current.add(id);
+              setPendingNotification(task);
+            }
+
+            // ── 2-hour auto-reschedule ──────────────────────────────
+            if (elapsed >= TWO_HOURS_MS && !autoRescheduledRef.current.has(id)) {
+              autoRescheduledRef.current.add(id);
+              // Fire async without blocking render
+              api.post(`/tasks/${id}/reschedule`)
+                .then(res => {
+                  const updatedTask = res.data.task;
+                  setTasks(t => t.map(tk => (tk._id || tk.id) === id ? updatedTask : tk));
+                  nextExpired.delete(id);
+                  nextRescheduled.add(id);
+                  setExpiredIds(new Set(nextExpired));
+                  setRescheduledIds(new Set(nextRescheduled));
+                  setToast(`"${task.title}" has been auto-rescheduled to ${updatedTask.startTime}`);
+                })
+                .catch(err => console.error("Auto-reschedule error:", err));
+            }
+          }
+        });
+
+        if (changed) {
+          setExpiredIds(new Set(nextExpired));
+        }
+        return prev; // tasks state unchanged; only expiredIds/rescheduledIds change
+      });
+    };
+
+    checkExpiry(); // run immediately on task load
+    const interval = setInterval(checkExpiry, 30_000); // then every 30s
+    return () => clearInterval(interval);
+  }, [tasks]); // re-run when tasks list updates
+
+  // ── Reschedule (manual) ────────────────────────────────────────────────
+  const rescheduleTask = async (task) => {
+    const id = task._id || task.id;
+    try {
+      const res = await api.post(`/tasks/${id}/reschedule`);
+      const updatedTask = res.data.task;
+      setTasks(prev => prev.map(t => (t._id || t.id) === id ? updatedTask : t));
+      setExpiredIds(prev => { const s = new Set(prev); s.delete(id); return s; });
+      notifiedRef.current.delete(id);
+      setToast(`"${task.title}" rescheduled to ${updatedTask.startTime}`);
+    } catch (err) {
+      console.error("Reschedule error:", err);
+    }
+    setPendingNotification(null);
+  };
+
+  const dismissNotification = () => setPendingNotification(null);
+
+  // ── Task CRUD ──────────────────────────────────────────────────────────
   const addTask = async () => {
     if (!title.trim()) return;
     try {
       const res = await api.post("/tasks", {
         title,
         description: "General task",
-        date: selectedDate, // Bind to the currently selected calendar date
+        date: selectedDate,
         duration: 60,
-        priority: priority,
+        priority,
         deadline: selectedDate,
         startTime: startTime || "09:00"
       });
@@ -83,11 +245,8 @@ export default function Tasks() {
       setTitle("");
       setStartTime("");
       setPriority("Medium");
-
-      // Play success alarm chime
       const audio = new Audio('/success-chime.mp3');
-      audio.play().catch(e => console.error("Audio playback error:", e));
-
+      audio.play().catch(() => {});
     } catch (err) {
       console.error("Add task error:", err.response?.data || err);
     }
@@ -95,28 +254,23 @@ export default function Tasks() {
 
   const deleteTask = async (taskId) => {
     try {
-      // Optimiztic UI update
       setTasks(tasks.filter(t => t._id !== taskId && t.id !== taskId));
       await api.delete(`/tasks/${taskId}`);
     } catch (err) {
       console.error("Delete task error:", err.response?.data || err);
-      // Revert if error
       fetchTasks();
     }
   };
 
   const completeTask = async (taskId) => {
     try {
-      // Optimistic UI update: Remove from this view
       setTasks(tasks.filter(t => t._id !== taskId && t.id !== taskId));
+      setExpiredIds(prev => { const s = new Set(prev); s.delete(taskId); return s; });
+      setPendingNotification(n => (n && (n._id || n.id) === taskId) ? null : n);
       await api.patch(`/tasks/${taskId}`, { completed: true });
-
-      // Dispatch event to update Analytics tab's completed tasks
       window.dispatchEvent(new Event("tasksUpdated"));
-
-      // Play success chime
       const audio = new Audio('/success-chime.mp3');
-      audio.play().catch(e => console.error("Audio playback error:", e));
+      audio.play().catch(() => {});
     } catch (err) {
       console.error("Complete task error:", err.response?.data || err);
       fetchTasks();
@@ -125,28 +279,23 @@ export default function Tasks() {
 
   const syncCalendar = () => {
     setIsSyncing(true);
-    setTimeout(() => {
-      fetchTasks();
-      setIsSyncing(false);
-    }, 1000);
+    setTimeout(() => { fetchTasks(); setIsSyncing(false); }, 1000);
   };
 
+  // ── AI Schedule ────────────────────────────────────────────────────────
   const generateMyDay = async () => {
     setIsGenerating(true);
     setGeneratingStep(0);
     setAiSchedule(null);
     setAiExplanation("");
 
-    // Animate the steps while waiting
     const steps = [
-      { label: "Analyzing your tasks...", delay: 0 },
-      { label: "Evaluating priorities...", delay: 1000 },
-      { label: "Scheduling optimally...", delay: 2200 },
-      { label: "Adding smart breaks...", delay: 3400 },
+      { delay: 0    },
+      { delay: 1000 },
+      { delay: 2200 },
+      { delay: 3400 },
     ];
-    steps.forEach(({ label, delay }, i) => {
-      setTimeout(() => setGeneratingStep(i), delay);
-    });
+    steps.forEach(({ delay }, i) => setTimeout(() => setGeneratingStep(i), delay));
 
     try {
       const res = await api.post("/tasks/generate-schedule");
@@ -160,79 +309,69 @@ export default function Tasks() {
     }
   };
 
+  // ── Drag & Drop ────────────────────────────────────────────────────────
   const onDragEnd = (result) => {
     if (!result.destination) return;
-
-    const sourceIndex = result.source.index;
-    const destIndex = result.destination.index;
-
-    // Isolate active (uncompleted) tasks since we only render and drag those
     const activeTasks = tasks.filter(t => !t.completed);
-
-    // Copy active array and reorder
-    const updatedActiveTasks = Array.from(activeTasks);
-    const [reorderedItem] = updatedActiveTasks.splice(sourceIndex, 1);
-    updatedActiveTasks.splice(destIndex, 0, reorderedItem);
-
-    // Reconstruct full tasks array (keeping completed implicitly at the end or hidden)
-    const completedTasks = tasks.filter(t => t.completed);
-    const newFullTasks = [...updatedActiveTasks, ...completedTasks];
-
-    setTasks(newFullTasks);
-
-    // Persist active tasks order to localStorage for this specific Date
-    const orderedIds = updatedActiveTasks.map(t => t._id || t.id);
-    const dateKey = `task-order-${selectedDate.toDateString()}`;
-    localStorage.setItem(dateKey, JSON.stringify(orderedIds));
+    const arr = Array.from(activeTasks);
+    const [item] = arr.splice(result.source.index, 1);
+    arr.splice(result.destination.index, 0, item);
+    const completed = tasks.filter(t => t.completed);
+    setTasks([...arr, ...completed]);
+    const orderedIds = arr.map(t => t._id || t.id);
+    localStorage.setItem(`task-order-${selectedDate.toDateString()}`, JSON.stringify(orderedIds));
   };
 
-  // Generate a dynamic week based on the selected date
+  // ── Calendar ───────────────────────────────────────────────────────────
   const generateWeek = (baseDate) => {
     const week = [];
-    const current = new Date(baseDate);
-    current.setDate(current.getDate() - 3); // Start 3 days before selected
-
-    for (let i = 0; i < 6; i++) {
-      week.push(new Date(current));
-      current.setDate(current.getDate() + 1);
-    }
+    const cur = new Date(baseDate);
+    cur.setDate(cur.getDate() - 3);
+    for (let i = 0; i < 6; i++) { week.push(new Date(cur)); cur.setDate(cur.getDate() + 1); }
     return week;
   };
 
-  const weekDates = generateWeek(selectedDate);
-  const monthName = selectedDate.toLocaleString('default', { month: 'short' });
-  const dayName = selectedDate.getDate();
-
-  const handleDateSelect = (date) => {
-    setSelectedDate(new Date(date));
-  };
+  const weekDates  = generateWeek(selectedDate);
+  const monthName  = selectedDate.toLocaleString('default', { month: 'short' });
+  const dayName    = selectedDate.getDate();
 
   const getDayProgress = () => {
     if (tasks.length === 0) return 0;
-    const completedTasks = tasks.filter(t => t.completed).length;
-    return Math.round((completedTasks / tasks.length) * 100);
+    return Math.round((tasks.filter(t => t.completed).length / tasks.length) * 100);
   };
 
-  // 12-Hour Time Formatter
   const formatTime12Hour = (time24) => {
     if (!time24) return "Anytime";
     const [hours24, minutes] = time24.split(":");
     if (!hours24 || !minutes) return time24;
-
     const h = parseInt(hours24, 10);
     const suffix = h >= 12 ? "PM" : "AM";
     const hours12 = ((h + 11) % 12 + 1).toString().padStart(2, '0');
     return `${hours12}:${minutes} ${suffix}`;
   };
 
+  // ── Render ─────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen pb-28 font-sans relative overflow-x-hidden text-white">
-      {/* Dynamic Background Accents */}
-      <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow"></div>
-      <div className="fixed bottom-[10%] right-[-10%] w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '2s' }}></div>
-      <div className="fixed top-[40%] left-[60%] w-[300px] h-[300px] bg-teal-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '4s' }}></div>
+      {/* Background Accents */}
+      <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow" />
+      <div className="fixed bottom-[10%] right-[-10%] w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '2s' }} />
+      <div className="fixed top-[40%] left-[60%] w-[300px] h-[300px] bg-teal-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '4s' }} />
+
+      {/* 1-Hour Reschedule Notification */}
+      {pendingNotification && (
+        <RescheduleNotification
+          task={pendingNotification}
+          onReschedule={rescheduleTask}
+          onDismiss={dismissNotification}
+        />
+      )}
+
+      {/* Auto-dismiss success toast */}
+      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
 
       <div className="max-w-md lg:max-w-5xl mx-auto pt-8 px-6 relative z-10 lg:w-full">
+
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <button onClick={() => navigate(-1)} className="p-2 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 hover:bg-white/10 transition text-white">
@@ -263,11 +402,10 @@ export default function Tasks() {
           {weekDates.map((d, i) => {
             const isActive = d.getDate() === selectedDate.getDate() && d.getMonth() === selectedDate.getMonth();
             const dayStr = d.toLocaleString('default', { weekday: 'short' });
-
             return (
               <div
                 key={i}
-                onClick={() => handleDateSelect(d)}
+                onClick={() => setSelectedDate(new Date(d))}
                 className={`flex flex-col items-center justify-center w-[52px] h-[76px] rounded-[24px] transition-all cursor-pointer ${isActive ? 'bg-gradient-to-br from-primaryTeal to-secondaryCyan text-white shadow-lg shadow-teal-500/40 transform scale-105 border border-white/20' : 'bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10'}`}
               >
                 <span className={`text-[11px] font-medium mb-1 ${isActive ? 'text-teal-50' : 'text-gray-400'}`}>{dayStr}</span>
@@ -281,8 +419,8 @@ export default function Tasks() {
         {selectedDate.toDateString() === new Date().toDateString() && (
           <div className="mb-8 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
             <GlassCard className="p-5 flex flex-col gap-4 bg-gradient-to-br from-indigo-500/10 to-purple-500/5 border-indigo-500/20 relative z-20 overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 blur-3xl rounded-full pointer-events-none"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-500/15 blur-3xl rounded-full pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 blur-3xl rounded-full pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-500/15 blur-3xl rounded-full pointer-events-none" />
 
               <div className="flex items-center justify-between relative z-10">
                 <h3 className="text-[17px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 flex items-center gap-2">
@@ -290,10 +428,8 @@ export default function Tasks() {
                   AI Generated Plan for Today
                 </h3>
                 {aiSchedule && (
-                  <button
-                    onClick={() => { setAiSchedule(null); setAiExplanation(""); }}
-                    className="text-xs text-gray-500 hover:text-white transition-colors px-2 py-1 rounded-lg hover:bg-white/10 cursor-pointer"
-                  >
+                  <button onClick={() => { setAiSchedule(null); setAiExplanation(""); }}
+                    className="text-xs text-gray-500 hover:text-white transition-colors px-2 py-1 rounded-lg hover:bg-white/10 cursor-pointer">
                     Reset
                   </button>
                 )}
@@ -301,50 +437,18 @@ export default function Tasks() {
 
               {isGenerating ? (
                 <div className="relative z-10 space-y-3 py-2">
-                  {[
-                    "Analyzing your tasks...",
-                    "Evaluating priorities...",
-                    "Scheduling optimally...",
-                    "Adding smart breaks...",
-                  ].map((step, i) => (
-                    <div
-                      key={i}
-                      className={`flex items-center gap-3 transition-all duration-500 ${
-                        i <= generatingStep ? "opacity-100 translate-x-0" : "opacity-30 translate-x-2"
-                      }`}
-                    >
-                      <div
-                        className={`w-2 h-2 rounded-full flex-shrink-0 transition-all ${
-                          i < generatingStep
-                            ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"
-                            : i === generatingStep
-                            ? "bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)] animate-pulse"
-                            : "bg-white/20"
-                        }`}
-                      />
-                      <span
-                        className={`text-sm font-medium ${
-                          i < generatingStep
-                            ? "text-emerald-300 line-through opacity-60"
-                            : i === generatingStep
-                            ? "text-indigo-200"
-                            : "text-gray-500"
-                        }`}
-                      >
-                        {step}
-                      </span>
+                  {["Analyzing your tasks...", "Evaluating priorities...", "Scheduling optimally...", "Adding smart breaks..."].map((step, i) => (
+                    <div key={i} className={`flex items-center gap-3 transition-all duration-500 ${i <= generatingStep ? "opacity-100 translate-x-0" : "opacity-30 translate-x-2"}`}>
+                      <div className={`w-2 h-2 rounded-full flex-shrink-0 transition-all ${i < generatingStep ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" : i === generatingStep ? "bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)] animate-pulse" : "bg-white/20"}`} />
+                      <span className={`text-sm font-medium ${i < generatingStep ? "text-emerald-300 line-through opacity-60" : i === generatingStep ? "text-indigo-200" : "text-gray-500"}`}>{step}</span>
                     </div>
                   ))}
                   <div className="mt-4 h-1 bg-white/5 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
-                      style={{ width: `${((generatingStep + 1) / 4) * 100}%` }}
-                    />
+                    <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500" style={{ width: `${((generatingStep + 1) / 4) * 100}%` }} />
                   </div>
                 </div>
               ) : aiSchedule ? (
                 <div className="space-y-4 mt-1 relative z-10">
-                  {/* How I built your day - Explanation Block */}
                   {aiExplanation && (
                     <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20">
                       <div className="flex items-center gap-2 mb-2">
@@ -354,78 +458,43 @@ export default function Tasks() {
                       <p className="text-sm text-gray-300 leading-relaxed">{aiExplanation}</p>
                     </div>
                   )}
-
-                  {/* Schedule Timeline */}
                   <div className="space-y-2">
                     {aiSchedule.map((item, idx) => {
                       const isBreak = item.title.toLowerCase().includes("break");
                       return (
                         <div key={idx} className="flex items-stretch gap-3">
-                          {/* Timeline line */}
                           <div className="flex flex-col items-center">
-                            <div
-                              className={`w-2.5 h-2.5 rounded-full flex-shrink-0 mt-2 ${
-                                isBreak
-                                  ? "bg-amber-400/60"
-                                  : "bg-indigo-400 shadow-[0_0_6px_rgba(129,140,248,0.6)]"
-                              }`}
-                            />
-                            {idx < aiSchedule.length - 1 && (
-                              <div className="w-px flex-1 bg-white/10 my-1" />
-                            )}
+                            <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 mt-2 ${isBreak ? "bg-amber-400/60" : "bg-indigo-400 shadow-[0_0_6px_rgba(129,140,248,0.6)]"}`} />
+                            {idx < aiSchedule.length - 1 && <div className="w-px flex-1 bg-white/10 my-1" />}
                           </div>
-                          {/* Card */}
-                          <div
-                            className={`flex-1 flex items-start gap-3 p-3 rounded-xl mb-1 transition-colors ${
-                              isBreak
-                                ? "bg-amber-500/5 border border-amber-500/15"
-                                : "bg-white/5 border border-white/10 hover:bg-white/10"
-                            }`}
-                          >
-                            <div className={`text-xs font-bold whitespace-nowrap min-w-[85px] pt-0.5 ${
-                              isBreak ? "text-amber-300/80" : "text-indigo-300"
-                            }`}>
-                              {item.timeRange}
-                            </div>
-                            <div className={`text-sm font-medium ${
-                              isBreak ? "text-amber-200/70 italic" : "text-gray-200"
-                            }`}>
-                              {item.title}
-                            </div>
+                          <div className={`flex-1 flex items-start gap-3 p-3 rounded-xl mb-1 transition-colors ${isBreak ? "bg-amber-500/5 border border-amber-500/15" : "bg-white/5 border border-white/10 hover:bg-white/10"}`}>
+                            <div className={`text-xs font-bold whitespace-nowrap min-w-[85px] pt-0.5 ${isBreak ? "text-amber-300/80" : "text-indigo-300"}`}>{item.timeRange}</div>
+                            <div className={`text-sm font-medium ${isBreak ? "text-amber-200/70 italic" : "text-gray-200"}`}>{item.title}</div>
                           </div>
                         </div>
                       );
                     })}
                   </div>
-
-                  <button
-                    onClick={generateMyDay}
-                    className="w-full mt-2 py-2.5 text-xs font-semibold text-indigo-400 hover:text-white border border-indigo-500/20 hover:border-indigo-500/40 rounded-xl hover:bg-indigo-500/10 transition-all cursor-pointer"
-                  >
+                  <button onClick={generateMyDay} className="w-full mt-2 py-2.5 text-xs font-semibold text-indigo-400 hover:text-white border border-indigo-500/20 hover:border-indigo-500/40 rounded-xl hover:bg-indigo-500/10 transition-all cursor-pointer">
                     ↺ Regenerate Plan
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={generateMyDay}
-                  disabled={isGenerating}
-                  className="relative group w-full overflow-hidden rounded-xl bg-white/5 border border-indigo-500/30 p-4 transition-all hover:bg-white/10 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                <button onClick={generateMyDay} disabled={isGenerating}
+                  className="relative group w-full overflow-hidden rounded-xl bg-white/5 border border-indigo-500/30 p-4 transition-all hover:bg-white/10 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                   <span className="relative z-10 flex items-center justify-center gap-2 text-sm font-bold text-indigo-200 tracking-wide">
                     <Bot size={18} className="text-indigo-400" />
                     Generate My Day
                   </span>
-                  <p className="relative z-10 text-center text-[11px] text-gray-500 mt-1.5">
-                    AI will analyze all your pending tasks and design the perfect day
-                  </p>
+                  <p className="relative z-10 text-center text-[11px] text-gray-500 mt-1.5">AI will analyze all your pending tasks and design the perfect day</p>
                 </button>
               )}
             </GlassCard>
           </div>
         )}
 
-        {/* Today section */}
+        {/* Task List */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4 px-1">
             <div className="flex items-center gap-2">
@@ -433,68 +502,89 @@ export default function Tasks() {
                 {selectedDate.toDateString() === new Date().toDateString() ? "Today" : "Scheduled"}
               </h3>
               <div className="w-5 h-5 rounded-full bg-teal-500/20 flex items-center justify-center text-[10px] font-bold text-teal-300 border border-teal-500/30">
-                {tasks.length || 0}
+                {tasks.filter(t => !t.completed).length}
               </div>
+              {/* Expired badge count */}
+              {expiredIds.size > 0 && (
+                <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/15 border border-red-500/25">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+                  <span className="text-[10px] font-bold text-red-400">{expiredIds.size} expired</span>
+                </div>
+              )}
             </div>
             <MoreHorizontal size={20} className="text-gray-400 cursor-pointer hover:text-white transition-colors" />
           </div>
 
           <div className="space-y-0">
-            {/* Real tasks from DB - Drag and Drop Container */}
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="tasks-list">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {tasks.filter(t => !t.completed).map((task, index) => (
-                      <Draggable key={task._id || task.id} draggableId={task._id || task.id} index={index}>
-                        {(provided, snapshot) => (
-                          <div
-                            className={`relative group ${snapshot.isDragging ? 'shadow-2xl shadow-indigo-500/20 scale-[1.02] z-50' : ''}`}
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={{ ...provided.draggableProps.style, transition: snapshot.isDragging ? 'none' : 'all 0.2s cubic-bezier(0.2, 0, 0, 1)' }}
-                          >
-                            <TaskItem
-                              title={task.title}
-                              time={formatTime12Hour(task.time || task.startTime)}
-                              priority={task.priority}
-                              status={task.status}
-                              icon={Briefcase}
-                            />
-                            <div className="absolute right-0 top-0 bottom-0 pr-4 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-20 pointer-events-auto">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  completeTask(task._id || task.id);
-                                }}
-                                className="text-emerald-500 hover:text-emerald-400 hover:scale-110 active:scale-95 transition-transform bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-sm"
-                                title="Mark as Done"
-                              >
-                                <CheckCircle size={22} className="drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  deleteTask(task._id || task.id);
-                                }}
-                                className="text-red-500 hover:text-red-400 hover:scale-110 active:scale-95 transition-transform bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-sm"
-                                title="Delete Task"
-                              >
-                                <Trash2 size={22} className="drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
-                              </button>
+                    {tasks.filter(t => !t.completed).map((task, index) => {
+                      const id = task._id || task.id;
+                      const isExpired    = expiredIds.has(id);
+                      const isRescheduled = rescheduledIds.has(id);
+
+                      return (
+                        <Draggable key={id} draggableId={id} index={index}>
+                          {(provided, snapshot) => (
+                            <div
+                              className={`relative group ${snapshot.isDragging ? 'shadow-2xl shadow-indigo-500/20 scale-[1.02] z-50' : ''}`}
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={{ ...provided.draggableProps.style, transition: snapshot.isDragging ? 'none' : 'all 0.2s cubic-bezier(0.2, 0, 0, 1)' }}
+                            >
+                              <TaskItem
+                                title={task.title}
+                                time={formatTime12Hour(task.time || task.startTime)}
+                                priority={task.priority}
+                                status={task.status}
+                                icon={Briefcase}
+                                isExpired={isExpired}
+                                isRescheduled={isRescheduled}
+                              />
+
+                              {/* Action buttons on hover */}
+                              <div className="absolute right-0 top-0 bottom-0 pr-4 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-20 pointer-events-auto">
+                                {/* Reschedule button (only when expired) */}
+                                {isExpired && (
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); rescheduleTask(task); }}
+                                    className="text-orange-400 hover:text-orange-300 hover:scale-110 active:scale-95 transition-transform bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-sm"
+                                    title="Reschedule Task"
+                                  >
+                                    <CalendarClock size={22} className="drop-shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
+                                  </button>
+                                )}
+                                {/* Complete button */}
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); completeTask(id); }}
+                                  className="text-emerald-500 hover:text-emerald-400 hover:scale-110 active:scale-95 transition-transform bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-sm"
+                                  title="Mark as Done"
+                                >
+                                  <CheckCircle size={22} className="drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                                </button>
+                                {/* Delete button */}
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); deleteTask(id); }}
+                                  className="text-red-500 hover:text-red-400 hover:scale-110 active:scale-95 transition-transform bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-sm"
+                                  title="Delete Task"
+                                >
+                                  <Trash2 size={22} className="drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
+                          )}
+                        </Draggable>
+                      );
+                    })}
                     {provided.placeholder}
                   </div>
                 )}
               </Droppable>
             </DragDropContext>
 
-            {/* If no real tasks, show a message */}
             {tasks.filter(t => !t.completed).length === 0 && (
               <div className="text-center py-8 opacity-60">
                 <p className="text-sm text-gray-400 italic px-2 bg-white/5 rounded-2xl py-4 border border-white/10 shadow-inner">No tasks available for this date.</p>
@@ -503,7 +593,7 @@ export default function Tasks() {
           </div>
         </div>
 
-        {/* Add Task input widget */}
+        {/* Add Task widget */}
         <div className="mt-2 mb-8 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
           <GlassCard className="p-3 flex flex-col gap-3 bg-white/5 border-white/10 relative z-20">
             <div className="flex items-center gap-2">
@@ -519,7 +609,6 @@ export default function Tasks() {
                 className="flex-1 bg-transparent border-none outline-none text-[15px] font-medium text-white px-2 placeholder:text-gray-500 focus:ring-0"
               />
             </div>
-
             <div className="flex items-center justify-between pl-1">
               <input
                 type="time"
@@ -534,9 +623,9 @@ export default function Tasks() {
                 className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-gray-300 focus:text-white outline-none focus:border-teal-500/50 transition-colors cursor-pointer appearance-none text-center"
                 title="Priority"
               >
-                <option value="High" className="bg-slate-800 text-red-400">High</option>
+                <option value="High"   className="bg-slate-800 text-red-400">High</option>
                 <option value="Medium" className="bg-slate-800 text-amber-400">Med</option>
-                <option value="Low" className="bg-slate-800 text-emerald-400">Low</option>
+                <option value="Low"    className="bg-slate-800 text-emerald-400">Low</option>
               </select>
               <button
                 onClick={addTask}

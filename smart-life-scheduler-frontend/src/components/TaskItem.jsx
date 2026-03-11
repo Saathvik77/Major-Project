@@ -1,7 +1,7 @@
-import { CheckCircle, AlertTriangle, ArrowUpCircle, MinusCircle } from "lucide-react";
+import { CheckCircle, AlertTriangle, ArrowUpCircle, MinusCircle, Clock, CalendarClock } from "lucide-react";
 import React from 'react';
 
-export default function TaskItem({ title, time, priority, icon: Icon, onClick }) {
+export default function TaskItem({ title, time, priority, icon: Icon, onClick, isExpired, isRescheduled }) {
   const priorityStyles = {
     high: 'text-white bg-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.4)] border border-red-500/50',
     medium: 'text-amber-100 bg-amber-500/30 border border-amber-500/30 shadow-[0_0_8px_rgba(245,158,11,0.2)]',
@@ -14,19 +14,53 @@ export default function TaskItem({ title, time, priority, icon: Icon, onClick })
   return (
     <div
       onClick={onClick}
-      className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-4 shadow-lg flex items-center justify-between cursor-pointer hover:bg-white/10 transition-all hover:shadow-xl hover:-translate-y-0.5 mb-4"
+      className={`backdrop-blur-md border rounded-3xl p-4 shadow-lg flex items-center justify-between cursor-pointer transition-all hover:shadow-xl hover:-translate-y-0.5 mb-4 ${
+        isExpired
+          ? 'bg-red-500/5 border-red-500/25 hover:bg-red-500/10'
+          : 'bg-white/5 border-white/10 hover:bg-white/10'
+      }`}
     >
-      <div className="flex items-center space-x-4">
-        <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 shadow-inner flex items-center justify-center text-primaryTeal">
+      <div className="flex items-center space-x-4 min-w-0">
+        <div className={`w-12 h-12 rounded-2xl border shadow-inner flex items-center justify-center flex-shrink-0 ${
+          isExpired
+            ? 'bg-red-500/10 border-red-500/20 text-red-400'
+            : 'bg-white/5 border-white/5 text-primaryTeal'
+        }`}>
           {Icon ? <Icon className="w-6 h-6" /> : <div className="w-6 h-6 bg-teal-500/30 rounded-full" />}
         </div>
-        <div>
-          <h4 className="text-gray-100 font-semibold text-[17px] tracking-wide">{title}</h4>
-          <p className="text-gray-400 text-sm mt-0.5 font-medium">{time}</p>
+        <div className="min-w-0">
+          <h4 className={`font-semibold text-[17px] tracking-wide truncate ${isExpired ? 'text-red-200' : 'text-gray-100'}`}>
+            {title}
+          </h4>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            {isExpired ? (
+              <span className="flex items-center gap-1 text-red-400 text-xs font-semibold">
+                <Clock size={11} />
+                Expired · was {time}
+              </span>
+            ) : isRescheduled ? (
+              <span className="flex items-center gap-1 text-teal-300 text-xs font-semibold">
+                <CalendarClock size={11} />
+                Rescheduled · {time}
+              </span>
+            ) : (
+              <p className="text-gray-400 text-sm font-medium">{time}</p>
+            )}
+          </div>
         </div>
       </div>
-      <div>
-        {priority && priority.toLowerCase() !== 'medium' && (
+      <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+        {isExpired && (
+          <span className="px-3 py-1 rounded-full text-[11px] font-bold tracking-wide text-red-200 bg-red-500/20 border border-red-500/30 shadow-[0_0_8px_rgba(239,68,68,0.2)]">
+            Expired
+          </span>
+        )}
+        {isRescheduled && !isExpired && (
+          <span className="px-3 py-1 rounded-full text-[11px] font-bold tracking-wide text-teal-200 bg-teal-500/20 border border-teal-500/30 shadow-[0_0_8px_rgba(45,212,191,0.2)]">
+            Rescheduled
+          </span>
+        )}
+        {!isExpired && priority && priority.toLowerCase() !== 'medium' && (
           <span className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide ${badgeStyle}`}>
             {priority.charAt(0).toUpperCase() + priority.slice(1)}
           </span>

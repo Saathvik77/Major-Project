@@ -369,6 +369,99 @@ router.put(
 
 
 /* =========================================
+   SMART RESCHEDULE SINGLE TASK (POST)
+========================================= */
+router.post(
+  "/:id/reschedule",
+  protect,
+  asyncHandler(async (req, res) => {
+    const task = await Task.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+
+    if (!task) {
+      return res.status(404).json({ success: false, message: "Task not found" });
+    }
+
+    if (task.completed) {
+      return res.status(400).json({ success: false, message: "Task already completed" });
+    }
+
+    const taskDate = new Date(task.date);
+
+    // Get start and end of the day
+    const startOfDay = new Date(taskDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(taskDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    // Convert HH:mm to minutes
+    const timeToMinutes = (time) => {
+      const [hours, minutes] = time.split(":").map(Number);
+      return hours * 60 + minutes;
+    };
+
+    const minutesToTime = (minutes) => {
+      const hrs = Math.floor(minutes / 60).toString().padStart(2, "0");
+      const mins = (minutes % 60).toString().padStart(2, "0");
+      return `${hrs}:${mins}`;
+    };
+
+    // Fetch all other non-completed tasks on that day (excluding this task)
+    const sameDayTasks = await Task.find({
+      user: req.user.id,
+      date: { $gte: startOfDay, $lte: endOfDay },
+      _id: { $ne: task._id },
+      completed: false,
+    });
+
+    const duration = task.duration || 60;
+
+    // Start from current time (or beginning of day, whichever is later)
+    const now = new Date();
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+    let newStartMinutes = nowMinutes;
+    let newEndMinutes = newStartMinutes + duration;
+
+    // Conflict detection: push forward until no overlap
+    let conflictFound = true;
+    while (conflictFound) {
+      conflictFound = false;
+      for (let t of sameDayTasks) {
+        if (!t.startTime) continue;
+        const existingStart = timeToMinutes(t.startTime);
+        const existingEnd = existingStart + (t.duration || 60);
+        if (newStartMinutes < existingEnd && newEndMinutes > existingStart) {
+          newStartMinutes = existingEnd;
+          newEndMinutes = newStartMinutes + duration;
+          conflictFound = true;
+        }
+      }
+    }
+
+    // Cap at end of day (23:59)
+    if (newStartMinutes >= 24 * 60) {
+      newStartMinutes = 23 * 60; // fallback: 23:00
+    }
+
+    task.startTime = minutesToTime(newStartMinutes);
+    task.rescheduledCount = (task.rescheduledCount || 0) + 1;
+    task.isOverdue = false;
+    task.expiredAt = null;
+    task.notificationSentAt = null;
+
+    await task.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Task rescheduled successfully",
+      task,
+    });
+  })
+);
+
+/* =========================================
    DELETE TASK
 ========================================= */
 router.delete(

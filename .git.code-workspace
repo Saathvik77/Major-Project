@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": ".git"
+		},
+		{
+			"path": "node_modules"
+		},
+		{
+			"path": "projectimages"
+		},
+		{
+			"path": "smart-life-scheduler-backend"
+		},
+		{
+			"path": "smart-life-scheduler-frontend"
+		}
+	]
+}

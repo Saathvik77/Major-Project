@@ -45,6 +45,14 @@ const TaskSchema = new mongoose.Schema(
   healthScore: {
     type: Number,
   },
+  expiredAt: {
+    type: Date,
+    default: null,
+  },
+  notificationSentAt: {
+    type: Date,
+    default: null,
+  },
   status: {
     type: String,
   }
