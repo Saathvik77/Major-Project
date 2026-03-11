@@ -415,84 +415,7 @@ export default function Tasks() {
           })}
         </div>
 
-        {/* AI Generated Plan Section */}
-        {selectedDate.toDateString() === new Date().toDateString() && (
-          <div className="mb-8 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
-            <GlassCard className="p-5 flex flex-col gap-4 bg-gradient-to-br from-indigo-500/10 to-purple-500/5 border-indigo-500/20 relative z-20 overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 blur-3xl rounded-full pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-500/15 blur-3xl rounded-full pointer-events-none" />
 
-              <div className="flex items-center justify-between relative z-10">
-                <h3 className="text-[17px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 flex items-center gap-2">
-                  <Sparkles size={18} className="text-indigo-400" />
-                  AI Generated Plan for Today
-                </h3>
-                {aiSchedule && (
-                  <button onClick={() => { setAiSchedule(null); setAiExplanation(""); }}
-                    className="text-xs text-gray-500 hover:text-white transition-colors px-2 py-1 rounded-lg hover:bg-white/10 cursor-pointer">
-                    Reset
-                  </button>
-                )}
-              </div>
-
-              {isGenerating ? (
-                <div className="relative z-10 space-y-3 py-2">
-                  {["Analyzing your tasks...", "Evaluating priorities...", "Scheduling optimally...", "Adding smart breaks..."].map((step, i) => (
-                    <div key={i} className={`flex items-center gap-3 transition-all duration-500 ${i <= generatingStep ? "opacity-100 translate-x-0" : "opacity-30 translate-x-2"}`}>
-                      <div className={`w-2 h-2 rounded-full flex-shrink-0 transition-all ${i < generatingStep ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" : i === generatingStep ? "bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)] animate-pulse" : "bg-white/20"}`} />
-                      <span className={`text-sm font-medium ${i < generatingStep ? "text-emerald-300 line-through opacity-60" : i === generatingStep ? "text-indigo-200" : "text-gray-500"}`}>{step}</span>
-                    </div>
-                  ))}
-                  <div className="mt-4 h-1 bg-white/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500" style={{ width: `${((generatingStep + 1) / 4) * 100}%` }} />
-                  </div>
-                </div>
-              ) : aiSchedule ? (
-                <div className="space-y-4 mt-1 relative z-10">
-                  {aiExplanation && (
-                    <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Bot size={16} className="text-indigo-400 flex-shrink-0" />
-                        <span className="text-xs font-bold text-indigo-300 uppercase tracking-widest">How I Built Your Day</span>
-                      </div>
-                      <p className="text-sm text-gray-300 leading-relaxed">{aiExplanation}</p>
-                    </div>
-                  )}
-                  <div className="space-y-2">
-                    {aiSchedule.map((item, idx) => {
-                      const isBreak = item.title.toLowerCase().includes("break");
-                      return (
-                        <div key={idx} className="flex items-stretch gap-3">
-                          <div className="flex flex-col items-center">
-                            <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 mt-2 ${isBreak ? "bg-amber-400/60" : "bg-indigo-400 shadow-[0_0_6px_rgba(129,140,248,0.6)]"}`} />
-                            {idx < aiSchedule.length - 1 && <div className="w-px flex-1 bg-white/10 my-1" />}
-                          </div>
-                          <div className={`flex-1 flex items-start gap-3 p-3 rounded-xl mb-1 transition-colors ${isBreak ? "bg-amber-500/5 border border-amber-500/15" : "bg-white/5 border border-white/10 hover:bg-white/10"}`}>
-                            <div className={`text-xs font-bold whitespace-nowrap min-w-[85px] pt-0.5 ${isBreak ? "text-amber-300/80" : "text-indigo-300"}`}>{item.timeRange}</div>
-                            <div className={`text-sm font-medium ${isBreak ? "text-amber-200/70 italic" : "text-gray-200"}`}>{item.title}</div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <button onClick={generateMyDay} className="w-full mt-2 py-2.5 text-xs font-semibold text-indigo-400 hover:text-white border border-indigo-500/20 hover:border-indigo-500/40 rounded-xl hover:bg-indigo-500/10 transition-all cursor-pointer">
-                    ↺ Regenerate Plan
-                  </button>
-                </div>
-              ) : (
-                <button onClick={generateMyDay} disabled={isGenerating}
-                  className="relative group w-full overflow-hidden rounded-xl bg-white/5 border border-indigo-500/30 p-4 transition-all hover:bg-white/10 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                  <span className="relative z-10 flex items-center justify-center gap-2 text-sm font-bold text-indigo-200 tracking-wide">
-                    <Bot size={18} className="text-indigo-400" />
-                    Generate My Day
-                  </span>
-                  <p className="relative z-10 text-center text-[11px] text-gray-500 mt-1.5">AI will analyze all your pending tasks and design the perfect day</p>
-                </button>
-              )}
-            </GlassCard>
-          </div>
-        )}
 
         {/* Task List */}
         <div className="mb-6">
@@ -545,19 +468,21 @@ export default function Tasks() {
                                 isRescheduled={isRescheduled}
                               />
 
-                              {/* Action buttons on hover */}
-                              <div className="absolute right-0 top-0 bottom-0 pr-4 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-20 pointer-events-auto">
-                                {/* Reschedule button (only when expired) */}
-                                {isExpired && (
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); rescheduleTask(task); }}
-                                    className="text-orange-400 hover:text-orange-300 hover:scale-110 active:scale-95 transition-transform bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-sm"
-                                    title="Reschedule Task"
-                                  >
-                                    <CalendarClock size={22} className="drop-shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
-                                  </button>
-                                )}
-                                {/* Complete button */}
+                              {/* Always-visible reschedule button */}
+                              <button
+                                onClick={(e) => { e.stopPropagation(); rescheduleTask(task); }}
+                                className={`absolute right-[7.5rem] top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full border backdrop-blur-sm transition-all hover:scale-110 active:scale-95 ${
+                                  isExpired
+                                    ? 'text-orange-400 bg-orange-500/15 border-orange-500/30 shadow-[0_0_8px_rgba(249,115,22,0.3)]'
+                                    : 'text-teal-400 bg-teal-500/10 border-teal-500/20 hover:bg-teal-500/20'
+                                }`}
+                                title="Reschedule to next free slot"
+                              >
+                                <CalendarClock size={18} />
+                              </button>
+
+                              {/* Hover-only: complete + delete */}
+                              <div className="absolute right-4 top-0 bottom-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 z-20 pointer-events-auto">
                                 <button
                                   onClick={(e) => { e.stopPropagation(); completeTask(id); }}
                                   className="text-emerald-500 hover:text-emerald-400 hover:scale-110 active:scale-95 transition-transform bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-sm"
@@ -565,7 +490,6 @@ export default function Tasks() {
                                 >
                                   <CheckCircle size={22} className="drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
                                 </button>
-                                {/* Delete button */}
                                 <button
                                   onClick={(e) => { e.stopPropagation(); deleteTask(id); }}
                                   className="text-red-500 hover:text-red-400 hover:scale-110 active:scale-95 transition-transform bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-sm"
