@@ -656,7 +656,7 @@ function Dashboard() {
 
 // ── 3D Tilt Nav Card ──────────────────────────────────────────────────────
 function Card({ icon, title, onClick, image }) {
-  const [imgError, setImgError] = React.useState(false);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <Tilt
