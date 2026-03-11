@@ -12,18 +12,28 @@ const generateSchedule = async (tasks) => {
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const prompt = `
-      You are an AI Daily Planner. Given the following list of pending tasks for today, 
-      create a realistic schedule from 09:00 to 18:00 (or later if needed).
-      Consider priorities and typical task durations (assume 30-60 mins unless specified).
-      Include breaks.
-      Also, provide a short 2-3 sentence 'explanation' on how you structured the day and why.
+      You are an intelligent AI Daily Planner. The user has ${tasks.length} pending task(s) they need to accomplish.
+      Create a realistic, optimized daily schedule starting from 09:00.
       
-      Tasks:
-      ${JSON.stringify(tasks.map(t => ({ title: t.title, priority: t.priority, description: t.description })), null, 2)}
+      Rules:
+      - Place High priority tasks first (morning peak energy)
+      - Place Medium priority tasks mid-day
+      - Place Low priority tasks in the afternoon
+      - Add 15-minute breaks after every 60 minutes of work
+      - Assume 45-60 minutes per task unless a duration is specified
+      - End the day by 20:00 max
+      
+      Tasks (with priority):
+      ${JSON.stringify(tasks.map(t => ({ title: t.title, priority: t.priority || "Medium", description: t.description, duration: t.duration })), null, 2)}
+      
+      Write a 2-3 sentence 'explanation' that tells the user:
+      1. How many tasks you scheduled
+      2. Why you ordered them the way you did (mention High/Medium/Low priorities specifically)
+      3. How breaks were placed
       
       Return ONLY a JSON object with this exact format, without markdown blocks (\`\`\`json):
       {
-        "explanation": "I structured the day by placing high priority tasks in the morning...",
+        "explanation": "I scheduled X tasks for your day. High priority tasks like '...' are placed first in the morning when your energy is highest. Breaks are added after each major block to maintain focus throughout the day.",
         "schedule": [
           { "timeRange": "09:00 - 10:00", "title": "Task Name" },
           { "timeRange": "10:00 - 10:15", "title": "Break" }

@@ -15,7 +15,9 @@ export default function Tasks() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isSyncing, setIsSyncing] = useState(false);
   const [aiSchedule, setAiSchedule] = useState(null);
+  const [aiExplanation, setAiExplanation] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generatingStep, setGeneratingStep] = useState(0);
   const navigate = useNavigate();
 
   const fetchTasks = async () => {
@@ -131,13 +133,30 @@ export default function Tasks() {
 
   const generateMyDay = async () => {
     setIsGenerating(true);
+    setGeneratingStep(0);
+    setAiSchedule(null);
+    setAiExplanation("");
+
+    // Animate the steps while waiting
+    const steps = [
+      { label: "Analyzing your tasks...", delay: 0 },
+      { label: "Evaluating priorities...", delay: 1000 },
+      { label: "Scheduling optimally...", delay: 2200 },
+      { label: "Adding smart breaks...", delay: 3400 },
+    ];
+    steps.forEach(({ label, delay }, i) => {
+      setTimeout(() => setGeneratingStep(i), delay);
+    });
+
     try {
       const res = await api.post("/tasks/generate-schedule");
       setAiSchedule(res.data.schedule);
+      setAiExplanation(res.data.explanation || "");
     } catch (err) {
       console.error("Failed to generate schedule", err);
     } finally {
       setIsGenerating(false);
+      setGeneratingStep(0);
     }
   };
 
@@ -263,53 +282,143 @@ export default function Tasks() {
           <div className="mb-8 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
             <GlassCard className="p-5 flex flex-col gap-4 bg-gradient-to-br from-indigo-500/10 to-purple-500/5 border-indigo-500/20 relative z-20 overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 blur-3xl rounded-full pointer-events-none"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-500/15 blur-3xl rounded-full pointer-events-none"></div>
 
               <div className="flex items-center justify-between relative z-10">
                 <h3 className="text-[17px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 flex items-center gap-2">
                   <Sparkles size={18} className="text-indigo-400" />
                   AI Generated Plan for Today
                 </h3>
+                {aiSchedule && (
+                  <button
+                    onClick={() => { setAiSchedule(null); setAiExplanation(""); }}
+                    className="text-xs text-gray-500 hover:text-white transition-colors px-2 py-1 rounded-lg hover:bg-white/10 cursor-pointer"
+                  >
+                    Reset
+                  </button>
+                )}
               </div>
 
-              {aiSchedule ? (
-                <div className="space-y-3 mt-2 relative z-10">
-                  {aiSchedule.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
-                      <div className="text-sm font-semibold text-indigo-300 whitespace-nowrap min-w-[95px]">
-                        {item.timeRange}
-                      </div>
-                      <div className="text-sm font-medium text-gray-200">
-                        {item.title}
-                      </div>
+              {isGenerating ? (
+                <div className="relative z-10 space-y-3 py-2">
+                  {[
+                    "Analyzing your tasks...",
+                    "Evaluating priorities...",
+                    "Scheduling optimally...",
+                    "Adding smart breaks...",
+                  ].map((step, i) => (
+                    <div
+                      key={i}
+                      className={`flex items-center gap-3 transition-all duration-500 ${
+                        i <= generatingStep ? "opacity-100 translate-x-0" : "opacity-30 translate-x-2"
+                      }`}
+                    >
+                      <div
+                        className={`w-2 h-2 rounded-full flex-shrink-0 transition-all ${
+                          i < generatingStep
+                            ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"
+                            : i === generatingStep
+                            ? "bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)] animate-pulse"
+                            : "bg-white/20"
+                        }`}
+                      />
+                      <span
+                        className={`text-sm font-medium ${
+                          i < generatingStep
+                            ? "text-emerald-300 line-through opacity-60"
+                            : i === generatingStep
+                            ? "text-indigo-200"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {step}
+                      </span>
                     </div>
                   ))}
+                  <div className="mt-4 h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
+                      style={{ width: `${((generatingStep + 1) / 4) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              ) : aiSchedule ? (
+                <div className="space-y-4 mt-1 relative z-10">
+                  {/* How I built your day - Explanation Block */}
+                  {aiExplanation && (
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Bot size={16} className="text-indigo-400 flex-shrink-0" />
+                        <span className="text-xs font-bold text-indigo-300 uppercase tracking-widest">How I Built Your Day</span>
+                      </div>
+                      <p className="text-sm text-gray-300 leading-relaxed">{aiExplanation}</p>
+                    </div>
+                  )}
+
+                  {/* Schedule Timeline */}
+                  <div className="space-y-2">
+                    {aiSchedule.map((item, idx) => {
+                      const isBreak = item.title.toLowerCase().includes("break");
+                      return (
+                        <div key={idx} className="flex items-stretch gap-3">
+                          {/* Timeline line */}
+                          <div className="flex flex-col items-center">
+                            <div
+                              className={`w-2.5 h-2.5 rounded-full flex-shrink-0 mt-2 ${
+                                isBreak
+                                  ? "bg-amber-400/60"
+                                  : "bg-indigo-400 shadow-[0_0_6px_rgba(129,140,248,0.6)]"
+                              }`}
+                            />
+                            {idx < aiSchedule.length - 1 && (
+                              <div className="w-px flex-1 bg-white/10 my-1" />
+                            )}
+                          </div>
+                          {/* Card */}
+                          <div
+                            className={`flex-1 flex items-start gap-3 p-3 rounded-xl mb-1 transition-colors ${
+                              isBreak
+                                ? "bg-amber-500/5 border border-amber-500/15"
+                                : "bg-white/5 border border-white/10 hover:bg-white/10"
+                            }`}
+                          >
+                            <div className={`text-xs font-bold whitespace-nowrap min-w-[85px] pt-0.5 ${
+                              isBreak ? "text-amber-300/80" : "text-indigo-300"
+                            }`}>
+                              {item.timeRange}
+                            </div>
+                            <div className={`text-sm font-medium ${
+                              isBreak ? "text-amber-200/70 italic" : "text-gray-200"
+                            }`}>
+                              {item.title}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
                   <button
-                    onClick={() => setAiSchedule(null)}
-                    className="w-full mt-2 py-2 text-xs font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer"
+                    onClick={generateMyDay}
+                    className="w-full mt-2 py-2.5 text-xs font-semibold text-indigo-400 hover:text-white border border-indigo-500/20 hover:border-indigo-500/40 rounded-xl hover:bg-indigo-500/10 transition-all cursor-pointer"
                   >
-                    Clear Plan
+                    ↺ Regenerate Plan
                   </button>
                 </div>
               ) : (
                 <button
                   onClick={generateMyDay}
-                  disabled={isGenerating || tasks.filter(t => !t.completed && new Date(t.date).toDateString() === new Date().toDateString()).length === 0}
+                  disabled={isGenerating}
                   className="relative group w-full overflow-hidden rounded-xl bg-white/5 border border-indigo-500/30 p-4 transition-all hover:bg-white/10 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                   <span className="relative z-10 flex items-center justify-center gap-2 text-sm font-bold text-indigo-200 tracking-wide">
-                    {isGenerating ? (
-                      <>
-                        <RefreshCcw size={16} className="animate-spin text-indigo-400" />
-                        Generating Your Schedule...
-                      </>
-                    ) : (
-                      <>
-                        <Bot size={18} className="text-indigo-400" />
-                        Generate My Day
-                      </>
-                    )}
+                    <Bot size={18} className="text-indigo-400" />
+                    Generate My Day
                   </span>
+                  <p className="relative z-10 text-center text-[11px] text-gray-500 mt-1.5">
+                    AI will analyze all your pending tasks and design the perfect day
+                  </p>
                 </button>
               )}
             </GlassCard>

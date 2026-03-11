@@ -119,13 +119,10 @@ router.post(
   asyncHandler(async (req, res) => {
     const userId = req.user.id;
 
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-
+    // Fetch ALL pending tasks (regardless of date) so AI can plan based on everything the user created
     const pendingTasks = await Task.find({
       user: userId,
       completed: false,
-      date: { $gte: startOfDay }
     }).sort({ priority: 1, date: 1 });
 
     const result = await generateSchedule(pendingTasks);
@@ -137,7 +134,8 @@ router.post(
     res.status(200).json({
       success: true,
       schedule,
-      explanation
+      explanation,
+      taskCount: pendingTasks.length
     });
   })
 );
