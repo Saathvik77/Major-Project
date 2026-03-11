@@ -531,3 +531,53 @@
 .animate-slideUp {
   animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* 👋 Wave hand animation */
+@keyframes wave {
+  0%   { transform: rotate(0deg); }
+  15%  { transform: rotate(14deg); }
+  30%  { transform: rotate(-8deg); }
+  45%  { transform: rotate(14deg); }
+  60%  { transform: rotate(-4deg); }
+  75%  { transform: rotate(10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.animate-wave {
+  animation: wave 2.5s ease-in-out infinite;
+  display: inline-block;
+  transform-origin: 70% 70%;
+}
+
+/* ✨ Card hover glow pulse */
+@keyframes cardGlowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(124, 108, 255, 0.15); }
+  50%       { box-shadow: 0 0 35px rgba(124, 108, 255, 0.30); }
+}
+
+.card-glow-pulse:hover {
+  animation: cardGlowPulse 2s ease-in-out infinite;
+}
+
+/* 🌈 Animated gradient border */
+@keyframes gradientBorderSpin {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient-border {
+  background: linear-gradient(270deg, #7C6CFF, #00E5FF, #FF7AF6, #FFD166);
+  background-size: 400% 400%;
+  animation: gradientBorderSpin 5s ease infinite;
+}
+
+/* 🔥 Streak fire flicker */
+@keyframes fireFlicker {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(251, 146, 60, 0.7)); }
+  50%       { filter: drop-shadow(0 0 16px rgba(251, 146, 60, 1)); }
+}
+
+.animate-fire {
+  animation: fireFlicker 1.5s ease-in-out infinite;
+}
