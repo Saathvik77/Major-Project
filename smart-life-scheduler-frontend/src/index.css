@@ -17,11 +17,16 @@
   /* slate-950 */
 
   /* 🎬 Cinematic Night Glow Colors (from the reel aesthetic) */
-  --glow-amber: #c17f24;      /* warm lamp glow - amber/gold */
-  --glow-amber-soft: #d4890a; /* brighter amber accent */
-  --glow-navy: #0d1b2a;       /* deep midnight navy base */
-  --glow-blue: #1a3a5c;       /* cool steel blue shadow */
-  --glow-teal: #0e3d3a;       /* dark teal room reflection */
+  --glow-amber: #c17f24;
+  /* warm lamp glow - amber/gold */
+  --glow-amber-soft: #d4890a;
+  /* brighter amber accent */
+  --glow-navy: #0d1b2a;
+  /* deep midnight navy base */
+  --glow-blue: #1a3a5c;
+  /* cool steel blue shadow */
+  --glow-teal: #0e3d3a;
+  /* dark teal room reflection */
 }
 
 [data-theme="light"] {
@@ -131,9 +136,9 @@
     /* 🎬 Cinematic night base — deep midnight navy, like the reel's dark room */
     background-color: #060d17;
     background: radial-gradient(ellipse at 70% 10%, rgba(180, 110, 20, 0.13) 0%, transparent 55%),
-                radial-gradient(ellipse at 20% 80%, rgba(14, 60, 90, 0.18) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(13, 27, 42, 0.95) 0%, transparent 100%),
-                linear-gradient(to bottom right, var(--bg-top), var(--bg-mid), var(--bg-bottom));
+      radial-gradient(ellipse at 20% 80%, rgba(14, 60, 90, 0.18) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(13, 27, 42, 0.95) 0%, transparent 100%),
+      linear-gradient(to bottom right, var(--bg-top), var(--bg-mid), var(--bg-bottom));
     @apply bg-fixed text-white font-sans antialiased min-h-screen transition-colors duration-1000 overflow-x-hidden;
     font-family: 'Inter', sans-serif;
     position: relative;
@@ -421,6 +426,7 @@
       radial-gradient(ellipse 800px 500px at 40% 60%, rgba(30, 27, 90, 0.14) 0%, transparent 70%),
       radial-gradient(ellipse 350px 300px at 0% 10%, rgba(26, 58, 92, 0.15) 0%, transparent 60%);
   }
+
   50% {
     background:
       radial-gradient(ellipse 650px 520px at 80% 8%, rgba(200, 130, 30, 0.20) 0%, transparent 70%),
@@ -429,6 +435,7 @@
       radial-gradient(ellipse 850px 520px at 45% 55%, rgba(28, 24, 85, 0.16) 0%, transparent 70%),
       radial-gradient(ellipse 380px 320px at 2% 12%, rgba(30, 62, 98, 0.17) 0%, transparent 60%);
   }
+
   100% {
     background:
       radial-gradient(ellipse 580px 480px at 88% 3%, rgba(185, 120, 28, 0.16) 0%, transparent 70%),
@@ -446,12 +453,14 @@
       radial-gradient(ellipse 250px 200px at 10% 50%, rgba(0, 178, 200, 0.06) 0%, transparent 60%);
     opacity: 0.8;
   }
+
   50% {
     background:
       radial-gradient(ellipse 320px 295px at 70% 25%, rgba(230, 148, 24, 0.11) 0%, transparent 70%),
       radial-gradient(ellipse 270px 215px at 12% 45%, rgba(0, 190, 210, 0.07) 0%, transparent 60%);
     opacity: 1;
   }
+
   100% {
     background:
       radial-gradient(ellipse 280px 265px at 78% 18%, rgba(210, 132, 16, 0.08) 0%, transparent 70%),
@@ -465,9 +474,11 @@
   0% {
     transform: translate(0, 0) scale(1);
   }
+
   50% {
     transform: translate(5%, 5%) scale(1.05);
   }
+
   100% {
     transform: translate(0, 0) scale(1);
   }
@@ -477,9 +488,11 @@
   0% {
     opacity: 0.8;
   }
+
   50% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.8;
   }
@@ -491,6 +504,7 @@
     opacity: 0;
     transform: translateX(-50%) translateY(-24px);
   }
+
   100% {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -507,6 +521,7 @@
     opacity: 0;
     transform: translateX(-50%) translateY(16px);
   }
+
   100% {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -516,5 +531,3 @@
 .animate-slideUp {
   animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-
-
