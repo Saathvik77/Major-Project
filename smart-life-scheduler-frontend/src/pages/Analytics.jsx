@@ -15,7 +15,38 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
+  BarChart,
+  Bar,
 } from "recharts";
+import Tilt from "react-parallax-tilt";
+
+// ── Custom 3D Bar Shape ──────────────────────────────────────────────────
+const Custom3DBar = (props) => {
+  const { fill, x, y, width, height } = props;
+  if (!height) return null;
+
+  const depth = 8;
+  return (
+    <g>
+      {/* Top face */}
+      <path
+        d={`M${x},${y} L${x + depth},${y - depth} L${x + width + depth},${y - depth} L${x + width},${y} Z`}
+        fill={fill}
+        filter="brightness(1.2)"
+        opacity={0.9}
+      />
+      {/* Side face */}
+      <path
+        d={`M${x + width},${y} L${x + width + depth},${y - depth} L${x + width + depth},${y + height - depth} L${x + width},${y + height} Z`}
+        fill={fill}
+        filter="brightness(0.8)"
+        opacity={0.9}
+      />
+      {/* Front face */}
+      <rect x={x} y={y} width={width} height={height} fill={fill} opacity={0.9} />
+    </g>
+  );
+};
 
 function Analytics() {
   const navigate = useNavigate();
@@ -374,57 +405,79 @@ function Analytics() {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white/5 border border-white/10 backdrop-blur-md shadow-xl rounded-2xl p-6">
-          <h2 className="text-xl font-bold mb-6 tracking-wide">
+        <div className="bg-white/5 border border-white/10 backdrop-blur-md shadow-xl rounded-2xl p-6 hover:border-white/20 transition-all duration-500">
+          <h2 className="text-xl font-bold mb-6 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">
             Task Distribution
           </h2>
-          <div style={{ width: "100%", height: 300 }}>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                  data={chartData}
-                  dataKey="value"
-                  nameKey="name"
-                  outerRadius={100}
-                  innerRadius={60}
-                  label={{ fill: 'white' }}
-                  stroke="none"
-                >
-                  {chartData.map((entry, index) => (
-                    <Cell key={index} fill={COLORS[index]} />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: 'white' }} itemStyle={{ color: 'white' }} />
-                <Legend wrapperStyle={{ color: 'white' }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+          <Tilt
+            glareEnable={true}
+            glareMaxOpacity={0.1}
+            scale={1.02}
+            tiltMaxAngleX={5}
+            tiltMaxAngleY={5}
+          >
+            <div style={{ width: "100%", height: 300 }} className="relative">
+              <ResponsiveContainer>
+                <PieChart>
+                  <defs>
+                    {COLORS.map((color, i) => (
+                      <radialGradient key={`grad-${i}`} id={`polyGrad-${i}`}>
+                        <stop offset="0%" stopColor={color} stopOpacity={1} />
+                        <stop offset="100%" stopColor={color} stopOpacity={0.6} />
+                      </radialGradient>
+                    ))}
+                  </defs>
+                  <Pie
+                    data={chartData}
+                    dataKey="value"
+                    nameKey="name"
+                    outerRadius={100}
+                    innerRadius={60}
+                    label={{ fill: 'white', fontSize: 12, fontWeight: 'bold' }}
+                    stroke="rgba(255,255,255,0.1)"
+                    strokeWidth={2}
+                    paddingAngle={5}
+                  >
+                    {chartData.map((entry, index) => (
+                      <Cell key={index} fill={`url(#polyGrad-${index})`} style={{ filter: 'drop-shadow(0px 10px 15px rgba(0,0,0,0.3))' }} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', backdropFilter: 'blur(10px)', color: 'white' }} itemStyle={{ color: 'white' }} />
+                  <Legend wrapperStyle={{ color: 'white', paddingTop: '20px' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </Tilt>
         </div>
 
-        <div className="bg-white/5 border border-white/10 backdrop-blur-md shadow-xl rounded-2xl p-6">
-          <h2 className="text-xl font-bold mb-6 tracking-wide">
+        <div className="bg-white/5 border border-white/10 backdrop-blur-md shadow-xl rounded-2xl p-6 hover:border-white/20 transition-all duration-500">
+          <h2 className="text-xl font-bold mb-6 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">
             Weekly Productivity Trend
           </h2>
           <div style={{ width: "100%", height: 300 }}>
             <ResponsiveContainer>
               <LineChart data={historyChartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <XAxis dataKey="date" stroke="rgba(255,255,255,0.4)" tick={{ fontSize: 10 }} />
+                <YAxis stroke="rgba(255,255,255,0.4)" tick={{ fontSize: 10 }} />
+                <Tooltip contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', backdropFilter: 'blur(10px)' }} />
                 <Legend />
                 <Line
                   type="monotone"
                   dataKey="productivity"
                   stroke={primaryColor}
-                  strokeWidth={3}
+                  strokeWidth={4}
+                  dot={{ r: 4, strokeWidth: 2, fill: '#0f172a' }}
+                  activeDot={{ r: 6, strokeWidth: 0 }}
                   name="Productivity"
                 />
                 <Line
                   type="monotone"
                   dataKey="health"
                   stroke={secondaryColor}
-                  strokeWidth={3}
+                  strokeWidth={4}
+                  dot={{ r: 4, strokeWidth: 2, fill: '#0f172a' }}
+                  activeDot={{ r: 6, strokeWidth: 0 }}
                   name="Health Score"
                 />
               </LineChart>
@@ -464,28 +517,38 @@ function Analytics() {
       </div>
 
       {/* Monthly Chart */}
-      <div className="bg-white/5 border border-white/10 backdrop-blur-md shadow-xl rounded-2xl p-6">
-        <h2 className="text-xl font-bold mb-6 tracking-wide">
-          Monthly Productivity Trend
+      <div className="bg-white/5 border border-white/10 backdrop-blur-md shadow-xl rounded-2xl p-8 hover:border-white/20 transition-all duration-500">
+        <h2 className="text-2xl font-black mb-8 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-purple-400">
+          Monthly Productivity (3D View)
         </h2>
-        <div style={{ width: "100%", height: 300 }}>
-          <ResponsiveContainer>
-            <LineChart data={newMonthlyChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="tasks"
-                stroke="#8b5cf6"
-                strokeWidth={3}
-                name="Tasks Completed"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        <Tilt
+          glareEnable={true}
+          glareMaxOpacity={0.05}
+          scale={1.01}
+          tiltMaxAngleX={3}
+          tiltMaxAngleY={3}
+        >
+          <div style={{ width: "100%", height: 350 }}>
+            <ResponsiveContainer>
+              <BarChart data={newMonthlyChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <XAxis dataKey="day" stroke="rgba(255,255,255,0.4)" tick={{ fontSize: 10, fontWeight: 'bold' }} />
+                <YAxis stroke="rgba(255,255,255,0.4)" tick={{ fontSize: 10, fontWeight: 'bold' }} />
+                <Tooltip
+                  cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                  contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', backdropFilter: 'blur(10px)' }}
+                />
+                <Bar
+                  dataKey="tasks"
+                  fill="#8b5cf6"
+                  shape={<Custom3DBar />}
+                  radius={[4, 4, 0, 0]}
+                  name="Tasks Completed"
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Tilt>
 
         {/* NEW Monthly Dashboard Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">

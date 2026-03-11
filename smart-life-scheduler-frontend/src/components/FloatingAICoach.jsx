@@ -332,8 +332,8 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                   >
                     <div
                       className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 ${msg.type === "bot"
-                          ? "bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_10px_rgba(99,102,241,0.4)]"
-                          : "bg-slate-700 border border-white/10"
+                        ? "bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_10px_rgba(99,102,241,0.4)]"
+                        : "bg-slate-700 border border-white/10"
                         }`}
                     >
                       {msg.type === "bot" ? (
@@ -345,8 +345,8 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
 
                     <div
                       className={`max-w-[78%] rounded-2xl px-4 py-3 ${msg.type === "bot"
-                          ? "bg-white/[0.07] border border-white/[0.08] text-gray-200 rounded-bl-none shadow-lg"
-                          : "bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-br-none shadow-md shadow-indigo-500/20"
+                        ? "bg-white/[0.07] border border-white/[0.08] text-gray-200 rounded-bl-none shadow-lg"
+                        : "bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-br-none shadow-md shadow-indigo-500/20"
                         }`}
                     >
                       <p className="text-[13.5px] leading-relaxed whitespace-pre-line font-medium">{msg.text}</p>

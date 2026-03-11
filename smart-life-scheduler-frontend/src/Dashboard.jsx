@@ -9,6 +9,7 @@ import confetti from "canvas-confetti";
 import {
   Settings,
   Bot,
+  Sparkles,
   ClipboardList,
   BarChart3,
   FileText,
@@ -574,8 +575,24 @@ function Dashboard() {
                   className="text-neonPrimary drop-shadow-[0_0_15px_rgba(124,108,255,0.6)] md:w-[50px] md:h-[50px]"
                 />
               }
+              image="/brain/d27c5697-ffdc-46ae-baff-363c69783ae7/3d_productivity_cube_subtle_1773253300095.png"
               title="Tasks"
               onClick={() => navigate("/tasks")}
+            />
+          </motion.div>
+
+          {/* AI Assistant Card - NEW */}
+          <motion.div variants={itemVariants}>
+            <Card
+              icon={
+                <Bot
+                  size={40}
+                  className="text-neonAccent drop-shadow-[0_0_15px_rgba(255,122,246,0.6)] md:w-[50px] md:h-[50px]"
+                />
+              }
+              image="/brain/d27c5697-ffdc-46ae-baff-363c69783ae7/3d_ai_assistant_orb_subtle_1773253332681.png"
+              title="AI Assistant"
+              onClick={() => navigate("/ai-assistant")}
             />
           </motion.div>
 
@@ -587,6 +604,7 @@ function Dashboard() {
                   className="text-neonSecondary drop-shadow-[0_0_15px_rgba(0,229,255,0.6)] md:w-[50px] md:h-[50px]"
                 />
               }
+              image="/brain/d27c5697-ffdc-46ae-baff-363c69783ae7/3d_analytics_chart_subtle_1773253316736.png"
               title="Analytics"
               onClick={() => navigate("/analytics")}
             />
@@ -635,36 +653,50 @@ function Dashboard() {
 }
 
 // ── 3D Tilt Nav Card ──────────────────────────────────────────────────────
-function Card({ icon, title, onClick }) {
+function Card({ icon, title, onClick, image }) {
   return (
     <Tilt
       glareEnable={true}
-      glareMaxOpacity={0.15}
-      scale={1.06}
-      tiltMaxAngleX={14}
-      tiltMaxAngleY={14}
-      transitionSpeed={600}
+      glareMaxOpacity={0.12}
+      scale={1.08}
+      tiltMaxAngleX={12}
+      tiltMaxAngleY={12}
+      transitionSpeed={1200}
+      perspective={1000}
       className="h-full"
     >
       <GlassCard
         onClick={onClick}
-        className="p-6 md:p-8 flex flex-col items-center justify-center group overflow-hidden relative cursor-pointer hover:shadow-[0_0_35px_rgba(120,119,198,0.35)] transition-all duration-500 border border-white/10 hover:border-white/30 h-full min-h-[140px] md:min-h-[180px]"
+        className="p-6 md:p-8 flex flex-col items-center justify-center group overflow-hidden relative cursor-pointer hover:shadow-[0_0_45px_rgba(124,108,255,0.25)] transition-all duration-700 border border-white/10 hover:border-white/40 h-full min-h-[140px] md:min-h-[220px]"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-neonPrimary/10 via-neonAccent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
         {/* Animated Background Blob */}
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:bg-indigo-400/20 transition-all duration-700"></div>
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-neonPrimary/15 transition-all duration-1000"></div>
 
-        {/* Shimmer sweep */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-[800ms] ease-in-out"></div>
+        {/* 3D Image or Icon */}
+        <div className="relative z-10 transform group-hover:-translate-y-4 group-hover:scale-110 transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex flex-col items-center">
+          {image ? (
+            <div className="w-16 h-16 md:w-24 md:h-24 mb-4 md:mb-6 drop-shadow-[0_10px_15px_rgba(0,0,0,0.3)] group-hover:drop-shadow-[0_20px_25px_rgba(124,108,255,0.4)] transition-all duration-700">
+              <img src={image} alt={title} className="w-full h-full object-contain" />
+            </div>
+          ) : (
+            <div className="p-4 md:p-5 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] mb-4 md:mb-6 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] group-hover:border-white/30 transition-all duration-700">
+              {icon}
+            </div>
+          )}
 
-        <div className="relative z-10 transform group-hover:-translate-y-2 md:group-hover:-translate-y-3 group-hover:scale-105 transition-all duration-500 flex flex-col items-center">
-          <div className="p-4 md:p-5 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] mb-4 md:mb-6 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] group-hover:border-white/30 transition-all duration-500">
-            {icon}
+          <div className="relative">
+            <h2 className="text-base md:text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-400 group-hover:from-white group-hover:to-neonPrimary transition-all duration-700 text-center tracking-tight drop-shadow-sm">
+              {title}
+            </h2>
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-neonPrimary group-hover:w-full transition-all duration-700 rounded-full"></div>
           </div>
-          <h2 className="text-base md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-400 group-hover:from-white group-hover:to-indigo-200 transition-all duration-500 text-center tracking-wide drop-shadow-sm group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
-            {title}
-          </h2>
+        </div>
+
+        {/* Titled functionality indicator */}
+        <div className="absolute bottom-4 left-0 w-full text-center opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-700 delay-100">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neonPrimary/60">Launch Feature</span>
         </div>
       </GlassCard>
     </Tilt>

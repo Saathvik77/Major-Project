@@ -9,6 +9,7 @@ import Analytics from "./pages/Analytics";
 import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
 import Health from "./pages/Health";
+import AIAssistant from "./pages/AIAssistant";
 import { ThemeProvider } from "./ThemeContext";
 import AnimatedBackground from "./components/AnimatedBackground";
 
@@ -79,6 +80,16 @@ function App() {
             element={
               <PrivateRoute>
                 <Profile />
+              </PrivateRoute>
+            }
+          />
+
+          {/* AI Assistant */}
+          <Route
+            path="/ai-assistant"
+            element={
+              <PrivateRoute>
+                <AIAssistant />
               </PrivateRoute>
             }
           />
