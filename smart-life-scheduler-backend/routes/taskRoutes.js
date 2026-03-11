@@ -128,11 +128,16 @@ router.post(
       date: { $gte: startOfDay }
     }).sort({ priority: 1, date: 1 });
 
-    const schedule = await generateSchedule(pendingTasks);
+    const result = await generateSchedule(pendingTasks);
+
+    // If result is an array (fallback or old mode), extract it
+    let schedule = result.schedule || result;
+    let explanation = result.explanation || "This is an AI-generated optimal schedule.";
 
     res.status(200).json({
       success: true,
       schedule,
+      explanation
     });
   })
 );

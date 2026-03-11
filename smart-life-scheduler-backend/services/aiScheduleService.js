@@ -16,15 +16,19 @@ const generateSchedule = async (tasks) => {
       create a realistic schedule from 09:00 to 18:00 (or later if needed).
       Consider priorities and typical task durations (assume 30-60 mins unless specified).
       Include breaks.
+      Also, provide a short 2-3 sentence 'explanation' on how you structured the day and why.
       
       Tasks:
       ${JSON.stringify(tasks.map(t => ({ title: t.title, priority: t.priority, description: t.description })), null, 2)}
       
-      Return ONLY a JSON array with the following format, and nothing else (no markdown blocks like \`\`\`json):
-      [
-        { "timeRange": "09:00 - 10:00", "title": "Task Name" },
-        { "timeRange": "10:00 - 10:15", "title": "Break" }
-      ]
+      Return ONLY a JSON object with this exact format, without markdown blocks (\`\`\`json):
+      {
+        "explanation": "I structured the day by placing high priority tasks in the morning...",
+        "schedule": [
+          { "timeRange": "09:00 - 10:00", "title": "Task Name" },
+          { "timeRange": "10:00 - 10:15", "title": "Break" }
+        ]
+      }
     `;
 
         const result = await model.generateContent(prompt);
@@ -44,14 +48,17 @@ const generateMockSchedule = (tasks) => {
     let currentMinute = 0;
 
     if (!tasks || tasks.length === 0) {
-        return [
-            { timeRange: "09:00 - 10:00", title: "Review goals for the day" },
-            { timeRange: "10:00 - 10:15", title: "Break" },
-            { timeRange: "10:15 - 11:30", title: "Deep Work Session" }
-        ];
+        return {
+            explanation: "I created a basic daily structure since there are no pending tasks.",
+            schedule: [
+                { timeRange: "09:00 - 10:00", title: "Review goals for the day" },
+                { timeRange: "10:00 - 10:15", title: "Break" },
+                { timeRange: "10:15 - 11:30", title: "Deep Work Session" }
+            ]
+        };
     }
 
-    const formatTime = (h, m) => `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    const formatTime = (h, m) => `${h.toString().padStart(2, '0')}`;
 
     tasks.forEach((task, index) => {
         let nextHour = currentHour + 1;
@@ -82,7 +89,10 @@ const generateMockSchedule = (tasks) => {
         currentMinute = breakEndMinute;
     });
 
-    return schedule;
+    return {
+        explanation: "This schedule spaces out your tasks evenly while ensuring you take a 15-minute break after each task to maintain focus.",
+        schedule
+    };
 };
 
 module.exports = { generateSchedule };
