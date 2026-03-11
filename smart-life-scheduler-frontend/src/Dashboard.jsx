@@ -571,11 +571,11 @@ function Dashboard() {
             <Card
               icon={
                 <ClipboardList
-                  size={40}
-                  className="text-neonPrimary drop-shadow-[0_0_15px_rgba(124,108,255,0.6)] md:w-[50px] md:h-[50px]"
+                  size={32}
+                  className="text-neonPrimary drop-shadow-[0_0_12px_rgba(124,108,255,0.6)] md:w-[40px] md:h-[40px]"
                 />
               }
-              image="/brain/d27c5697-ffdc-46ae-baff-363c69783ae7/3d_productivity_cube_subtle_1773253300095.png"
+              image="/assets/3d/productivity_cube.png"
               title="Tasks"
               onClick={() => navigate("/tasks")}
             />
@@ -586,11 +586,11 @@ function Dashboard() {
             <Card
               icon={
                 <Bot
-                  size={40}
-                  className="text-neonAccent drop-shadow-[0_0_15px_rgba(255,122,246,0.6)] md:w-[50px] md:h-[50px]"
+                  size={32}
+                  className="text-neonAccent drop-shadow-[0_0_12px_rgba(255,122,246,0.6)] md:w-[40px] md:h-[40px]"
                 />
               }
-              image="/brain/d27c5697-ffdc-46ae-baff-363c69783ae7/3d_ai_assistant_orb_subtle_1773253332681.png"
+              image="/assets/3d/ai_assistant_orb.png"
               title="AI Assistant"
               onClick={() => navigate("/ai-assistant")}
             />
@@ -600,11 +600,11 @@ function Dashboard() {
             <Card
               icon={
                 <BarChart3
-                  size={40}
-                  className="text-neonSecondary drop-shadow-[0_0_15px_rgba(0,229,255,0.6)] md:w-[50px] md:h-[50px]"
+                  size={32}
+                  className="text-neonSecondary drop-shadow-[0_0_12px_rgba(0,229,255,0.6)] md:w-[40px] md:h-[40px]"
                 />
               }
-              image="/brain/d27c5697-ffdc-46ae-baff-363c69783ae7/3d_analytics_chart_subtle_1773253316736.png"
+              image="/assets/3d/analytics_chart.png"
               title="Analytics"
               onClick={() => navigate("/analytics")}
             />
@@ -614,10 +614,11 @@ function Dashboard() {
             <Card
               icon={
                 <FileText
-                  size={40}
-                  className="text-neonAccent drop-shadow-[0_0_15px_rgba(255,122,246,0.6)] md:w-[50px] md:h-[50px]"
+                  size={32}
+                  className="text-neonAccent drop-shadow-[0_0_12px_rgba(255,122,246,0.6)] md:w-[40px] md:h-[40px]"
                 />
               }
+              image="/assets/3d/reports_doc.png"
               title="Reports"
               onClick={() => navigate("/reports")}
             />
@@ -627,10 +628,11 @@ function Dashboard() {
             <Card
               icon={
                 <HeartPulse
-                  size={40}
-                  className="text-neonHighlight drop-shadow-[0_0_15px_rgba(255,209,102,0.6)] md:w-[50px] md:h-[50px]"
+                  size={32}
+                  className="text-neonHighlight drop-shadow-[0_0_12px_rgba(255,209,102,0.6)] md:w-[40px] md:h-[40px]"
                 />
               }
+              image="/assets/3d/health_heart.png"
               title="Health"
               onClick={() => navigate("/health")}
             />
@@ -657,7 +659,7 @@ function Card({ icon, title, onClick, image }) {
   return (
     <Tilt
       glareEnable={true}
-      glareMaxOpacity={0.12}
+      glareMaxOpacity={0.08}
       scale={1.08}
       tiltMaxAngleX={12}
       tiltMaxAngleY={12}
@@ -667,36 +669,46 @@ function Card({ icon, title, onClick, image }) {
     >
       <GlassCard
         onClick={onClick}
-        className="p-6 md:p-8 flex flex-col items-center justify-center group overflow-hidden relative cursor-pointer hover:shadow-[0_0_45px_rgba(124,108,255,0.25)] transition-all duration-700 border border-white/10 hover:border-white/40 h-full min-h-[140px] md:min-h-[220px]"
+        className="p-4 md:p-6 flex flex-col items-center justify-center group overflow-hidden relative cursor-pointer ring-1 ring-white/10 hover:ring-white/30 h-full min-h-[120px] md:min-h-[180px]"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-neonPrimary/10 via-neonAccent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+        {/* Subtle Inner Glow */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+        
+        {/* Hover Highlight */}
+        <div className="absolute inset-0 bg-gradient-to-br from-neonPrimary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
         {/* Animated Background Blob */}
-        <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-neonPrimary/15 transition-all duration-1000"></div>
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/[0.02] rounded-full blur-3xl group-hover:bg-neonPrimary/10 transition-all duration-1000"></div>
 
-        {/* 3D Image or Icon */}
-        <div className="relative z-10 transform group-hover:-translate-y-4 group-hover:scale-110 transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] flex flex-col items-center">
+        {/* Card Content */}
+        <div className="relative z-10 w-full flex flex-col items-center transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-2">
           {image ? (
-            <div className="w-16 h-16 md:w-24 md:h-24 mb-4 md:mb-6 drop-shadow-[0_10px_15px_rgba(0,0,0,0.3)] group-hover:drop-shadow-[0_20px_25px_rgba(124,108,255,0.4)] transition-all duration-700">
-              <img src={image} alt={title} className="w-full h-full object-contain" />
+            <div className="w-16 h-16 md:w-24 md:h-24 mb-3 md:mb-4 flex items-center justify-center">
+              <motion.img 
+                src={image} 
+                alt={title} 
+                className="w-full h-full object-contain filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]" 
+                whileHover={{ y: -6, filter: "drop-shadow(0 20px 20px rgba(124,108,255,0.3))" }}
+                transition={{ type: "spring", stiffness: 300 }}
+              />
             </div>
           ) : (
-            <div className="p-4 md:p-5 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] mb-4 md:mb-6 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] group-hover:border-white/30 transition-all duration-700">
+            <div className="p-3 md:p-4 bg-white/5 rounded-2xl border border-white/10 shadow-[inner_0_1px_1px_rgba(255,255,255,0.1)] mb-3 md:mb-4 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] group-hover:border-white/20 transition-all duration-700">
               {icon}
             </div>
           )}
 
           <div className="relative">
-            <h2 className="text-base md:text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-400 group-hover:from-white group-hover:to-neonPrimary transition-all duration-700 text-center tracking-tight drop-shadow-sm">
+            <h2 className="text-sm md:text-lg font-black text-gray-200 group-hover:text-white transition-all duration-700 text-center tracking-tight">
               {title}
             </h2>
-            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-neonPrimary group-hover:w-full transition-all duration-700 rounded-full"></div>
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-neonPrimary/50 group-hover:w-full transition-all duration-700 rounded-full blur-[1px]"></div>
           </div>
         </div>
 
         {/* Titled functionality indicator */}
-        <div className="absolute bottom-4 left-0 w-full text-center opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-700 delay-100">
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neonPrimary/60">Launch Feature</span>
+        <div className="absolute bottom-6 left-0 w-full text-center opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
+          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-neonPrimary/40">Launch Feature</span>
         </div>
       </GlassCard>
     </Tilt>
