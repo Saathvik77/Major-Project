@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronLeft, CloudFog, CloudRain, Droplets, Flame, Target, Sun, Snowflake, Loader2, Play, Pause, Activity, CalendarDays, Maximize, RefreshCcw } from "lucide-react";
 import GlassCard from "../components/GlassCard";
 import API from "../api";
+import Tilt from "react-parallax-tilt";
 
 function Health() {
   const navigate = useNavigate();
@@ -203,7 +204,7 @@ function Health() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-8">
           
         {/* Weekly Challenge Widget */}
-        <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
+        <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable={true} glareMaxOpacity={0.1} className="w-full h-full flex justify-center items-center">
           <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
             {/* Animated Glow */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/20 rounded-full blur-3xl group-hover:bg-cyan-500/30 transition-colors"></div>
@@ -242,7 +243,7 @@ function Health() {
                </button>
             </div>
           </GlassCard>
-        </div>
+        </Tilt>
 
         {/* Weather-Based Suggestions Widget */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
@@ -252,35 +253,38 @@ function Health() {
                     <p className="text-gray-300 font-medium tracking-wide">Analyzing local weather...</p>
                  </GlassCard>
             ) : weatherSuggestion ? (
-                <GlassCard className={`relative z-10 w-full max-w-sm p-8 flex flex-col items-center text-center border shadow-2xl overflow-hidden group bg-gradient-to-b ${weatherSuggestion.bg} ${weatherSuggestion.border}`}>
-                     <div className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
-                        <span className="text-sm font-bold tracking-widest uppercase text-white">Weather Suggestion</span>
-                     </div>
-                     
-                     <div className="transform group-hover:scale-110 transition-transform duration-500 mb-4">
-                        {weatherSuggestion.icon}
-                     </div>
-                     
-                     <h3 className="text-2xl font-black tracking-tight text-white mb-2 leading-tight drop-shadow-sm">
-                        {weatherSuggestion.title}
-                     </h3>
-                     
-                     <p className="text-3xl font-black text-white mb-6 drop-shadow-md">
-                         {weatherData.temperature}°C
-                     </p>
-                     
-                     <div className="bg-black/20 p-4 rounded-xl border border-white/10 w-full">
-                         <p className="text-[15px] text-gray-200 font-medium leading-relaxed">
-                            {weatherSuggestion.suggestion}
+                <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable={true} glareMaxOpacity={0.1} className="w-full h-full flex justify-center items-center">
+                    <GlassCard className={`relative z-10 w-full max-w-sm p-8 flex flex-col items-center text-center border shadow-2xl overflow-hidden group bg-gradient-to-b ${weatherSuggestion.bg} ${weatherSuggestion.border}`}>
+                         <div className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
+                            <span className="text-sm font-bold tracking-widest uppercase text-white">Weather Suggestion</span>
+                         </div>
+                         
+                         <div className="transform group-hover:scale-110 transition-transform duration-500 mb-4">
+                            {weatherSuggestion.icon}
+                         </div>
+                         
+                         <h3 className="text-2xl font-black tracking-tight text-white mb-2 leading-tight drop-shadow-sm">
+                            {weatherSuggestion.title}
+                         </h3>
+                         
+                         <p className="text-3xl font-black text-white mb-6 drop-shadow-md">
+                             {weatherData.temperature}°C
                          </p>
-                     </div>
-                     
-                     {locationError && (
-                         <p className="text-xs text-red-300 mt-4 opacity-70">
-                             Note: {locationError} Using fallback location.
-                         </p>
-                     )}
-                </GlassCard>
+                         
+                         <div className="bg-black/20 p-4 rounded-xl border border-white/10 w-full">
+                             <p className="text-[15px] text-gray-200 font-medium leading-relaxed">
+                                {weatherSuggestion.suggestion}
+                             </p>
+                         </div>
+                         
+                         {locationError && (
+                             <p className="text-xs text-red-300 mt-4 opacity-70">
+                                 Note: {locationError} Using fallback location.
+                             </p>
+                         )}
+                    </GlassCard>
+                </Tilt>
+
             ) : (
                 <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-center justify-center text-center border border-white/20 shadow-2xl h-full">
                     <p className="text-red-300 font-medium">Unable to load weather data.</p>

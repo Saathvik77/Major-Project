@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import API from "../api";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { ThemeContext } from "../ThemeContext";
+import Tilt from "react-parallax-tilt";
 
 export default function Reports() {
   const navigate = useNavigate();
@@ -132,36 +133,38 @@ export default function Reports() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Main Status Card */}
-        <div className={`lg:col-span-3 p-8 rounded-3xl backdrop-blur-md border shadow-2xl relative overflow-hidden transition-colors ${conditionBg}`}>
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[80px] -z-10"></div>
+        <Tilt tiltMaxAngleX={3} tiltMaxAngleY={3} glareEnable={true} glareMaxOpacity={0.05} className="lg:col-span-3">
+          <div className={`p-8 rounded-3xl backdrop-blur-md border shadow-2xl relative overflow-hidden transition-colors w-full h-full ${conditionBg}`}>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[80px] -z-10"></div>
 
-          <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
-            <div className={`w-32 h-32 rounded-full bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 shadow-[0_0_30px_rgba(0,0,0,0.2)]`}>
-              {icon}
-            </div>
-
-            <div className="flex-1 text-center md:text-left">
-              <h2 className="text-xl font-bold text-white/50 uppercase tracking-[0.2em] mb-2 text-sm">Vital Status</h2>
-              <div className="flex items-center gap-3 justify-center md:justify-start mb-3">
-                <h3 className={`text-5xl font-black tracking-tight ${conditionColor} drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]`}>{condition}</h3>
-                {condition === "Excellent" && <div className="px-3 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full text-xs font-bold shadow-lg animate-pulse">PRIME</div>}
+            <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+              <div className={`w-32 h-32 rounded-full bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 shadow-[0_0_30px_rgba(0,0,0,0.2)]`}>
+                {icon}
               </div>
-              <p className="text-gray-300 font-medium text-lg leading-relaxed max-w-lg">{message}</p>
-            </div>
 
-            {/* Efficiency Meter */}
-            <div className="relative w-32 h-32 flex-shrink-0 hidden md:flex items-center justify-center">
-              <svg className="w-full h-full transform -rotate-90">
-                <circle cx="64" cy="64" r="56" className="stroke-white/10 fill-none" strokeWidth="12" />
-                <circle cx="64" cy="64" r="56" className={`fill-none transition-all duration-1000 ease-out`} strokeWidth="12" strokeDasharray={`${efficiency * 3.51} 351`} strokeLinecap="round" stroke={condition === "Excellent" ? "#34d399" : condition === "Stable" ? "#22d3ee" : "#f87171"} />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-black text-white">{efficiency}%</span>
-                <span className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Efficiency</span>
+              <div className="flex-1 text-center md:text-left">
+                <h2 className="text-xl font-bold text-white/50 uppercase tracking-[0.2em] mb-2 text-sm">Vital Status</h2>
+                <div className="flex items-center gap-3 justify-center md:justify-start mb-3">
+                  <h3 className={`text-5xl font-black tracking-tight ${conditionColor} drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]`}>{condition}</h3>
+                  {condition === "Excellent" && <div className="px-3 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full text-xs font-bold shadow-lg animate-pulse">PRIME</div>}
+                </div>
+                <p className="text-gray-300 font-medium text-lg leading-relaxed max-w-lg">{message}</p>
+              </div>
+
+              {/* Efficiency Meter */}
+              <div className="relative w-32 h-32 flex-shrink-0 hidden md:flex items-center justify-center">
+                <svg className="w-full h-full transform -rotate-90">
+                  <circle cx="64" cy="64" r="56" className="stroke-white/10 fill-none" strokeWidth="12" />
+                  <circle cx="64" cy="64" r="56" className={`fill-none transition-all duration-1000 ease-out`} strokeWidth="12" strokeDasharray={`${efficiency * 3.51} 351`} strokeLinecap="round" stroke={condition === "Excellent" ? "#34d399" : condition === "Stable" ? "#22d3ee" : "#f87171"} />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-2xl font-black text-white">{efficiency}%</span>
+                  <span className="text-[10px] uppercase font-bold text-white/50 tracking-wider">Efficiency</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </Tilt>
 
         {/* Task Distribution (Donut Chart) */}
         <div className="lg:col-span-1 p-7 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 shadow-xl relative overflow-hidden group hover:border-white/20 transition-colors">

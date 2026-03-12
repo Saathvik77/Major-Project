@@ -633,85 +633,69 @@ function Dashboard() {
         </motion.div>
 
         {/* Right side: Decorative orbs + Illustration */}
-        <div className="hidden md:flex flex-col items-center gap-12 relative pointer-events-none w-full">
+        <div className="hidden md:flex flex-col items-center gap-12 relative w-full">
           {/* Decorative Orbs */}
-          <div className="relative w-80 h-80 rounded-full border border-white/5 flex items-center justify-center animate-[spin_40s_linear_infinite]">
+          <div className="relative w-80 h-80 rounded-full border border-white/5 flex items-center justify-center animate-[spin_40s_linear_infinite] pointer-events-none">
             <div className="absolute top-0 right-10 w-16 h-16 bg-gradient-to-br from-neonSecondary to-neonPrimary rounded-full blur-sm opacity-60 shadow-[0_0_20px_rgba(0,229,255,0.4)]"></div>
             <div className="absolute bottom-10 left-0 w-28 h-28 bg-gradient-to-br from-neonPrimary to-neonAccent rounded-full blur-sm opacity-60 shadow-[0_0_30px_rgba(124,108,255,0.4)]"></div>
             <div className="absolute top-1/2 left-0 w-10 h-10 bg-neonHighlight/30 rounded-full blur-md opacity-40"></div>
           </div>
 
-          {/* Premium CSS-based Glassmorphism Illustration */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 30 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-            className="relative w-full max-w-[420px] aspect-[4/3] rounded-[3rem] bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 backdrop-blur-3xl shadow-[0_30px_80px_rgba(0,0,0,0.5)] flex items-center justify-center group overflow-hidden"
+          {/* Premium Glassmorphism Illustration Image with Tilt */}
+          <Tilt
+            glareEnable={true}
+            glareMaxOpacity={0.15}
+            glareColor="#ffffff"
+            glarePosition="all"
+            scale={1.02}
+            tiltMaxAngleX={8}
+            tiltMaxAngleY={8}
+            className="w-full h-[400px] relative z-20 pointer-events-auto"
           >
-            {/* Inner background glow */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-neonPrimary/10 via-transparent to-neonAccent/10 opacity-50"></div>
-            
-            {/* Animated background blobs */}
-            <motion.div 
-              animate={{ x: [0, 40, 0], y: [0, -40, 0] }}
-              transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-10 -right-10 w-40 h-40 bg-neonPrimary/20 blur-[60px] rounded-full"
-            />
-            <motion.div 
-              animate={{ x: [0, -50, 0], y: [0, 50, 0] }}
-              transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-              className="absolute -bottom-20 -left-10 w-60 h-60 bg-neonSecondary/10 blur-[80px] rounded-full"
-            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+              className="relative w-full h-full rounded-[3rem] bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 backdrop-blur-3xl shadow-[0_30px_80px_rgba(0,0,0,0.5)] flex items-center justify-center group overflow-hidden"
+            >
+              {/* Inner background glow */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-neonPrimary/10 via-transparent to-neonAccent/10 opacity-50"></div>
+              
+              {/* Animated background blobs */}
+              <motion.div 
+                animate={{ x: [0, 40, 0], y: [0, -40, 0] }}
+                transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-10 -right-10 w-40 h-40 bg-neonPrimary/20 blur-[60px] rounded-full"
+              />
+              <motion.div 
+                animate={{ x: [0, -50, 0], y: [0, 50, 0] }}
+                transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+                className="absolute -bottom-20 -left-10 w-60 h-60 bg-neonSecondary/10 blur-[80px] rounded-full"
+              />
 
-            {/* Illustration Elements */}
-            <div className="relative z-10 w-full h-full flex items-center justify-center">
-              <motion.div
-                animate={{ y: [0, -12, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="relative"
-              >
-                {/* Main Glass Panel */}
-                <div className="w-56 h-72 bg-gradient-to-br from-white/15 to-white/5 border border-white/20 backdrop-blur-md rounded-3xl shadow-2xl skew-x-[-10deg] rotate-[-5deg] relative flex flex-col p-6 gap-4">
-                  <div className="w-12 h-1.5 bg-white/30 rounded-full"></div>
-                  <div className="space-y-3 mt-4">
-                    {[1, 2, 3].map(i => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div className="w-4 h-4 rounded-md bg-neonPrimary/40 border border-white/20"></div>
-                        <div className="h-2 flex-1 bg-white/10 rounded-full"></div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-auto flex justify-between items-end">
-                    <div className="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm"></div>
-                    <div className="w-16 h-4 bg-neonAccent/40 rounded-full shadow-[0_0_15px_rgba(255,122,246,0.3)]"></div>
-                  </div>
-                </div>
-
-                {/* Overlapping Glass Disk */}
-                <motion.div 
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                  className="absolute -top-10 -right-12 w-32 h-32 rounded-full bg-white/5 border border-white/20 backdrop-blur-xl shadow-xl flex items-center justify-center"
+              {/* Illustration Elements */}
+              <div className="relative z-10 w-full h-full flex items-center justify-center p-8">
+                <motion.div
+                  animate={{ y: [0, -15, 0] }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                  className="relative w-full max-w-[280px]"
                 >
-                  <div className="w-24 h-24 rounded-full border border-dashed border-white/20 flex items-center justify-center">
-                    <Sparkles className="text-neonSecondary w-10 h-10 drop-shadow-[0_0_10px_rgba(0,229,255,0.6)]" />
-                  </div>
+                  <img 
+                    src="/assets/3d/glass_illustration.png" 
+                    alt="Smart Life Illustration" 
+                    className="w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)] filter brightness-110 contrast-110"
+                    loading="eager"
+                  />
+                  
+                  {/* Subtle Glow beneath the image */}
+                  <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-40 h-10 bg-neonPrimary/20 blur-3xl rounded-full"></div>
                 </motion.div>
+              </div>
 
-                {/* Floating Abstract Element */}
-                <motion.div 
-                  animate={{ y: [0, 20, 0], opacity: [0.6, 1, 0.6] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                  className="absolute -bottom-8 -left-12 w-28 h-12 bg-neonPrimary/30 border border-white/30 backdrop-blur-2xl rounded-2xl shadow-[0_10px_30px_rgba(124,108,255,0.4)] flex items-center justify-center p-2"
-                >
-                  <div className="w-full h-1.5 bg-white/40 rounded-full shadow-[0_0_8px_white]"></div>
-                </motion.div>
-              </motion.div>
-            </div>
-
-            {/* Reflection line */}
-            <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-gradient-to-br from-transparent via-white/5 to-transparent skew-x-[-20deg] animate-[shimmer_8s_infinite_linear]"></div>
-          </motion.div>
+              {/* Reflection line */}
+              <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-gradient-to-br from-transparent via-white/5 to-transparent skew-x-[-20deg] animate-[shimmer_8s_infinite_linear]"></div>
+            </motion.div>
+          </Tilt>
         </div>
       </div>
 

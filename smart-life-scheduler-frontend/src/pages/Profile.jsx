@@ -5,6 +5,7 @@ import api from "../api";
 import GlassCard from "../components/GlassCard";
 import BottomNav from "../components/BottomNav";
 import { ThemeContext } from "../ThemeContext";
+import Tilt from "react-parallax-tilt";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -181,121 +182,123 @@ export default function Profile() {
         </div>
 
         {/* Form Fields Container */}
-        <GlassCard className="flex flex-col gap-6 p-7 mb-8 animate-slideUpFade shadow-2xl bg-white/[0.03] border-white/10 relative overflow-hidden" style={{ animationDelay: "0.1s" }}>
+        <Tilt tiltMaxAngleX={4} tiltMaxAngleY={4} glareEnable={true} glareMaxOpacity={0.03} className="w-full mb-8">
+          <GlassCard className="flex flex-col gap-6 p-7 animate-slideUpFade shadow-2xl bg-white/[0.03] border-white/10 relative overflow-hidden h-full" style={{ animationDelay: "0.1s" }}>
 
-          {/* Internal Glows inside Card */}
-          <div className="absolute top-[-50px] right-[-50px] w-32 h-32 bg-cyan-500/10 rounded-full blur-[40px] pointer-events-none"></div>
-          <div className="absolute bottom-[-50px] left-[-50px] w-32 h-32 bg-indigo-500/10 rounded-full blur-[40px] pointer-events-none"></div>
+            {/* Internal Glows inside Card */}
+            <div className="absolute top-[-50px] right-[-50px] w-32 h-32 bg-cyan-500/10 rounded-full blur-[40px] pointer-events-none"></div>
+            <div className="absolute bottom-[-50px] left-[-50px] w-32 h-32 bg-indigo-500/10 rounded-full blur-[40px] pointer-events-none"></div>
 
-          {/* Name */}
-          <div className="flex flex-col gap-2 relative z-10 group">
-            <label className="text-[11px] uppercase font-black text-gray-400 tracking-widest flex items-center gap-2 ml-1">
-              <User size={14} className="text-indigo-400 group-focus-within:text-cyan-400 transition-colors" />
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={user.name}
-              onChange={handleChange}
-              disabled={!isEditing}
-              className="bg-slate-900/60 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 disabled:opacity-80 disabled:bg-transparent disabled:border-transparent disabled:px-1 disabled:py-2 font-semibold transition-all text-[15px] shadow-inner"
-            />
-          </div>
-
-          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent w-full my-1"></div>
-
-          {/* Phone Number */}
-          <div className="flex flex-col gap-2 relative z-10 group">
-            <label className="text-[11px] uppercase font-black text-gray-400 tracking-widest flex items-center gap-2 ml-1">
-              <Phone size={14} className="text-cyan-400 group-focus-within:text-cyan-300 transition-colors" />
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              name="phno"
-              value={user.phno}
-              onChange={handleChange}
-              disabled={!isEditing}
-              placeholder={isEditing ? "+1 234 567 8900" : "Number not linked"}
-              className="bg-slate-900/60 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 disabled:opacity-80 disabled:bg-transparent disabled:border-transparent disabled:px-1 disabled:py-2 font-semibold transition-all text-[15px] shadow-inner placeholder:text-gray-600"
-            />
-          </div>
-
-          {/* Age, Weight, Gender Grid */}
-          <div className="grid grid-cols-2 gap-5 mt-2 relative z-10">
-            {/* Age */}
-            <div className="flex flex-col gap-2 group">
+            {/* Name */}
+            <div className="flex flex-col gap-2 relative z-10 group">
               <label className="text-[11px] uppercase font-black text-gray-400 tracking-widest flex items-center gap-2 ml-1">
-                <Calendar size={14} className="text-purple-400 group-focus-within:text-cyan-400 transition-colors" />
-                Age
+                <User size={14} className="text-indigo-400 group-focus-within:text-cyan-400 transition-colors" />
+                Full Name
               </label>
               <input
-                type="number"
-                name="age"
-                value={user.age}
+                type="text"
+                name="name"
+                value={user.name}
                 onChange={handleChange}
                 disabled={!isEditing}
-                placeholder={isEditing ? "25" : "—"}
+                className="bg-slate-900/60 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 disabled:opacity-80 disabled:bg-transparent disabled:border-transparent disabled:px-1 disabled:py-2 font-semibold transition-all text-[15px] shadow-inner"
+              />
+            </div>
+
+            <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent w-full my-1"></div>
+
+            {/* Phone Number */}
+            <div className="flex flex-col gap-2 relative z-10 group">
+              <label className="text-[11px] uppercase font-black text-gray-400 tracking-widest flex items-center gap-2 ml-1">
+                <Phone size={14} className="text-cyan-400 group-focus-within:text-cyan-300 transition-colors" />
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                name="phno"
+                value={user.phno}
+                onChange={handleChange}
+                disabled={!isEditing}
+                placeholder={isEditing ? "+1 234 567 8900" : "Number not linked"}
                 className="bg-slate-900/60 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 disabled:opacity-80 disabled:bg-transparent disabled:border-transparent disabled:px-1 disabled:py-2 font-semibold transition-all text-[15px] shadow-inner placeholder:text-gray-600"
               />
             </div>
 
-            {/* Weight */}
-            <div className="flex flex-col gap-2 group">
-              <label className="text-[11px] uppercase font-black text-gray-400 tracking-widest flex items-center gap-2 ml-1">
-                <Activity size={14} className="text-emerald-400 group-focus-within:text-cyan-400 transition-colors" />
-                Weight (kg)
-              </label>
-              <input
-                type="number"
-                name="weight"
-                value={user.weight}
-                onChange={handleChange}
-                disabled={!isEditing}
-                placeholder={isEditing ? "70" : "—"}
-                className="bg-slate-900/60 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 disabled:opacity-80 disabled:bg-transparent disabled:border-transparent disabled:px-1 disabled:py-2 font-semibold transition-all text-[15px] shadow-inner placeholder:text-gray-600"
-              />
-            </div>
-
-            {/* Gender */}
-            <div className="flex flex-col gap-2 col-span-2 mt-2 group">
-              <label className="text-[11px] uppercase font-black text-gray-400 tracking-widest flex items-center gap-2 ml-1">
-                <Dumbbell size={14} className="text-pink-400 group-focus-within:text-cyan-400 transition-colors" />
-                Gender Identity
-              </label>
-              {isEditing ? (
-                <div className="relative">
-                  <select
-                    name="gender"
-                    value={user.gender}
-                    onChange={handleChange}
-                    className="w-full bg-slate-900/60 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 font-semibold transition-all text-[15px] shadow-inner appearance-none cursor-pointer"
-                  >
-                    <option value="" className="bg-slate-900 text-gray-400">Select...</option>
-                    <option value="Male" className="bg-slate-900">Male</option>
-                    <option value="Female" className="bg-slate-900">Female</option>
-                    <option value="Other" className="bg-slate-900">Other</option>
-                  </select>
-                  <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <ChevronLeft size={16} className="text-gray-400 -rotate-90" />
-                  </div>
-                </div>
-              ) : (
+            {/* Age, Weight, Gender Grid */}
+            <div className="grid grid-cols-2 gap-5 mt-2 relative z-10">
+              {/* Age */}
+              <div className="flex flex-col gap-2 group">
+                <label className="text-[11px] uppercase font-black text-gray-400 tracking-widest flex items-center gap-2 ml-1">
+                  <Calendar size={14} className="text-purple-400 group-focus-within:text-cyan-400 transition-colors" />
+                  Age
+                </label>
                 <input
-                  type="text"
-                  value={user.gender}
-                  disabled
-                  placeholder="—"
-                  className="bg-transparent border border-transparent rounded-2xl py-2 px-1 text-white opacity-80 font-semibold text-[15px]"
+                  type="number"
+                  name="age"
+                  value={user.age}
+                  onChange={handleChange}
+                  disabled={!isEditing}
+                  placeholder={isEditing ? "25" : "—"}
+                  className="bg-slate-900/60 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 disabled:opacity-80 disabled:bg-transparent disabled:border-transparent disabled:px-1 disabled:py-2 font-semibold transition-all text-[15px] shadow-inner placeholder:text-gray-600"
                 />
-              )}
+              </div>
+
+              {/* Weight */}
+              <div className="flex flex-col gap-2 group">
+                <label className="text-[11px] uppercase font-black text-gray-400 tracking-widest flex items-center gap-2 ml-1">
+                  <Activity size={14} className="text-emerald-400 group-focus-within:text-cyan-400 transition-colors" />
+                  Weight (kg)
+                </label>
+                <input
+                  type="number"
+                  name="weight"
+                  value={user.weight}
+                  onChange={handleChange}
+                  disabled={!isEditing}
+                  placeholder={isEditing ? "70" : "—"}
+                  className="bg-slate-900/60 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 disabled:opacity-80 disabled:bg-transparent disabled:border-transparent disabled:px-1 disabled:py-2 font-semibold transition-all text-[15px] shadow-inner placeholder:text-gray-600"
+                />
+              </div>
+
+              {/* Gender */}
+              <div className="flex flex-col gap-2 col-span-2 mt-2 group">
+                <label className="text-[11px] uppercase font-black text-gray-400 tracking-widest flex items-center gap-2 ml-1">
+                  <Dumbbell size={14} className="text-pink-400 group-focus-within:text-cyan-400 transition-colors" />
+                  Gender Identity
+                </label>
+                {isEditing ? (
+                  <div className="relative">
+                    <select
+                      name="gender"
+                      value={user.gender}
+                      onChange={handleChange}
+                      className="w-full bg-slate-900/60 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 font-semibold transition-all text-[15px] shadow-inner appearance-none cursor-pointer"
+                    >
+                      <option value="" className="bg-slate-900 text-gray-400">Select...</option>
+                      <option value="Male" className="bg-slate-900">Male</option>
+                      <option value="Female" className="bg-slate-900">Female</option>
+                      <option value="Other" className="bg-slate-900">Other</option>
+                    </select>
+                    <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <ChevronLeft size={16} className="text-gray-400 -rotate-90" />
+                    </div>
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    value={user.gender}
+                    disabled
+                    placeholder="—"
+                    className="bg-transparent border border-transparent rounded-2xl py-2 px-1 text-white opacity-80 font-semibold text-[15px]"
+                  />
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent w-full my-4"></div>
+            <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent w-full my-4"></div>
 
-        </GlassCard>
+          </GlassCard>
+        </Tilt>
       </div>
 
       <BottomNav />
