@@ -153,15 +153,15 @@
     pointer-events: none;
     background:
       /* Warm amber lamp glow — top right, like indoor lighting */
-      radial-gradient(ellipse 700px 580px at 85% 5%, rgba(193, 127, 36, 0.28) 0%, transparent 70%),
+      radial-gradient(ellipse 700px 580px at 85% 5%, rgba(193, 127, 36, 0.20) 0%, transparent 70%),
       /* Secondary amber glow — mid right */
-      radial-gradient(ellipse 450px 400px at 95% 38%, rgba(212, 137, 10, 0.18) 0%, transparent 65%),
+      radial-gradient(ellipse 450px 400px at 95% 38%, rgba(212, 137, 10, 0.12) 0%, transparent 65%),
       /* Cool teal-blue shadow — bottom left, like night window reflection */
-      radial-gradient(ellipse 750px 650px at 5% 90%, rgba(14, 61, 90, 0.30) 0%, transparent 65%),
+      radial-gradient(ellipse 750px 650px at 5% 90%, rgba(14, 61, 90, 0.22) 0%, transparent 65%),
       /* Deep indigo atmospheric haze — center */
-      radial-gradient(ellipse 900px 550px at 40% 60%, rgba(30, 27, 90, 0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 900px 550px at 40% 60%, rgba(30, 27, 90, 0.12) 0%, transparent 70%),
       /* Subtle steel-blue shimmer — top left corner */
-      radial-gradient(ellipse 380px 320px at 0% 10%, rgba(26, 58, 92, 0.20) 0%, transparent 60%);
+      radial-gradient(ellipse 380px 320px at 0% 10%, rgba(26, 58, 92, 0.14) 0%, transparent 60%);
     animation: cinematicGlow 12s ease-in-out infinite alternate;
   }
 
@@ -173,8 +173,8 @@
     z-index: -1;
     pointer-events: none;
     background:
-      radial-gradient(ellipse 350px 320px at 75% 20%, rgba(220, 140, 20, 0.15) 0%, transparent 70%),
-      radial-gradient(ellipse 280px 230px at 10% 50%, rgba(0, 178, 200, 0.10) 0%, transparent 60%);
+      radial-gradient(ellipse 350px 320px at 75% 20%, rgba(220, 140, 20, 0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 280px 230px at 10% 50%, rgba(0, 178, 200, 0.08) 0%, transparent 60%);
     animation: ambientDrift 18s ease-in-out infinite alternate-reverse;
   }
 
@@ -420,51 +420,51 @@
 @keyframes cinematicGlow {
   0% {
     background:
-      radial-gradient(ellipse 600px 500px at 85% 5%, rgba(193, 127, 36, 0.18) 0%, transparent 70%),
-      radial-gradient(ellipse 400px 350px at 95% 35%, rgba(212, 137, 10, 0.10) 0%, transparent 65%),
-      radial-gradient(ellipse 700px 600px at 5% 90%, rgba(14, 61, 90, 0.22) 0%, transparent 65%),
-      radial-gradient(ellipse 800px 500px at 40% 60%, rgba(30, 27, 90, 0.14) 0%, transparent 70%),
-      radial-gradient(ellipse 350px 300px at 0% 10%, rgba(26, 58, 92, 0.15) 0%, transparent 60%);
+      radial-gradient(ellipse 600px 500px at 85% 5%, rgba(193, 127, 36, 0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 350px at 95% 35%, rgba(212, 137, 10, 0.08) 0%, transparent 65%),
+      radial-gradient(ellipse 700px 600px at 5% 90%, rgba(14, 61, 90, 0.16) 0%, transparent 65%),
+      radial-gradient(ellipse 800px 500px at 40% 60%, rgba(30, 27, 90, 0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 350px 300px at 0% 10%, rgba(26, 58, 92, 0.11) 0%, transparent 60%);
   }
 
   50% {
     background:
-      radial-gradient(ellipse 650px 520px at 80% 8%, rgba(200, 130, 30, 0.20) 0%, transparent 70%),
-      radial-gradient(ellipse 450px 380px at 92% 40%, rgba(220, 145, 15, 0.12) 0%, transparent 65%),
-      radial-gradient(ellipse 750px 620px at 8% 88%, rgba(16, 65, 98, 0.25) 0%, transparent 65%),
-      radial-gradient(ellipse 850px 520px at 45% 55%, rgba(28, 24, 85, 0.16) 0%, transparent 70%),
-      radial-gradient(ellipse 380px 320px at 2% 12%, rgba(30, 62, 98, 0.17) 0%, transparent 60%);
+      radial-gradient(ellipse 650px 520px at 80% 8%, rgba(200, 130, 30, 0.14) 0%, transparent 70%),
+      radial-gradient(ellipse 450px 380px at 92% 40%, rgba(220, 145, 15, 0.09) 0%, transparent 65%),
+      radial-gradient(ellipse 750px 620px at 8% 88%, rgba(16, 65, 98, 0.18) 0%, transparent 65%),
+      radial-gradient(ellipse 850px 520px at 45% 55%, rgba(28, 24, 85, 0.11) 0%, transparent 70%),
+      radial-gradient(ellipse 380px 320px at 2% 12%, rgba(30, 62, 98, 0.12) 0%, transparent 60%);
   }
 
   100% {
     background:
-      radial-gradient(ellipse 580px 480px at 88% 3%, rgba(185, 120, 28, 0.16) 0%, transparent 70%),
-      radial-gradient(ellipse 420px 360px at 98% 30%, rgba(204, 130, 8, 0.09) 0%, transparent 65%),
-      radial-gradient(ellipse 680px 580px at 3% 92%, rgba(12, 55, 82, 0.20) 0%, transparent 65%),
-      radial-gradient(ellipse 780px 480px at 38% 65%, rgba(32, 29, 96, 0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 330px 280px at 1% 8%, rgba(22, 54, 88, 0.13) 0%, transparent 60%);
+      radial-gradient(ellipse 580px 480px at 88% 3%, rgba(185, 120, 28, 0.11) 0%, transparent 70%),
+      radial-gradient(ellipse 420px 360px at 98% 30%, rgba(204, 130, 8, 0.07) 0%, transparent 65%),
+      radial-gradient(ellipse 680px 580px at 3% 92%, rgba(12, 55, 82, 0.14) 0%, transparent 65%),
+      radial-gradient(ellipse 780px 480px at 38% 65%, rgba(32, 29, 96, 0.09) 0%, transparent 70%),
+      radial-gradient(ellipse 330px 280px at 1% 8%, rgba(22, 54, 88, 0.10) 0%, transparent 60%);
   }
 }
 
 @keyframes ambientDrift {
   0% {
     background:
-      radial-gradient(ellipse 300px 280px at 75% 20%, rgba(220, 140, 20, 0.09) 0%, transparent 70%),
-      radial-gradient(ellipse 250px 200px at 10% 50%, rgba(0, 178, 200, 0.06) 0%, transparent 60%);
+      radial-gradient(ellipse 300px 280px at 75% 20%, rgba(220, 140, 20, 0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 250px 200px at 10% 50%, rgba(0, 178, 200, 0.04) 0%, transparent 60%);
     opacity: 0.8;
   }
 
   50% {
     background:
-      radial-gradient(ellipse 320px 295px at 70% 25%, rgba(230, 148, 24, 0.11) 0%, transparent 70%),
-      radial-gradient(ellipse 270px 215px at 12% 45%, rgba(0, 190, 210, 0.07) 0%, transparent 60%);
+      radial-gradient(ellipse 320px 295px at 70% 25%, rgba(230, 148, 24, 0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 270px 215px at 12% 45%, rgba(0, 190, 210, 0.05) 0%, transparent 60%);
     opacity: 1;
   }
 
   100% {
     background:
-      radial-gradient(ellipse 280px 265px at 78% 18%, rgba(210, 132, 16, 0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 235px 190px at 8% 55%, rgba(0, 165, 190, 0.05) 0%, transparent 60%);
+      radial-gradient(ellipse 280px 265px at 78% 18%, rgba(210, 132, 16, 0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 235px 190px at 8% 55%, rgba(0, 165, 190, 0.03) 0%, transparent 60%);
     opacity: 0.7;
   }
 }
