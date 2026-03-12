@@ -131,11 +131,10 @@ function FocusTimerWidget() {
       </div>
       <button
         onClick={() => setRunning((r) => !r)}
-        className={`text-xs font-bold px-4 py-1.5 rounded-full transition-all duration-300 ${
-          running
+        className={`text-xs font-bold px-4 py-1.5 rounded-full transition-all duration-300 ${running
             ? "bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30"
             : "bg-neonPrimary/20 text-neonPrimary border border-neonPrimary/30 hover:bg-neonPrimary/30"
-        }`}
+          }`}
       >
         {running ? "Pause" : "Start Focus"}
       </button>
@@ -388,11 +387,10 @@ function Dashboard() {
                     <button
                       key={t.id}
                       onClick={() => setAppTheme(t.id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all border ${
-                        theme === t.id
+                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all border ${theme === t.id
                           ? "bg-neonPrimary/20 border-neonPrimary text-white shadow-[0_0_10px_rgba(124,108,255,0.3)]"
                           : "bg-slate-900/60 border-white/5 text-gray-400 hover:bg-white/5 hover:text-gray-200"
-                      }`}
+                        }`}
                     >
                       <div className={theme === t.id ? "text-neonPrimary" : "text-gray-500"}>
                         {t.icon}
@@ -575,7 +573,6 @@ function Dashboard() {
                   className="text-neonPrimary drop-shadow-[0_0_12px_rgba(124,108,255,0.6)] md:w-[40px] md:h-[40px]"
                 />
               }
-              image="/assets/3d/productivity_cube.png"
               title="Tasks"
               onClick={() => navigate("/tasks")}
             />
@@ -590,7 +587,6 @@ function Dashboard() {
                   className="text-neonAccent drop-shadow-[0_0_12px_rgba(255,122,246,0.6)] md:w-[40px] md:h-[40px]"
                 />
               }
-              image="/assets/3d/ai_assistant_orb.png"
               title="AI Assistant"
               onClick={() => navigate("/ai-assistant")}
             />
@@ -604,7 +600,6 @@ function Dashboard() {
                   className="text-neonSecondary drop-shadow-[0_0_12px_rgba(0,229,255,0.6)] md:w-[40px] md:h-[40px]"
                 />
               }
-              image="/assets/3d/analytics_chart.png"
               title="Analytics"
               onClick={() => navigate("/analytics")}
             />
@@ -618,7 +613,6 @@ function Dashboard() {
                   className="text-neonAccent drop-shadow-[0_0_12px_rgba(255,122,246,0.6)] md:w-[40px] md:h-[40px]"
                 />
               }
-              image="/assets/3d/reports_doc.png"
               title="Reports"
               onClick={() => navigate("/reports")}
             />
@@ -632,20 +626,44 @@ function Dashboard() {
                   className="text-neonHighlight drop-shadow-[0_0_12px_rgba(255,209,102,0.6)] md:w-[40px] md:h-[40px]"
                 />
               }
-              image="/assets/3d/health_heart.png"
               title="Health"
               onClick={() => navigate("/health")}
             />
           </motion.div>
         </motion.div>
 
-        {/* Right decorative orbs */}
-        <div className="hidden md:flex justify-center relative pointer-events-none w-full">
-          <div className="absolute inset-0 bg-transparent blur-3xl rounded-full scale-75"></div>
-          <div className="relative w-80 h-80 rounded-full border border-white/10 flex items-center justify-center animate-[spin_30s_linear_infinite]">
-            <div className="absolute top-0 right-10 w-16 h-16 bg-gradient-to-br from-neonSecondary to-neonPrimary rounded-full blur-sm shadow-[0_0_15px_rgba(0,229,255,0.4)]"></div>
-            <div className="absolute bottom-10 left-0 w-24 h-24 bg-gradient-to-br from-neonPrimary to-neonAccent rounded-full blur-sm shadow-[0_0_15px_rgba(124,108,255,0.4)]"></div>
+        {/* Right side: Decorative orbs + Illustration */}
+        <div className="hidden md:flex flex-col items-center gap-12 relative pointer-events-none w-full">
+          {/* Decorative Orbs */}
+          <div className="relative w-72 h-72 rounded-full border border-white/5 flex items-center justify-center animate-[spin_40s_linear_infinite]">
+            <div className="absolute top-0 right-10 w-12 h-12 bg-gradient-to-br from-neonSecondary to-neonPrimary rounded-full blur-sm opacity-60 shadow-[0_0_15px_rgba(0,229,255,0.3)]"></div>
+            <div className="absolute bottom-10 left-0 w-20 h-20 bg-gradient-to-br from-neonPrimary to-neonAccent rounded-full blur-sm opacity-60 shadow-[0_0_15px_rgba(124,108,255,0.3)]"></div>
           </div>
+
+          {/* New Glassmorphism Illustration */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="relative w-full max-w-[400px] p-6 rounded-[2.5rem] bg-white/[0.03] border border-white/10 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden group/hero"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-neonPrimary/10 to-transparent opacity-50"></div>
+            <motion.img
+              src="/assets/3d/glass_illustration.png"
+              alt="Smart Life Illustration"
+              className="w-full h-auto object-contain relative z-10 drop-shadow-[0_15px_35px_rgba(0,0,0,0.4)]"
+              animate={{
+                y: [0, -15, 0],
+              }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            {/* Subtle floating glow behind image */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-neonPrimary/20 blur-[80px] rounded-full"></div>
+          </motion.div>
         </div>
       </div>
 
@@ -675,7 +693,7 @@ function Card({ icon, title, onClick, image }) {
       >
         {/* Subtle Inner Glow */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-        
+
         {/* Hover Highlight */}
         <div className="absolute inset-0 bg-gradient-to-br from-neonPrimary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
@@ -686,10 +704,10 @@ function Card({ icon, title, onClick, image }) {
         <div className="relative z-10 w-full flex flex-col items-center transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-2">
           {image && !imgError ? (
             <div className="w-16 h-16 md:w-24 md:h-24 mb-3 md:mb-4 flex items-center justify-center">
-              <motion.img 
-                src={image} 
-                alt={title} 
-                className="w-full h-full object-contain filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]" 
+              <motion.img
+                src={image}
+                alt={title}
+                className="w-full h-full object-contain filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]"
                 whileHover={{ y: -6, filter: "drop-shadow(0 20px 20px rgba(124,108,255,0.3))" }}
                 transition={{ type: "spring", stiffness: 300 }}
                 onError={() => setImgError(true)}
