@@ -132,8 +132,8 @@ function FocusTimerWidget() {
       <button
         onClick={() => setRunning((r) => !r)}
         className={`text-xs font-bold px-4 py-1.5 rounded-full transition-all duration-300 ${running
-            ? "bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30"
-            : "bg-neonPrimary/20 text-neonPrimary border border-neonPrimary/30 hover:bg-neonPrimary/30"
+          ? "bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30"
+          : "bg-neonPrimary/20 text-neonPrimary border border-neonPrimary/30 hover:bg-neonPrimary/30"
           }`}
       >
         {running ? "Pause" : "Start Focus"}
@@ -388,8 +388,8 @@ function Dashboard() {
                       key={t.id}
                       onClick={() => setAppTheme(t.id)}
                       className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all border ${theme === t.id
-                          ? "bg-neonPrimary/20 border-neonPrimary text-white shadow-[0_0_10px_rgba(124,108,255,0.3)]"
-                          : "bg-slate-900/60 border-white/5 text-gray-400 hover:bg-white/5 hover:text-gray-200"
+                        ? "bg-neonPrimary/20 border-neonPrimary text-white shadow-[0_0_10px_rgba(124,108,255,0.3)]"
+                        : "bg-slate-900/60 border-white/5 text-gray-400 hover:bg-white/5 hover:text-gray-200"
                         }`}
                     >
                       <div className={theme === t.id ? "text-neonPrimary" : "text-gray-500"}>
@@ -639,7 +639,7 @@ function Dashboard() {
             <div className="absolute top-0 right-10 w-20 h-20 bg-gradient-to-br from-neonSecondary to-neonPrimary rounded-full blur-md opacity-30 shadow-[0_0_40px_rgba(0,229,255,0.2)]"></div>
             <div className="absolute bottom-10 left-0 w-32 h-32 bg-gradient-to-br from-neonPrimary to-neonAccent rounded-full blur-md opacity-30 shadow-[0_0_50px_rgba(124,108,255,0.2)]"></div>
             <div className="absolute top-1/2 left-0 w-12 h-12 bg-neonHighlight/20 rounded-full blur-xl opacity-20"></div>
-            
+
             {/* Center static glow */}
             <div className="w-40 h-40 bg-neonPrimary/10 rounded-full blur-[80px]"></div>
           </div>
