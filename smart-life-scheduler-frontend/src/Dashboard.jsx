@@ -633,84 +633,76 @@ function Dashboard() {
         </motion.div>
 
         {/* Right side: Decorative orbs + Illustration */}
-        <div className="hidden md:flex flex-col items-center gap-12 relative w-full">
+        <div className="hidden md:flex flex-col items-center justify-center gap-12 relative w-full h-[600px]">
           {/* Decorative Orbs */}
-          <div className="relative w-80 h-80 rounded-full border border-white/5 flex items-center justify-center animate-[spin_60s_linear_infinite] pointer-events-none">
-            <div className="absolute top-0 right-10 w-16 h-16 bg-gradient-to-br from-neonSecondary to-neonPrimary rounded-full blur-sm opacity-40 shadow-[0_0_20px_rgba(0,229,255,0.3)]"></div>
-            <div className="absolute bottom-10 left-0 w-28 h-28 bg-gradient-to-br from-neonPrimary to-neonAccent rounded-full blur-sm opacity-40 shadow-[0_0_30px_rgba(124,108,255,0.3)]"></div>
-            <div className="absolute top-1/2 left-0 w-10 h-10 bg-neonHighlight/20 rounded-full blur-md opacity-30"></div>
+          <div className="absolute top-20 w-96 h-96 rounded-full border border-white/5 flex items-center justify-center animate-[spin_60s_linear_infinite] pointer-events-none">
+            <div className="absolute top-0 right-10 w-20 h-20 bg-gradient-to-br from-neonSecondary to-neonPrimary rounded-full blur-md opacity-30 shadow-[0_0_40px_rgba(0,229,255,0.2)]"></div>
+            <div className="absolute bottom-10 left-0 w-32 h-32 bg-gradient-to-br from-neonPrimary to-neonAccent rounded-full blur-md opacity-30 shadow-[0_0_50px_rgba(124,108,255,0.2)]"></div>
+            <div className="absolute top-1/2 left-0 w-12 h-12 bg-neonHighlight/20 rounded-full blur-xl opacity-20"></div>
           </div>
 
-          {/* Premium Glassmorphism Illustration Image with Tilt */}
+          {/* Premium Borderless Illustration Image with Tilt */}
           <Tilt
-            glareEnable={true}
-            glareMaxOpacity={0.2}
-            glareColor="#ffffff"
-            glarePosition="all"
-            scale={1.05}
-            tiltMaxAngleX={12}
-            tiltMaxAngleY={12}
-            perspective={1000}
-            transitionSpeed={1500}
-            className="w-full h-[450px] relative z-20 pointer-events-auto cursor-pointer"
+            glareEnable={false}
+            scale={1.08}
+            tiltMaxAngleX={15}
+            tiltMaxAngleY={15}
+            perspective={1200}
+            transitionSpeed={2000}
+            className="w-full h-full relative z-20 pointer-events-auto cursor-pointer flex items-center justify-center"
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 40 }}
+              initial={{ opacity: 0, scale: 0.9, y: 50 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-              className="relative w-full h-full rounded-[4rem] bg-white/[0.03] border border-white/10 backdrop-blur-2xl shadow-[0_40px_100px_rgba(0,0,0,0.6)] flex items-center justify-center group overflow-hidden"
+              transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full max-w-[450px] aspect-square flex items-center justify-center group"
             >
-              {/* Dynamic Inner Glow */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-neonPrimary/15 via-transparent to-neonAccent/15 opacity-70 group-hover:opacity-100 transition-opacity duration-700"></div>
+              {/* Dynamic Ambient Glows (Borderless) */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-neonPrimary/10 via-transparent to-neonAccent/10 opacity-60 blur-[100px] group-hover:opacity-100 transition-opacity duration-1000"></div>
               
-              {/* Pulsing background blobs */}
+              {/* Pulsing environment blobs */}
               <motion.div 
                 animate={{ 
-                  x: [0, 60, 0], 
-                  y: [0, -60, 0],
-                  scale: [1, 1.2, 1]
+                  x: [0, 100, 0], 
+                  y: [0, -100, 0],
+                  scale: [1, 1.5, 1]
                 }}
-                transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-20 -right-20 w-64 h-64 bg-neonPrimary/15 blur-[80px] rounded-full"
+                transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-0 right-0 w-80 h-80 bg-neonPrimary/10 blur-[120px] rounded-full"
               />
               <motion.div 
                 animate={{ 
-                  x: [0, -80, 0], 
-                  y: [0, 80, 0],
-                  scale: [1, 1.3, 1]
+                  x: [0, -120, 0], 
+                  y: [0, 120, 0],
+                  scale: [1, 1.6, 1]
                 }}
-                transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute -bottom-32 -left-20 w-80 h-80 bg-neonSecondary/10 blur-[100px] rounded-full"
+                transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-neonSecondary/5 blur-[150px] rounded-full"
               />
 
               {/* Main Illustration Container */}
-              <div className="relative z-10 w-full h-full flex items-center justify-center p-6">
+              <div className="relative z-10 w-full h-full flex items-center justify-center p-4">
                 <motion.div
                   animate={{ 
-                    y: [0, -20, 0],
-                    rotateZ: [-1, 1, -1]
+                    y: [0, -30, 0],
+                    rotateZ: [-2, 2, -2],
+                    scale: [1, 1.02, 1]
                   }}
-                  transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                  className="relative w-full max-w-[320px] drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)]"
+                  transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                  className="relative w-full max-w-[380px]"
                 >
                   <img 
                     src="/assets/3d/glass_illustration.png" 
                     alt="Smart Life Illustration" 
-                    className="w-full h-auto object-contain filter brightness-110 contrast-105 group-hover:scale-[1.02] transition-transform duration-700"
+                    className="w-full h-auto object-contain filter brightness-110 contrast-110 drop-shadow-[0_40px_80px_rgba(0,0,0,0.4)] transition-all duration-700 hover:brightness-125"
                     loading="eager"
                   />
                   
-                  {/* Enhanced Glow beneath the image */}
-                  <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-48 h-12 bg-neonPrimary/30 blur-3xl rounded-full opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                  {/* Floating environment glow beneath the image */}
+                  <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-64 h-24 bg-neonPrimary/25 blur-[60px] rounded-full opacity-50 group-hover:opacity-80 transition-opacity"></div>
+                  <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-40 h-10 bg-white/10 blur-2xl rounded-full"></div>
                 </motion.div>
               </div>
-
-              {/* Dynamic Reflection shimmer */}
-              <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-gradient-to-br from-transparent via-white/[0.05] to-transparent skew-x-[-25deg] animate-[shimmer_10s_infinite_linear]"></div>
-              
-              {/* Border shine effect */}
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
             </motion.div>
           </Tilt>
         </div>
