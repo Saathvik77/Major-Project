@@ -1,6 +1,7 @@
 const IntelligenceReport = require("../models/IntelligenceReport");
 const IntelligenceHistory = require("../models/IntelligenceHistory");
 const Task = require("../models/Task");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const { runIntelligencePipeline } = require("../intelligence/intelligenceEngine");
 const calculateAdvancedAnalytics = require("../services/advancedAnalyticsService");
@@ -216,9 +217,82 @@ const getRecommendations = async (req, res) => {
   }
 };
 
+/* =====================================================
+   AI WEEKLY CHALLENGE (GEMINI API)
+===================================================== */
+const getWeeklyChallenge = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Fetch tasks for the user
+    const tasks = await Task.find({ user: userId });
+
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({ message: "Gemini API key is not configured in the backend." });
+    }
+
+    const pending = tasks.filter((t) => !t.completed);
+    const completed = tasks.filter((t) => t.completed);
+
+    const taskSummary = `
+User has ${tasks.length} total tasks.
+Completed tasks (${completed.length}): ${completed.map((t) => t.title).slice(0, 10).join(", ") || "none"}.
+Pending tasks (${pending.length}): ${pending.map((t) => t.title).slice(0, 10).join(", ") || "none"}.
+    `.trim();
+
+    const prompt = `You are a personal productivity and wellness coach inside a Smart Life Scheduler app.
+Based on the user's task data below, generate ONE specific, achievable weekly health & productivity challenge for them.
+The challenge should be directly inspired by their actual tasks and patterns.
+Do not use markdown blocks for JSON. Output ONLY raw JSON block. It MUST be valid JSON, no trailing commas.
+
+${taskSummary}
+
+Respond ONLY with valid JSON, no markdown, no explanation. Use this exact format:
+{
+  "title": "Short challenge title (max 6 words)",
+  "description": "One sentence explaining why this challenge fits their tasks",
+  "target": 7,
+  "unit": "days",
+  "type": "health"
+}
+Note: "type" can be ONE of these exact string values: "health", "productivity", "focus", or "fitness".`;
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
+
+    // Clean up response text to ensure it's parseable JSON
+    const cleanJson = responseText.replace(/```json|```/gi, "").trim();
+
+    let parsedResult;
+    try {
+      parsedResult = JSON.parse(cleanJson);
+    } catch (parseError) {
+      console.error("Failed to parse Gemini output:", cleanJson);
+      // Fallback
+      parsedResult = {
+        title: "Stay Hydrated",
+        description: "Drink 2.5L Water Daily to maintain essential focus based on your task load.",
+        target: 7,
+        unit: "days",
+        type: "health"
+      };
+    }
+
+    res.json(parsedResult);
+
+  } catch (error) {
+    console.error("WEEKLY CHALLENGE ERROR:", error);
+    res.status(500).json({ message: "Failed to generate weekly challenge." });
+  }
+};
+
 module.exports = {
   runIntelligence,
   getSummary,
   getProductivity,
   getRecommendations,
+  getWeeklyChallenge,
 };
