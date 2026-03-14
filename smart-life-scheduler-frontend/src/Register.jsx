@@ -32,7 +32,9 @@ function Register() {
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "GitHub Registration failed.");
+      if (!err.response) setError("Network error: Please ensure the backend server is running.");
+      else if (err.response?.data?.errors) setError(err.response.data.errors.join(", "));
+      else setError(err.response?.data?.message || "GitHub Registration failed.");
     } finally {
       setLoading(false);
     }
@@ -53,7 +55,9 @@ function Register() {
       localStorage.setItem("token", loginRes.data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Registration Failed");
+      if (!err.response) setError("Network error: Please ensure the backend server is running.");
+      else if (err.response?.data?.errors) setError(err.response.data.errors.join(", "));
+      else setError(err.response?.data?.message || "Registration Failed");
     } finally {
       setLoading(false);
     }

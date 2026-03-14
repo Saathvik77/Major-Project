@@ -34,7 +34,9 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "GitHub Login failed.");
+      if (!err.response) setError("Network error: Please ensure the backend server is running.");
+      else if (err.response?.data?.errors) setError(err.response.data.errors.join(", "));
+      else setError(err.response?.data?.message || "GitHub Login failed.");
     } finally {
       setLoading(false);
     }
@@ -50,7 +52,9 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      if (!err.response) setError("Network error: Please ensure the backend server is running.");
+      else if (err.response?.data?.errors) setError(err.response.data.errors.join(", "));
+      else setError(err.response?.data?.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -70,7 +74,9 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Phone login failed. Have you added it to your profile?");
+      if (!err.response) setError("Network error: Please ensure the backend server is running.");
+      else if (err.response?.data?.errors) setError(err.response.data.errors.join(", "));
+      else setError(err.response?.data?.message || "Phone login failed. Have you added it to your profile?");
     } finally {
       setLoading(false);
     }
