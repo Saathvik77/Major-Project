@@ -458,7 +458,7 @@ export default function Tasks() {
                               {...provided.dragHandleProps}
                               style={{ ...provided.draggableProps.style, transition: snapshot.isDragging ? 'none' : 'all 0.2s cubic-bezier(0.2, 0, 0, 1)' }}
                             >
-                              <TaskItem
+                                <TaskItem
                                 title={task.title}
                                 time={formatTime12Hour(task.time || task.startTime)}
                                 priority={task.priority}
@@ -466,38 +466,10 @@ export default function Tasks() {
                                 icon={Briefcase}
                                 isExpired={isExpired}
                                 isRescheduled={isRescheduled}
+                                onReschedule={() => rescheduleTask(task)}
+                                onComplete={() => completeTask(id)}
+                                onDelete={() => deleteTask(id)}
                               />
-
-                              {/* Always-visible reschedule button */}
-                              <button
-                                onClick={(e) => { e.stopPropagation(); rescheduleTask(task); }}
-                                className={`absolute right-[7.5rem] top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full border backdrop-blur-sm transition-all hover:scale-110 active:scale-95 ${
-                                  isExpired
-                                    ? 'text-orange-400 bg-orange-500/15 border-orange-500/30 shadow-[0_0_8px_rgba(249,115,22,0.3)]'
-                                    : 'text-teal-400 bg-teal-500/10 border-teal-500/20 hover:bg-teal-500/20'
-                                }`}
-                                title="Reschedule to next free slot"
-                              >
-                                <CalendarClock size={18} />
-                              </button>
-
-                              {/* Hover-only: complete + delete */}
-                              <div className="absolute right-4 top-0 bottom-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 z-20 pointer-events-auto">
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); completeTask(id); }}
-                                  className="text-emerald-500 hover:text-emerald-400 hover:scale-110 active:scale-95 transition-transform bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-sm"
-                                  title="Mark as Done"
-                                >
-                                  <CheckCircle size={22} className="drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-                                </button>
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); deleteTask(id); }}
-                                  className="text-red-500 hover:text-red-400 hover:scale-110 active:scale-95 transition-transform bg-black/40 rounded-full p-1 border border-white/5 backdrop-blur-sm"
-                                  title="Delete Task"
-                                >
-                                  <Trash2 size={22} className="drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
-                                </button>
-                              </div>
                             </div>
                           )}
                         </Draggable>

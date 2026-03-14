@@ -227,12 +227,31 @@ const getWeeklyChallenge = async (req, res) => {
     // Fetch tasks for the user
     const tasks = await Task.find({ user: userId });
 
-    if (!process.env.GEMINI_API_KEY) {
-      return res.status(500).json({ message: "Gemini API key is not configured in the backend." });
-    }
-
     const pending = tasks.filter((t) => !t.completed);
     const completed = tasks.filter((t) => t.completed);
+
+    if (!process.env.GEMINI_API_KEY) {
+      // Fallback logic for when GEMINI_API_KEY is not provided
+      const currentWeek = Math.ceil(((new Date() - new Date(new Date().getFullYear(),0,1))/86400000 + 1)/7);
+      
+      const fallbacks = [
+        { title: "Task Crusher", description: `Complete ${Math.max(3, pending.length)} tasks this week to clear your backlog based on your ${tasks.length} total tasks.`, target: Math.max(3, pending.length), unit: "tasks", type: "productivity" },
+        { title: "Deep Focus", description: "Maintain 2 hours of deep focus each day this week.", target: 14, unit: "hours", type: "focus" },
+        { title: "Stay Hydrated", description: "Drink 2.5L Water Daily to maintain essential focus.", target: 7, unit: "days", type: "health" },
+        { title: "Active Break", description: "Take a 15-minute walk after completing your daily tasks.", target: 7, unit: "days", type: "fitness" },
+        { title: "Early Bird", description: "Complete your first high-priority task before 10 AM.", target: 5, unit: "days", type: "productivity" }
+      ];
+      
+      let fallbackChallenge;
+      if (pending.length > 5) {
+          fallbackChallenge = fallbacks[0];
+      } else {
+          const index = currentWeek % fallbacks.length;
+          fallbackChallenge = fallbacks[index];
+      }
+      
+      return res.json(fallbackChallenge);
+    }
 
     const taskSummary = `
 User has ${tasks.length} total tasks.

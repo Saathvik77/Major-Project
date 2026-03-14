@@ -50,10 +50,10 @@ async function getLocationByIP() {
 
 // ─── Challenge icon & color by type ──────────────────────────────────────────
 const CHALLENGE_STYLES = {
-  health: { Icon: Heart, color: "from-pink-400 to-rose-500", iconClass: "text-pink-400", glow: "rgba(244,114,182,0.8)" },
-  productivity: { Icon: Trophy, color: "from-amber-400 to-orange-500", iconClass: "text-amber-400", glow: "rgba(251,191,36,0.8)" },
-  focus: { Icon: Brain, color: "from-purple-400 to-violet-500", iconClass: "text-purple-400", glow: "rgba(192,132,252,0.8)" },
-  fitness: { Icon: Dumbbell, color: "from-cyan-400 to-blue-500", iconClass: "text-cyan-400", glow: "rgba(34,211,238,0.8)" },
+  health: { Icon: Heart, color: "from-pink-400 to-rose-600", iconClass: "text-rose-400", glow: "rgba(244,63,94,0.8)" },
+  productivity: { Icon: Trophy, color: "from-amber-300 to-orange-600", iconClass: "text-amber-400", glow: "rgba(245,158,11,0.8)" },
+  focus: { Icon: Brain, color: "from-fuchsia-400 to-purple-600", iconClass: "text-fuchsia-400", glow: "rgba(192,38,211,0.8)" },
+  fitness: { Icon: Dumbbell, color: "from-cyan-300 to-blue-600", iconClass: "text-cyan-400", glow: "rgba(6,182,212,0.8)" },
 };
 
 function Health() {
@@ -243,8 +243,10 @@ function Health() {
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen px-4 md:px-16 py-10 relative z-10 font-sans text-white pb-28">
-      <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow" />
+    <div className="min-h-screen px-4 md:px-16 py-10 relative z-10 font-sans text-white pb-28 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#110e24] via-[#050505] to-[#000000] overflow-hidden">
+      {/* Dynamic Animated background orbs */}
+      <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-violet-600/20 rounded-full blur-[120px] -z-10 animate-pulse" />
+      <div className="fixed bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[150px] -z-10 animate-floatGlow" />
 
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
@@ -438,9 +440,9 @@ function Health() {
 
         {/* Activity Heat Map */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-start border border-white/20 shadow-2xl h-full group bg-slate-900/40">
+          <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-start border border-white/20 shadow-2xl h-full group bg-slate-900/20">
             <div className="flex items-center gap-2 mb-6">
-              <CalendarDays size={24} className="text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+              <CalendarDays size={24} className="text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
               <h3 className="text-xl font-bold tracking-tight text-white">Activity Heat Map</h3>
             </div>
 
@@ -456,12 +458,12 @@ function Health() {
                 ))}
                 {heatMapData.map((data, i) => {
                   let colorClass = "bg-white/5 border border-white/5";
-                  if (data.count === 1) colorClass = "bg-emerald-900 border border-emerald-800 shadow-[0_0_8px_rgba(6,78,59,0.5)]";
-                  else if (data.count === 2) colorClass = "bg-emerald-700 border border-emerald-600 shadow-[0_0_10px_rgba(4,120,87,0.6)]";
-                  else if (data.count >= 3) colorClass = "bg-emerald-500 border border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.8)]";
+                  if (data.count === 1) colorClass = "bg-cyan-900 border border-cyan-800 shadow-[0_0_8px_rgba(8,145,178,0.5)]";
+                  else if (data.count === 2) colorClass = "bg-cyan-700 border border-cyan-600 shadow-[0_0_10px_rgba(6,182,212,0.6)]";
+                  else if (data.count >= 3) colorClass = "bg-cyan-400 border border-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.8)]";
                   return (
                     <div key={i} className={`w-6 h-6 rounded-md transition-all duration-300 hover:scale-125 hover:z-10 relative group/tile ${colorClass}`}>
-                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-2 rounded-md opacity-0 group-hover/tile:opacity-100 pointer-events-none whitespace-nowrap z-20 shadow-xl border border-white/10">
+                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#0b0b12] text-white text-[10px] py-1 px-2 rounded-md opacity-0 group-hover/tile:opacity-100 pointer-events-none whitespace-nowrap z-20 shadow-xl border border-white/20">
                         {data.count} tasks on {data.date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                       </div>
                     </div>
@@ -474,9 +476,9 @@ function Health() {
               <span>Less</span>
               <div className="flex gap-1">
                 <div className="w-3 h-3 rounded-sm bg-white/5 border border-white/5" />
-                <div className="w-3 h-3 rounded-sm bg-emerald-900 border border-emerald-800" />
-                <div className="w-3 h-3 rounded-sm bg-emerald-700 border border-emerald-600" />
-                <div className="w-3 h-3 rounded-sm bg-emerald-500 border border-emerald-400" />
+                <div className="w-3 h-3 rounded-sm bg-cyan-900 border border-cyan-800" />
+                <div className="w-3 h-3 rounded-sm bg-cyan-700 border border-cyan-600" />
+                <div className="w-3 h-3 rounded-sm bg-cyan-400 border border-cyan-300" />
               </div>
               <span>More</span>
             </div>
