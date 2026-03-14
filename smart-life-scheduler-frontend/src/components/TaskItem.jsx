@@ -1,4 +1,4 @@
-import { CheckCircle, AlertTriangle, ArrowUpCircle, MinusCircle, Clock, CalendarClock } from "lucide-react";
+import { CheckCircle, AlertTriangle, ArrowUpCircle, MinusCircle, Clock, CalendarClock, Trash2 } from "lucide-react";
 import React from 'react';
 
 export default function TaskItem({ title, time, priority, icon: Icon, onClick, isExpired, isRescheduled, onReschedule, onComplete, onDelete }) {

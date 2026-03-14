@@ -449,7 +449,7 @@ export default function Tasks() {
                       const isRescheduled = rescheduledIds.has(id);
 
                       return (
-                        <Draggable key={id} draggableId={id} index={index}>
+                        <Draggable key={id} draggableId={String(id)} index={index}>
                           {(provided, snapshot) => (
                             <div
                               className={`relative group ${snapshot.isDragging ? 'shadow-2xl shadow-indigo-500/20 scale-[1.02] z-50' : ''}`}
