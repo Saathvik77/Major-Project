@@ -53,7 +53,11 @@ function Register() {
       localStorage.setItem("token", loginRes.data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Registration Failed");
+      if (!err.response) {
+        setError("Network error: The backend server might be starting up. Please wait 30 seconds and try again.");
+      } else {
+        setError(err.response?.data?.message || err.message || "Registration Failed");
+      }
     } finally {
       setLoading(false);
     }

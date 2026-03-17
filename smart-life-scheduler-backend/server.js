@@ -21,7 +21,8 @@ app.use(cors({
     "http://localhost:5174",
     "http://localhost:5175",
     "http://localhost:5176",
-    "https://smart-life-scheduler.vercel.app"
+    "https://smart-life-scheduler.vercel.app",
+    /\.vercel\.app$/ // Allow all Vercel deployments
   ],
   credentials: true
 }));

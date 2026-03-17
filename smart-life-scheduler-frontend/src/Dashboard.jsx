@@ -243,7 +243,7 @@ function Dashboard() {
         setError(null);
       } catch (err) {
         console.error("Failed to fetch tasks dashboard stats", err);
-        setError("Failed to load tasks.");
+        setError(err.response ? "Failed to load tasks." : "Network error: The backend server might be starting up. Please wait 30 seconds and refresh.");
       } finally {
         setLoading(false);
       }

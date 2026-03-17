@@ -99,6 +99,7 @@ export default function Tasks() {
   const [aiExplanation, setAiExplanation] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingStep, setGeneratingStep] = useState(0);
+  const [fetchError, setFetchError] = useState("");
 
   // Expiry state
   const [expiredIds, setExpiredIds]               = useState(new Set());      // task IDs that are expired
@@ -113,6 +114,7 @@ export default function Tasks() {
   // ── Fetch tasks ────────────────────────────────────────────────────────
   const fetchTasks = useCallback(async () => {
     try {
+      setFetchError("");
       const res = await api.get("/tasks?limit=50");
       let fetchedTasks = res.data.tasks || [];
 
@@ -137,6 +139,11 @@ export default function Tasks() {
       setTasks(fetchedTasks);
     } catch (err) {
       console.error("Fetch error:", err.response?.data || err);
+      if (!err.response) {
+        setFetchError("Network error: Server might be starting up. Please wait...");
+      } else {
+        setFetchError("Failed to fetch tasks.");
+      }
     }
   }, [selectedDate]);
 
@@ -437,6 +444,12 @@ export default function Tasks() {
             </div>
             <MoreHorizontal size={20} className="text-gray-400 cursor-pointer hover:text-white transition-colors" />
           </div>
+
+          {fetchError && (
+            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-sm font-medium text-center animate-pulse">
+              {fetchError}
+            </div>
+          )}
 
           <div className="space-y-0">
             <DragDropContext onDragEnd={onDragEnd}>

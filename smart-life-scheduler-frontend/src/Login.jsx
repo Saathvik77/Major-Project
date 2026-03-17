@@ -50,7 +50,11 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      if (!err.response) {
+        setError("Network error: The backend server might be starting up (especially on Render free tier). Please wait 30 seconds and try again.");
+      } else {
+        setError(err.response?.data?.message || "Login failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -70,7 +74,11 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Phone login failed. Have you added it to your profile?");
+      if (!err.response) {
+        setError("Network error: The backend server might be starting up. Please wait 30 seconds and try again.");
+      } else {
+        setError(err.response?.data?.message || "Phone login failed. Have you added it to your profile?");
+      }
     } finally {
       setLoading(false);
     }
