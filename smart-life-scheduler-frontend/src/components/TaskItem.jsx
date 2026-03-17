@@ -1,7 +1,7 @@
-import { CheckCircle, AlertTriangle, ArrowUpCircle, MinusCircle, Clock, CalendarClock } from "lucide-react";
+import { CheckCircle, AlertTriangle, ArrowUpCircle, MinusCircle, Clock, CalendarClock, Trash2 } from "lucide-react";
 import React from 'react';
 
-export default function TaskItem({ title, time, priority, icon: Icon, onClick, isExpired, isRescheduled }) {
+export default function TaskItem({ title, time, priority, icon: Icon, onClick, isExpired, isRescheduled, onReschedule, onComplete, onDelete }) {
   const priorityStyles = {
     high: 'text-white bg-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.4)] border border-red-500/50',
     medium: 'text-amber-100 bg-amber-500/30 border border-amber-500/30 shadow-[0_0_8px_rgba(245,158,11,0.2)]',
@@ -64,6 +64,43 @@ export default function TaskItem({ title, time, priority, icon: Icon, onClick, i
           <span className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide ${badgeStyle}`}>
             {priority.charAt(0).toUpperCase() + priority.slice(1)}
           </span>
+        )}
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+        {onReschedule && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onReschedule(); }}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-transform hover:scale-105 active:scale-95 ${
+              isExpired
+                ? 'text-orange-400 bg-orange-500/15 border border-orange-500/30'
+                : 'text-teal-400 bg-teal-500/10 border border-teal-500/20 hover:bg-teal-500/20'
+            }`}
+          >
+            <CalendarClock size={14} />
+            <span className="hidden sm:inline">Reschedule</span>
+          </button>
+        )}
+        
+        {onComplete && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onComplete(); }}
+            className="text-emerald-500 hover:text-emerald-400 bg-white/5 hover:bg-white/10 p-2 rounded-xl transition-all"
+            title="Mark as Done"
+          >
+            <CheckCircle size={18} />
+          </button>
+        )}
+
+        {onDelete && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onDelete(); }}
+            className="text-red-500 hover:text-red-400 bg-white/5 hover:bg-white/10 p-2 rounded-xl transition-all"
+            title="Delete Task"
+          >
+            <Trash2 size={18} />
+          </button>
         )}
       </div>
     </div>
