@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import API from "./api";
+import api from "./api";
 import { User, Mail, Lock, Github, CheckCircle2, Phone } from "lucide-react";
 
 function Register() {
@@ -28,7 +28,7 @@ function Register() {
   const handleGithubRegister = async (code) => {
     try {
       setLoading(true);
-      const res = await API.post("/auth/github", { code });
+      const res = await api.post("/auth/github", { code });
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
@@ -50,8 +50,8 @@ function Register() {
     setLoading(true);
 
     try {
-      await API.post("/auth/register", formData);
-      const loginRes = await API.post("/auth/login", { email: formData.email, password: formData.password });
+      await api.post("/auth/register", formData);
+      const loginRes = await api.post("/auth/login", { email: formData.email, password: formData.password });
       localStorage.setItem("token", loginRes.data.token);
       navigate("/dashboard");
     } catch (err) {

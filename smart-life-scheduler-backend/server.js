@@ -16,14 +16,10 @@ app.use(helmet());
 const cors = require("cors");
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:5175",
-    "http://localhost:5176",
-    "https://smart-life-scheduler.vercel.app",
-    /\.vercel\.app$/ // Allow all Vercel deployments
-  ],
+  origin: (origin, callback) => {
+    // Allow all origins for debugging
+    callback(null, true);
+  },
   credentials: true
 }));
 

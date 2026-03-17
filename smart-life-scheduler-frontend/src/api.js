@@ -19,8 +19,11 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (!error.response) {
-      // Possible network error or backend down
-      console.error("Network Error: Could not reach the server.");
+      console.error("Network Error Details:", {
+        message: error.message,
+        code: error.code,
+        config: error.config
+      });
     }
     return Promise.reject(error);
   }
