@@ -5,20 +5,22 @@ import {
   Dumbbell, Briefcase, BookOpen, Trash2, Plus, SlidersHorizontal,
   ChevronDown, CheckCircle, Sparkles, Bot, CalendarClock, Bell, X,
   AlertCircle, Layout, Eye, Lightbulb, BarChart3 as BarChartIcon,
-  Timer, TrendingUp, BrainCircuit
+  Timer, TrendingUp, BrainCircuit, Zap, Calendar as CalendarIcon
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { motion } from "framer-motion";
 import TaskItem from "../components/TaskItem";
+import Toast from "../components/Toast";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
-const formatTime12Hour = (timeStr) => {
-  if (!timeStr) return "--:--";
-  const [h, m] = timeStr.split(":").map(Number);
-  const ampm = h >= 12 ? "PM" : "AM";
+const formatTime12Hour = (time24) => {
+  if (!time24) return "—";
+  const [hours, minutes] = time24.split(':');
+  const h = parseInt(hours, 10);
+  const ampm = h >= 12 ? 'PM' : 'AM';
   const h12 = h % 12 || 12;
-  return `${h12}:${m.toString().padStart(2, "0")} ${ampm}`;
+  return `${h12}:${minutes} ${ampm}`;
 };
 
 const getTaskEndMs = (task) => {
@@ -65,22 +67,6 @@ function RescheduleNotification({ task, onReschedule, onDismiss }) {
   );
 }
 
-function Toast({ message, onClose }) {
-  useEffect(() => {
-    const t = setTimeout(onClose, 3500);
-    return () => clearTimeout(t);
-  }, [onClose]);
-
-  return (
-    <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] animate-slideUp">
-      <div className="glass-card px-5 py-3 text-sm font-semibold text-amber-500 flex items-center gap-2">
-        <Sparkles size={15} />
-        {message}
-      </div>
-    </div>
-  );
-}
-
 export default function Tasks() {
   const [tasks, setTasks]               = useState([]);
   const [title, setTitle]               = useState("");
@@ -92,16 +78,29 @@ export default function Tasks() {
   const [toast, setToast]                   = useState(null);
   const [isAiCoachOpen, setIsAiCoachOpen]   = useState(false);
   const [isOptimizing, setIsOptimizing]     = useState(false);
+  const [isLoading, setIsLoading]           = useState(true);
   const notifiedRef  = useRef(new Set());
   const autoRescheduledRef = useRef(new Set());
   const navigate = useNavigate();
 
   const fetchTasks = useCallback(async () => {
+    setIsLoading(true);
     try {
       const res = await api.get("/tasks?limit=50");
-      setTasks(res.data.tasks || []);
-    } catch (err) { console.error(err); }
-  }, []);
+      // Filter tasks based on the selected date
+      const allTasks = res.data.tasks || [];
+      const filtered = allTasks.filter(task => {
+        const taskDate = new Date(task.date).toISOString().split('T')[0];
+        const currentSelectedDate = selectedDate.toISOString().split('T')[0];
+        return taskDate === currentSelectedDate;
+      });
+      setTasks(filtered);
+    } catch (err) { 
+      console.error(err); 
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedDate]);
 
   useEffect(() => {
     fetchTasks();
@@ -166,14 +165,16 @@ export default function Tasks() {
   };
 
   const applyOptimization = async () => {
-    if (expiredIds.size === 0) {
+    const missedTasks = tasks.filter(t => !t.completed && expiredIds.has(t._id || t.id));
+    if (missedTasks.length === 0) {
       setToast("No missed tasks to optimize!");
       return;
     }
     setIsOptimizing(true);
     try {
+      // 🚀 WOW FEATURE: SMART AUTO RESCHEDULE
       // Reschedule all missed tasks concurrently
-      const promises = Array.from(expiredIds).map(id => api.post(`/tasks/${id}/reschedule`));
+      const promises = missedTasks.map(task => api.post(`/tasks/${task._id || task.id}/reschedule`));
       const results = await Promise.all(promises);
       
       const newTasksMap = new Map();
@@ -184,8 +185,15 @@ export default function Tasks() {
 
       // Update state
       setTasks(prev => prev.map(t => newTasksMap.has(t._id || t.id) ? newTasksMap.get(t._id || t.id) : t));
-      setExpiredIds(new Set());
-      setToast(`${results.length} tasks successfully optimized and rescheduled!`);
+      
+      // Clear expired IDs for the rescheduled tasks
+      setExpiredIds(prev => {
+        const next = new Set(prev);
+        results.forEach(res => next.delete(res.data.task._id || res.data.task.id));
+        return next;
+      });
+      
+      setToast(`Neural sync complete! ${results.length} tasks successfully optimized and rescheduled.`);
     } catch (err) {
       console.error(err);
       setToast("Optimization encountered an error.");
@@ -232,7 +240,9 @@ export default function Tasks() {
     <div className="min-h-screen bg-transparent pl-0 md:pl-[84px] pb-24 md:pb-0 text-white page-transition">
       
       {pendingNotification && <RescheduleNotification task={pendingNotification} onReschedule={rescheduleTask} onDismiss={() => setPendingNotification(null)} />}
-      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+      <AnimatePresence>
+        {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+      </AnimatePresence>
 
       <div className="max-w-[1400px] mx-auto p-6 lg:p-10 relative z-10 w-full flex flex-col gap-8">
         
@@ -292,42 +302,101 @@ export default function Tasks() {
                 </div>
               </div>
 
-              <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-                <DragDropContext onDragEnd={onDragEnd}>
-                  <Droppable droppableId="tasks-list">
-                    {(provided) => (
-                      <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-3">
-                        {tasks.filter(t => !t.completed).map((task, index) => {
-                          const id = task._id || task.id;
-                          return (
-                            <Draggable key={id} draggableId={String(id)} index={index}>
-                              {(provided) => (
-                                <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                  <TaskItem 
-                                    title={task.title}
-                                    time={formatTime12Hour(task.startTime)}
-                                    priority={task.priority}
-                                    onComplete={() => completeTask(id)}
-                                    onDelete={() => deleteTask(id)}
-                                    onReschedule={() => rescheduleTask(task)}
-                                    isExpired={expiredIds.has(id)}
-                                    category={task.category || "General"}
-                                  />
-                                </div>
-                              )}
-                            </Draggable>
-                          );
-                        })}
-                        {provided.placeholder}
+              <div className="space-y-8 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                
+                {isLoading ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3].map(i => (
+                      <div key={i} className="glass-card p-4 h-20 skeleton rounded-2xl border-none" />
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    {/* Missed Tasks Section */}
+                    {tasks.filter(t => !t.completed && expiredIds.has(t._id || t.id)).length > 0 && (
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 px-1">
+                          <AlertCircle size={14} className="text-rose-500" />
+                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-500/80">Missed Tasks</h4>
+                        </div>
+                        <div className="space-y-3">
+                          {tasks.filter(t => !t.completed && expiredIds.has(t._id || t.id)).map((task, index) => (
+                            <TaskItem 
+                              key={task._id || task.id}
+                              title={task.title}
+                              time={formatTime12Hour(task.startTime)}
+                              priority={task.priority}
+                              onComplete={() => completeTask(task._id || task.id)}
+                              onDelete={() => deleteTask(task._id || task.id)}
+                              onReschedule={() => rescheduleTask(task)}
+                              isExpired={true}
+                              category={task.category || "General"}
+                              className="task-missed"
+                            />
+                          ))}
+                        </div>
                       </div>
                     )}
-                  </Droppable>
-                </DragDropContext>
+
+                    {/* Today's Tasks Section */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 px-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Today's Schedule</h4>
+                      </div>
+                      
+                      {tasks.filter(t => !t.completed && !expiredIds.has(t._id || t.id)).length === 0 ? (
+                        <motion.div 
+                          initial={{ opacity: 0 }} 
+                          animate={{ opacity: 1 }}
+                          className="py-12 flex flex-col items-center justify-center text-center glass-card border-dashed bg-white/[0.01]"
+                        >
+                          <div className="w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 mb-4">
+                            <CheckCircle size={32} strokeWidth={1.5} />
+                          </div>
+                          <h4 className="text-white font-bold">No tasks remaining today 🎉</h4>
+                          <p className="text-xs text-gray-500 mt-1 max-w-[200px]">You're all caught up! Take some time to recharge.</p>
+                        </motion.div>
+                      ) : (
+                        <DragDropContext onDragEnd={onDragEnd}>
+                          <Droppable droppableId="tasks-list">
+                            {(provided) => (
+                              <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-3">
+                                {tasks.filter(t => !t.completed && !expiredIds.has(t._id || t.id)).map((task, index) => {
+                                  const id = task._id || task.id;
+                                  return (
+                                    <Draggable key={id} draggableId={String(id)} index={index}>
+                                      {(provided) => (
+                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                          <TaskItem 
+                                            title={task.title}
+                                            time={formatTime12Hour(task.startTime)}
+                                            priority={task.priority}
+                                            onComplete={() => completeTask(id)}
+                                            onDelete={() => deleteTask(id)}
+                                            onReschedule={() => rescheduleTask(task)}
+                                            isExpired={false}
+                                            category={task.category || "General"}
+                                          />
+                                        </div>
+                                      )}
+                                    </Draggable>
+                                  );
+                                })}
+                                {provided.placeholder}
+                              </div>
+                            )}
+                          </Droppable>
+                        </DragDropContext>
+                      )}
+                    </div>
+                  </>
+                )}
 
                 {/* Inline Add Task */}
-                <div className="glass-card p-3 flex flex-col sm:flex-row items-center gap-4 bg-white/[0.02] border-dashed border-white/10 hover:bg-white/[0.04] transition-all">
+                <div className="glass-card p-3 flex flex-col sm:flex-row items-center gap-4 bg-white/[0.02] border-dashed border-white/10 hover:bg-white/[0.04] transition-all group">
                   <div className="flex items-center gap-4 flex-1 w-full">
-                    <div className="w-10 h-10 flex items-center justify-center text-gray-600"><Plus size={20} /></div>
+                    <div className="w-10 h-10 flex items-center justify-center text-gray-600 group-hover:text-orange-500 transition-colors"><Plus size={20} /></div>
                     <input 
                       type="text" 
                       placeholder="Quick add task..." 
@@ -338,9 +407,21 @@ export default function Tasks() {
                     />
                   </div>
                   
-                  <div className="flex items-center gap-3 w-full sm:w-auto px-4 sm:px-0">
-                    <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5">
-                      <Timer size={14} className="text-amber-500" />
+                  <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto px-4 sm:px-0">
+                    {/* Date Selection */}
+                    <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 focus-within:border-orange-500/50 transition-all">
+                      <CalendarIcon size={14} className="text-orange-500" />
+                      <input 
+                        type="date" 
+                        value={selectedDate.toISOString().split('T')[0]} 
+                        onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                        className="bg-transparent border-none outline-none text-[10px] font-bold text-gray-400 uppercase tracking-widest w-[110px]"
+                      />
+                    </div>
+
+                    {/* Time Selection */}
+                    <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 focus-within:border-orange-500/50 transition-all">
+                      <Timer size={14} className="text-orange-500" />
                       <input 
                         type="time" 
                         value={startTime} 
@@ -348,9 +429,15 @@ export default function Tasks() {
                         className="bg-transparent border-none outline-none text-[10px] font-bold text-gray-400 uppercase tracking-widest w-[80px]"
                       />
                     </div>
-                    <div onClick={addTask} className="p-2 bg-amber-500/20 border border-amber-500/30 rounded-lg text-amber-500 hover:bg-amber-500 hover:text-white cursor-pointer transition-all">
+
+                    <motion.div 
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={addTask} 
+                      className="p-2 bg-orange-500/20 border border-orange-500/30 rounded-lg text-orange-500 hover:bg-orange-500 hover:text-white cursor-pointer transition-all shadow-lg shadow-orange-500/10 ripple"
+                    >
                       <Plus size={18} />
-                    </div>
+                    </motion.div>
                   </div>
                 </div>
               </div>
@@ -360,60 +447,83 @@ export default function Tasks() {
           {/* Right Sidebar Column */}
           <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">
             
-            {/* AI Suggestion Widget */}
-            <div className="glass-card p-6 border-amber-500/20 bg-amber-500/[0.03]">
-              <div className="flex items-center gap-3 mb-6">
-                 <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-500 shadow-lg shadow-amber-500/10">
-                   <Bot size={20} />
-                 </div>
-                 <h3 className="text-sm font-bold tracking-widest uppercase">AI Suggestion</h3>
-              </div>
-              <div className="space-y-4">
-                <p className="text-sm text-analytics-dim leading-relaxed font-medium">
-                  You have <span className="text-white font-bold">{missedStat}</span> missed tasks today. We recommend rescheduling them to your afternoon peak focus period.
-                </p>
-                <button 
-                  onClick={applyOptimization}
-                  disabled={isOptimizing}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-[0_10px_30px_rgba(249,115,22,0.3)] disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  {isOptimizing ? <span className="animate-pulse">Optimizing...</span> : "Apply Optimization"}
-                </button>
-              </div>
-            </div>
-
-            {/* Performance Widget */}
-            <div className="glass-card p-6">
-               <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-3 text-sm font-bold tracking-widest uppercase">
-                    <TrendingUp size={18} className="text-emerald-400" />
-                    Insights
+            {/* AI Optimization Card */}
+            <div className="glass-card p-8 bg-gradient-to-br from-orange-500/5 to-transparent border-orange-500/20 relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[40px] -z-10 group-hover:bg-orange-500/20 transition-all" />
+               <div className="flex items-start justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                     <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 shadow-lg shadow-orange-500/5">
+                        <Sparkles size={24} />
+                     </div>
+                     <div>
+                        <h3 className="text-lg font-black text-white tracking-tight">Neural Sync</h3>
+                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Smart Auto-Reschedule</p>
+                     </div>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
+                     <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                     <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">AI Engine Active</span>
                   </div>
                </div>
+               <p className="text-sm text-gray-400 leading-relaxed mb-8">
+                  Detected <span className="text-orange-400 font-bold">{expiredIds.size} missed syncs</span>. Our neural engine can automatically find the next optimal window based on your performance patterns.
+               </p>
+               <motion.button 
+                 whileHover={{ scale: 1.02, y: -2 }}
+                 whileTap={{ scale: 0.98 }}
+                 onClick={applyOptimization}
+                 disabled={isOptimizing || expiredIds.size === 0}
+                 className="w-full py-4 rounded-[1.25rem] bg-orange-500 text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-3 ripple"
+               >
+                  {isOptimizing ? (
+                    <>
+                      <RefreshCcw size={16} className="animate-spin" />
+                      Synchronizing Neural Flow...
+                    </>
+                  ) : (
+                    <>
+                      <Zap size={16} fill="currentColor" />
+                      Apply Neural Optimization
+                    </>
+                  )}
+               </motion.button>
+            </div>
+
+            {/* Day Stats Ring (Glassmorphism design) */}
+            <div className="glass-card p-8 flex flex-col items-center justify-center relative overflow-hidden group">
+               <div className="absolute top-0 left-0 w-full h-full bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+               <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-8 self-start flex items-center gap-2">
+                  <TrendingUp size={14} className="text-orange-500" />
+                  Neural Momentum
+               </h3>
                
-               <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                     <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Completed</span>
-                     <span className="text-lg font-black">{completedStat}</span>
+               <div className="relative w-48 h-48 mb-8">
+                  <svg className="w-full h-full transform -rotate-90">
+                    <circle cx="96" cy="96" r="88" className="stroke-white/5 fill-none" strokeWidth="10" />
+                    <motion.circle 
+                      cx="96" cy="96" r="88" 
+                      className="stroke-orange-500 fill-none shadow-[0_0_15px_rgba(255,140,60,0.4)]" 
+                      strokeWidth="10" 
+                      strokeLinecap="round"
+                      initial={{ strokeDasharray: "0 553" }}
+                      animate={{ strokeDasharray: `${(percentStat / 100) * 553} 553` }}
+                      transition={{ duration: 2, ease: "easeOut" }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-4xl font-black text-white tracking-tighter">{percentStat}%</span>
+                    <span className="text-[8px] font-black uppercase text-gray-500 tracking-widest mt-1">Focus Flow</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                     <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Missed</span>
-                     <span className="text-lg font-black text-rose-500">{missedStat}</span>
+               </div>
+
+               <div className="grid grid-cols-2 gap-4 w-full">
+                  <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
+                     <p className="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Completed</p>
+                     <p className="text-lg font-black text-orange-500">{completedStat}</p>
                   </div>
-                  
-                  <div className="pt-4 border-t border-white/5">
-                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Progress</span>
-                        <span className="text-2xl font-black text-amber-glow">{percentStat}%</span>
-                     </div>
-                     <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          animate={{ width: `${percentStat}%` }}
-                          transition={{ duration: 1.5 }}
-                          className="h-full bg-gradient-to-r from-amber-500 to-orange-500"
-                        />
-                     </div>
+                  <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
+                     <p className="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Remaining</p>
+                     <p className="text-lg font-black text-white">{tasks.length - completedStat}</p>
                   </div>
                </div>
             </div>

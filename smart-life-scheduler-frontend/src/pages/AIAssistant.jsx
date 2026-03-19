@@ -1,21 +1,62 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { 
+  ChevronLeft, 
+  Bot, 
+  User, 
+  Send, 
+  Sparkles, 
+  ClipboardList, 
+  Calendar, 
+  Zap, 
+  Activity,
+  Brain,
+  TrendingUp,
+  MoreHorizontal,
+  Layout,
+  PieChart,
+  MessageSquare
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Send, Bot, Sparkles, User, Zap, ClipboardList, Calendar, CheckCircle2 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import api from "../api";
-import { ThemeContext } from "../ThemeContext";
+import { motion, AnimatePresence } from "framer-motion";
 
-function AIAssistant() {
+const QuickActionCard = ({ icon: Icon, label, onClick }) => (
+  <motion.button
+    whileHover={{ scale: 1.05, y: -2 }}
+    whileTap={{ scale: 0.95 }}
+    onClick={onClick}
+    className="flex flex-col items-center justify-center gap-3 p-6 glass-card hover:bg-orange-500/10 hover:border-orange-500/30 transition-all text-center group"
+  >
+    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-orange-500 transition-colors">
+      <Icon size={24} />
+    </div>
+    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 group-hover:text-white transition-colors">{label}</span>
+  </motion.button>
+);
+
+const InsightItem = ({ label, value, trend, trendUp }) => (
+  <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all">
+    <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">{label}</p>
+    <div className="flex items-center justify-between">
+      <p className="text-lg font-black text-white">{value}</p>
+      <div className={`flex items-center gap-1 text-[9px] font-black uppercase ${trendUp ? 'text-emerald-500' : 'text-rose-500'}`}>
+        {trendUp ? <TrendingUp size={10} /> : <TrendingUp size={10} className="rotate-180" />}
+        {trend}
+      </div>
+    </div>
+  </div>
+);
+
+const AIAssistant = () => {
   const navigate = useNavigate();
-  const { theme } = useContext(ThemeContext);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Hello! I'm your Smart Life Assistant. I can help you manage your tasks, schedule your day, or provide productivity insights. What would you like to do today?",
+      content: "Neural interface synchronized. I'm your Smart Life Assistant, ready to optimize your operational flow. How can I help you today?",
     },
   ]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -24,163 +65,204 @@ function AIAssistant() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isTyping]);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  const handleSend = async (overrideInput) => {
+    const messageText = overrideInput || input;
+    if (!messageText.trim()) return;
 
-    const userMessage = { role: "user", content: input };
+    const userMessage = { role: "user", content: messageText };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
-    setIsLoading(true);
+    setIsTyping(true);
 
     try {
-      // In a real scenario, this would call a specialized endpoint that can execute tasks.
-      // For now, we'll simulate task-based intelligence using the existing chatbot logic or a mockup.
-      const response = await api.post("/ai/chat", { message: input });
-      const assistantMessage = {
-        role: "assistant",
-        content: response.data.reply || "I've processed your request. Is there anything else I can help with?",
-        actions: response.data.actions || [], // Simulated actions like "taskCreated"
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+      const response = await api.post("/ai/chat", { message: messageText });
+      
+      // Simulate thinking time for premium feel
+      setTimeout(() => {
+        const assistantMessage = {
+          role: "assistant",
+          content: response.data.reply || "Neural optimization complete. Is there anything else I can assist with?",
+          actions: response.data.actions || [],
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+        setIsTyping(false);
 
-      // If the AI performed a task, we might want to trigger a refresh elsewhere
-      if (response.data.actions?.length > 0) {
-        window.dispatchEvent(new Event("tasksUpdated"));
-      }
+        if (response.data.actions?.length > 0) {
+          window.dispatchEvent(new Event("tasksUpdated"));
+        }
+      }, 1000);
     } catch (error) {
       console.error("AI Assistant Error:", error);
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Sorry, I encountered an error processing your request. Please try again." },
+        { role: "assistant", content: "Signal interference detected. Please re-transmit your command." },
       ]);
-    } finally {
-      setIsLoading(false);
+      setIsTyping(false);
     }
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-8 text-white relative flex flex-col max-w-5xl mx-auto pb-24">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
+      {/* Lighting FX */}
+      <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
+      
       {/* Header */}
-      <div className="flex items-center gap-4 mb-8">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 hover:bg-white/10 transition text-white"
-        >
-          <ChevronLeft size={24} />
-        </button>
-        <div>
-          <h1 className="text-3xl font-black tracking-tight flex items-center gap-3">
-            <Bot className="text-neonPrimary drop-shadow-[0_0_10px_rgba(124,108,255,0.6)]" />
-            AI Smart Assistant
-          </h1>
-          <p className="text-gray-400 text-sm font-medium">Your personal life coach & task manager</p>
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {[
-          { icon: <ClipboardList size={18} />, label: "Add Task", prompt: "Add a task to buy groceries tomorrow" },
-          { icon: <Calendar size={18} />, label: "Schedule Day", prompt: "Help me plan my day for maximum productivity" },
-          { icon: <Zap size={18} />, label: "Quick Tip", prompt: "Give me a quick productivity tip" },
-          { icon: <CheckCircle2 size={18} />, label: "Summary", prompt: "Summarize my progress for today" },
-        ].map((action, i) => (
-          <motion.button
-            key={i}
-            whileHover={{ scale: 1.02, y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setInput(action.prompt)}
-            className="flex items-center justify-center gap-2 p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-neonPrimary/30 transition-all text-xs font-bold uppercase tracking-wider text-gray-300"
-          >
-            {action.icon}
-            {action.label}
-          </motion.button>
-        ))}
-      </div>
-
-      {/* Chat Container */}
-      <div className="flex-1 bg-slate-900/40 border border-white/10 rounded-3xl backdrop-blur-xl shadow-2xl p-4 md:p-6 overflow-hidden flex flex-col mb-6 min-h-[500px]">
-        <div className="flex-1 overflow-y-auto space-y-6 pr-2 scrollbar-hide">
-          <AnimatePresence initial={false}>
-            {messages.map((msg, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[85%] md:max-w-[70%] p-4 rounded-2xl flex gap-3 ${
-                    msg.role === "user"
-                      ? "bg-neonPrimary/20 border border-neonPrimary/30 text-white"
-                      : "bg-white/5 border border-white/10 text-gray-200"
-                  }`}
-                >
-                  <div className="mt-1 flex-shrink-0">
-                    {msg.role === "user" ? <User size={18} className="text-neonPrimary" /> : <Bot size={18} className="text-neonAccent" />}
-                  </div>
-                  <div>
-                    <p className="text-sm md:text-base leading-relaxed font-medium">{msg.content}</p>
-                    {msg.actions && msg.actions.length > 0 && (
-                      <div className="mt-3 pt-3 border-t border-white/10 flex flex-wrap gap-2">
-                        {msg.actions.map((act, i) => (
-                          <span key={i} className="text-[10px] font-black uppercase tracking-widest bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-md border border-emerald-500/30">
-                            {act}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-            {isLoading && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex justify-start"
-              >
-                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl flex items-center gap-2">
-                  <div className="w-2 h-2 bg-neonAccent rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                  <div className="w-2 h-2 bg-neonAccent rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-                  <div className="w-2 h-2 bg-neonAccent rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <div ref={chatEndRef} />
-        </div>
-
-        {/* Input Area */}
-        <div className="mt-6 relative">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Ask me to schedule tasks or plan your day..."
-            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-16 text-white placeholder:text-gray-500 focus:outline-none focus:border-neonPrimary/50 transition-all shadow-inner"
-          />
+      <div className="flex items-center justify-between mb-12">
+        <div className="flex items-center gap-6">
           <button
-            onClick={handleSend}
-            disabled={!input.trim() || isLoading}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 bg-neonPrimary rounded-xl text-white shadow-[0_0_15px_rgba(124,108,255,0.4)] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all"
+            onClick={() => navigate(-1)}
+            className="p-3.5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white shadow-xl"
           >
-            <Send size={20} />
+            <ChevronLeft size={24} />
           </button>
+          <div>
+            <h1 className="text-4xl font-black tracking-tighter flex items-center gap-4 text-white">
+              Neural Control Center
+            </h1>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Advanced Intelligence Node</p>
+          </div>
+        </div>
+        
+        <div className="hidden md:flex items-center gap-3 px-5 py-3 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-xl">
+           <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+           <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Core Synchronized</span>
         </div>
       </div>
 
-      {/* Footer Info */}
-      <div className="flex items-center justify-center gap-4 text-gray-500 text-[10px] font-bold uppercase tracking-widest px-6 text-center">
-        <div className="flex items-center gap-1"><Sparkles size={12} className="text-neonHighlight" /> Advanced AI Processing</div>
-        <div className="w-1 h-1 bg-white/10 rounded-full"></div>
-        <div>Real-time Task Execution Enabled</div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1 overflow-hidden">
+        
+        {/* ── Left Column: Chat Area ──────────────────────────────── */}
+        <div className="lg:col-span-8 flex flex-col gap-6 overflow-hidden">
+          <div className="flex-1 overflow-y-auto pr-4 space-y-8 custom-scrollbar min-h-[500px]">
+            <AnimatePresence initial={false}>
+              {messages.map((msg, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div className={`max-w-[85%] flex gap-5 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border shadow-lg ${
+                      msg.role === "user" ? "bg-white/5 border-white/10" : "bg-orange-500/10 border-orange-500/20 shadow-orange-500/5"
+                    }`}>
+                      {msg.role === "user" ? <User size={22} className="text-gray-400" /> : <Bot size={22} className="text-orange-500" />}
+                    </div>
+                    <div className={`p-6 rounded-[2.5rem] text-sm font-medium leading-relaxed shadow-2xl ${
+                      msg.role === "user" 
+                        ? "user-bubble text-white border border-orange-500/20 rounded-tr-none" 
+                        : "ai-bubble text-white border border-white/5 rounded-tl-none"
+                    }`}>
+                      {msg.content}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+              
+              {isTyping && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex justify-start"
+                >
+                  <div className="flex gap-5">
+                    <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center shrink-0">
+                      <Bot size={22} className="text-orange-500" />
+                    </div>
+                    <div className="px-8 py-5 ai-bubble rounded-[2.5rem] rounded-tl-none flex gap-2">
+                      <span className="w-2 h-2 bg-orange-500/40 rounded-full animate-bounce" />
+                      <span className="w-2 h-2 bg-orange-500/60 rounded-full animate-bounce [animation-delay:0.2s]" />
+                      <span className="w-2 h-2 bg-orange-500/80 rounded-full animate-bounce [animation-delay:0.4s]" />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* Input Bar */}
+          <div className="glass-card p-2.5 flex items-center gap-4 border border-white/10 shadow-2xl mt-auto">
+            <input 
+              type="text" 
+              placeholder="Transmit neural command..." 
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              className="flex-1 bg-transparent border-none outline-none px-6 py-4 text-sm font-medium text-white placeholder:text-gray-600"
+            />
+            <button 
+              onClick={() => handleSend()}
+              className="w-14 h-14 rounded-2xl bg-orange-500 flex items-center justify-center text-white shadow-xl shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all ripple"
+            >
+              <Send size={24} />
+            </button>
+          </div>
+        </div>
+
+        {/* ── Right Column: Insights & Actions ────────────────────── */}
+        <div className="lg:col-span-4 flex flex-col gap-8">
+          
+          {/* Quick Actions Grid */}
+          <div className="space-y-4">
+            <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] ml-2 flex items-center gap-2">
+               <Zap size={14} className="text-orange-500" />
+               Quick Commands
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
+              <QuickActionCard icon={ClipboardList} label="Plan Day" onClick={() => handleSend("Analyze my load and plan my day for maximum focus")} />
+              <QuickActionCard icon={Calendar} label="Optimize" onClick={() => handleSend("Reschedule my missed tasks to better times")} />
+              <QuickActionCard icon={Zap} label="Boost" onClick={() => handleSend("Give me a productivity boost tip")} />
+              <QuickActionCard icon={Brain} label="Review" onClick={() => handleSend("Review my weekly neural performance")} />
+            </div>
+          </div>
+
+          {/* AI Insights Panel */}
+          <div className="glass-card p-8 flex flex-col gap-6 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 blur-[40px] -z-10 group-hover:bg-orange-500/10 transition-all" />
+            
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                 <Sparkles size={14} className="text-orange-500" />
+                 Neural Insights
+              </h3>
+              <MoreHorizontal size={16} className="text-gray-700" />
+            </div>
+
+            <div className="space-y-4">
+              <InsightItem label="Peak Productivity" value="19:00" trend="+12%" trendUp={true} />
+              <InsightItem label="Cognitive Fatigue" value="High @ 10am" trend="-4%" trendUp={false} />
+              <InsightItem label="Success Streak" value="7 Cycles" trend="+100%" trendUp={true} />
+            </div>
+
+            <div className="mt-4 p-5 rounded-2xl bg-orange-500/5 border border-orange-500/10">
+               <p className="text-xs text-gray-400 leading-relaxed italic">
+                 "Neural patterns suggest a shift in focus windows. You're doing great, keep pushing 🔥"
+               </p>
+            </div>
+          </div>
+
+          {/* Mini Progress Card */}
+          <div className="glass-card p-6 flex items-center gap-6">
+             <div className="relative w-16 h-16 flex-shrink-0">
+                <svg className="w-full h-full transform -rotate-90">
+                  <circle cx="32" cy="32" r="28" className="stroke-white/5 fill-none" strokeWidth="6" />
+                  <circle cx="32" cy="32" r="28" className="stroke-orange-500 fill-none" strokeWidth="6" strokeDasharray="176" strokeDashoffset="44" strokeLinecap="round" />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black">75%</div>
+             </div>
+             <div>
+                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Weekly Sync</p>
+                <p className="text-sm font-black text-white">Flow Target Achieved</p>
+             </div>
+          </div>
+
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default AIAssistant;

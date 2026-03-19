@@ -5,78 +5,107 @@
 
 :root {
   /* PREMIUM WARM DARK GREY PALETTE */
-  --bg-dark: #121418;     /* Main dark grey background */
-  --bg-slate: #1c1f26;    /* Secondary layer (cards / panels) */
-  --bg-pure: #252932;     /* Lighter grey surfaces */
+  --bg-dark: #0a0c10;     /* Deep dark base */
+  --bg-slate: #141419;    /* Secondary layer */
+  --bg-pure: #1c1c22;     /* Surfaces */
   
-  --primary-amber: #f59e0b;
-  --primary-orange: #f97316;
-  --primary-blue: #3b82f6;
+  --accent: #ff8c3c;      /* Primary Orange Accent */
+  --accent-glow: rgba(255, 140, 60, 0.15);
+  
+  /* Spacing System */
+  --sp-1: 16px;
+  --sp-2: 24px;
+  --sp-3: 32px;
 }
 
-/* ── Glass Morphism ─────────────────────────────────────────
-   Add or replace this in your index.css / global.css file   */
+/* ── Global Transitions ────────────────────────────────────── */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
 
+/* ── Glass Morphism Polish ─────────────────────────────────── */
 .glass-morphism {
-  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
+  background: rgba(20, 20, 25, 0.65) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6) !important;
 }
 
 .glass-card {
-  background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255,255,255,0.08);
-  border-radius: 1.25rem;
+  background: rgba(20, 20, 25, 0.65);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.20);
+  background: rgba(25, 25, 30, 0.75);
+  transform: translateY(-5px);
+}
+
+/* Micro Interactions */
+.card-hover-lift {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover-lift:hover {
+  transform: translateY(-5px);
 }
 
 body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(rgba(10, 12, 16, 0.75), rgba(10, 12, 16, 0.75)), url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg') center/cover fixed no-repeat;
+  background: #0a0c10 url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg') center/cover fixed no-repeat;
   color: #ffffff !important;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
 }
 
-/* Base Container Glow Effect — subtle warm vignette over stone */
+/* Strong Dark Overlay to push background back - Reduced Texture Visibility */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 16, 0.85); /* Darker and more opaque to hide heavy texture */
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Base Container Glow Effect — lighting centric - Refined Glows */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   background: radial-gradient(
-    circle at 65% 15%,
+    circle at 50% 0%,
     rgba(255, 140, 60, 0.08),
-    transparent 50%
+    transparent 70%
   );
   pointer-events: none;
   z-index: 0;
 }
 
-/* Root container to ensure it stays above the z-index: 0 glow */
-body {
-  /* ...existing code... */
+/* ── Sections Spacing ─────────────────────────────────────── */
+.section-gap {
+  gap: var(--sp-2);
 }
 
-.glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.15);
-  background: rgba(15, 12, 10, 0.75);
-  transform: translateY(-4px);
+.page-padding {
+  padding: var(--sp-3);
 }
 
 /* Hero Card Special Effect */
 .hero-card {
   position: relative;
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,0.03),
-    rgba(255,255,255,0.01)
-  );
-  border-radius: 24px;
+  background: rgba(20, 20, 25, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 32px;
   overflow: hidden;
 }
 
@@ -86,42 +115,63 @@ body {
   inset: 0;
   background: radial-gradient(
     circle at top right,
-    rgba(255, 140, 60, 0.15),
-    transparent 50%
+    var(--accent-glow),
+    transparent 60%
   );
   pointer-events: none;
 }
 
 /* Sidebar Specifics */
 .sidebar-glass {
-  background: rgba(8, 6, 4, 0.85);
+  background: rgba(10, 12, 16, 0.85);
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
   border-right: 1px solid rgba(255,255,255,0.08);
 }
 
+/* Missed Task Highlight */
+.task-missed {
+  background: rgba(255, 80, 80, 0.08) !important;
+  border: 1px solid rgba(255, 80, 80, 0.25) !important;
+}
+
+/* Chart Container */
+.chart-container {
+  background: rgba(20, 20, 25, 0.7);
+  border-radius: 20px;
+  padding: var(--sp-2);
+}
+
+/* Profile Card */
+.profile-card {
+  background: rgba(20, 20, 25, 0.7);
+  padding: var(--sp-3);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 /* Scrollbars */
-::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { 
   background: rgba(255, 255, 255, 0.1); 
   border-radius: 10px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 157, 0, 0.3); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 /* Typography */
-.text-analytics-dim { color: var(--text-dim); }
+.text-accent { color: var(--accent); }
 .text-amber-glow { 
-  color: var(--primary-amber);
-  text-shadow: 0 0 15px rgba(255, 157, 0, 0.4);
+  color: var(--accent);
+  text-shadow: 0 0 15px rgba(255, 140, 60, 0.4);
 }
 
 /* UI Transitions */
 .page-transition {
-  animation: fadeIn 0.5s ease-out;
+  animation: pageFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes fadeIn {
+@keyframes pageFadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
@@ -130,5 +180,57 @@ body {
 .analytics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
+  gap: var(--sp-2);
+}
+
+/* ── Global Transitions & Animations ─────────────────────── */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition: transform 0.5s, opacity 1s;
+}
+
+.ripple:active::after {
+  transform: scale(0, 0);
+  opacity: 0.3;
+  transition: 0s;
+}
+
+/* Skeleton Loading Animation */
+@keyframes skeleton-loading {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* AI Bubble Style */
+.ai-bubble {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+.user-bubble {
+  background: rgba(255, 140, 60, 0.2);
+  border-radius: 16px;
 }

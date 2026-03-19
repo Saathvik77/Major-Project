@@ -19,7 +19,7 @@ const SidebarItem = ({ icon: Icon, to, label }) => (
     className={({ isActive }) => `
       group relative flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300
       ${isActive 
-        ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' 
+        ? 'bg-orange-500/10 text-orange-500 border border-orange-500/20' 
         : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
     `}
   >
@@ -35,7 +35,7 @@ const SidebarItem = ({ icon: Icon, to, label }) => (
       {({ isActive }) => isActive && (
         <motion.div 
           layoutId="activeSideDot"
-          className="absolute -left-1 w-1 h-3 bg-amber-500 rounded-full"
+          className="absolute -left-1 w-1 h-3 bg-orange-500 rounded-full shadow-[0_0_8px_rgba(255,140,60,0.5)]"
         />
       )}
     </NavLink>
@@ -54,7 +54,7 @@ const Sidebar = () => {
     <aside className="fixed bottom-0 md:top-0 left-0 w-full md:w-[84px] h-[72px] md:h-screen sidebar-glass flex flex-row md:flex-col items-center justify-around md:justify-start md:py-8 z-[100] border-t md:border-t-0 border-white/10 px-4 md:px-0">
       {/* Logo */}
       <div className="hidden md:flex mb-12 flex-col items-center gap-2">
-        <div className="w-12 h-12 rounded-[18px] bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
+        <div className="w-12 h-12 rounded-[18px] bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/30">
           <Bot size={24} strokeWidth={2} />
         </div>
       </div>

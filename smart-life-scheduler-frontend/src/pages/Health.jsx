@@ -243,10 +243,10 @@ function Health() {
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen px-4 md:px-16 py-10 relative z-10 font-sans text-white pb-28 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#110e24] via-[#050505] to-[#000000] overflow-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] px-4 md:px-16 py-10 relative z-10 font-sans text-white pb-32 bg-transparent overflow-hidden page-transition">
       {/* Dynamic Animated background orbs */}
-      <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-violet-600/20 rounded-full blur-[120px] -z-10 animate-pulse" />
-      <div className="fixed bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[150px] -z-10 animate-floatGlow" />
+      <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-orange-600/10 rounded-full blur-[120px] -z-10 animate-pulse" />
+      <div className="fixed bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-600/5 rounded-full blur-[150px] -z-10" />
 
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
@@ -264,20 +264,20 @@ function Health() {
         {/* ── AI Weekly Challenge ── */}
         <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable glareMaxOpacity={0.1} className="w-full h-full flex justify-center items-center">
           <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/20 rounded-full blur-3xl group-hover:bg-cyan-500/30 transition-colors" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl group-hover:bg-orange-500/20 transition-colors" />
 
             {/* Badge */}
             <div className="flex items-center gap-2 mb-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
-              <Target size={18} className="text-pink-400" />
-              <span className="text-sm font-bold tracking-widest uppercase text-pink-300">
+              <Target size={18} className="text-orange-400" />
+              <span className="text-sm font-bold tracking-widest uppercase text-orange-300">
                 AI Weekly Challenge
               </span>
-              <Sparkles size={14} className="text-yellow-300" />
+              <Sparkles size={14} className="text-amber-300" />
             </div>
 
             {challengeLoading ? (
               <div className="flex flex-col items-center justify-center py-10 gap-3">
-                <Loader2 size={36} className="text-cyan-400 animate-spin" />
+                <Loader2 size={36} className="text-orange-400 animate-spin" />
                 <p className="text-gray-400 text-sm">Analyzing your tasks with AI...</p>
               </div>
             ) : challengeError ? (
@@ -294,7 +294,7 @@ function Health() {
               <>
                 <ChallengeIcon
                   size={48}
-                  className={`mt-4 mb-3 ${challengeStyle.iconClass} drop-shadow-[0_0_15px_${challengeStyle.glow}] transform group-hover:scale-110 transition-transform duration-300`}
+                  className={`mt-4 mb-3 ${challengeStyle.iconClass.replace('rose', 'orange').replace('amber', 'orange').replace('fuchsia', 'orange').replace('cyan', 'orange')} drop-shadow-[0_0_15px_${challengeStyle.glow}] transform group-hover:scale-110 transition-transform duration-300`}
                 />
 
                 <h3 className="text-2xl font-black tracking-tight text-white mb-2 leading-tight drop-shadow-sm">
@@ -308,14 +308,14 @@ function Health() {
                 {/* Progress bar */}
                 <div className="w-full bg-slate-800/80 rounded-full h-4 mb-3 border border-slate-700/50 overflow-hidden shadow-inner">
                   <div
-                    className={`bg-gradient-to-r ${challengeStyle.color} h-full rounded-full transition-all duration-1000 ease-out`}
+                    className={`bg-gradient-to-r from-orange-400 to-orange-600 h-full rounded-full transition-all duration-1000 ease-out`}
                     style={{ width: `${(0 / (challenge.target || 7)) * 100}%` }}
                   />
                 </div>
 
                 <div className="flex justify-between w-full text-sm font-bold text-gray-300 tracking-wide mt-1">
                   <span>Progress</span>
-                  <span className="text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded-md border border-cyan-500/30">
+                  <span className="text-orange-300 bg-orange-500/20 px-2 py-0.5 rounded-md border border-orange-500/30">
                     0 / {challenge.target} {challenge.unit}
                   </span>
                 </div>
@@ -331,7 +331,7 @@ function Health() {
                     title="Generate new AI challenge"
                     className="px-3 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
                   >
-                    <Sparkles size={18} className="text-yellow-300" />
+                    <Sparkles size={18} className="text-amber-300" />
                   </button>
                 </div>
               </>
@@ -378,7 +378,7 @@ function Health() {
 
                 {/* Only show error if it's truly a problem, not just "using IP" */}
                 {locationError && locationError.includes("denied") && (
-                  <p className="text-xs text-yellow-300/70 mt-4">
+                  <p className="text-xs text-orange-300/70 mt-4">
                     📡 Using IP-based location for weather accuracy.
                   </p>
                 )}
@@ -398,11 +398,11 @@ function Health() {
         {/* Focus Tracker */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
           <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
-            <div className="absolute top-0 left-0 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl group-hover:bg-purple-500/30 transition-colors" />
+            <div className="absolute top-0 left-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl group-hover:bg-orange-500/20 transition-colors" />
 
             <div className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
-              <Activity size={18} className="text-purple-400" />
-              <span className="text-sm font-bold tracking-widest uppercase text-purple-300">Focus Intensity</span>
+              <Activity size={18} className="text-orange-400" />
+              <span className="text-sm font-bold tracking-widest uppercase text-orange-300">Focus Intensity</span>
             </div>
 
             <div className="relative flex justify-center items-center w-40 h-40 mb-6 group-hover:scale-105 transition-transform">
@@ -412,7 +412,7 @@ function Health() {
                   strokeDasharray="477"
                   strokeDashoffset={477 - 477 * (focusTime / 1500)}
                   strokeLinecap="round"
-                  className="text-purple-500 transition-all duration-1000 ease-linear"
+                  className="text-orange-500 transition-all duration-1000 ease-linear"
                 />
               </svg>
               <p className="text-4xl font-black text-white tracking-widest drop-shadow-md">
@@ -421,7 +421,7 @@ function Health() {
             </div>
 
             <div className="flex items-center gap-4">
-              <button onClick={() => setIsFocusing((f) => !f)} className="bg-purple-600 hover:bg-purple-500 text-white p-4 rounded-full shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-transform active:scale-95">
+              <button onClick={() => setIsFocusing((f) => !f)} className="bg-orange-600 hover:bg-orange-500 text-white p-4 rounded-full shadow-[0_0_15px_rgba(255,140,60,0.5)] transition-transform active:scale-95">
                 {isFocusing ? <Pause fill="currentColor" /> : <Play fill="currentColor" className="ml-1" />}
               </button>
               <button onClick={() => { setIsFocusing(false); setFocusTime(1500); }} className="bg-white/10 hover:bg-white/20 text-white p-4 rounded-full border border-white/10 transition-colors active:scale-95">
@@ -442,7 +442,7 @@ function Health() {
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
           <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-start border border-white/20 shadow-2xl h-full group bg-slate-900/20">
             <div className="flex items-center gap-2 mb-6">
-              <CalendarDays size={24} className="text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
+              <CalendarDays size={24} className="text-orange-400 drop-shadow-[0_0_10px_rgba(255,140,60,0.5)]" />
               <h3 className="text-xl font-bold tracking-tight text-white">Activity Heat Map</h3>
             </div>
 
@@ -458,9 +458,9 @@ function Health() {
                 ))}
                 {heatMapData.map((data, i) => {
                   let colorClass = "bg-white/5 border border-white/5";
-                  if (data.count === 1) colorClass = "bg-cyan-900 border border-cyan-800 shadow-[0_0_8px_rgba(8,145,178,0.5)]";
-                  else if (data.count === 2) colorClass = "bg-cyan-700 border border-cyan-600 shadow-[0_0_10px_rgba(6,182,212,0.6)]";
-                  else if (data.count >= 3) colorClass = "bg-cyan-400 border border-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.8)]";
+                  if (data.count === 1) colorClass = "bg-orange-900/40 border border-orange-800/20 shadow-[0_0_8px_rgba(255,140,60,0.3)]";
+                  else if (data.count === 2) colorClass = "bg-orange-700/60 border border-orange-600 shadow-[0_0_10px_rgba(255,140,60,0.5)]";
+                  else if (data.count >= 3) colorClass = "bg-orange-400 border border-orange-300 shadow-[0_0_12px_rgba(255,140,60,0.7)]";
                   return (
                     <div key={i} className={`w-6 h-6 rounded-md transition-all duration-300 hover:scale-125 hover:z-10 relative group/tile ${colorClass}`}>
                       <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#0b0b12] text-white text-[10px] py-1 px-2 rounded-md opacity-0 group-hover/tile:opacity-100 pointer-events-none whitespace-nowrap z-20 shadow-xl border border-white/20">
@@ -476,9 +476,9 @@ function Health() {
               <span>Less</span>
               <div className="flex gap-1">
                 <div className="w-3 h-3 rounded-sm bg-white/5 border border-white/5" />
-                <div className="w-3 h-3 rounded-sm bg-cyan-900 border border-cyan-800" />
-                <div className="w-3 h-3 rounded-sm bg-cyan-700 border border-cyan-600" />
-                <div className="w-3 h-3 rounded-sm bg-cyan-400 border border-cyan-300" />
+                <div className="w-3 h-3 rounded-sm bg-orange-900/40 border border-orange-800/20" />
+                <div className="w-3 h-3 rounded-sm bg-orange-700/60 border border-orange-600" />
+                <div className="w-3 h-3 rounded-sm bg-orange-400 border border-orange-300" />
               </div>
               <span>More</span>
             </div>

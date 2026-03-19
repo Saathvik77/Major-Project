@@ -152,8 +152,8 @@ export default function Reports() {
   const [loading, setLoading] = useState(true);
 
   // Dynamic theme colors for charts
-  const [primaryColor, setPrimaryColor] = useState("#f59e0b");
-  const [secondaryColor, setSecondaryColor] = useState("#fbbf24");
+  const [primaryColor, setPrimaryColor] = useState("#ff8c3c");
+  const [secondaryColor, setSecondaryColor] = useState("rgba(255, 140, 60, 0.2)");
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -176,19 +176,17 @@ export default function Reports() {
 
     // Tiny timeout ensures custom properties are applied first
     setTimeout(() => {
-      const primary = computedStyles.getPropertyValue('--primary-amber').trim() || "#f59e0b";
-      const secondary = computedStyles.getPropertyValue('--primary-orange').trim() || "#fbbf24";
+      const primary = computedStyles.getPropertyValue('--accent').trim() || "#ff8c3c";
       setPrimaryColor(primary);
-      setSecondaryColor(secondary);
     }, 50);
   }, [theme, activeTheme]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-[#0a0c10]">
+      <div className="min-h-screen flex items-center justify-center text-white bg-transparent pl-0 md:pl-[84px]">
         <div className="flex flex-col items-center gap-4">
-           <div className="w-12 h-12 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin" />
-           <p className="text-sm font-bold uppercase tracking-[0.2em] text-amber-500/50">Synchronizing Intelligence...</p>
+           <div className="w-12 h-12 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin" />
+           <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-500/50">Synchronizing Intelligence...</p>
         </div>
       </div>
     );
@@ -200,10 +198,10 @@ export default function Reports() {
   const total = tasks.length;
 
   let condition = "Neutral";
-  let conditionColor = "text-amber-400";
-  let conditionBg = "bg-amber-500/5 border-amber-500/20";
+  let conditionColor = "text-orange-400";
+  let conditionBg = "bg-orange-500/5 border-orange-500/20";
   let message = "Intelligence gathering in progress. Keep optimizing your schedule!";
-  let icon = <BrainCircuit size={48} className="text-amber-400" />;
+  let icon = <BrainCircuit size={48} className="text-orange-400" />;
 
   let efficiency = 0;
 
@@ -213,10 +211,10 @@ export default function Reports() {
 
     if (completionRate >= 0.8) {
       condition = "Excellent";
-      conditionColor = "text-amber-400";
-      conditionBg = "bg-amber-500/10 border-amber-500/30 shadow-[inset_0_0_40px_rgba(245,158,11,0.05)]";
+      conditionColor = "text-orange-400";
+      conditionBg = "bg-orange-500/10 border-orange-500/30 shadow-[inset_0_0_40px_rgba(255,140,60,0.05)]";
       message = "You are operating at peak efficiency! Your focus remains unmatched.";
-      icon = <Activity size={48} className="text-amber-400" />;
+      icon = <Activity size={48} className="text-orange-400" />;
     } else if (completionRate >= 0.5) {
       condition = "Stable";
       conditionColor = "text-orange-400";
@@ -233,7 +231,7 @@ export default function Reports() {
   }
 
   const pieData = [
-    { name: "Completed", value: completed, color: "#f59e0b" },
+    { name: "Completed", value: completed, color: "#ff8c3c" },
     { name: "Pending", value: pending, color: "rgba(255,255,255,0.05)" },
   ];
 
@@ -259,9 +257,9 @@ export default function Reports() {
   };
 
   return (
-    <div className="min-h-screen px-6 py-10 relative z-10 font-sans text-white max-w-6xl mx-auto page-transition pb-24">
+    <div className="min-h-screen pl-0 md:pl-[84px] px-6 py-10 relative z-10 font-sans text-white max-w-6xl mx-auto page-transition pb-32">
       {/* ── Premium Lighting FX ────────────────────────────────────── */}
-      <div className="fixed top-[-20%] right-[-10%] w-[800px] h-[800px] bg-amber-600/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+      <div className="fixed top-[-20%] right-[-10%] w-[800px] h-[800px] bg-orange-600/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
       <div className="fixed bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-orange-700/5 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
       
       {/* ── Header ─────────────────────────────────────────────────── */}
@@ -275,12 +273,12 @@ export default function Reports() {
           </button>
           <div>
             <h1 className="text-4xl font-black tracking-tighter text-white">System Reports</h1>
-            <p className="text-[10px] font-black text-amber-500 uppercase tracking-[0.3em] mt-1">Neural Performance Analysis</p>
+            <p className="text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mt-1">Neural Performance Analysis</p>
           </div>
         </div>
         
         <div className="hidden md:flex items-center gap-3 px-5 py-3 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-xl">
-          <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
           <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Real-time Feed Active</span>
         </div>
       </div>
