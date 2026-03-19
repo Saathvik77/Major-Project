@@ -4,35 +4,35 @@
 @tailwind utilities;
 
 :root {
-  /* PROFESSIONAL GRAY PALETTE */
-  --bg-dark: #eef1f5;
-  --bg-slate: #f8fafc;
-  --bg-pure: #ffffff;
+  /* PREMIUM DARK CHARCOAL PALETTE */
+  --bg-dark: #0f0f12;     /* Deep Charcoal */
+  --bg-slate: #1a1a1e;    /* Slightly lighter for elevation */
+  --bg-pure: #161618;
   
   --primary-amber: #f59e0b;
   --primary-orange: #f97316;
   --primary-blue: #3b82f6;
 
-  /* Glassmorphism Refined for Light Theme */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(0, 0, 0, 0.04);
-  --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  /* Glassmorphism Refined for Dark Theme */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   
-  --text-primary: #1e293b;
-  --text-dim: #64748b;
+  --text-primary: #ffffff;
+  --text-dim: #94a3b8;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #f1f3f6 !important;
+  background-color: var(--bg-dark) !important;
   color: var(--text-primary) !important;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   background: 
-    radial-gradient(circle at 10% 10%, rgba(255, 158, 11, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 90% 90%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
-    linear-gradient(135deg, #f1f3f6 0%, #eef1f5 100%);
+    radial-gradient(circle at 10% 10%, rgba(245, 158, 11, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(59, 130, 246, 0.03) 0%, transparent 40%),
+    linear-gradient(135deg, #0f0f12 0%, #161618 100%);
 }
 
 /* Subtler texture overlay */
@@ -41,32 +41,32 @@ body::before {
   position: fixed;
   inset: 0;
   background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
-  opacity: 0.015;
+  opacity: 0.03;
   pointer-events: none;
   z-index: 1;
 }
 
 .glass-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--glass-border);
   border-radius: 1.5rem;
   box-shadow: var(--glass-shadow);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.9);
-  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-4px);
 }
 
 /* Sidebar Specifics */
 .sidebar-glass {
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(40px);
-  border-right: 1px solid rgba(0, 0, 0, 0.05);
+  background: rgba(15, 15, 18, 0.6);
+  backdrop-filter: blur(50px);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Scrollbars */

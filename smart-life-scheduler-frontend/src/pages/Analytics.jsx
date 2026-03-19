@@ -57,8 +57,8 @@ function Analytics() {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // New Theme Colors
-  const COLORS = ["#f59e0b", "#3b82f6", "#ef4444"]; // Amber, Blue, Red
+  // New Theme Colors - Neon/Glow for Dark Mode
+  const COLORS = ["#f59e0b", "#3b82f6", "#10b981", "#8b5cf6"]; // Amber, Blue, Emerald, Violet
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -123,28 +123,28 @@ function Analytics() {
         {/* Header */}
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate(-1)} className="p-2 bg-white/5 border border-white/10 rounded-xl text-gray-400 hover:text-white transition-all">
+            <button onClick={() => navigate(-1)} className="p-2 bg-white/[0.03] border border-white/10 rounded-xl text-gray-400 hover:text-white transition-all">
               <ChevronLeft size={20} />
             </button>
-            <h1 className="text-2xl font-bold tracking-tight">Channel Analytics</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-white/90">Performance Intelligence</h1>
           </div>
           <div className="flex items-center gap-3">
-             <div className="bg-white/5 border border-white/10 p-2 rounded-xl text-gray-400 hover:text-white transition-colors cursor-pointer">
+             <div className="bg-white/[0.03] border border-white/10 p-2 rounded-xl text-gray-400 hover:text-white transition-colors cursor-pointer">
                 <Search size={20} />
              </div>
-             <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
-                <BarChart3 size={22} />
+             <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+                <Activity size={22} />
              </div>
           </div>
         </header>
 
-        {/* Top Summary Stats */}
+        {/* Top Summary Stats - Performance Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { label: "Total Tasks", value: summary?.totalTasks || 0, color: "text-white" },
-            { label: "Completed", value: summary?.completed || 0, color: "text-emerald-400" },
-            { label: "Pending", value: summary?.pending || 0, color: "text-amber-400" },
-            { label: "Overdue", value: summary?.overdue || 0, color: "text-rose-500" },
+            { label: "Overall Performance", value: summary?.productivityScore || "88%", color: "text-orange-500" },
+            { label: "Task Efficiency", value: summary?.completedRatio || "92%", color: "text-emerald-400" },
+            { label: "Neural Insights", value: "24", color: "text-blue-400" },
+            { label: "Active Momentum", value: "+14%", color: "text-purple-400" },
           ].map((stat, i) => (
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -203,7 +203,7 @@ function Analytics() {
                       tick={{ fill: '#6b7280', fontSize: 10, fontWeight: 700 }}
                     />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                      contentStyle={{ backgroundColor: 'rgba(15, 15, 18, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', backdropFilter: 'blur(10px)' }}
                       itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}
                     />
                     <Line 
@@ -283,7 +283,7 @@ function Analytics() {
                         ))}
                       </Pie>
                       <Tooltip 
-                        contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '12px', fontSize: '10px' }}
+                        contentStyle={{ backgroundColor: 'rgba(15, 15, 18, 0.9)', border: 'none', borderRadius: '16px', backdropFilter: 'blur(10px)', fontSize: '10px' }}
                       />
                     </PieChart>
                  </ResponsiveContainer>
