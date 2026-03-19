@@ -10,10 +10,10 @@ function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white relative overflow-hidden">
+    <div className="min-h-screen bg-transparent text-white relative overflow-hidden">
 
-      {/* Animated Background Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-indigo-600 opacity-20 blur-3xl rounded-full animate-floatGlow"></div>
+      {/* Animated Background Glow — warm amber to match stone theme */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-amber-700 opacity-10 blur-3xl rounded-full animate-floatGlow"></div>
 
       {/* Navbar */}
       <nav className="flex justify-between items-center px-8 py-5 backdrop-blur-md bg-white/5 border-b border-white/10 sticky top-0 z-50">

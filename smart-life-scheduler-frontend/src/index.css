@@ -13,10 +13,10 @@
   --primary-orange: #f97316;
   --primary-blue: #3b82f6;
 
-  /* Glassmorphism Refined for Warm Dark Theme */
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  /* Glassmorphism — bumped opacity for contrast on stone texture */
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.13);
+  --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.65);
   
   --text-primary: #ffffff;
   --text-dim: #94a3b8;
@@ -25,50 +25,46 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #0f1115 !important;
-  background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
+  background-color: #0d0d0d !important;
+  background-image: url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  background-blend-mode: overlay;
+  background-blend-mode: multiply;
   color: #ffffff !important;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
 }
 
-/* Base Container Glow Effect */
+/* Base Container Glow Effect — subtle warm vignette over stone */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   background: radial-gradient(
-    circle at 70% 20%,
-    rgba(255, 140, 60, 0.18),
-    transparent 40%
+    circle at 65% 15%,
+    rgba(255, 140, 60, 0.10),
+    transparent 50%
   );
   pointer-events: none;
   z-index: 0;
 }
 
 /* Root container to ensure it stays above the z-index: 0 glow */
-#root {
-  position: relative;
-  z-index: 1;
+body {
+  margin: 0;
+  padding: 0;
+  /* Use a dark overlay with the image to match the provided texture color */
+  background: linear-gradient(rgba(30,30,30,0.82), rgba(30,30,30,0.82)), url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg') center/cover fixed;
+  color: #ffffff !important;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
 }
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.20);
+  background: rgba(28, 25, 22, 0.65);
   transform: translateY(-4px);
 }
 
@@ -98,9 +94,10 @@ body::before {
 
 /* Sidebar Specifics */
 .sidebar-glass {
-  background: var(--bg-slate);
+  background: rgba(14, 12, 10, 0.75);
   backdrop-filter: blur(50px);
-  border-right: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(50px);
+  border-right: 1px solid rgba(255,255,255,0.10);
 }
 
 /* Scrollbars */

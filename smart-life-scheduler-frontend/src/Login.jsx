@@ -100,9 +100,9 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 relative overflow-hidden font-sans">
-      {/* Dynamic Background Accents */}
-      <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow"></div>
-      <div className="fixed bottom-[10%] right-[-10%] w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '2s' }}></div>
+      {/* Dynamic Background Accents — warm amber to match stone theme */}
+      <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-amber-600/10 rounded-full blur-[100px] -z-10 animate-floatGlow"></div>
+      <div className="fixed bottom-[10%] right-[-10%] w-[500px] h-[500px] bg-orange-700/10 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '2s' }}></div>
 
       <div className="w-full max-w-5xl animate-slideUpFade bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
         
