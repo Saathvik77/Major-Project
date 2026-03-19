@@ -7,6 +7,7 @@ import {
   BrainCircuit, 
   Plus,
   Zap,
+  Sparkles,
   Activity,
   TrendingUp,
   AlertCircle,
@@ -104,6 +105,21 @@ const Dashboard = () => {
     }, 1500);
   };
 
+  const handleAIPlanDay = async () => {
+    setIsAnalyzing(true);
+    try {
+      const response = await api.post("/ai/chat", { message: "plan my day" });
+      if (response.data.actions?.length > 0) {
+        // Redirect to tasks to see the newly planned day
+        navigate('/tasks');
+      }
+    } catch (error) {
+      console.error("AI Plan Day Error:", error);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 font-sans text-white relative flex flex-col gap-10 max-w-7xl mx-auto page-transition">
       
@@ -114,7 +130,7 @@ const Dashboard = () => {
             <LayoutDashboard size={24} strokeWidth={1.5} />
           </div>
           <div>
-            <h1 className="text-3xl font-black tracking-tighter text-white">Neural Hub</h1>
+            <h1 className="text-3xl font-black tracking-tighter text-white">Smart Life Scheduler</h1>
             <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1">Operational Overview</p>
           </div>
         </div>
@@ -145,7 +161,7 @@ const Dashboard = () => {
                   className="absolute right-0 mt-3 w-56 glass-morphism rounded-2xl p-2 z-[110] border border-white/10 shadow-2xl"
                 >
                   <div className="px-3 py-3 border-b border-white/5 mb-2">
-                    <p className="text-xs font-black text-white uppercase tracking-widest">Neural User</p>
+                    <p className="text-xs font-black text-white uppercase tracking-widest">Smart User</p>
                     <p className="text-[9px] text-gray-500 font-bold truncate">Synchronized Session</p>
                   </div>
                   <div className="space-y-1">
@@ -178,31 +194,28 @@ const Dashboard = () => {
                 Strategic <br /> Performance
               </h2>
               
-              <div className="flex flex-col md:flex-row gap-4 mb-12">
-                 <button 
-                   onClick={handleStartAnalysis}
+              <div className="flex flex-col md:flex-row items-center gap-4 mb-12">
+                 <motion.button 
+                   whileHover={{ scale: 1.02, y: -2 }}
+                   whileTap={{ scale: 0.98 }}
+                   onClick={handleAIPlanDay}
                    disabled={isAnalyzing}
-                   className="bg-orange-500 w-full md:w-auto text-white min-w-[180px] py-4 rounded-full font-black text-[11px] hover:scale-105 transition-all active:scale-95 shadow-xl shadow-orange-500/25 uppercase tracking-widest flex items-center justify-center gap-2 ripple"
+                   className="w-full md:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl shadow-orange-500/20 flex items-center justify-center gap-3 relative overflow-hidden group"
                  >
-                   {isAnalyzing ? (
-                     <>
-                       <Loader2 size={16} className="animate-spin" />
-                       Analyzing...
-                     </>
-                   ) : (
-                     <>
-                       <BrainCircuit size={16} />
-                       Optimize Flow
-                     </>
-                   )}
-                 </button>
-                 <button 
-                   onClick={() => navigate('/analytics')}
-                   className="bg-white/[0.05] border border-white/10 w-full md:w-auto justify-center text-slate-300 px-8 py-4 rounded-full font-black text-[11px] hover:bg-white/[0.1] hover:text-white transition-all active:scale-95 uppercase tracking-widest flex items-center gap-2 ripple"
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                    <Sparkles size={16} className="relative z-10" />
+                    <span className="relative z-10">{isAnalyzing ? "Optimizing..." : "AI Plan My Day"}</span>
+                 </motion.button>
+
+                 <motion.button 
+                   whileHover={{ scale: 1.02, y: -2 }}
+                   whileTap={{ scale: 0.98 }}
+                   onClick={() => navigate('/tasks')}
+                   className="w-full md:w-auto px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-white/10 transition-all flex items-center justify-center gap-3"
                  >
-                   <Zap size={16} />
-                   Insights
-                 </button>
+                    <Plus size={16} className="text-orange-500" />
+                    Quick Task
+                 </motion.button>
               </div>
 
               <div className="grid grid-cols-2 md:flex md:gap-12 pt-8 border-t border-white/5">
@@ -268,7 +281,7 @@ const Dashboard = () => {
             />
             <StatCard 
               icon={Zap} 
-              label="Neural Efficiency" 
+              label="Smart Efficiency" 
               value={stats.efficiency} 
               trend="+5.4%" 
             />
@@ -292,10 +305,10 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Quick Access Card */}
-        <div className="lg:col-span-8 glass-card p-8 flex flex-col gap-8 relative overflow-hidden group">
+        <div className="lg:col-span-8 glass-card p-8 flex flex-col gap-8 relative overflow-hidden group min-h-[400px]">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-black text-white tracking-tight">Active Neural Flow</h3>
+              <h3 className="text-xl font-black text-white tracking-tight">Active Operational Flow</h3>
               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Pending prioritized tasks</p>
             </div>
             <button 
@@ -306,34 +319,45 @@ const Dashboard = () => {
             </button>
           </div>
 
-          <div className="flex flex-col gap-3">
-             {[
-               { title: "Deep Work: Neural Training", time: "14:30", type: "Cognitive" },
-               { title: "Strategic Review", time: "16:00", type: "Growth" },
-               { title: "System Sync", time: "17:30", type: "Operational" }
-             ].map((task, i) => (
-               <div key={i} className="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/[0.06] transition-all cursor-pointer group/item">
-                  <div className="flex items-center gap-4">
-                     <div className="w-1.5 h-1.5 rounded-full bg-orange-500/40 group-hover/item:bg-orange-500 transition-colors" />
-                     <div>
-                        <p className="text-sm font-bold text-gray-300 group-hover/item:text-white transition-colors">{task.title}</p>
-                        <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">{task.type}</p>
-                     </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                     <span className="text-[10px] font-black text-gray-500">{task.time}</span>
-                     <ChevronRight size={14} className="text-gray-700 group-hover/item:text-orange-500 transition-colors" />
-                  </div>
+          <div className="flex-1 flex flex-col gap-3 justify-center">
+             {stats.totalTasks === "0" ? (
+               <div className="flex flex-col items-center justify-center text-center py-12 px-4 animate-fadeIn">
+                 <div className="w-20 h-20 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500/40 mb-6 border border-orange-500/20 shadow-inner">
+                   <Plus size={40} strokeWidth={1} />
+                 </div>
+                 <h4 className="text-white font-black text-lg mb-2">No active tasks detected</h4>
+                 <p className="text-xs text-gray-500 max-w-[260px] leading-relaxed mb-8">
+                   Your operational flow is currently empty. Start by adding a task or let AI plan your day.
+                 </p>
+                 <button 
+                   onClick={() => navigate('/tasks')}
+                   className="px-8 py-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-500 font-black text-[10px] uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all active:scale-95"
+                 >
+                   Add your first task
+                 </button>
                </div>
-             ))}
+             ) : (
+               [
+                 { title: "Deep Work: Task Training", time: "14:30", type: "Cognitive" },
+                 { title: "Strategic Review", time: "16:00", type: "Growth" },
+                 { title: "System Sync", time: "17:30", type: "Operational" }
+               ].map((task, i) => (
+                 <div key={i} className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-between group/item hover:bg-white/[0.06] transition-all hover:border-white/10">
+                   <div className="flex items-center gap-5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(255,140,60,0.5)]" />
+                      <div>
+                         <p className="text-sm font-black text-white group-hover/item:text-orange-400 transition-colors tracking-tight">{task.title}</p>
+                         <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">{task.type}</p>
+                      </div>
+                   </div>
+                   <div className="text-right">
+                      <p className="text-xs font-black text-white">{task.time}</p>
+                      <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">Scheduled</p>
+                   </div>
+                 </div>
+               ))
+             )}
           </div>
-          
-          <button 
-            onClick={() => navigate('/tasks')}
-            className="w-full py-4 border border-dashed border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-500 hover:border-orange-500/30 hover:text-orange-500 transition-all"
-          >
-            Access Full Schedule
-          </button>
         </div>
 
         {/* AI Insight Card */}
@@ -345,13 +369,13 @@ const Dashboard = () => {
               </div>
               <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
                  <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Neural Coach</span>
+                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Smart Coach</span>
               </div>
            </div>
            
            <h4 className="text-lg font-black text-white tracking-tight mb-3">Optimize Peak Performance</h4>
            <p className="text-sm text-gray-400 leading-relaxed mb-10">
-              Based on your neural telemetry, you are operating at <span className="text-orange-400 font-bold">88% efficiency</span>. Consider rescheduling high-load tasks to your peak focus window at 16:00.
+              Based on your operational data, you are operating at <span className="text-orange-400 font-bold">88% efficiency</span>. Consider rescheduling high-load tasks to your peak focus window at 16:00.
            </p>
            
            <button 

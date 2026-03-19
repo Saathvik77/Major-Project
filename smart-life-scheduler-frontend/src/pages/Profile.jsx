@@ -78,7 +78,7 @@ const Profile = () => {
       setToast("Identity synchronized successfully");
     } catch (err) {
       console.error(err);
-      setToast("Neural link failed. Retry.");
+      setToast("Sync failed. Retry.");
     } finally {
       setIsSaving(false);
     }
@@ -99,7 +99,7 @@ const Profile = () => {
             <ChevronLeft size={24} />
           </button>
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tighter">Neural Identity</h1>
+            <h1 className="text-4xl font-black text-white tracking-tighter">Smart Identity</h1>
             <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Core Profile Configuration</p>
           </div>
         </div>
@@ -134,7 +134,7 @@ const Profile = () => {
               </div>
 
               <div className="text-center">
-                <h2 className="text-3xl font-black tracking-tight text-white">{user.name || "Neural User"}</h2>
+                <h2 className="text-3xl font-black tracking-tight text-white">{user.name || "Smart User"}</h2>
                 <div className="flex items-center justify-center gap-2 mt-3 bg-white/5 px-5 py-2 rounded-full border border-white/10">
                   <Shield size={14} className="text-orange-500" />
                   <p className="text-gray-400 font-bold text-[10px] tracking-[0.2em] uppercase">{user.email}</p>
@@ -145,7 +145,7 @@ const Profile = () => {
             {/* Form Fields */}
             <div className="flex-1 w-full space-y-10">
               <div className="flex justify-between items-center px-1">
-                <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em]">Neural Parameters</h3>
+                <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em]">Smart Parameters</h3>
                 <button
                   onClick={() => isEditing ? handleSave() : setIsEditing(true)}
                   className={`text-[10px] font-black uppercase tracking-widest px-8 py-3 rounded-xl transition-all border shadow-lg ripple ${isEditing
@@ -252,7 +252,7 @@ const Profile = () => {
              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 blur-[40px] -z-10 group-hover:bg-orange-500/10 transition-all" />
              <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
                 <Trophy size={14} className="text-orange-500" />
-                Neural Milestones
+                Smart Milestones
              </h3>
              <div className="space-y-3">
                 <AchievementBadge icon={Flame} label="Focus Master" desc="7 Day Streak Achieved" />

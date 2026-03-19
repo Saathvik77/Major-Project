@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { AnimatePresence } from "framer-motion";
 import api from "../api";
 import {
   ChevronLeft, ChevronRight, Menu, RefreshCcw, MoreHorizontal,
@@ -90,9 +91,10 @@ export default function Tasks() {
       // Filter tasks based on the selected date
       const allTasks = res.data.tasks || [];
       const filtered = allTasks.filter(task => {
-        const taskDate = new Date(task.date).toISOString().split('T')[0];
-        const currentSelectedDate = selectedDate.toISOString().split('T')[0];
-        return taskDate === currentSelectedDate;
+        const taskDate = new Date(task.date);
+        return taskDate.getDate() === selectedDate.getDate() &&
+               taskDate.getMonth() === selectedDate.getMonth() &&
+               taskDate.getFullYear() === selectedDate.getFullYear();
       });
       setTasks(filtered);
     } catch (err) { 
@@ -136,9 +138,15 @@ export default function Tasks() {
 
   const completeTask = async (taskId) => {
     try {
-      setTasks(tasks.filter(t => (t._id || t.id) !== taskId));
+      // Optimistically update local state to show completion
+      setTasks(prev => prev.map(t => (t._id || t.id) === taskId ? { ...t, completed: true } : t));
       await api.patch(`/tasks/${taskId}`, { completed: true });
-    } catch (err) { console.error(err); }
+      setToast("Task completed! Keep up the momentum 🔥");
+    } catch (err) { 
+      console.error(err); 
+      // Rollback on error
+      fetchTasks();
+    }
   };
 
   const deleteTask = async (taskId) => {
@@ -193,7 +201,7 @@ export default function Tasks() {
         return next;
       });
       
-      setToast(`Neural sync complete! ${results.length} tasks successfully optimized and rescheduled.`);
+      setToast(`Smart sync complete! ${results.length} tasks successfully optimized and rescheduled.`);
     } catch (err) {
       console.error(err);
       setToast("Optimization encountered an error.");
@@ -236,32 +244,66 @@ export default function Tasks() {
 
   const { completed: completedStat, missed: missedStat, percent: percentStat } = getDayStats();
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white flex flex-col gap-10 max-w-7xl mx-auto">
+        <div className="flex items-center gap-6">
+          <div className="w-12 h-12 rounded-2xl skeleton" />
+          <div className="space-y-2">
+            <div className="w-48 h-8 skeleton" />
+            <div className="w-32 h-4 skeleton" />
+          </div>
+        </div>
+        <div className="grid grid-cols-12 gap-8">
+          <div className="col-span-12 lg:col-span-8 space-y-4">
+             {[1, 2, 3, 4].map(i => <div key={i} className="h-24 glass-card skeleton border-none" />)}
+          </div>
+          <div className="col-span-12 lg:col-span-4 space-y-6">
+             <div className="h-64 glass-card skeleton border-none" />
+             <div className="h-64 glass-card skeleton border-none" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-transparent pl-0 md:pl-[84px] pb-24 md:pb-0 text-white page-transition">
-      
+    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-10 max-w-7xl mx-auto page-transition overflow-hidden">
       {pendingNotification && <RescheduleNotification task={pendingNotification} onReschedule={rescheduleTask} onDismiss={() => setPendingNotification(null)} />}
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </AnimatePresence>
 
-      <div className="max-w-[1400px] mx-auto p-6 lg:p-10 relative z-10 w-full flex flex-col gap-8">
-        
-        {/* Header */}
-        <header className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
-          <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
-            <button onClick={() => navigate(-1)} className="p-2 bg-white/5 border border-white/10 rounded-xl text-gray-500 hover:text-white transition-all">
-              <ChevronLeft size={20} />
-            </button>
-            <h1 className="text-2xl font-bold tracking-tight">Today's Tasks</h1>
+      {/* ── Header ─────────────────────────────────────────────────── */}
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
+        <div className="flex items-center gap-6">
+          <div className="w-16 h-16 rounded-[2rem] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/20">
+            <Layout size={32} strokeWidth={2} />
           </div>
-          <div className="flex items-center gap-3">
-             <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
-                <CheckCircle size={22} />
-             </div>
+          <div>
+            <h1 className="text-4xl font-black text-white tracking-tighter">Operational Flow</h1>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Manage Tasks & Performance</p>
           </div>
-        </header>
+        </div>
 
-        <div className="grid grid-cols-12 gap-8">
+        <div className="flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 backdrop-blur-xl">
+          <button onClick={() => navigate(-1)} className="p-2.5 hover:bg-white/10 rounded-xl transition-all text-gray-400 hover:text-white">
+            <ChevronLeft size={20} />
+          </button>
+          <div className="px-6 py-2 bg-orange-500 text-white rounded-xl shadow-lg shadow-orange-500/20">
+            <span className="text-[10px] font-black uppercase tracking-widest">{selectedDate.toLocaleDateString('default', { month: 'short', day: 'numeric' })}</span>
+          </div>
+          <button onClick={() => {
+            const next = new Date(selectedDate);
+            next.setDate(next.getDate() + 1);
+            setSelectedDate(next);
+          }} className="p-2.5 hover:bg-white/10 rounded-xl transition-all text-gray-400 hover:text-white">
+            <ChevronRight size={20} />
+          </button>
+        </div>
+      </header>
+
+      <div className="grid grid-cols-12 gap-8 relative z-10">
           
           {/* Main Task Column */}
           <div className="col-span-12 lg:col-span-8 flex flex-col gap-8">
@@ -304,11 +346,15 @@ export default function Tasks() {
 
               <div className="space-y-8 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                 
-                {isLoading ? (
-                  <div className="space-y-4">
-                    {[1, 2, 3].map(i => (
-                      <div key={i} className="glass-card p-4 h-20 skeleton rounded-2xl border-none" />
-                    ))}
+                {tasks.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center text-center py-20 glass-card border-dashed bg-white/[0.01]">
+                    <div className="w-20 h-20 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500/40 mb-6 border border-orange-500/20">
+                      <CalendarIcon size={32} strokeWidth={1} />
+                    </div>
+                    <h4 className="text-white font-black text-lg mb-2">Operational void detected</h4>
+                    <p className="text-xs text-gray-500 max-w-[240px] leading-relaxed">
+                      No tasks scheduled for this cycle. Use the quick add bar above or click "AI Plan My Day" on the dashboard.
+                    </p>
                   </div>
                 ) : (
                   <>
@@ -354,7 +400,7 @@ export default function Tasks() {
                           <div className="w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 mb-4">
                             <CheckCircle size={32} strokeWidth={1.5} />
                           </div>
-                          <h4 className="text-white font-bold">No tasks remaining today 🎉</h4>
+                          <h4 className="text-white font-bold">No pending tasks today 🎉</h4>
                           <p className="text-xs text-gray-500 mt-1 max-w-[200px]">You're all caught up! Take some time to recharge.</p>
                         </motion.div>
                       ) : (
@@ -390,6 +436,32 @@ export default function Tasks() {
                         </DragDropContext>
                       )}
                     </div>
+
+                    {/* Completed Tasks Section */}
+                    {tasks.filter(t => t.completed).length > 0 && (
+                      <div className="space-y-4 mt-8 pt-8 border-t border-white/5">
+                        <div className="flex items-center gap-2 px-1">
+                          <CheckCircle size={14} className="text-emerald-500" />
+                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500/80">Completed Performance</h4>
+                        </div>
+                        <div className="space-y-3 opacity-60 grayscale-[0.5]">
+                          {tasks.filter(t => t.completed).map((task) => (
+                            <TaskItem 
+                              key={task._id || task.id}
+                              title={task.title}
+                              time={formatTime12Hour(task.startTime)}
+                              priority={task.priority}
+                              onComplete={() => {}} // Already complete
+                              onDelete={() => deleteTask(task._id || task.id)}
+                              onReschedule={() => {}}
+                              isExpired={false}
+                              category={task.category || "General"}
+                              isCompleted={true}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </>
                 )}
 
@@ -456,7 +528,7 @@ export default function Tasks() {
                         <Sparkles size={24} />
                      </div>
                      <div>
-                        <h3 className="text-lg font-black text-white tracking-tight">Neural Sync</h3>
+                        <h3 className="text-lg font-black text-white tracking-tight">Smart Sync</h3>
                         <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Smart Auto-Reschedule</p>
                      </div>
                   </div>
@@ -466,7 +538,7 @@ export default function Tasks() {
                   </div>
                </div>
                <p className="text-sm text-gray-400 leading-relaxed mb-8">
-                  Detected <span className="text-orange-400 font-bold">{expiredIds.size} missed syncs</span>. Our neural engine can automatically find the next optimal window based on your performance patterns.
+                  Detected <span className="text-orange-400 font-bold">{expiredIds.size} missed syncs</span>. Our smart engine can automatically find the next optimal window based on your performance patterns.
                </p>
                <motion.button 
                  whileHover={{ scale: 1.02, y: -2 }}
@@ -478,12 +550,12 @@ export default function Tasks() {
                   {isOptimizing ? (
                     <>
                       <RefreshCcw size={16} className="animate-spin" />
-                      Synchronizing Neural Flow...
+                      Synchronizing Smart Flow...
                     </>
                   ) : (
                     <>
                       <Zap size={16} fill="currentColor" />
-                      Apply Neural Optimization
+                      Apply Smart Optimization
                     </>
                   )}
                </motion.button>
@@ -494,7 +566,7 @@ export default function Tasks() {
                <div className="absolute top-0 left-0 w-full h-full bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-8 self-start flex items-center gap-2">
                   <TrendingUp size={14} className="text-orange-500" />
-                  Neural Momentum
+                  Activity Momentum
                </h3>
                
                <div className="relative w-48 h-48 mb-8">
@@ -565,7 +637,7 @@ export default function Tasks() {
                     <Bot size={20} />
                   </div>
                   <div>
-                    <h3 className="text-lg font-black text-white/90">Neural Coach</h3>
+                    <h3 className="text-lg font-black text-white/90">Smart Coach</h3>
                     <p className="text-xs text-indigo-400 font-bold uppercase tracking-widest">Active Analysis</p>
                   </div>
                 </div>
@@ -604,7 +676,6 @@ export default function Tasks() {
           </div>
         )}
 
-      </div>
     </div>
   );
 }

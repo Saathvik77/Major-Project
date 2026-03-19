@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { 
   User, 
   Bell, 
@@ -13,12 +13,14 @@ import {
   Moon,
   Volume2,
   Smartphone,
-  Globe
+  Globe,
+  Sun
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import Toast from "../components/Toast";
+import { ThemeContext } from "../ThemeContext";
 
 const Toggle = ({ active, onClick }) => (
   <div 
@@ -79,7 +81,7 @@ const SettingsOption = ({ icon: Icon, title, desc, children, defaultOpen = false
 
 function Settings() {
   const navigate = useNavigate();
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const { isLightMode, toggleTheme } = useContext(ThemeContext);
   const [notifications, setNotifications] = useState(true);
   const [autoReschedule, setAutoReschedule] = useState(true);
   const [soundEffects, setSoundEffects] = useState(false);
@@ -96,7 +98,7 @@ function Settings() {
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </AnimatePresence>
       {/* Lighting FX */}
-      <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
+      <div className={`fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[120px] -z-10 ${isLightMode ? 'opacity-0' : 'opacity-100'}`} />
       
       <div className="max-w-[900px] mx-auto relative z-10 w-full flex flex-col gap-12">
         
@@ -105,8 +107,8 @@ function Settings() {
               <SettingsIcon size={32} strokeWidth={2} />
            </div>
            <div>
-              <h1 className="text-4xl font-black text-white tracking-tighter">System Configuration</h1>
-              <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Manage Neural Parameters</p>
+              <h1 className={`text-4xl font-black tracking-tighter ${isLightMode ? 'text-gray-900' : 'text-white'}`}>System Configuration</h1>
+              <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Manage System Parameters</p>
            </div>
         </header>
 
@@ -117,19 +119,19 @@ function Settings() {
             <div className="space-y-4">
               <div className="flex items-center justify-between p-5 bg-white/[0.03] rounded-2xl border border-white/5">
                 <div className="flex items-center gap-4">
-                  <Moon size={18} className="text-orange-500" />
+                  {isLightMode ? <Sun size={18} className="text-orange-500" /> : <Moon size={18} className="text-orange-500" />}
                   <div>
-                    <p className="font-black text-white tracking-tight">Neural Dark Mode</p>
+                    <p className={`font-black tracking-tight ${isLightMode ? 'text-gray-900' : 'text-white'}`}>{isLightMode ? 'Smart Light Mode' : 'Smart Dark Mode'}</p>
                     <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">Cinematic depth with amber accents</p>
                   </div>
                 </div>
-                <Toggle active={isDarkMode} onClick={() => { setIsDarkMode(!isDarkMode); setToast("Neural theme synchronized"); }} />
+                <Toggle active={!isLightMode} onClick={() => { toggleTheme(); setToast("Theme synchronized"); }} />
               </div>
               <div className="flex items-center justify-between p-5 bg-white/[0.03] rounded-2xl border border-white/5 opacity-50">
                 <div className="flex items-center gap-4">
                   <Globe size={18} className="text-gray-500" />
                   <div>
-                    <p className="font-black text-white tracking-tight">Neural Language</p>
+                    <p className={`font-black tracking-tight ${isLightMode ? 'text-gray-900' : 'text-white'}`}>System Language</p>
                     <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">English (Global Node)</p>
                   </div>
                 </div>
@@ -139,7 +141,7 @@ function Settings() {
           </SettingsOption>
 
           {/* Notifications Section */}
-          <SettingsOption icon={Bell} title="Neural Notifications" desc="Alert Protocols & Reminders">
+          <SettingsOption icon={Bell} title="System Notifications" desc="Alert Protocols & Reminders">
             <div className="space-y-4">
               <div className="flex items-center justify-between p-5 bg-white/[0.03] rounded-2xl border border-white/5">
                 <div className="flex items-center gap-4">
@@ -165,7 +167,7 @@ function Settings() {
           </SettingsOption>
 
           {/* AI Settings Section */}
-          <SettingsOption icon={Zap} title="AI Neural Engine" desc="Autonomous Logic & Optimization">
+          <SettingsOption icon={Zap} title="AI Smart Engine" desc="Autonomous Logic & Optimization">
             <div className="space-y-4">
               <div className="flex items-center justify-between p-5 bg-white/[0.03] rounded-2xl border border-white/5">
                 <div className="flex items-center gap-4">
@@ -175,18 +177,18 @@ function Settings() {
                     <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">Automatically optimize missed syncs</p>
                   </div>
                 </div>
-                <Toggle active={autoReschedule} onClick={() => { setAutoReschedule(!autoReschedule); setToast(`Neural Sync ${!autoReschedule ? 'Active' : 'Standby'}`); }} />
+                <Toggle active={autoReschedule} onClick={() => { setAutoReschedule(!autoReschedule); setToast(`Smart Sync ${!autoReschedule ? 'Active' : 'Standby'}`); }} />
               </div>
             </div>
           </SettingsOption>
 
           {/* Security Section */}
-          <SettingsOption icon={Lock} title="Neural Security" desc="Access Control & Keys">
+          <SettingsOption icon={Lock} title="System Security" desc="Access Control & Keys">
             <div className="space-y-6">
                <div className="grid grid-cols-1 gap-6">
                   <div className="space-y-2">
                     <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest ml-1">Update Security Key</label>
-                    <input type="password" placeholder="New Neural Password" className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-orange-500/50 transition-all font-medium" />
+                    <input type="password" placeholder="New Password" className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-orange-500/50 transition-all font-medium" />
                   </div>
                </div>
                <button className="bg-white/5 border border-white/10 text-white px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all ripple">
@@ -205,7 +207,7 @@ function Settings() {
                          <Trash2 size={20} />
                       </div>
                       <div>
-                         <p className="font-black text-white tracking-tight">Wipe Neural Data</p>
+                         <p className="font-black text-white tracking-tight">Wipe Operational Data</p>
                          <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">This action is irreversible</p>
                       </div>
                    </div>

@@ -100,11 +100,16 @@ const getSummary = async (req, res) => {
       deadline: { $lt: new Date() },
     });
 
+    const completedRatio = totalTasks === 0 ? "0%" : `${Math.round((completed / totalTasks) * 100)}%`;
+    const productivityScore = completedRatio; // For now, use completion ratio as score
+
     res.json({
       totalTasks,
       completed,
       pending,
       overdue,
+      completedRatio,
+      productivityScore
     });
 
   } catch (error) {

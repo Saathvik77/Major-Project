@@ -5,11 +5,16 @@
 
 :root {
   /* PREMIUM WARM DARK GREY PALETTE */
-  --bg-dark: #0a0c10;     /* Deep dark base */
-  --bg-slate: #141419;    /* Secondary layer */
-  --bg-pure: #1c1c22;     /* Surfaces */
+  --bg-dark: #0a0c10;
+  --bg-slate: #141419;
+  --bg-pure: #1c1c22;
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  --card-bg: rgba(20, 20, 25, 0.65);
+  --card-border: rgba(255, 255, 255, 0.12);
+  --glass-blur: 18px;
   
-  --accent: #ff8c3c;      /* Primary Orange Accent */
+  --accent: #ff8c3c;
   --accent-glow: rgba(255, 140, 60, 0.15);
   
   /* Spacing System */
@@ -18,79 +23,115 @@
   --sp-3: 32px;
 }
 
-/* ── Global Transitions ────────────────────────────────────── */
-* {
-  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+.light-mode {
+  --bg-dark: #f8fafc;
+  --bg-slate: #f1f5f9;
+  --bg-pure: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-border: rgba(0, 0, 0, 0.08);
+  --accent: #f97316;
+  --accent-glow: rgba(249, 115, 22, 0.05);
 }
 
-/* ── Glass Morphism Polish ─────────────────────────────────── */
+/* Global Transitions */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+/* Glass Morphism Polish */
 .glass-morphism {
-  background: rgba(20, 20, 25, 0.65) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6) !important;
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+  border: 1px solid var(--card-border) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important;
 }
 
 .glass-card {
-  background: rgba(20, 20, 25, 0.65);
+  background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
   border-radius: 20px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.light-mode .glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.20);
-  background: rgba(25, 25, 30, 0.75);
-  transform: translateY(-5px);
+  border-color: var(--accent);
+  transform: translateY(-4px);
+}
+
+/* Global Button Feedback */
+button:active, .ripple:active {
+  transform: scale(0.96) !important;
 }
 
 /* Micro Interactions */
 .card-hover-lift {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
 }
 
 .card-hover-lift:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
 }
 
 body {
   margin: 0;
   padding: 0;
-  background: #0a0c10 url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg') center/cover fixed no-repeat;
-  color: #ffffff !important;
+  background-color: var(--bg-dark);
+  background-image: url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg');
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: var(--text-main) !important;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
 }
 
-/* Strong Dark Overlay to push background back - Reduced Texture Visibility */
+.light-mode body {
+  background-image: none;
+}
+
+/* Strong Dark Overlay */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background: rgba(10, 12, 16, 0.85); /* Darker and more opaque to hide heavy texture */
+  background: rgba(0, 0, 0, 0.75);
   z-index: -1;
   pointer-events: none;
+  transition: background 0.3s ease;
 }
 
-/* Base Container Glow Effect — lighting centric - Refined Glows */
+.light-mode body::after {
+  background: var(--bg-dark);
+}
+
+/* Glow Effect */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   background: radial-gradient(
     circle at 50% 0%,
-    rgba(255, 140, 60, 0.08),
+    var(--accent-glow),
     transparent 70%
   );
   pointer-events: none;
   z-index: 0;
 }
 
-/* ── Sections Spacing ─────────────────────────────────────── */
+/* Sections Spacing */
 .section-gap {
   gap: var(--sp-2);
 }
@@ -99,11 +140,12 @@ body::before {
   padding: var(--sp-3);
 }
 
-/* Hero Card Special Effect */
+/* Hero Card */
 .hero-card {
   position: relative;
   background: rgba(20, 20, 25, 0.8);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 32px;
   overflow: hidden;
@@ -126,8 +168,14 @@ body::before {
   background: rgba(10, 12, 16, 0.85);
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
-  border-right: 1px solid rgba(255,255,255,0.08);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+/* Light Mode Overrides */
+.light-mode .text-white { color: var(--text-main) !important; }
+.light-mode .text-gray-400 { color: var(--text-muted) !important; }
+.light-mode .text-gray-500 { color: var(--text-muted) !important; }
+.light-mode .sidebar-glass { background: var(--card-bg) !important; border-right: 1px solid var(--card-border) !important; }
 
 /* Missed Task Highlight */
 .task-missed {
@@ -183,7 +231,7 @@ body::before {
   gap: var(--sp-2);
 }
 
-/* ── Global Transitions & Animations ─────────────────────── */
+/* Global Transitions & Animations */
 .ripple {
   position: relative;
   overflow: hidden;

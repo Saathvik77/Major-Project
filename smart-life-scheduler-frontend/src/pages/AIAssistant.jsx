@@ -53,7 +53,7 @@ const AIAssistant = () => {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Neural interface synchronized. I'm your Smart Life Assistant, ready to optimize your operational flow. How can I help you today?",
+      content: "Smart interface synchronized. I'm your Smart Life Assistant, ready to optimize your operational flow. How can I help you today?",
     },
   ]);
   const [isTyping, setIsTyping] = useState(false);
@@ -83,7 +83,7 @@ const AIAssistant = () => {
       setTimeout(() => {
         const assistantMessage = {
           role: "assistant",
-          content: response.data.reply || "Neural optimization complete. Is there anything else I can assist with?",
+          content: response.data.reply || "Optimization complete. Is there anything else I can assist with?",
           actions: response.data.actions || [],
         };
         setMessages((prev) => [...prev, assistantMessage]);
@@ -119,7 +119,7 @@ const AIAssistant = () => {
           </button>
           <div>
             <h1 className="text-4xl font-black tracking-tighter flex items-center gap-4 text-white">
-              Neural Control Center
+              Smart Control Center
             </h1>
             <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Advanced Intelligence Node</p>
           </div>
@@ -187,7 +187,7 @@ const AIAssistant = () => {
           <div className="glass-card p-2.5 flex items-center gap-4 border border-white/10 shadow-2xl mt-auto">
             <input 
               type="text" 
-              placeholder="Transmit neural command..." 
+              placeholder="Transmit command..." 
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
@@ -215,7 +215,7 @@ const AIAssistant = () => {
               <QuickActionCard icon={ClipboardList} label="Plan Day" onClick={() => handleSend("Analyze my load and plan my day for maximum focus")} />
               <QuickActionCard icon={Calendar} label="Optimize" onClick={() => handleSend("Reschedule my missed tasks to better times")} />
               <QuickActionCard icon={Zap} label="Boost" onClick={() => handleSend("Give me a productivity boost tip")} />
-              <QuickActionCard icon={Brain} label="Review" onClick={() => handleSend("Review my weekly neural performance")} />
+              <QuickActionCard icon={Brain} label="Review" onClick={() => handleSend("Review my weekly operational performance")} />
             </div>
           </div>
 
@@ -226,7 +226,7 @@ const AIAssistant = () => {
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
                  <Sparkles size={14} className="text-orange-500" />
-                 Neural Insights
+                 Smart Insights
               </h3>
               <MoreHorizontal size={16} className="text-gray-700" />
             </div>
@@ -239,7 +239,7 @@ const AIAssistant = () => {
 
             <div className="mt-4 p-5 rounded-2xl bg-orange-500/5 border border-orange-500/10">
                <p className="text-xs text-gray-400 leading-relaxed italic">
-                 "Neural patterns suggest a shift in focus windows. You're doing great, keep pushing 🔥"
+                 "Operational patterns suggest a shift in focus windows. You're doing great, keep pushing 🔥"
                </p>
             </div>
           </div>

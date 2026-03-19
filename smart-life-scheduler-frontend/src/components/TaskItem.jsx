@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const TaskItem = ({ title, time, priority, onComplete, onDelete, onReschedule, isExpired, category = "General" }) => {
+const TaskItem = ({ title, time, priority, onComplete, onDelete, onReschedule, isExpired, isCompleted, category = "General" }) => {
   const priorityColor = {
     High: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
     Medium: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
@@ -25,22 +25,25 @@ const TaskItem = ({ title, time, priority, onComplete, onDelete, onReschedule, i
       className={`
         group glass-card p-4 flex items-center justify-between transition-all duration-300
         ${isExpired ? 'border-rose-500/30 bg-rose-500/[0.03]' : 'hover:border-white/20'}
+        ${isCompleted ? 'border-emerald-500/20 bg-emerald-500/[0.02]' : ''}
       `}
     >
       <div className="flex items-center gap-4 flex-1 min-w-0">
         <button 
           onClick={onComplete}
-          className="text-gray-600 hover:text-amber-500 transition-colors"
+          disabled={isCompleted}
+          className={`transition-colors ${isCompleted ? 'text-emerald-500' : 'text-gray-600 hover:text-amber-500'}`}
         >
-          <Circle size={22} strokeWidth={1.5} />
+          {isCompleted ? <CheckCircle size={22} strokeWidth={2} /> : <Circle size={22} strokeWidth={1.5} />}
         </button>
         
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-             <h4 className={`text-sm font-bold truncate ${isExpired ? 'text-rose-200' : 'text-white'}`}>
+             <h4 className={`text-sm font-bold truncate ${isExpired ? 'text-rose-200' : isCompleted ? 'text-gray-400 line-through' : 'text-white'}`}>
                {title}
              </h4>
              {isExpired && <AlertCircle size={14} className="text-rose-400" />}
+             {isCompleted && <CheckCircle size={12} className="text-emerald-500" />}
           </div>
           
           <div className="flex items-center gap-3">

@@ -273,7 +273,7 @@ export default function Reports() {
           </button>
           <div>
             <h1 className="text-4xl font-black tracking-tighter text-white">System Reports</h1>
-            <p className="text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mt-1">Neural Performance Analysis</p>
+            <p className="text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mt-1">Operational Performance Analysis</p>
           </div>
         </div>
         
