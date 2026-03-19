@@ -25,12 +25,7 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #0d0d0d !important;
-  background-image: url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-blend-mode: multiply;
+  background: url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg') center/cover fixed no-repeat;
   color: #ffffff !important;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
@@ -52,13 +47,7 @@ body::before {
 
 /* Root container to ensure it stays above the z-index: 0 glow */
 body {
-  margin: 0;
-  padding: 0;
-  /* Use a dark overlay with the image to match the provided texture color */
-  background: linear-gradient(rgba(30,30,30,0.82), rgba(30,30,30,0.82)), url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg') center/cover fixed;
-  color: #ffffff !important;
-  font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
+  /* ...existing code... */
 }
 
 .glass-card:hover {
