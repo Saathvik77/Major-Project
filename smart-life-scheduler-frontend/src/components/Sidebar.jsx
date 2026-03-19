@@ -1,82 +1,76 @@
-import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, 
-  ClipboardList, 
+  CheckSquare, 
   BarChart3, 
-  FileText, 
-  HeartPulse, 
-  Bot, 
+  User, 
   Settings, 
   LogOut,
-  Hexagon
-} from "lucide-react";
-import { motion } from "framer-motion";
+  Bot,
+  BrainCircuit,
+  PieChart
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 
-const navItems = [
-  { icon: <LayoutDashboard size={22} />, label: "Dashboard", path: "/dashboard" },
-  { icon: <ClipboardList size={22} />, label: "Tasks", path: "/tasks" },
-  { icon: <Bot size={22} />, label: "AI Assistant", path: "/ai-assistant" },
-  { icon: <BarChart3 size={22} />, label: "Analytics", path: "/analytics" },
-  { icon: <FileText size={22} />, label: "Reports", path: "/reports" },
-  { icon: <HeartPulse size={22} />, label: "Health", path: "/health" },
-];
+const SidebarItem = ({ icon: Icon, to, label }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) => `
+      group relative flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300
+      ${isActive 
+        ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' 
+        : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
+    `}
+  >
+    <Icon size={22} strokeWidth={1.5} />
+    
+    {/* Tooltip */}
+    <div className="absolute left-16 px-2 py-1 rounded-md bg-zinc-900 border border-white/10 text-white text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 z-50">
+      {label}
+    </div>
 
-export default function Sidebar() {
-  const navigate = useNavigate();
-  const location = useLocation();
+    {/* Active Indicator Dot */}
+    <NavLink to={to}>
+      {({ isActive }) => isActive && (
+        <motion.div 
+          layoutId="activeSideDot"
+          className="absolute -left-1 w-1 h-3 bg-amber-500 rounded-full"
+        />
+      )}
+    </NavLink>
+  </NavLink>
+);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
+const Sidebar = () => {
   return (
-    <aside className="sidebar-container">
-      {/* Logo Area */}
-      <div className="mb-12 cursor-pointer group" onClick={() => navigate("/dashboard")}>
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 group-hover:scale-110 transition-transform duration-500">
-          <Bot fill="white" size={24} className="animate-pulse" />
+    <aside className="fixed left-0 top-0 h-screen w-[84px] sidebar-glass flex flex-col items-center py-8 z-[100]">
+      {/* Logo */}
+      <div className="mb-12 flex flex-col items-center gap-2">
+        <div className="w-12 h-12 rounded-[18px] bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
+          <Bot size={24} strokeWidth={2} />
         </div>
       </div>
 
       {/* Nav Items */}
-      <nav className="flex-1 flex flex-col items-center">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <div 
-              key={item.path}
-              onClick={() => navigate(item.path)}
-              className={`sidebar-item group ${isActive ? 'sidebar-item-active' : ''}`}
-            >
-              {item.icon}
-              <span className="sidebar-tooltip">{item.label}</span>
-              {isActive && (
-                <motion.div 
-                  layoutId="active-indicator"
-                  className="absolute left-0 w-1 h-6 bg-indigo-500 rounded-full"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              )}
-            </div>
-          );
-        })}
+      <nav className="flex-1 flex flex-col gap-5 items-center">
+        <SidebarItem icon={LayoutDashboard} to="/dashboard" label="Dashboard" />
+        <SidebarItem icon={CheckSquare} to="/tasks" label="Tasks" />
+        <SidebarItem icon={BarChart3} to="/analytics" label="Analytics" />
+        <SidebarItem icon={BrainCircuit} to="/ai-coach" label="AI Coach" />
+        <SidebarItem icon={PieChart} to="/reports" label="Reports" />
       </nav>
 
-      {/* Footer Area */}
-      <div className="flex flex-col items-center gap-6 mt-auto">
-        <div className="sidebar-item" onClick={() => navigate("/profile")}>
-          <Settings size={22} />
-          <span className="sidebar-tooltip">Settings</span>
-        </div>
-        <div className="sidebar-item text-red-500/70 hover:text-red-500" onClick={handleLogout}>
-          <LogOut size={22} />
-          <span className="sidebar-tooltip">Logout</span>
-        </div>
+      {/* Bottom Actions */}
+      <div className="mt-auto flex flex-col gap-6 items-center">
+        <SidebarItem icon={Settings} to="/settings" label="Settings" />
+        <SidebarItem icon={User} to="/profile" label="Profile" />
+        <button className="w-12 h-12 flex items-center justify-center text-gray-500 hover:text-red-400 hover:bg-red-500/5 rounded-2xl transition-all">
+          <LogOut size={22} strokeWidth={1.5} />
+        </button>
       </div>
     </aside>
   );
-}
+};
+
+export default Sidebar;

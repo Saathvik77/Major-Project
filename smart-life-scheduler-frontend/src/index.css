@@ -4,35 +4,29 @@
 @tailwind utilities;
 
 :root {
-  /* DEFAULT (Cinematic Dark) */
-  --primary: #7C6CFF;
-  --secondary: #00E5FF;
-  --accent: #FF7AF6;
-  --highlight: #FFD166;
-  --bg-top: #020617;
-  --bg-mid: #0a0a0c;
-  --bg-bottom: #050505;
-
-  /* Atmospheric Haze Colors */
-  --glow-amber: rgba(193, 127, 36, 0.12);
-  --glow-navy: rgba(13, 27, 42, 0.15);
-  --glow-blue: rgba(26, 58, 92, 0.14);
+  /* COSMIC ANALYTICS PALETTE */
+  --bg-dark: #1a1a1c;
+  --bg-slate: #242426;
+  --primary-amber: #ff9d00;
+  --primary-orange: #ff5e00;
+  --primary-blue: #00d2ff;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --text-dim: #94a3b8;
 }
-
-/* 🚫 NO MORE THEME OVERRIDES - CINEMATIC DARK ONLY 🚫 */
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #0a0a0c !important;
+  background-color: var(--bg-dark) !important;
   color: #fff !important;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
-  /* Cinematic Atmosphere */
+  /* Deep Atmospheric Glows */
   background: 
-    radial-gradient(ellipse at 30% 20%, var(--glow-blue) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 80%, var(--glow-amber) 0%, transparent 50%),
-    #0a0a0c;
+    radial-gradient(circle at 20% 30%, rgba(255, 157, 0, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(0, 210, 255, 0.05) 0%, transparent 50%),
+    #131314;
 }
 
 /* Texture overlay */
@@ -41,30 +35,62 @@ body::before {
   position: fixed;
   inset: 0;
   background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
-  opacity: 0.05;
+  opacity: 0.03;
   pointer-events: none;
   z-index: 1;
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.03) !important;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 2rem;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Animations, scrollbars, etc. */
-::-webkit-scrollbar { width: 6px; }
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Sidebar Specifics */
+.sidebar-glass {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(40px);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb { 
+  background: rgba(255, 255, 255, 0.1); 
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 157, 0, 0.3); }
 
-/* Dashboard Hero glow */
-@keyframes cinematicGlow {
-  0% { opacity: 0.5; transform: scale(1); }
-  100% { opacity: 0.8; transform: scale(1.05); }
+/* Typography */
+.text-analytics-dim { color: var(--text-dim); }
+.text-amber-glow { 
+  color: var(--primary-amber);
+  text-shadow: 0 0 15px rgba(255, 157, 0, 0.4);
 }
 
-.active-date-glow {
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+/* UI Transitions */
+.page-transition {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Grid Layouts */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
 }
