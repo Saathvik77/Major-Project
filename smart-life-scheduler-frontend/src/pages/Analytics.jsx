@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import API from "../api";
-import { ChevronLeft, Droplets, Dumbbell, Brain, Zap, Trophy, Target, Award, Infinity, MessageSquare, AlertCircle, HeartPulse, CheckCircle2, Bot } from "lucide-react";
+import { ChevronLeft, Droplets, Dumbbell, Brain, Zap, Trophy, Target, Award, MessageSquare, AlertCircle, HeartPulse, CheckCircle2, Bot } from "lucide-react";
 import { ThemeContext } from "../ThemeContext";
 import {
   PieChart,

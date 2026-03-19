@@ -17,6 +17,14 @@ const timeToMinutes = (time) => {
   return h * 60 + m;
 };
 
+const formatTime12Hour = (timeStr) => {
+  if (!timeStr) return "--:--";
+  const [h, m] = timeStr.split(":").map(Number);
+  const ampm = h >= 12 ? "PM" : "AM";
+  const h12 = h % 12 || 12;
+  return `${h12}:${m.toString().padStart(2, "0")} ${ampm}`;
+};
+
 /** Returns the epoch ms when a task's scheduled window ends, or null if no time set */
 const getTaskEndMs = (task) => {
   if (!task.startTime || !task.date) return null;
@@ -145,6 +153,7 @@ export default function Tasks() {
       }
     }
   }, [selectedDate]);
+
 
   useEffect(() => {
     fetchTasks();
@@ -346,15 +355,6 @@ export default function Tasks() {
     return Math.round((tasks.filter(t => t.completed).length / tasks.length) * 100);
   };
 
-  const formatTime12Hour = (time24) => {
-    if (!time24) return "Anytime";
-    const [hours24, minutes] = time24.split(":");
-    if (!hours24 || !minutes) return time24;
-    const h = parseInt(hours24, 10);
-    const suffix = h >= 12 ? "PM" : "AM";
-    const hours12 = ((h + 11) % 12 + 1).toString().padStart(2, '0');
-    return `${hours12}:${minutes} ${suffix}`;
-  };
 
   // ── Render ─────────────────────────────────────────────────────────────
   return (
