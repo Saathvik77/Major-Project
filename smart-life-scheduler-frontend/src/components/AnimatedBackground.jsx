@@ -71,7 +71,7 @@ export default function AnimatedBackground() {
                     right: "-8%",
                     width: "55vw",
                     height: "55vh",
-                    background: "radial-gradient(ellipse, rgba(180,110,30,0.18) 0%, rgba(200,130,20,0.08) 45%, transparent 72%)",
+                    background: "radial-gradient(ellipse, rgba(180,110,30,0.12) 0%, rgba(200,130,20,0.05) 45%, transparent 72%)",
                     borderRadius: "50%",
                     filter: "blur(50px)",
                     animation: "stoneAmber 16s ease-in-out infinite alternate",
@@ -86,7 +86,7 @@ export default function AnimatedBackground() {
                     left: "20%",
                     width: "60vw",
                     height: "50vh",
-                    background: "radial-gradient(ellipse, rgba(140,90,20,0.08) 0%, transparent 65%)",
+                    background: "radial-gradient(ellipse, rgba(140,90,20,0.05) 0%, transparent 65%)",
                     borderRadius: "50%",
                     filter: "blur(70px)",
                     animation: "stoneAmber 22s ease-in-out infinite alternate-reverse",
@@ -101,7 +101,7 @@ export default function AnimatedBackground() {
                     left: 0,
                     right: 0,
                     height: "35vh",
-                    background: "linear-gradient(to top, rgba(0,0,0,0.45), transparent)",
+                    background: "linear-gradient(to top, rgba(0,0,0,0.65), transparent)",
                     pointerEvents: "none",
                 }}
             />

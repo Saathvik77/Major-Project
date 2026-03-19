@@ -19,11 +19,11 @@ function GlassCard({ children, className = "", onClick, ...props }) {
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
       className={`rounded-[2rem] transition-all duration-500 relative overflow-hidden group ${onClick ? "cursor-pointer" : ""} ${className}`}
       style={{
-        background: "linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%)",
+        background: "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        border: "1px solid rgba(255,255,255,0.18)",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.15)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08)",
       }}
       {...props}
     >

@@ -4,10 +4,10 @@
 @tailwind utilities;
 
 :root {
-  /* PREMIUM WARM DARK GREY PALETTE */
-  --bg-dark: #0f1115;     /* Main dark background (almost black) */
-  --bg-slate: #1a1d24;    /* Secondary layer (cards / panels) */
-  --bg-pure: #2a2d34;     /* Lighter grey surfaces */
+  /* PREMIUM ULTRA DARK GREY PALETTE */
+  --bg-dark: #050608;     /* Main dark background (almost black) */
+  --bg-slate: #0d0f12;    /* Secondary layer (cards / panels) */
+  --bg-pure: #16181d;     /* Lighter grey surfaces */
   
   --primary-amber: #f59e0b;
   --primary-orange: #f97316;
@@ -18,26 +18,26 @@
    Add or replace this in your index.css / global.css file   */
 
 .glass-morphism {
-  background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%) !important;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.08) !important;
 }
 
 .glass-card {
-  background: linear-gradient(135deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.04) 100%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.12);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
   border-radius: 1.25rem;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background: url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg') center/cover fixed no-repeat;
+  background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg') center/cover fixed no-repeat;
   color: #ffffff !important;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
@@ -50,7 +50,7 @@ body::before {
   inset: 0;
   background: radial-gradient(
     circle at 65% 15%,
-    rgba(255, 140, 60, 0.10),
+    rgba(255, 140, 60, 0.05),
     transparent 50%
   );
   pointer-events: none;
@@ -63,8 +63,8 @@ body {
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.20);
-  background: rgba(28, 25, 22, 0.65);
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(15, 12, 10, 0.75);
   transform: translateY(-4px);
 }
 
@@ -73,8 +73,8 @@ body {
   position: relative;
   background: linear-gradient(
     135deg,
-    rgba(255,255,255,0.06),
-    rgba(255,255,255,0.02)
+    rgba(255,255,255,0.03),
+    rgba(255,255,255,0.01)
   );
   border-radius: 24px;
   overflow: hidden;
@@ -86,7 +86,7 @@ body {
   inset: 0;
   background: radial-gradient(
     circle at top right,
-    rgba(255, 140, 60, 0.25),
+    rgba(255, 140, 60, 0.15),
     transparent 50%
   );
   pointer-events: none;
@@ -94,10 +94,10 @@ body {
 
 /* Sidebar Specifics */
 .sidebar-glass {
-  background: rgba(14, 12, 10, 0.75);
+  background: rgba(8, 6, 4, 0.85);
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
-  border-right: 1px solid rgba(255,255,255,0.10);
+  border-right: 1px solid rgba(255,255,255,0.08);
 }
 
 /* Scrollbars */

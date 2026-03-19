@@ -278,8 +278,8 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.88, y: 20 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-4 w-[350px] sm:w-[410px] h-[530px] flex flex-col overflow-hidden rounded-3xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] relative"
-            style={{ background: "linear-gradient(145deg, rgba(15,20,40,0.97) 0%, rgba(8,10,25,0.98) 100%)", backdropFilter: "blur(24px)" }}
+            className="mb-4 w-[350px] sm:w-[410px] h-[530px] flex flex-col overflow-hidden rounded-3xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.05)] relative"
+            style={{ background: "linear-gradient(145deg, rgba(5,8,15,0.98) 0%, rgba(2,4,10,0.99) 100%)", backdropFilter: "blur(24px)" }}
           >
             {/* Subtle top glow line */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-neonPrimary/50 to-transparent" />
@@ -391,8 +391,8 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
             )}
 
             {/* ── Input Area ────────────────────────────────────────── */}
-            <div className="p-4 border-t border-white/[0.07] flex-shrink-0" style={{ background: "rgba(8,10,25,0.6)", backdropFilter: "blur(12px)" }}>
-              <div className="flex items-center gap-2 bg-white/[0.06] border border-white/[0.10] rounded-2xl p-1.5 pl-4 focus-within:bg-white/[0.09] focus-within:border-neonPrimary/30 transition-all duration-300">
+            <div className="p-4 border-t border-white/[0.07] flex-shrink-0" style={{ background: "rgba(4,6,10,0.8)", backdropFilter: "blur(12px)" }}>
+              <div className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] rounded-2xl p-1.5 pl-4 focus-within:bg-white/[0.07] focus-within:border-neonPrimary/30 transition-all duration-300">
                 <input
                   type="text"
                   placeholder="Ask AI Coach anything..."
