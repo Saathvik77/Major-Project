@@ -169,20 +169,15 @@
 
   /* 🔥 GLOBAL LIGHT MODE OVERRIDES 🔥 */
   .light-mode body {
-    background: linear-gradient(to bottom right, var(--bg-top), var(--bg-mid), var(--bg-bottom));
-    @apply text-slate-900 selection:bg-cyan-500/30 selection:text-cyan-900;
+    /* Instead of a bright gradient, we use a softer deep-slate version for "light" mode cinematic feel */
+    background: #0f172a; 
+    color: #f8fafc;
   }
 
-  .light-mode h1,
-  .light-mode h2,
-  .light-mode h3,
-  .light-mode h4,
-  .light-mode p,
-  .light-mode span,
-  .light-mode label,
-  .light-mode div {
-    /* Generally ensure text is dark by default */
-    color: inherit;
+  /* Ensure card contrast in light mode if still used */
+  .light-mode .glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
   }
 
   .light-mode .text-white,

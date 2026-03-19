@@ -4,12 +4,12 @@ export const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
     // Possible themes: 'auto', 'default' (blue), 'neon', 'cyberpunk', 'ocean', 'sunset', 'calm', 'light'
-    const [theme, setThemeState] = useState('auto');
+    const [theme, setThemeState] = useState('default');
     const [activeTheme, setActiveTheme] = useState('default'); // Default fallback
 
     useEffect(() => {
         // Load user's saved preference
-        const savedTheme = localStorage.getItem('appTheme') || 'auto';
+        const savedTheme = localStorage.getItem('appTheme') || 'default';
         setThemeState(savedTheme);
     }, []);
 

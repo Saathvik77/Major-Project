@@ -416,7 +416,7 @@ function Dashboard() {
       >
         <div className="absolute inset-0 bg-radial-gradient from-indigo-500/10 to-transparent blur-3xl rounded-full" />
         <img 
-          src="/dashboard_3d_illustration_1773902702976.png" 
+          src="/assets/3d/glass_illustration.png" 
           alt="Dashboard Hero"
           className="relative z-10 max-h-[400px] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
         />
