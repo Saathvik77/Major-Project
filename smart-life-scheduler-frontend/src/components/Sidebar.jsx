@@ -44,25 +44,27 @@ const SidebarItem = ({ icon: Icon, to, label }) => (
 
 const Sidebar = () => {
   return (
-    <aside className="fixed left-0 top-0 h-screen w-[84px] sidebar-glass flex flex-col items-center py-8 z-[100]">
+    <aside className="fixed bottom-0 md:top-0 left-0 w-full md:w-[84px] h-[72px] md:h-screen sidebar-glass flex flex-row md:flex-col items-center justify-around md:justify-start md:py-8 z-[100] border-t md:border-t-0 border-white/10 px-4 md:px-0">
       {/* Logo */}
-      <div className="mb-12 flex flex-col items-center gap-2">
+      <div className="hidden md:flex mb-12 flex-col items-center gap-2">
         <div className="w-12 h-12 rounded-[18px] bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
           <Bot size={24} strokeWidth={2} />
         </div>
       </div>
 
       {/* Nav Items */}
-      <nav className="flex-1 flex flex-col gap-5 items-center">
+      <nav className="flex flex-row md:flex-col gap-2 md:gap-5 items-center w-full md:w-auto justify-between md:justify-start md:flex-1">
         <SidebarItem icon={LayoutDashboard} to="/dashboard" label="Dashboard" />
         <SidebarItem icon={CheckSquare} to="/tasks" label="Tasks" />
         <SidebarItem icon={BarChart3} to="/analytics" label="Analytics" />
         <SidebarItem icon={Bot} to="/ai-assistant" label="AI Assistant" />
-        <SidebarItem icon={PieChart} to="/reports" label="Reports" />
+        <div className="hidden md:block">
+          <SidebarItem icon={PieChart} to="/reports" label="Reports" />
+        </div>
       </nav>
 
       {/* Bottom Actions */}
-      <div className="mt-auto flex flex-col gap-6 items-center">
+      <div className="hidden md:flex mt-auto flex-col gap-6 items-center">
         <SidebarItem icon={Settings} to="/settings" label="Settings" />
         <SidebarItem icon={User} to="/profile" label="Profile" />
         <button className="w-12 h-12 flex items-center justify-center text-gray-500 hover:text-red-400 hover:bg-red-500/5 rounded-2xl transition-all">

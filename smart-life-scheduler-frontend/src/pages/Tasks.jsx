@@ -90,6 +90,8 @@ export default function Tasks() {
   const [expiredIds, setExpiredIds]         = useState(new Set());
   const [pendingNotification, setPendingNotification] = useState(null);
   const [toast, setToast]                   = useState(null);
+  const [isAiCoachOpen, setIsAiCoachOpen]   = useState(false);
+  const [isOptimizing, setIsOptimizing]     = useState(false);
   const notifiedRef  = useRef(new Set());
   const autoRescheduledRef = useRef(new Set());
   const navigate = useNavigate();
@@ -143,9 +145,43 @@ export default function Tasks() {
       const id = task._id || task.id;
       const res = await api.post(`/tasks/${id}/reschedule`);
       setTasks(prev => prev.map(t => (t._id || t.id) === id ? res.data.task : t));
+      setExpiredIds(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
       setToast(`Rescheduled to ${res.data.task.startTime}`);
     } catch (err) { console.error(err); }
     setPendingNotification(null);
+  };
+
+  const applyOptimization = async () => {
+    if (expiredIds.size === 0) {
+      setToast("No missed tasks to optimize!");
+      return;
+    }
+    setIsOptimizing(true);
+    try {
+      // Reschedule all missed tasks concurrently
+      const promises = Array.from(expiredIds).map(id => api.post(`/tasks/${id}/reschedule`));
+      const results = await Promise.all(promises);
+      
+      const newTasksMap = new Map();
+      results.forEach(res => {
+        const t = res.data.task;
+        newTasksMap.set(t._id || t.id, t);
+      });
+
+      // Update state
+      setTasks(prev => prev.map(t => newTasksMap.has(t._id || t.id) ? newTasksMap.get(t._id || t.id) : t));
+      setExpiredIds(new Set());
+      setToast(`${results.length} tasks successfully optimized and rescheduled!`);
+    } catch (err) {
+      console.error(err);
+      setToast("Optimization encountered an error.");
+    } finally {
+      setIsOptimizing(false);
+    }
   };
 
   const onDragEnd = (result) => {
@@ -183,7 +219,7 @@ export default function Tasks() {
   const { completed: completedStat, missed: missedStat, percent: percentStat } = getDayStats();
 
   return (
-    <div className="min-h-screen bg-transparent pl-[84px] text-white page-transition">
+    <div className="min-h-screen bg-transparent pl-0 md:pl-[84px] pb-24 md:pb-0 text-white page-transition">
       
       {pendingNotification && <RescheduleNotification task={pendingNotification} onReschedule={rescheduleTask} onDismiss={() => setPendingNotification(null)} />}
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
@@ -191,8 +227,8 @@ export default function Tasks() {
       <div className="max-w-[1400px] mx-auto p-6 lg:p-10 relative z-10 w-full flex flex-col gap-8">
         
         {/* Header */}
-        <header className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <header className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
+          <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
             <button onClick={() => navigate(-1)} className="p-2 bg-white/5 border border-white/10 rounded-xl text-gray-500 hover:text-white transition-all">
               <ChevronLeft size={20} />
             </button>
@@ -313,8 +349,12 @@ export default function Tasks() {
                 <p className="text-sm text-analytics-dim leading-relaxed font-medium">
                   You have <span className="text-white font-bold">{missedStat}</span> missed tasks today. We recommend rescheduling them to your afternoon peak focus period.
                 </p>
-                <button className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-lg shadow-orange-500/20">
-                  Apply Optimization
+                <button 
+                  onClick={applyOptimization}
+                  disabled={isOptimizing}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-black uppercase tracking-widest hover:scale-[1.02] transition-all shadow-[0_10px_30px_rgba(249,115,22,0.3)] disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {isOptimizing ? <span className="animate-pulse">Optimizing...</span> : "Apply Optimization"}
                 </button>
               </div>
             </div>
@@ -356,21 +396,81 @@ export default function Tasks() {
             </div>
 
             {/* AI Coach Sessions */}
-            <div className="glass-card p-6 group cursor-pointer hover:bg-white/[0.05] transition-all">
+            <div 
+              onClick={() => setIsAiCoachOpen(true)}
+              className="glass-card p-6 group cursor-pointer hover:bg-white/[0.05] transition-all border border-transparent hover:border-indigo-500/30"
+            >
                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-[0_10px_30px_rgba(99,102,241,0.2)]">
                      <BrainCircuit size={22} />
                   </div>
                   <div className="flex-1">
-                     <h4 className="text-sm font-bold mb-1">AI Coach Review</h4>
-                     <p className="text-[10px] text-gray-500 uppercase font-black tracking-widest">Available in 2 Days</p>
+                     <h4 className="text-sm font-bold mb-1 text-white group-hover:text-indigo-400 transition-colors">AI Coach Review</h4>
+                     <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest">Available Now</p>
                   </div>
-                  <ChevronRight size={18} className="text-gray-700 group-hover:text-amber-500 transition-colors" />
+                  <ChevronRight size={18} className="text-gray-600 group-hover:text-indigo-400 transition-colors" />
                </div>
             </div>
 
           </div>
         </div>
+
+        {/* Floating AI Coach Modal */}
+        {isAiCoachOpen && (
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              className="w-full max-w-lg glass-card border border-indigo-500/30 bg-[#0f1115]/95 shadow-[0_20px_60px_rgba(99,102,241,0.2)] overflow-hidden flex flex-col relative"
+            >
+              {/* Premium Glow Effect inside Modal */}
+              <div className="absolute top-0 inset-x-0 h-40 bg-radial-gradient from-indigo-500/20 to-transparent opacity-50 pointer-events-none" />
+              
+              <div className="p-6 border-b border-white/5 flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+                    <Bot size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black text-white/90">Neural Coach</h3>
+                    <p className="text-xs text-indigo-400 font-bold uppercase tracking-widest">Active Analysis</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setIsAiCoachOpen(false)}
+                  className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-gray-400 hover:text-white transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-6 relative z-10 flex-1 overflow-y-auto">
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex-shrink-0 flex items-center justify-center mt-1">
+                    <Sparkles size={14} className="text-indigo-400" />
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-gray-300 leading-relaxed rounded-tl-sm">
+                    Hey! I've analyzed your recent tasks. Your completion rate is looking solid at <strong>{percentStat}%</strong> today. 
+                    <br/><br/>
+                    However, I noticed a trend where afternoon energy dips. Try scheduling heavy cognitive tasks before 1 PM and leave administrative work for later.
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 border-t border-white/5 bg-black/20 relative z-10 flex items-center gap-3">
+                 <input 
+                   type="text" 
+                   placeholder="Ask the coach for strategic advice..." 
+                   className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/50"
+                 />
+                 <button className="w-12 h-12 flex items-center justify-center rounded-xl bg-indigo-500 text-white hover:bg-indigo-600 transition-colors shadow-lg shadow-indigo-500/20">
+                   <ChevronRight size={20} />
+                 </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
       </div>
     </div>
   );

@@ -105,24 +105,38 @@ function Analytics() {
     { name: "Overdue", value: summary?.overdue || 0 },
   ];
 
-  const historyChartData = [...history]
-    .reverse()
-    .map((item) => ({
-      date: new Date(item.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-      productivity: item.productivityScore,
-      health: item.healthScore || 70,
-    }));
+  // Aggregate completed tasks for the last 7 days
+  const last7DaysData = Array.from({ length: 7 }).map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    d.setHours(0, 0, 0, 0);
+    return {
+      rawDate: d,
+      date: d.toLocaleDateString(undefined, { weekday: 'short' }),
+      completed: 0
+    };
+  });
+
+  completedTasks.forEach(task => {
+    if (!task.date) return;
+    const taskDate = new Date(task.date);
+    taskDate.setHours(0, 0, 0, 0);
+    const dayData = last7DaysData.find(d => d.rawDate.getTime() === taskDate.getTime());
+    if (dayData) {
+      dayData.completed += 1;
+    }
+  });
 
   const userWeight = userProfile?.weight || 0;
   const waterTarget = userWeight ? (userWeight * 0.033).toFixed(1) : 0;
 
   return (
-    <div className="min-h-screen bg-transparent pl-[84px] text-white page-transition">
+    <div className="min-h-screen bg-transparent pl-0 md:pl-[84px] pb-24 md:pb-0 text-white page-transition">
       <div className="max-w-[1400px] mx-auto p-6 lg:p-10 relative z-10 w-full flex flex-col gap-8">
         
         {/* Header */}
-        <header className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <header className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
+          <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
             <button onClick={() => navigate(-1)} className="p-2 bg-white/[0.03] border border-white/10 rounded-xl text-gray-400 hover:text-white transition-all">
               <ChevronLeft size={20} />
             </button>
@@ -175,7 +189,7 @@ function Analytics() {
                   </div>
                   <div>
                     <h3 className="text-lg font-bold">Performance Growth</h3>
-                    <p className="text-xs text-gray-500 font-medium">Weekly productivity & health metrics</p>
+                    <p className="text-xs text-gray-500 font-medium">Daily task completion analysis</p>
                   </div>
                 </div>
                 <MoreHorizontal size={20} className="text-gray-600" />
@@ -183,19 +197,14 @@ function Analytics() {
 
               <div className="w-full h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={historyChartData}>
-                    <defs>
-                      <linearGradient id="colorProd" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.1}/>
-                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
+                  <BarChart data={last7DaysData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
                     <XAxis 
                       dataKey="date" 
                       axisLine={false} 
                       tickLine={false} 
                       tick={{ fill: '#6b7280', fontSize: 10, fontWeight: 700 }}
+                      dy={10}
                     />
                     <YAxis 
                       axisLine={false} 
@@ -203,25 +212,22 @@ function Analytics() {
                       tick={{ fill: '#6b7280', fontSize: 10, fontWeight: 700 }}
                     />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: 'rgba(15, 15, 18, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', backdropFilter: 'blur(10px)' }}
-                      itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}
+                      contentStyle={{ backgroundColor: 'rgba(15, 15, 18, 0.9)', border: '1px solid rgba(255,140,60,0.1)', borderRadius: '16px', backdropFilter: 'blur(10px)', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
+                      itemStyle={{ color: '#f59e0b', fontSize: '13px', fontWeight: '900' }}
+                      cursor={{ fill: 'rgba(255,255,255,0.02)' }}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="productivity" 
-                      stroke="#f59e0b" 
-                      strokeWidth={4} 
-                      dot={{ r: 4, fill: '#f59e0b', strokeWidth: 0 }} 
-                      activeDot={{ r: 6, fill: '#fff' }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="health" 
-                      stroke="#3b82f6" 
-                      strokeWidth={4} 
-                      dot={{ r: 4, fill: '#3b82f6', strokeWidth: 0 }} 
-                    />
-                  </LineChart>
+                    <Bar 
+                      dataKey="completed" 
+                      name="Tasks Completed"
+                      shape={<Custom3DBar />}
+                      fill="#f59e0b"
+                      barSize={32}
+                    >
+                      {last7DaysData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % 2 === 0 ? 0 : 1]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>

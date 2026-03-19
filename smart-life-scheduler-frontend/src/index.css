@@ -25,42 +25,44 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-dark) !important;
-  color: var(--text-primary) !important;
+  background-color: #0f1115 !important;
+  background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-blend-mode: overlay;
+  color: #ffffff !important;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
-  /* The Warm Dark Grey Gradient overlay */
-  background: radial-gradient(circle at 30% 20%, rgba(255, 140, 60, 0.15), transparent 40%), var(--bg-dark) !important;
 }
 
 /* Base Container Glow Effect */
-#root::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at top right, rgba(255, 140, 60, 0.15), transparent 50%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* Subtler texture overlay */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
-  opacity: 0.03;
+  background: radial-gradient(
+    circle at 70% 20%,
+    rgba(255, 140, 60, 0.18),
+    transparent 40%
+  );
   pointer-events: none;
+  z-index: 0;
+}
+
+/* Root container to ensure it stays above the z-index: 0 glow */
+#root {
+  position: relative;
   z-index: 1;
 }
 
 .glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-border);
-  border-radius: 1.5rem;
-  box-shadow: var(--glass-shadow);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -68,6 +70,30 @@ body::before {
   border-color: rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-4px);
+}
+
+/* Hero Card Special Effect */
+.hero-card {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.06),
+    rgba(255,255,255,0.02)
+  );
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.hero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at top right,
+    rgba(255, 140, 60, 0.25),
+    transparent 50%
+  );
+  pointer-events: none;
 }
 
 /* Sidebar Specifics */
