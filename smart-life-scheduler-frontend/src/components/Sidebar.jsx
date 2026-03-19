@@ -57,7 +57,7 @@ const Sidebar = () => {
         <SidebarItem icon={LayoutDashboard} to="/dashboard" label="Dashboard" />
         <SidebarItem icon={CheckSquare} to="/tasks" label="Tasks" />
         <SidebarItem icon={BarChart3} to="/analytics" label="Analytics" />
-        <SidebarItem icon={BrainCircuit} to="/ai-coach" label="AI Coach" />
+        <SidebarItem icon={Bot} to="/ai-assistant" label="AI Assistant" />
         <SidebarItem icon={PieChart} to="/reports" label="Reports" />
       </nav>
 

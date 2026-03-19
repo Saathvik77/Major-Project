@@ -10,6 +10,7 @@ import Reports from "./pages/Reports";
 import Profile from "./pages/Profile";
 import Health from "./pages/Health";
 import AIAssistant from "./pages/AIAssistant";
+import Settings from "./pages/Settings";
 import { ThemeProvider } from "./ThemeContext";
 import AnimatedBackground from "./components/AnimatedBackground";
 import Layout from "./components/Layout";
@@ -98,6 +99,16 @@ function App() {
               <PrivateRoute>
                 <Layout>
                   <AIAssistant />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <Settings />
                 </Layout>
               </PrivateRoute>
             }
