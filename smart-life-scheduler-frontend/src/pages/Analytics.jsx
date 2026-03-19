@@ -82,6 +82,13 @@ function Analytics() {
   const PRIMARY_ACCENT = "#ff8c3c";
   const CHART_COLORS = [PRIMARY_ACCENT, "rgba(255, 140, 60, 0.6)", "rgba(255, 140, 60, 0.3)", "rgba(255, 255, 255, 0.05)"];
 
+  const [insights, setInsights] = useState([
+    { text: "Operational analysis in progress...", icon: <Zap size={14} className="text-orange-500" /> },
+    { text: "Scanning task patterns...", icon: <TrendingUp size={14} className="text-emerald-500" /> },
+    { text: "Evaluating focus cycles...", icon: <Clock size={14} className="text-blue-500" /> },
+    { text: "Calibrating smart score...", icon: <Target size={14} className="text-orange-500" /> }
+  ]);
+
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
@@ -90,9 +97,44 @@ function Analytics() {
           API.get("/tasks?limit=500")
         ]);
         setSummary(summaryRes.data);
-        if (tasksRes.data?.tasks) {
-          setCompletedTasks(tasksRes.data.tasks.filter(t => t.completed));
+        const allTasks = tasksRes.data?.tasks || [];
+        setCompletedTasks(allTasks.filter(t => t.completed));
+
+        // 🧠 Dynamic AI Insights Logic
+        const completed = allTasks.filter(t => t.completed);
+        const total = allTasks.length;
+        const ratio = total > 0 ? (completed.length / total) : 0;
+        
+        const newInsights = [];
+        
+        // 1. Completion Insight
+        if (ratio > 0.8) {
+          newInsights.push({ text: "Peak efficiency detected. You are operating at 80%+ capacity.", icon: <Zap size={14} className="text-orange-500" /> });
+        } else if (ratio > 0.5) {
+          newInsights.push({ text: "Steady progress maintained. Focus on high-priority morning slots.", icon: <TrendingUp size={14} className="text-emerald-500" /> });
+        } else {
+          newInsights.push({ text: "System load optimization recommended to prevent fatigue.", icon: <AlertCircle size={14} className="text-rose-500" /> });
         }
+
+        // 2. Category Insight (Mocking dynamic logic based on actual data if categories existed)
+        const categories = [...new Set(allTasks.map(t => t.category || "General"))];
+        if (categories.length > 2) {
+          newInsights.push({ text: `Diversity in tasks detected across ${categories.length} operational sectors.`, icon: <Layout size={14} className="text-blue-500" /> });
+        }
+
+        // 3. Priority Insight
+        const highPriority = allTasks.filter(t => t.priority === "High");
+        if (highPriority.length > 3) {
+          newInsights.push({ text: "High-density critical tasks identified. Strategic breaks advised.", icon: <Brain size={14} className="text-purple-500" /> });
+        } else {
+          newInsights.push({ text: "Balanced workload distribution confirmed for this cycle.", icon: <CheckCircle2 size={14} className="text-emerald-500" /> });
+        }
+
+        // 4. Time Insight
+        newInsights.push({ text: `Average completion velocity: ${Math.round(ratio * 100)}% per operational cycle.`, icon: <Clock size={14} className="text-orange-500" /> });
+
+        if (newInsights.length > 0) setInsights(newInsights);
+
       } catch (error) {
         console.error("Analytics Error:", error);
       } finally {
@@ -320,12 +362,7 @@ function Analytics() {
                </div>
 
                <div className="space-y-4">
-                  {[
-                    { text: "Peak efficiency detected on Tuesday evenings", icon: <Zap size={14} className="text-orange-500" /> },
-                    { text: "Morning task completion rate improved by 20%", icon: <TrendingUp size={14} className="text-emerald-500" /> },
-                    { text: "Average focus session duration: 42 minutes", icon: <Clock size={14} className="text-blue-500" /> },
-                    { text: "Streak achievement: 7 consecutive focus days", icon: <Target size={14} className="text-orange-500" /> }
-                  ].map((insight, i) => (
+                  {insights.map((insight, i) => (
                     <div key={i} className="flex items-center gap-4 p-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/[0.06] transition-all group/item">
                        <div className="shrink-0">{insight.icon}</div>
                        <p className="text-sm font-bold text-gray-400 group-hover/item:text-white transition-colors">{insight.text}</p>

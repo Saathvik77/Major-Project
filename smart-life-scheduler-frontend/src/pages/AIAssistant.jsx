@@ -67,6 +67,38 @@ const AIAssistant = () => {
     scrollToBottom();
   }, [messages, isTyping]);
 
+  const [insightData, setInsightData] = useState({
+    peak: "19:00",
+    fatigue: "Medium @ 3pm",
+    streak: "0 Cycles",
+    ratio: 0
+  });
+
+  useEffect(() => {
+    const fetchAIAssistantData = async () => {
+      try {
+        const [summaryRes, tasksRes] = await Promise.all([
+          api.get("/intelligence/summary"),
+          api.get("/tasks?limit=500")
+        ]);
+        
+        const allTasks = tasksRes.data?.tasks || [];
+        const completed = allTasks.filter(t => t.completed);
+        const ratio = allTasks.length > 0 ? (completed.length / allTasks.length) : 0;
+        
+        setInsightData({
+          peak: "11:00 AM", // Mocked for now
+          fatigue: ratio > 0.7 ? "Low @ 4pm" : "High @ 2pm",
+          streak: `${completed.length} Tasks`,
+          ratio: ratio
+        });
+      } catch (error) {
+        console.error("AI Assistant Data Error:", error);
+      }
+    };
+    fetchAIAssistantData();
+  }, []);
+
   const handleSend = async (overrideInput) => {
     const messageText = overrideInput || input;
     if (!messageText.trim()) return;
@@ -232,14 +264,18 @@ const AIAssistant = () => {
             </div>
 
             <div className="space-y-4">
-              <InsightItem label="Peak Productivity" value="19:00" trend="+12%" trendUp={true} />
-              <InsightItem label="Cognitive Fatigue" value="High @ 10am" trend="-4%" trendUp={false} />
-              <InsightItem label="Success Streak" value="7 Cycles" trend="+100%" trendUp={true} />
+              <InsightItem label="Peak Productivity" value={insightData.peak} trend="+12%" trendUp={true} />
+              <InsightItem label="Cognitive Fatigue" value={insightData.fatigue} trend={insightData.ratio > 0.5 ? "-4%" : "+8%"} trendUp={insightData.ratio > 0.5} />
+              <InsightItem label="Operational Volume" value={insightData.streak} trend={`+${Math.round(insightData.ratio * 100)}%`} trendUp={true} />
             </div>
 
             <div className="mt-4 p-5 rounded-2xl bg-orange-500/5 border border-orange-500/10">
                <p className="text-xs text-gray-400 leading-relaxed italic">
-                 "Operational patterns suggest a shift in focus windows. You're doing great, keep pushing 🔥"
+                 {insightData.ratio > 0.7 
+                   ? "Operational patterns suggest peak synchronization. Your focus windows are perfectly aligned 🔥" 
+                   : insightData.ratio > 0.4
+                   ? "System load is stabilizing. Maintain current momentum to secure weekly targets."
+                   : "Analyzing performance gaps. I recommend shifting high-priority tasks to earlier slots."}
                </p>
             </div>
           </div>
@@ -249,13 +285,22 @@ const AIAssistant = () => {
              <div className="relative w-16 h-16 flex-shrink-0">
                 <svg className="w-full h-full transform -rotate-90">
                   <circle cx="32" cy="32" r="28" className="stroke-white/5 fill-none" strokeWidth="6" />
-                  <circle cx="32" cy="32" r="28" className="stroke-orange-500 fill-none" strokeWidth="6" strokeDasharray="176" strokeDashoffset="44" strokeLinecap="round" />
+                  <motion.circle 
+                    cx="32" cy="32" r="28" 
+                    className="stroke-orange-500 fill-none" 
+                    strokeWidth="6" 
+                    strokeDasharray="176" 
+                    initial={{ strokeDashoffset: 176 }}
+                    animate={{ strokeDashoffset: 176 - (insightData.ratio * 176) }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
+                    strokeLinecap="round" 
+                  />
                 </svg>
-                <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black">75%</div>
+                <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black">{Math.round(insightData.ratio * 100)}%</div>
              </div>
              <div>
                 <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Weekly Sync</p>
-                <p className="text-sm font-black text-white">Flow Target Achieved</p>
+                <p className="text-sm font-black text-white">{insightData.ratio > 0.7 ? "Flow Target Achieved" : "Synchronizing Node..."}</p>
              </div>
           </div>
 

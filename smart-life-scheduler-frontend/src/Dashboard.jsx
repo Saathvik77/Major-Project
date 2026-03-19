@@ -69,23 +69,31 @@ const Dashboard = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [activeTasks, setActiveTasks] = useState([]);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await api.get('/intelligence/summary');
+        const [statsRes, tasksRes] = await Promise.all([
+          api.get('/intelligence/summary'),
+          api.get('/tasks?limit=3')
+        ]);
+        
         setStats({
-          totalTasks: String(res.data.completed || 0),
-          efficiency: res.data.completedRatio || "0%",
-          growth: res.data.productivityScore || "0%",
-          missed: String(res.data.overdue || 0)
+          totalTasks: String(statsRes.data.completed || 0),
+          efficiency: statsRes.data.completedRatio || "0%",
+          growth: statsRes.data.productivityScore || "0%",
+          missed: String(statsRes.data.overdue || 0)
         });
+
+        setActiveTasks(tasksRes.data.tasks?.filter(t => !t.completed).slice(0, 3) || []);
+
         setTimeout(() => {
           setIsLoading(false);
           setShowStats(true);
         }, 800);
       } catch (err) {
-        console.error("Failed to fetch dashboard stats:", err);
+        console.error("Failed to fetch dashboard data:", err);
         setIsLoading(false);
       }
     };
@@ -320,7 +328,7 @@ const Dashboard = () => {
           </div>
 
           <div className="flex-1 flex flex-col gap-3 justify-center">
-             {stats.totalTasks === "0" ? (
+             {activeTasks.length === 0 ? (
                <div className="flex flex-col items-center justify-center text-center py-12 px-4 animate-fadeIn">
                  <div className="w-20 h-20 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500/40 mb-6 border border-orange-500/20 shadow-inner">
                    <Plus size={40} strokeWidth={1} />
@@ -337,21 +345,17 @@ const Dashboard = () => {
                  </button>
                </div>
              ) : (
-               [
-                 { title: "Deep Work: Task Training", time: "14:30", type: "Cognitive" },
-                 { title: "Strategic Review", time: "16:00", type: "Growth" },
-                 { title: "System Sync", time: "17:30", type: "Operational" }
-               ].map((task, i) => (
-                 <div key={i} className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-between group/item hover:bg-white/[0.06] transition-all hover:border-white/10">
+               activeTasks.map((task, i) => (
+                 <div key={task._id || i} className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-between group/item hover:bg-white/[0.06] transition-all hover:border-white/10">
                    <div className="flex items-center gap-5">
                       <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(255,140,60,0.5)]" />
                       <div>
                          <p className="text-sm font-black text-white group-hover/item:text-orange-400 transition-colors tracking-tight">{task.title}</p>
-                         <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">{task.type}</p>
+                         <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">{task.category || "General"}</p>
                       </div>
                    </div>
                    <div className="text-right">
-                      <p className="text-xs font-black text-white">{task.time}</p>
+                      <p className="text-xs font-black text-white">{task.startTime || "09:00"}</p>
                       <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">Scheduled</p>
                    </div>
                  </div>

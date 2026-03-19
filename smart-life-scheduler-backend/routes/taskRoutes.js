@@ -385,7 +385,8 @@ router.post(
     }
 
     if (task.completed) {
-      return res.status(400).json({ success: false, message: "Task already completed" });
+      // If task is completed, we allow re-opening it for rescheduling
+      task.completed = false;
     }
 
     const taskDate = new Date(task.date);

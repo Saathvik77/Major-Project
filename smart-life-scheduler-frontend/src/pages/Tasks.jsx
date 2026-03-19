@@ -178,10 +178,18 @@ export default function Tasks() {
       setToast("No missed tasks to optimize!");
       return;
     }
+    
+    // ─── Propose Optimization Flow ───────────────────────────────────
+    const confirm = window.confirm(`Smart Life Engine has detected ${missedTasks.length} missed operational tasks. 
+
+Would you like to initiate the 'Smart Sync' protocol? 
+This will analyze your remaining windows and automatically reschedule these tasks to the next available slots to maintain your daily momentum.`);
+
+    if (!confirm) return;
+
     setIsOptimizing(true);
     try {
       // 🚀 WOW FEATURE: SMART AUTO RESCHEDULE
-      // Reschedule all missed tasks concurrently
       const promises = missedTasks.map(task => api.post(`/tasks/${task._id || task.id}/reschedule`));
       const results = await Promise.all(promises);
       
@@ -191,17 +199,15 @@ export default function Tasks() {
         newTasksMap.set(t._id || t.id, t);
       });
 
-      // Update state
       setTasks(prev => prev.map(t => newTasksMap.has(t._id || t.id) ? newTasksMap.get(t._id || t.id) : t));
       
-      // Clear expired IDs for the rescheduled tasks
       setExpiredIds(prev => {
         const next = new Set(prev);
         results.forEach(res => next.delete(res.data.task._id || res.data.task.id));
         return next;
       });
       
-      setToast(`Smart sync complete! ${results.length} tasks successfully optimized and rescheduled.`);
+      setToast(`Smart Sync complete. ${results.length} tasks successfully reintegrated into your flow.`);
     } catch (err) {
       console.error(err);
       setToast("Optimization encountered an error.");
@@ -453,7 +459,14 @@ export default function Tasks() {
                               priority={task.priority}
                               onComplete={() => {}} // Already complete
                               onDelete={() => deleteTask(task._id || task.id)}
-                              onReschedule={() => {}}
+                              onReschedule={() => {
+                                const confirm = window.confirm(`Re-open "${task.title}" for rescheduling?`);
+                                if (confirm) {
+                                  // Call the reschedule logic which will also reset completed status on backend (if handled)
+                                  // Or we might need to manually set completed: false if the backend doesn't
+                                  rescheduleTask(task);
+                                }
+                              }}
                               isExpired={false}
                               category={task.category || "General"}
                               isCompleted={true}
@@ -466,50 +479,39 @@ export default function Tasks() {
                 )}
 
                 {/* Inline Add Task */}
-                <div className="glass-card p-3 flex flex-col sm:flex-row items-center gap-4 bg-white/[0.02] border-dashed border-white/10 hover:bg-white/[0.04] transition-all group">
-                  <div className="flex items-center gap-4 flex-1 w-full">
-                    <div className="w-10 h-10 flex items-center justify-center text-gray-600 group-hover:text-orange-500 transition-colors"><Plus size={20} /></div>
+                <div className="glass-card p-2.5 flex flex-col md:flex-row items-center gap-3 border border-white/10 shadow-2xl">
+                  <div className="flex-1 w-full flex items-center bg-white/5 rounded-2xl px-6 py-4 border border-white/5 focus-within:border-orange-500/30 transition-all">
                     <input 
                       type="text" 
-                      placeholder="Quick add task..." 
-                      value={title} 
-                      onChange={(e) => setTitle(e.target.value)} 
-                      onKeyDown={(e) => e.key === 'Enter' && addTask()} 
-                      className="flex-1 bg-transparent border-none outline-none text-gray-300 placeholder:text-gray-600 font-medium text-sm" 
+                      placeholder="Initiate new operational task..." 
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && addTask()}
+                      className="flex-1 bg-transparent border-none outline-none text-sm font-medium text-white placeholder:text-gray-600"
                     />
                   </div>
-                  
-                  <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto px-4 sm:px-0">
-                    {/* Date Selection */}
-                    <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 focus-within:border-orange-500/50 transition-all">
-                      <CalendarIcon size={14} className="text-orange-500" />
-                      <input 
-                        type="date" 
-                        value={selectedDate.toISOString().split('T')[0]} 
-                        onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                        className="bg-transparent border-none outline-none text-[10px] font-bold text-gray-400 uppercase tracking-widest w-[110px]"
-                      />
-                    </div>
-
-                    {/* Time Selection */}
-                    <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 focus-within:border-orange-500/50 transition-all">
-                      <Timer size={14} className="text-orange-500" />
-                      <input 
-                        type="time" 
-                        value={startTime} 
-                        onChange={(e) => setStartTime(e.target.value)}
-                        className="bg-transparent border-none outline-none text-[10px] font-bold text-gray-400 uppercase tracking-widest w-[80px]"
-                      />
-                    </div>
-
-                    <motion.div 
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={addTask} 
-                      className="p-2 bg-orange-500/20 border border-orange-500/30 rounded-lg text-orange-500 hover:bg-orange-500 hover:text-white cursor-pointer transition-all shadow-lg shadow-orange-500/10 ripple"
+                  <div className="flex items-center gap-2 w-full md:w-auto">
+                    <input 
+                      type="time"
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                      className="w-[110px]"
+                    />
+                    <select 
+                      value={priority}
+                      onChange={(e) => setPriority(e.target.value)}
+                      className="bg-white/5 border border-white/5 rounded-xl px-4 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 outline-none focus:border-orange-500/30 cursor-pointer"
                     >
-                      <Plus size={18} />
-                    </motion.div>
+                      <option value="High">High</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                    </select>
+                    <button 
+                      onClick={addTask}
+                      className="w-14 h-14 rounded-xl bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/20 flex-shrink-0"
+                    >
+                      <Plus size={24} strokeWidth={3} />
+                    </button>
                   </div>
                 </div>
               </div>
