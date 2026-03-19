@@ -12,14 +12,26 @@
   --primary-amber: #f59e0b;
   --primary-orange: #f97316;
   --primary-blue: #3b82f6;
+}
 
-  /* Glassmorphism — bumped opacity for contrast on stone texture */
-  --glass-bg: rgba(255, 255, 255, 0.07);
-  --glass-border: rgba(255, 255, 255, 0.13);
-  --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.65);
-  
-  --text-primary: #ffffff;
-  --text-dim: #94a3b8;
+/* ── Glass Morphism ─────────────────────────────────────────
+   Add or replace this in your index.css / global.css file   */
+
+.glass-morphism {
+  background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.15) !important;
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.04) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.12);
+  border-radius: 1.25rem;
 }
 
 body {
