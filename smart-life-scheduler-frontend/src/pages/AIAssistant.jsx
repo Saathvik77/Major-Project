@@ -47,6 +47,15 @@ const InsightItem = ({ label, value, trend, trendUp }) => (
   </div>
 );
 
+const formatTime12Hour = (time24) => {
+  if (!time24) return "—";
+  const [hours, minutes] = time24.split(':');
+  const h = parseInt(hours, 10);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  return `${h12}:${minutes} ${ampm}`;
+};
+
 const AIAssistant = () => {
   const navigate = useNavigate();
   const [input, setInput] = useState("");
@@ -208,6 +217,26 @@ const AIAssistant = () => {
                               {action.title.toLowerCase().includes('break') && (
                                 <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                               )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Render Task List if available */}
+                      {msg.actions && msg.actions.length > 0 && msg.actions.some(a => a.type === "task_list") && (
+                        <div className="mt-6 space-y-3 pt-6 border-t border-white/10">
+                          <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-4">Active Task List</p>
+                          {msg.actions.filter(a => a.type === "task_list").map((action, idx) => (
+                            <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10 group/item hover:bg-white/10 transition-all">
+                              <div className="w-16 text-[10px] font-black text-gray-500 group-hover/item:text-orange-400 transition-colors">{formatTime12Hour(action.time)}</div>
+                              <div className="flex-1 text-xs font-bold text-white">{action.title}</div>
+                              <div className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-tighter border ${
+                                action.priority === 'High' ? 'text-rose-400 border-rose-500/20' : 
+                                action.priority === 'Medium' ? 'text-amber-400 border-amber-500/20' : 
+                                'text-emerald-400 border-emerald-500/20'
+                              }`}>
+                                {action.priority}
+                              </div>
                             </div>
                           ))}
                         </div>

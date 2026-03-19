@@ -19,12 +19,12 @@ const chatWithAI = async (req, res) => {
     
     // 1. Plan My Day / Schedule
     if (msg.includes("plan my day") || msg.includes("schedule") || msg.includes("organize")) {
-      // Fetch ALL user tasks for the current/future dates
+      // Fetch only PENDING user tasks for the current/future dates
       const today = new Date();
       today.setHours(0,0,0,0);
       
-      const allTasks = await Task.find({ user: userId }).sort({ priority: 1 });
-      const aiSchedule = await generateSchedule(allTasks);
+      const pendingTasks = await Task.find({ user: userId, completed: false }).sort({ priority: 1 });
+      const aiSchedule = await generateSchedule(pendingTasks);
 
       // 🚀 COMMIT THE CHANGES TO THE DATABASE
       if (aiSchedule.schedule && aiSchedule.schedule.length > 0) {
@@ -34,7 +34,8 @@ const chatWithAI = async (req, res) => {
           // Try to find the existing task to update it
           const existingTask = await Task.findOne({ 
             user: userId, 
-            title: { $regex: new RegExp(item.title, 'i') }
+            title: { $regex: new RegExp(item.title, 'i') },
+            completed: false 
           });
 
           const [startTimeStr] = item.timeRange.split(" - ");
@@ -127,6 +128,27 @@ const chatWithAI = async (req, res) => {
           actions: [{ type: "navigation", path }]
         });
       }
+    }
+
+    // 5. List Pending Tasks
+    if (msg.includes("get tasks") || msg.includes("list tasks") || msg.includes("pending tasks") || msg.includes("show my tasks")) {
+      const pending = await Task.find({ user: userId, completed: false }).sort({ startTime: 1 });
+      
+      if (pending.length === 0) {
+        return res.json({
+          reply: "Your operational log is currently clear. No pending tasks detected. Ready for new input.",
+        });
+      }
+
+      return res.json({
+        reply: `I've retrieved ${pending.length} pending tasks from your operational flow.`,
+        actions: pending.map(t => ({ 
+          type: "task_list", 
+          title: t.title, 
+          time: t.startTime, 
+          priority: t.priority 
+        }))
+      });
     }
 
     // ─── Default AI Generation ──────────────────────────────────────────
