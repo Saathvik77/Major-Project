@@ -352,7 +352,9 @@ function Analytics() {
   return (
     <div className="p-6 space-y-8 text-white max-w-7xl mx-auto pb-28">
       {/* Background gradients missing from original Analytics page for consistency */}
-      <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] -z-10 animate-floatGlow"></div>
+      <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px] -z-10 animate-floatGlow"></div>
+      <div className="fixed bottom-[10%] right-[-10%] w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '2s' }}></div>
+      <div className="fixed top-[40%] left-[60%] w-[300px] h-[300px] bg-amber-500/10 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '4s' }}></div>
 
       <div className="flex items-center gap-4 mb-8">
         <button
@@ -366,35 +368,35 @@ function Analytics() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-        <div className="bg-white/5 border border-white/10 backdrop-blur-md shadow-xl rounded-2xl p-6 hover:bg-white/10 transition-colors">
+        <div className="glass-card p-6">
           <h2 className="text-gray-400 mb-2 font-medium">Total Tasks</h2>
           <p className="text-4xl font-bold tracking-tight text-white">
             {summary?.totalTasks || 0}
           </p>
         </div>
 
-        <div className="bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-md shadow-xl rounded-2xl p-6 hover:bg-emerald-500/20 transition-colors">
-          <h2 className="text-emerald-400 mb-2 font-medium">Completed</h2>
-          <p className="text-4xl font-bold tracking-tight text-emerald-300">
+        <div className="glass-card p-6 border-indigo-500/20 hover:border-indigo-500/40">
+          <h2 className="text-indigo-400 mb-2 font-medium">Completed</h2>
+          <p className="text-4xl font-bold tracking-tight text-indigo-300">
             {summary?.completed || 0}
           </p>
         </div>
 
-        <div className="bg-amber-500/10 border border-amber-500/20 backdrop-blur-md shadow-xl rounded-2xl p-6 hover:bg-amber-500/20 transition-colors">
+        <div className="glass-card p-6 border-amber-500/20 hover:border-amber-500/40">
           <h2 className="text-amber-400 mb-2 font-medium">Pending</h2>
           <p className="text-4xl font-bold tracking-tight text-amber-300">
             {summary?.pending || 0}
           </p>
         </div>
 
-        <div className="bg-red-500/10 border border-red-500/20 backdrop-blur-md shadow-xl rounded-2xl p-6 hover:bg-red-500/20 transition-colors">
+        <div className="glass-card p-6 border-red-500/20 hover:border-red-500/40">
           <h2 className="text-red-400 mb-2 font-medium">Overdue</h2>
           <p className="text-4xl font-bold tracking-tight text-red-300">
             {summary?.overdue || 0}
           </p>
         </div>
 
-        <div className="bg-white/5 border border-white/10 backdrop-blur-md shadow-xl rounded-2xl p-6 hover:bg-white/10 transition-colors">
+        <div className="glass-card p-6">
           <h2 className="text-gray-400 mb-2 font-medium">Weekly Change</h2>
           <p className="text-4xl font-bold tracking-tight text-white">
             {difference > 0 && "+"}

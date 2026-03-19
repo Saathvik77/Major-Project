@@ -133,18 +133,6 @@
 }
 
 @layer base {
-  body {
-    /* 🎬 Cinematic night base — deep midnight navy, like the reel's dark room */
-    background-color: #060d17;
-    background: radial-gradient(ellipse at 70% 10%, rgba(180, 110, 20, 0.13) 0%, transparent 55%),
-      radial-gradient(ellipse at 20% 80%, rgba(14, 60, 90, 0.18) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, rgba(13, 27, 42, 0.95) 0%, transparent 100%),
-      linear-gradient(to bottom right, var(--bg-top), var(--bg-mid), var(--bg-bottom));
-    @apply bg-fixed text-white font-sans antialiased min-h-screen transition-colors duration-1000 overflow-x-hidden;
-    font-family: 'Inter', sans-serif;
-    position: relative;
-  }
-
   /* 🌟 Animated cinematic glow blobs — amber warm light + cool blue shadows */
   body::before {
     content: '';
@@ -350,9 +338,15 @@
   @apply relative flex items-center justify-center w-12 h-12 rounded-2xl mb-6 transition-all duration-300 cursor-pointer text-gray-400 hover:text-white;
 }
 
-.sidebar-item-active {
-  @apply text-white bg-white/10 shadow-[0_0_20px_rgba(255,255,255,0.1)];
-  border: 1px solid rgba(255, 255, 255, 0.2);
+.glass-card {
+  @apply backdrop-blur-3xl rounded-[32px] transition-all duration-500 overflow-hidden;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .sidebar-tooltip {
@@ -382,6 +376,30 @@
 
 .glass-morphism {
   @apply backdrop-blur-[32px] border border-white/[0.12] bg-white/[0.04] shadow-[0_20px_50px_rgba(0,0,0,0.5)];
+}
+
+/* Cyan/Teal Glow for Task Date */
+.active-date-glow {
+  box-shadow: 0 0 20px rgba(45, 212, 191, 0.4), inset 0 0 10px rgba(45, 212, 191, 0.2);
+  border-color: rgba(45, 212, 191, 0.5) !important;
+}
+
+.task-item-glow:hover {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Fade In Up animation for scroll effects */

@@ -36,7 +36,7 @@ export default function Sidebar() {
       {/* Logo Area */}
       <div className="mb-12 cursor-pointer group" onClick={() => navigate("/dashboard")}>
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 group-hover:scale-110 transition-transform duration-500">
-          <Hexagon fill="white" size={24} className="animate-pulse" />
+          <Bot fill="white" size={24} className="animate-pulse" />
         </div>
       </div>
 

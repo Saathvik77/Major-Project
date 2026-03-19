@@ -7,7 +7,7 @@ export default function Layout({ children }) {
   const location = useLocation();
 
   return (
-    <div className="flex bg-[#020617] min-h-screen text-white overflow-hidden">
+    <div className="flex bg-transparent min-h-screen text-white overflow-hidden">
       <Sidebar />
       <main className="main-content flex-1">
         <AnimatePresence mode="wait">

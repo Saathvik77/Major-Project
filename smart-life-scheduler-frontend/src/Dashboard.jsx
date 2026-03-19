@@ -340,380 +340,151 @@ function Dashboard() {
     return { suggestion, Icon, weatherText };
   };
 
-  const { suggestion: bannerSuggestion, Icon: WeatherIcon, weatherText } =
-    getBannerSuggestionAndIcon();
+  const { suggestion: bannerSuggestion, weatherText } = getBannerSuggestionAndIcon();
+  
   const todaysProductivityStr =
     stats.todayTotal > 0
       ? Math.round((stats.todayCompleted / stats.todayTotal) * 100)
       : 0;
 
   return (
-    <div className="relative z-10 font-sans text-white border-none">
+    <div className="relative min-h-[calc(100vh-2rem)] flex flex-col items-center justify-between py-6 px-4 md:px-8 overflow-hidden font-sans">
+      
       {/* ── Header ─────────────────────────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0, y: -16 }}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="flex justify-between items-center mb-8 md:mb-16 relative z-50"
+        className="w-full flex items-center gap-3 mb-8 px-4"
       >
-        <h1 className="text-2xl md:text-4xl font-extrabold flex items-center gap-2 md:gap-3 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-indigo-500 to-purple-500 tracking-tight drop-shadow-md">
-          <ClipboardList className="text-teal-400 drop-shadow-[0_0_20px_rgba(45,212,191,0.8)] w-8 h-8 md:w-10 md:h-10" />
-          Smart Life Scheduler
-        </h1>
-
-        <div className="relative group shrink-0">
-          <button className="flex items-center gap-1.5 md:gap-2 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md border border-white/20 px-4 py-2 md:px-6 md:py-2.5 rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_25px_rgba(255,255,255,0.15)] hover:bg-white/20 hover:scale-105 active:scale-95 transition-all duration-300 text-white font-medium text-sm md:text-base">
-            <Settings className="w-4 h-4 md:w-5 md:h-5 group-hover:rotate-90 transition-transform duration-500" />
-            <span className="hidden sm:inline">Settings</span>
-          </button>
-
-          <div className="absolute right-0 mt-3 w-64 bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right group-hover:translate-y-0 translate-y-2 group-hover:scale-100 scale-95 overflow-hidden z-[100]">
-            <div className="p-3 space-y-2">
-              <button
-                onClick={() => navigate("/profile")}
-                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-indigo-500/30 hover:to-purple-500/30 hover:text-indigo-200 transition-all duration-300 text-gray-200 font-medium group/btn"
-              >
-                <User className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-300 text-indigo-400" />
-                Profile
-              </button>
-
-              <div className="px-2 pt-2">
-                <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2 mb-2">
-                  <Palette size={12} className="text-neonPrimary" />
-                  App Theme
-                </span>
-                <div className="grid grid-cols-2 gap-2">
-                  {themes.map((t) => (
-                    <button
-                      key={t.id}
-                      onClick={() => setAppTheme(t.id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all border ${theme === t.id
-                        ? "bg-neonPrimary/20 border-neonPrimary text-white shadow-[0_0_10px_rgba(124,108,255,0.3)]"
-                        : "bg-slate-900/60 border-white/5 text-gray-400 hover:bg-white/5 hover:text-gray-200"
-                        }`}
-                    >
-                      <div className={theme === t.id ? "text-neonPrimary" : "text-gray-500"}>
-                        {t.icon}
-                      </div>
-                      <span className="text-[11px] font-bold tracking-wide">{t.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="h-px w-full bg-white/5 my-2"></div>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-red-500/30 hover:to-orange-500/30 hover:text-red-200 transition-all duration-300 text-gray-200 font-medium group/btn"
-              >
-                <LogOut className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-300 text-red-500" />
-                Logout
-              </button>
-            </div>
-          </div>
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+          <Bot size={22} fill="white" />
         </div>
+        <h1 className="text-xl font-bold tracking-tight text-white/90">Smart Life Scheduler</h1>
       </motion.div>
 
-      {/* ── Welcome Banner ─────────────────────────────────────────────── */}
-      <motion.div
-        variants={bannerVariants}
-        initial="hidden"
-        animate="show"
-        className="mb-8 md:mb-10 bg-slate-900/40 border border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.2)] rounded-3xl p-6 md:p-8 relative overflow-hidden backdrop-blur-xl group transition-all duration-500 hover:shadow-[0_0_40px_rgba(124,108,255,0.15)] hover:border-neonPrimary/20"
-      >
-        {/* Animated border glow */}
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-neonPrimary/10 via-transparent to-neonSecondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between relative z-10 gap-6 md:gap-8">
-          <div>
-            <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-neonPrimary via-neonAccent to-neonSecondary drop-shadow-sm tracking-tight flex items-center gap-3 mb-4">
-              {greeting}, {userName}{" "}
-              <span className="text-white animate-wave inline-block origin-bottom-right">👋</span>
-            </h1>
-
-            <div className="flex flex-wrap items-center gap-4 md:gap-6">
-              <div className="flex items-center gap-2.5 bg-black/30 px-4 py-2 rounded-xl border border-white/10 shadow-inner backdrop-blur-md">
-                <WeatherIcon className="text-yellow-400 w-[18px] h-[18px] md:w-[20px] md:h-[20px]" />
-                <span className="text-sm md:text-[15px] font-semibold text-gray-200">
-                  Weather: {weatherText} {weatherData ? `${weatherData.temperature}°C` : ""}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2.5 bg-black/30 px-4 py-2 rounded-xl border border-white/10 shadow-inner backdrop-blur-md">
-                <Activity className="text-emerald-400 w-[18px] h-[18px] md:w-[20px] md:h-[20px]" />
-                <span className="text-sm md:text-[15px] font-semibold text-gray-200">
-                  Today's productivity:{" "}
-                  <span className="text-white font-black text-base md:text-lg ml-1">
-                    {todaysProductivityStr}%
-                  </span>
-                </span>
-              </div>
+      {/* ── Top Row: Greeting & Suggestion ─────────────────────────────── */}
+      <div className="w-full max-w-6xl grid md:grid-cols-2 gap-6 mb-8 px-4">
+        {/* Greeting Card */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="glass-card p-6 flex flex-col justify-between min-h-[140px]"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <h2 className="text-2xl font-bold text-white">{greeting}.</h2>
+            <Sparkles className="text-amber-400" size={20} />
+          </div>
+          <div className="flex flex-wrap gap-3 mt-auto">
+            <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-300 flex items-center gap-2">
+               <Sun size={14} className="text-amber-400" />
+               {weatherText}, {weatherData ? `${weatherData.temperature}°C` : "24°C"}
+            </div>
+            <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-300">
+               Today's productivity: <span className="text-white">{todaysProductivityStr}%</span>
             </div>
           </div>
+        </motion.div>
 
-          <div className="bg-white/10 border border-neonPrimary/30 rounded-2xl p-4 md:p-5 w-full md:w-auto md:min-w-[320px] shadow-xl flex-shrink-0 group-hover:bg-white/[0.15] transition-colors relative overflow-hidden backdrop-blur-md">
-            <div className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full my-4 mx-5 bg-neonHighlight shadow-[0_0_12px_rgba(255,209,102,0.8)] animate-pulse"></div>
-            <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-neonPrimary mb-2 flex items-center gap-1.5 opacity-90">
-              <Brain size={14} /> AI Context Suggestion
-            </p>
-            <p className="text-sm md:text-[15px] font-bold text-white leading-relaxed pe-6">
+        {/* AI Suggestion Card */}
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+          className="glass-card p-6 flex flex-col justify-between min-h-[140px]"
+        >
+          <div className="inline-block bg-white/5 border border-white/10 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest text-gray-400 w-fit mb-4">
+            AI Assistant Suggestion
+          </div>
+          <div className="flex items-center gap-3">
+            <p className="text-sm font-medium text-gray-200 leading-relaxed">
               {bannerSuggestion}
             </p>
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <Sparkles size={16} />
+            </div>
           </div>
-        </div>
-      </motion.div>
-
-      {/* ── Animated Stat Widgets ───────────────────────────────────────── */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-100px" }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 md:mb-10"
-      >
-        {/* Productivity */}
-        <motion.div variants={itemVariants}>
-          <Tilt
-            glareEnable={true}
-            glareMaxOpacity={0.12}
-            scale={1.03}
-            tiltMaxAngleX={10}
-            tiltMaxAngleY={10}
-            className="h-full"
-          >
-            <div className="bg-slate-900/50 border border-white/10 rounded-2xl p-4 md:p-5 h-full flex flex-col gap-3 backdrop-blur-xl hover:border-neonPrimary/40 hover:shadow-[0_0_24px_rgba(124,108,255,0.2)] transition-all duration-500">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-neonPrimary/20">
-                  <TrendingUp size={14} className="text-neonPrimary" />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                  Productivity
-                </span>
-              </div>
-              <div>
-                <p className="text-2xl font-black text-white">{todaysProductivityStr}%</p>
-                <p className="text-[10px] text-gray-500 font-medium mt-0.5">
-                  {stats.todayCompleted}/{stats.todayTotal} tasks done
-                </p>
-              </div>
-              <AnimatedProgressBar value={todaysProductivityStr} />
-            </div>
-          </Tilt>
         </motion.div>
-
-        {/* Streak */}
-        <motion.div variants={itemVariants}>
-          <Tilt
-            glareEnable={true}
-            glareMaxOpacity={0.12}
-            scale={1.03}
-            tiltMaxAngleX={10}
-            tiltMaxAngleY={10}
-            className="h-full"
-          >
-            <div className="bg-slate-900/50 border border-white/10 rounded-2xl p-4 md:p-5 h-full flex flex-col items-center justify-center backdrop-blur-xl hover:border-orange-500/40 hover:shadow-[0_0_24px_rgba(251,146,60,0.2)] transition-all duration-500">
-              <StreakWidget completedToday={stats.todayCompleted} />
-            </div>
-          </Tilt>
-        </motion.div>
-
-        {/* Focus Timer */}
-        <motion.div variants={itemVariants}>
-          <Tilt
-            glareEnable={true}
-            glareMaxOpacity={0.12}
-            scale={1.03}
-            tiltMaxAngleX={10}
-            tiltMaxAngleY={10}
-            className="h-full"
-          >
-            <div className="bg-slate-900/50 border border-white/10 rounded-2xl p-4 md:p-5 h-full flex flex-col items-center justify-center backdrop-blur-xl hover:border-neonAccent/40 hover:shadow-[0_0_24px_rgba(255,122,246,0.2)] transition-all duration-500">
-              <div className="flex items-center gap-1.5 mb-3 self-start">
-                <div className="p-1.5 rounded-lg bg-neonAccent/20">
-                  <Timer size={14} className="text-neonAccent" />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                  Focus Timer
-                </span>
-              </div>
-              <FocusTimerWidget />
-            </div>
-          </Tilt>
-        </motion.div>
-
-        {/* AI Insight */}
-        <motion.div variants={itemVariants}>
-          <Tilt
-            glareEnable={true}
-            glareMaxOpacity={0.12}
-            scale={1.03}
-            tiltMaxAngleX={10}
-            tiltMaxAngleY={10}
-            className="h-full"
-          >
-            <div className="bg-slate-900/50 border border-white/10 rounded-2xl p-4 md:p-5 h-full flex flex-col justify-center backdrop-blur-xl hover:border-amber-500/40 hover:shadow-[0_0_24px_rgba(251,191,36,0.2)] transition-all duration-500">
-              <AIInsightWidget />
-            </div>
-          </Tilt>
-        </motion.div>
-      </motion.div>
-
-      {/* ── Main Nav Cards ─────────────────────────────────────────────── */}
-      <div className="grid md:grid-cols-2 gap-8 md:gap-20 items-center justify-items-stretch pb-24 md:pb-20">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-2 gap-4 md:gap-8 w-full"
-        >
-          <motion.div variants={itemVariants}>
-            <Card
-              icon={
-                <ClipboardList
-                  size={32}
-                  className="text-neonPrimary drop-shadow-[0_0_12px_rgba(124,108,255,0.6)] md:w-[40px] md:h-[40px]"
-                />
-              }
-              title="Tasks"
-              onClick={() => navigate("/tasks")}
-            />
-          </motion.div>
-
-          {/* AI Assistant Card - NEW */}
-          <motion.div variants={itemVariants}>
-            <Card
-              icon={
-                <Bot
-                  size={32}
-                  className="text-neonAccent drop-shadow-[0_0_12px_rgba(255,122,246,0.6)] md:w-[40px] md:h-[40px]"
-                />
-              }
-              title="AI Assistant"
-              onClick={() => navigate("/ai-assistant")}
-            />
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <Card
-              icon={
-                <BarChart3
-                  size={32}
-                  className="text-neonSecondary drop-shadow-[0_0_12px_rgba(0,229,255,0.6)] md:w-[40px] md:h-[40px]"
-                />
-              }
-              title="Analytics"
-              onClick={() => navigate("/analytics")}
-            />
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <Card
-              icon={
-                <FileText
-                  size={32}
-                  className="text-neonAccent drop-shadow-[0_0_12px_rgba(255,122,246,0.6)] md:w-[40px] md:h-[40px]"
-                />
-              }
-              title="Reports"
-              onClick={() => navigate("/reports")}
-            />
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <Card
-              icon={
-                <HeartPulse
-                  size={32}
-                  className="text-neonHighlight drop-shadow-[0_0_12px_rgba(255,209,102,0.6)] md:w-[40px] md:h-[40px]"
-                />
-              }
-              title="Health"
-              onClick={() => navigate("/health")}
-            />
-          </motion.div>
-        </motion.div>
-
-        {/* Right side: Decorative orbs (Borderless) */}
-        <div className="hidden md:flex flex-col items-center justify-center relative w-full h-[600px]">
-          {/* Decorative Orbs */}
-          <div className="relative w-96 h-96 rounded-full border border-white/5 flex items-center justify-center animate-[spin_60s_linear_infinite] pointer-events-none">
-            <div className="absolute top-0 right-10 w-20 h-20 bg-gradient-to-br from-neonSecondary to-neonPrimary rounded-full blur-md opacity-30 shadow-[0_0_40px_rgba(0,229,255,0.2)]"></div>
-            <div className="absolute bottom-10 left-0 w-32 h-32 bg-gradient-to-br from-neonPrimary to-neonAccent rounded-full blur-md opacity-30 shadow-[0_0_50px_rgba(124,108,255,0.2)]"></div>
-            <div className="absolute top-1/2 left-0 w-12 h-12 bg-neonHighlight/20 rounded-full blur-xl opacity-20"></div>
-
-            {/* Center static glow */}
-            <div className="w-40 h-40 bg-neonPrimary/10 rounded-full blur-[80px]"></div>
-          </div>
-        </div>
       </div>
 
-      <FloatingAICoach weatherData={weatherData} tasks={tasks} stats={stats} userName={userName} />
+      {/* ── Hero Area: 3D Illustration ────────────────────────────────── */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+        className="flex-1 flex items-center justify-center relative w-full h-[300px] md:h-auto min-h-[300px]"
+      >
+        <div className="absolute inset-0 bg-radial-gradient from-indigo-500/10 to-transparent blur-3xl rounded-full" />
+        <img 
+          src="/dashboard_3d_illustration_1773902702976.png" 
+          alt="Dashboard Hero"
+          className="relative z-10 max-h-[400px] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+        />
+        {/* Soft floating particle */}
+        <motion.div 
+          animate={{ y: [0, -15, 0], opacity: [0.3, 0.6, 0.3] }}
+          transition={{ duration: 4, repeat: Infinity }}
+          className="absolute right-[30%] top-1/2 w-4 h-4 rounded-full bg-purple-400/40 blur-md"
+        />
+      </motion.div>
+
+      {/* ── Bottom Row: Navigation Cards ───────────────────────────────── */}
+      <div className="w-full max-w-6xl grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mt-8 px-4 relative z-20">
+        <NavCard 
+          icon={<ClipboardList className="text-purple-400" size={24} />}
+          label="Tasks"
+          bg="bg-purple-500/10"
+          onClick={() => navigate("/tasks")}
+        />
+        <NavCard 
+          icon={<Bot className="text-pink-400" size={24} />}
+          label="AI Assistant"
+          bg="bg-pink-500/10"
+          onClick={() => navigate("/ai-assistant")}
+        />
+        <NavCard 
+          icon={<BarChart3 className="text-cyan-400" size={24} />}
+          label="Analytics"
+          bg="bg-cyan-500/10"
+          onClick={() => navigate("/analytics")}
+        />
+        <NavCard 
+          icon={<HeartPulse className="text-amber-400" size={24} />}
+          label="Health"
+          bg="bg-amber-500/10"
+          onClick={() => navigate("/health")}
+        />
+      </div>
+
+      {/* ── AI Coach Floating Pill ─────────────────────────────────────── */}
+      <motion.div 
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-6 right-6 lg:bottom-10 lg:right-10 glass-card px-4 py-2 flex items-center gap-2 cursor-pointer shadow-2xl group border-white/5"
+      >
+        <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+          <Sparkles size={16} />
+        </div>
+        <span className="text-xs font-bold text-gray-300">AI Coach</span>
+      </motion.div>
+
     </div>
   );
 }
 
-// ── 3D Tilt Nav Card ──────────────────────────────────────────────────────
-function Card({ icon, title, onClick, image }) {
-  const [imgError, setImgError] = useState(false);
-
+function NavCard({ icon, label, bg, onClick }) {
   return (
-    <Tilt
-      glareEnable={true}
-      glareMaxOpacity={0.08}
-      scale={1.08}
-      tiltMaxAngleX={12}
-      tiltMaxAngleY={12}
-      transitionSpeed={1200}
-      perspective={1000}
-      className="h-full"
+    <motion.div
+      whileHover={{ y: -6, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      className="glass-card p-6 flex flex-col items-center justify-center gap-4 cursor-pointer group"
     >
-      <GlassCard
-        onClick={onClick}
-        className="p-4 md:p-6 flex flex-col items-center justify-center group overflow-hidden relative cursor-pointer ring-1 ring-white/10 hover:ring-white/30 h-full min-h-[120px] md:min-h-[180px]"
-      >
-        {/* Subtle Inner Glow */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-
-        {/* Hover Highlight */}
-        <div className="absolute inset-0 bg-gradient-to-br from-neonPrimary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-
-        {/* Animated Background Blob */}
-        <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/[0.02] rounded-full blur-3xl group-hover:bg-neonPrimary/10 transition-all duration-1000"></div>
-
-        {/* Card Content */}
-        <div className="relative z-10 w-full flex flex-col items-center transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-2">
-          {image && !imgError ? (
-            <div className="w-16 h-16 md:w-24 md:h-24 mb-3 md:mb-4 flex items-center justify-center">
-              <motion.img
-                src={image}
-                alt={title}
-                className="w-full h-full object-contain filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]"
-                whileHover={{ y: -6, filter: "drop-shadow(0 20px 20px rgba(124,108,255,0.3))" }}
-                transition={{ type: "spring", stiffness: 300 }}
-                onError={() => setImgError(true)}
-              />
-            </div>
-          ) : (
-            <div className="p-3 md:p-4 bg-white/5 rounded-2xl border border-white/10 shadow-[inner_0_1px_1px_rgba(255,255,255,0.1)] mb-3 md:mb-4 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] group-hover:border-white/20 transition-all duration-700">
-              {icon}
-            </div>
-          )}
-
-          <div className="relative">
-            <h2 className="text-sm md:text-lg font-black text-gray-200 group-hover:text-white transition-all duration-700 text-center tracking-tight">
-              {title}
-            </h2>
-            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-neonPrimary/50 group-hover:w-full transition-all duration-700 rounded-full blur-[1px]"></div>
-          </div>
-        </div>
-
-        {/* Titled functionality indicator */}
-        <div className="absolute bottom-6 left-0 w-full text-center opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
-          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-neonPrimary/40">Launch Feature</span>
-        </div>
-      </GlassCard>
-    </Tilt>
+      <div className={`w-14 h-14 rounded-2xl ${bg} border border-white/5 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:bg-white/10`}>
+        {icon}
+      </div>
+      <span className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">{label}</span>
+    </motion.div>
   );
 }
 
