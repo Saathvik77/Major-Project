@@ -9,22 +9,24 @@ const generateSchedule = async (tasks) => {
 
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
-      You are an intelligent AI Daily Planner. The user has ${tasks.length} pending task(s) they need to accomplish.
+      You are an intelligent AI Daily Planner. The user has ${tasks.length} total task(s) in their operational log.
       Create a realistic, optimized daily schedule starting from 09:00.
       
       Rules:
+      - Organize ALL provided tasks into a chronological flow for the day.
       - Place High priority tasks first (morning peak energy)
       - Place Medium priority tasks mid-day
       - Place Low priority tasks in the afternoon
+      - If a task is already marked as completed (if info is available), still include it in the schedule at its completed/intended time to show a full day's work.
       - Add 15-minute breaks after every 60 minutes of work
       - Assume 45-60 minutes per task unless a duration is specified
-      - End the day by 20:00 max
+      - End the day by 22:00 max
       
-      Tasks (with priority):
-      ${JSON.stringify(tasks.map(t => ({ title: t.title, priority: t.priority || "Medium", description: t.description, duration: t.duration })), null, 2)}
+      Tasks (with status and priority):
+      ${JSON.stringify(tasks.map(t => ({ title: t.title, priority: t.priority || "Medium", completed: t.completed, startTime: t.startTime })), null, 2)}
       
       Write a 2-3 sentence 'explanation' that tells the user:
       1. How many tasks you scheduled

@@ -19,11 +19,56 @@ const chatWithAI = async (req, res) => {
     
     // 1. Plan My Day / Schedule
     if (msg.includes("plan my day") || msg.includes("schedule") || msg.includes("organize")) {
-      // Fetch ALL user tasks (even completed ones can provide context, but we plan for pending)
-      const allUserTasks = await Task.find({ user: userId }).sort({ date: 1, startTime: 1 });
-      const aiSchedule = await generateSchedule(allUserTasks);
+      // Fetch ALL user tasks for the current/future dates
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      
+      const allTasks = await Task.find({ user: userId }).sort({ priority: 1 });
+      const aiSchedule = await generateSchedule(allTasks);
+
+      // 🚀 COMMIT THE CHANGES TO THE DATABASE
+      if (aiSchedule.schedule && aiSchedule.schedule.length > 0) {
+        for (const item of aiSchedule.schedule) {
+          if (item.title.toLowerCase() === "break") continue; // Skip breaks in database
+
+          // Try to find the existing task to update it
+          const existingTask = await Task.findOne({ 
+            user: userId, 
+            title: { $regex: new RegExp(item.title, 'i') }
+          });
+
+          const [startTimeStr] = item.timeRange.split(" - ");
+          // Convert "09:00 AM" to "09:00" for the database format if needed
+          let formattedTime = startTimeStr;
+          if (startTimeStr.includes("AM") || startTimeStr.includes("PM")) {
+             const [time, modifier] = startTimeStr.split(" ");
+             let [hours, minutes] = time.split(":");
+             let h = parseInt(hours, 10);
+             if (modifier === "PM" && h < 12) h += 12;
+             if (modifier === "AM" && h === 12) h = 0;
+             formattedTime = `${String(h).padStart(2, '0')}:${minutes}`;
+          }
+
+          if (existingTask) {
+            existingTask.startTime = formattedTime;
+            existingTask.date = today;
+            await existingTask.save();
+          } else {
+            // If the AI suggests a new task not in the list, create it
+            await Task.create({
+              user: userId,
+              title: item.title,
+              startTime: formattedTime,
+              date: today,
+              completed: false,
+              priority: "Medium"
+            });
+          }
+        }
+      }
+
       return res.json({
-        reply: aiSchedule.explanation || "I've analyzed your custom workload. Here is your optimized operational flow for maximum efficiency.",
+        reply: aiSchedule.explanation || "I've analyzed all your tasks and synchronized your operational flow. Your schedule has been updated.",
         actions: aiSchedule.schedule.map(s => ({ type: "schedule", ...s }))
       });
     }
@@ -52,6 +97,36 @@ const chatWithAI = async (req, res) => {
       return res.json({
         reply: `Operational Review: ${Math.round(ratio * 100)}% completion rate. ${feedback}`
       });
+    }
+
+    // 4. Navigation Commands
+    if (msg.includes("open") || msg.includes("go to") || msg.includes("show me")) {
+      let target = null;
+      let path = null;
+
+      if (msg.includes("analytics") || msg.includes("intelligence") || msg.includes("performance")) {
+        target = "Analytics";
+        path = "/analytics";
+      } else if (msg.includes("tasks") || msg.includes("flow") || msg.includes("schedule")) {
+        target = "Tasks";
+        path = "/tasks";
+      } else if (msg.includes("dashboard") || msg.includes("home") || msg.includes("overview")) {
+        target = "Dashboard";
+        path = "/dashboard";
+      } else if (msg.includes("reports") || msg.includes("weather") || msg.includes("matrix")) {
+        target = "Reports";
+        path = "/reports";
+      } else if (msg.includes("assistant") || msg.includes("chat") || msg.includes("ai")) {
+        target = "AI Assistant";
+        path = "/ai-assistant";
+      }
+
+      if (target && path) {
+        return res.json({
+          reply: `Synchronizing interface... Opening the ${target} node now.`,
+          actions: [{ type: "navigation", path }]
+        });
+      }
     }
 
     // ─── Default AI Generation ──────────────────────────────────────────

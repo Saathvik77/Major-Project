@@ -153,12 +153,12 @@ const Dashboard = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Notification Menu */}
-          <div className="relative">
-            <div className="bg-white/[0.03] border border-white/10 p-2.5 rounded-xl text-gray-500 hover:text-white transition-all cursor-pointer backdrop-blur-md">
-              <Bell size={18} strokeWidth={2} />
-              <div className="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full border-2 border-[#0a0c10]" />
-            </div>
+          {/* AI Floating Button Trigger (Instead of notification) */}
+          <div 
+            onClick={() => navigate('/ai-assistant')}
+            className="bg-orange-500 text-white p-2.5 rounded-xl hover:bg-orange-600 transition-all cursor-pointer shadow-lg shadow-orange-500/20 group"
+          >
+            <Bot size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
           </div>
           
           <div className="relative">
