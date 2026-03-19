@@ -19,9 +19,11 @@ const chatWithAI = async (req, res) => {
     
     // 1. Plan My Day / Schedule
     if (msg.includes("plan my day") || msg.includes("schedule") || msg.includes("organize")) {
-      const aiSchedule = await generateSchedule(tasks);
+      // Fetch ALL user tasks (even completed ones can provide context, but we plan for pending)
+      const allUserTasks = await Task.find({ user: userId }).sort({ date: 1, startTime: 1 });
+      const aiSchedule = await generateSchedule(allUserTasks);
       return res.json({
-        reply: aiSchedule.explanation || "I've analyzed your workload. Here is your optimized operational flow for maximum efficiency.",
+        reply: aiSchedule.explanation || "I've analyzed your custom workload. Here is your optimized operational flow for maximum efficiency.",
         actions: aiSchedule.schedule.map(s => ({ type: "schedule", ...s }))
       });
     }

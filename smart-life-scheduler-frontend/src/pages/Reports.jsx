@@ -12,6 +12,7 @@ function WeatherWidget() {
   const [weather, setWeather] = useState(null);
   const [location, setLocation] = useState("Detecting...");
   const [loading, setLoading] = useState(true);
+  const [aiSuggestion, setAiSuggestion] = useState("Analyzing environment for optimal activities...");
 
   useEffect(() => {
     const fetchWeather = async (lat, lon) => {
@@ -20,10 +21,13 @@ function WeatherWidget() {
         const data = await res.json();
         setWeather(data);
         
-        // Reverse geocoding to get city name (optional, using a free service)
+        // Reverse geocoding to get city name
         const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
         const geoData = await geoRes.json();
         setLocation(geoData.address.city || geoData.address.town || geoData.address.village || "Unknown Location");
+
+        // Generate AI suggestion based on weather code
+        generateAiSuggestion(data.current_weather.weathercode, data.current_weather.temperature);
       } catch (err) {
         console.error("Weather fetch error:", err);
       } finally {
@@ -31,11 +35,28 @@ function WeatherWidget() {
       }
     };
 
+    const generateAiSuggestion = (code, temp) => {
+      let suggestion = "";
+      if (code <= 1) { // Clear
+        suggestion = temp > 25 
+          ? "Perfect clear skies. Ideal for outdoor cardio or a scenic walk. Stay hydrated!" 
+          : "Crisp clear day. Great for an outdoor session or refreshing your workspace with natural light.";
+      } else if (code <= 3) { // Cloudy
+        suggestion = "Overcast conditions detected. Optimal for high-focus deep work or indoor strength training.";
+      } else if (code <= 67) { // Rain
+        suggestion = "Precipitation active. Perfect time for indoor planning, reading, or catching up on administrative tasks.";
+      } else if (code <= 99) { // Storm
+        suggestion = "Severe weather. Stay indoors. Focus on low-energy recovery tasks or creative brainstorming.";
+      } else {
+        suggestion = "Maintain steady productivity. Adapt your flow to the current environment.";
+      }
+      setAiSuggestion(suggestion);
+    };
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude),
         () => {
-          // Fallback to a default location if denied
           fetchWeather(40.7128, -74.0060); // New York
           setLocation("New York (Default)");
         }
@@ -72,6 +93,16 @@ function WeatherWidget() {
           </h3>
         </div>
         {getWeatherIcon(weather?.current_weather?.weathercode)}
+      </div>
+
+      <div className="mt-4 p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10">
+        <div className="flex items-center gap-2 mb-2">
+          <Sparkles size={12} className="text-amber-500" />
+          <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">AI Activity Suggestion</span>
+        </div>
+        <p className="text-[11px] text-gray-300 leading-relaxed italic">
+          "{aiSuggestion}"
+        </p>
       </div>
       
       <div className="grid grid-cols-4 gap-2 mt-4">

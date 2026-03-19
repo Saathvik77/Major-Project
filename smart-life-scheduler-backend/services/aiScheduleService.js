@@ -35,10 +35,11 @@ const generateSchedule = async (tasks) => {
       {
         "explanation": "I scheduled X tasks for your day. High priority tasks like '...' are placed first in the morning when your energy is highest. Breaks are added after each major block to maintain focus throughout the day.",
         "schedule": [
-          { "timeRange": "09:00 - 10:00", "title": "Task Name" },
-          { "timeRange": "10:00 - 10:15", "title": "Break" }
+          { "timeRange": "09:00 AM - 10:00 AM", "title": "Task Name" },
+          { "timeRange": "10:00 AM - 10:15 AM", "title": "Break" }
         ]
       }
+      IMPORTANT: All times in the timeRange MUST use 12-hour format with AM/PM (e.g., 09:00 AM, 02:30 PM).
     `;
 
         const result = await model.generateContent(prompt);
@@ -61,21 +62,25 @@ const generateMockSchedule = (tasks) => {
         return {
             explanation: "I created a basic daily structure since there are no pending tasks.",
             schedule: [
-                { timeRange: "09:00 - 10:00", title: "Review goals for the day" },
-                { timeRange: "10:00 - 10:15", title: "Break" },
-                { timeRange: "10:15 - 11:30", title: "Deep Work Session" }
+                { timeRange: "09:00 AM - 10:00 AM", title: "Review goals for the day" },
+                { timeRange: "10:00 AM - 10:15 AM", title: "Break" },
+                { timeRange: "10:15 AM - 11:30 AM", title: "Deep Work Session" }
             ]
         };
     }
 
-    const formatTime = (h, m) => `${h.toString().padStart(2, '0')}`;
+    const formatTime12h = (h, m) => {
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const h12 = h % 12 || 12;
+        return `${h12.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} ${ampm}`;
+    };
 
     tasks.forEach((task, index) => {
         let nextHour = currentHour + 1;
         let nextMinute = currentMinute;
 
         schedule.push({
-            timeRange: `${formatTime(currentHour, currentMinute)} - ${formatTime(nextHour, nextMinute)}`,
+            timeRange: `${formatTime12h(currentHour, currentMinute)} - ${formatTime12h(nextHour, nextMinute)}`,
             title: task.title
         });
 
@@ -91,7 +96,7 @@ const generateMockSchedule = (tasks) => {
         }
 
         schedule.push({
-            timeRange: `${formatTime(currentHour, currentMinute)} - ${formatTime(breakEndHour, breakEndMinute)}`,
+            timeRange: `${formatTime12h(currentHour, currentMinute)} - ${formatTime12h(breakEndHour, breakEndMinute)}`,
             title: "Break"
         });
 

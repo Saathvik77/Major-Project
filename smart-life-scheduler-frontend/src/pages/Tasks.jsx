@@ -167,7 +167,7 @@ export default function Tasks() {
         next.delete(id);
         return next;
       });
-      setToast(`Rescheduled to ${res.data.task.startTime}`);
+      setToast(`Rescheduled to ${formatTime12Hour(res.data.task.startTime)}`);
     } catch (err) { console.error(err); }
     setPendingNotification(null);
   };
