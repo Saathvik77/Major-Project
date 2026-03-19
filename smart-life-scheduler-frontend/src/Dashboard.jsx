@@ -348,7 +348,7 @@ function Dashboard() {
       : 0;
 
   return (
-    <div className="min-h-screen px-6 py-6 md:px-16 md:py-10 relative z-10 font-sans text-white border-none overflow-x-hidden">
+    <div className="relative z-10 font-sans text-white border-none">
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: -16 }}
@@ -467,7 +467,8 @@ function Dashboard() {
       <motion.div
         variants={containerVariants}
         initial="hidden"
-        animate="show"
+        whileInView="show"
+        viewport={{ once: true, margin: "-100px" }}
         className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 md:mb-10"
       >
         {/* Productivity */}
@@ -562,7 +563,8 @@ function Dashboard() {
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          animate="show"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
           className="grid grid-cols-2 gap-4 md:gap-8 w-full"
         >
           <motion.div variants={itemVariants}>

@@ -3,7 +3,6 @@ import { User, Mail, Phone, Calendar, Dumbbell, Activity, LogOut, ChevronLeft, C
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import GlassCard from "../components/GlassCard";
-import BottomNav from "../components/BottomNav";
 import { ThemeContext } from "../ThemeContext";
 import Tilt from "react-parallax-tilt";
 
@@ -300,9 +299,6 @@ export default function Profile() {
           </GlassCard>
         </Tilt>
       </div>
-
-      <BottomNav />
     </div>
   );
 }
-

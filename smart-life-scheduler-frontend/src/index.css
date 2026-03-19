@@ -18,15 +18,16 @@
 
   /* 🎬 Cinematic Night Glow Colors (from the reel aesthetic) */
   --glow-amber: #c17f24;
-  /* warm lamp glow - amber/gold */
   --glow-amber-soft: #d4890a;
-  /* brighter amber accent */
   --glow-navy: #0d1b2a;
-  /* deep midnight navy base */
   --glow-blue: #1a3a5c;
-  /* cool steel blue shadow */
   --glow-teal: #0e3d3a;
-  /* dark teal room reflection */
+  
+  /* Sidebar Palette */
+  --sidebar-bg: rgba(13, 17, 23, 0.7);
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-width: 80px;
+  --sidebar-width-expanded: 240px;
 }
 
 [data-theme="light"] {
@@ -335,6 +336,63 @@
   .light-mode .bottom-nav-container {
     @apply bg-white/90 border-t border-slate-200 !important;
   }
+}
+
+/* Sidebar specific styles */
+.sidebar-container {
+  @apply fixed top-0 left-0 h-full flex flex-col items-center py-8 z-50 transition-all duration-500 backdrop-blur-3xl;
+  background: linear-gradient(180deg, rgba(13, 17, 23, 0.8) 0%, rgba(2, 6, 23, 0.8) 100%);
+  border-right: 1px solid var(--sidebar-border);
+  width: var(--sidebar-width);
+}
+
+.sidebar-item {
+  @apply relative flex items-center justify-center w-12 h-12 rounded-2xl mb-6 transition-all duration-300 cursor-pointer text-gray-400 hover:text-white group;
+}
+
+.sidebar-item-active {
+  @apply text-white bg-white/10 shadow-[0_0_20px_rgba(255,255,255,0.1)];
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-tooltip {
+  @apply absolute left-full ml-4 px-3 py-2 bg-slate-900 border border-white/10 rounded-xl text-xs font-bold text-white opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 whitespace-nowrap z-[100] shadow-xl;
+  transform: translateX(-10px);
+}
+
+.sidebar-item:hover .sidebar-tooltip {
+  transform: translateX(0);
+}
+
+.main-content {
+  @apply transition-all duration-500 overflow-y-auto overflow-x-hidden min-h-screen relative;
+  margin-left: var(--sidebar-width);
+  scroll-behavior: smooth;
+}
+
+/* Premium Hover Utilities */
+.premium-hover-glow {
+  @apply transition-all duration-500;
+}
+
+.premium-hover-glow:hover {
+  @apply shadow-[0_0_40px_rgba(124,108,255,0.3)] border-white/30 bg-white/[0.08] -translate-y-1;
+}
+
+.glass-morphism {
+  @apply backdrop-blur-[32px] border border-white/[0.12] bg-white/[0.04] shadow-[0_20px_50px_rgba(0,0,0,0.5)];
+}
+
+/* Fade In Up animation for scroll effects */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Custom Scrollbar for a premium feel */

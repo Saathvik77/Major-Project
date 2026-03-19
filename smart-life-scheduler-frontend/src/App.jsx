@@ -12,6 +12,7 @@ import Health from "./pages/Health";
 import AIAssistant from "./pages/AIAssistant";
 import { ThemeProvider } from "./ThemeContext";
 import AnimatedBackground from "./components/AnimatedBackground";
+import Layout from "./components/Layout";
 
 function App() {
   return (
@@ -24,72 +25,80 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Dashboard */}
+          {/* Protected Routes wrapped in Layout */}
           <Route
             path="/dashboard"
             element={
               <PrivateRoute>
-                <Dashboard />
+                <Layout>
+                  <Dashboard />
+                </Layout>
               </PrivateRoute>
             }
           />
 
-          {/* Tasks */}
           <Route
             path="/tasks"
             element={
               <PrivateRoute>
-                <Tasks />
+                <Layout>
+                  <Tasks />
+                </Layout>
               </PrivateRoute>
             }
           />
 
-          {/* ✅ Analytics Route Added */}
           <Route
             path="/analytics"
             element={
               <PrivateRoute>
-                <Analytics />
+                <Layout>
+                  <Analytics />
+                </Layout>
               </PrivateRoute>
             }
           />
 
-          {/* Reports */}
           <Route
             path="/reports"
             element={
               <PrivateRoute>
-                <Reports />
+                <Layout>
+                  <Reports />
+                </Layout>
               </PrivateRoute>
             }
           />
 
-          {/* Health */}
           <Route
             path="/health"
             element={
               <PrivateRoute>
-                <Health />
+                <Layout>
+                  <Health />
+                </Layout>
               </PrivateRoute>
             }
           />
 
-          {/* Profile */}
           <Route
             path="/profile"
             element={
               <PrivateRoute>
-                <Profile />
+                <Layout>
+                  <Profile />
+                </Layout>
               </PrivateRoute>
             }
           />
 
-          {/* AI Assistant */}
           <Route
             path="/ai-assistant"
             element={
               <PrivateRoute>
-                <AIAssistant />
+                <Layout>
+                  <AIAssistant />
+                </Layout>
               </PrivateRoute>
             }
           />
