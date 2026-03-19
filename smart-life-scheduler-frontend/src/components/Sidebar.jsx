@@ -48,7 +48,7 @@ export default function Sidebar() {
             <div 
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`sidebar-item ${isActive ? 'sidebar-item-active' : ''}`}
+              className={`sidebar-item group ${isActive ? 'sidebar-item-active' : ''}`}
             >
               {item.icon}
               <span className="sidebar-tooltip">{item.label}</span>
