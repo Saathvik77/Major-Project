@@ -5,11 +5,13 @@ import {
   Clock, 
   AlertCircle, 
   MoreHorizontal,
-  ChevronRight
+  ChevronRight,
+  Trash2,
+  CalendarClock
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const TaskItem = ({ title, time, priority, onComplete, isExpired, category = "General" }) => {
+const TaskItem = ({ title, time, priority, onComplete, onDelete, onReschedule, isExpired, category = "General" }) => {
   const priorityColor = {
     High: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
     Medium: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
@@ -53,13 +55,25 @@ const TaskItem = ({ title, time, priority, onComplete, isExpired, category = "Ge
         </div>
       </div>
 
-      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <button className="p-2 text-gray-500 hover:text-white transition-colors">
-          <MoreHorizontal size={18} />
+      <div className="flex items-center gap-1 sm:gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button 
+          onClick={onReschedule}
+          className="p-2 text-gray-500 hover:text-amber-500 hover:bg-amber-500/10 rounded-xl transition-all"
+          title="Reschedule"
+        >
+          <CalendarClock size={18} />
+        </button>
+        <button 
+          onClick={onDelete}
+          className="p-2 text-gray-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
+          title="Delete"
+        >
+          <Trash2 size={18} />
         </button>
         <button 
           onClick={onComplete}
-          className="bg-white/5 border border-white/10 p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+          className="bg-white/5 border border-white/10 p-2 rounded-xl text-gray-400 hover:text-emerald-500 hover:bg-emerald-500/10 transition-all ml-1"
+          title="Mark Complete"
         >
           <ChevronRight size={18} />
         </button>

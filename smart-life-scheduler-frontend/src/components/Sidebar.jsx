@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   CheckSquare, 
@@ -43,6 +43,13 @@ const SidebarItem = ({ icon: Icon, to, label }) => (
 );
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
     <aside className="fixed bottom-0 md:top-0 left-0 w-full md:w-[84px] h-[72px] md:h-screen sidebar-glass flex flex-row md:flex-col items-center justify-around md:justify-start md:py-8 z-[100] border-t md:border-t-0 border-white/10 px-4 md:px-0">
       {/* Logo */}
@@ -67,7 +74,10 @@ const Sidebar = () => {
       <div className="hidden md:flex mt-auto flex-col gap-6 items-center">
         <SidebarItem icon={Settings} to="/settings" label="Settings" />
         <SidebarItem icon={User} to="/profile" label="Profile" />
-        <button className="w-12 h-12 flex items-center justify-center text-gray-500 hover:text-red-400 hover:bg-red-500/5 rounded-2xl transition-all">
+        <button 
+          onClick={handleLogout}
+          className="w-12 h-12 flex items-center justify-center text-gray-500 hover:text-red-400 hover:bg-red-500/5 rounded-2xl transition-all"
+        >
           <LogOut size={22} strokeWidth={1.5} />
         </button>
       </div>

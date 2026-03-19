@@ -4,7 +4,7 @@ import {
   ChevronLeft, ChevronRight, Menu, RefreshCcw, MoreHorizontal,
   Dumbbell, Briefcase, BookOpen, Trash2, Plus, SlidersHorizontal,
   ChevronDown, CheckCircle, Sparkles, Bot, CalendarClock, Bell, X,
-  AlertCircle, Layout, Eye, Search, Lightbulb, BarChart3 as BarChartIcon,
+  AlertCircle, Layout, Eye, Lightbulb, BarChart3 as BarChartIcon,
   Timer, TrendingUp, BrainCircuit
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -129,7 +129,9 @@ export default function Tasks() {
         priority, startTime: startTime || "09:00"
       });
       setTasks([...tasks, res.data.task]);
-      setTitle(""); setStartTime("");
+      setTitle(""); 
+      setStartTime("");
+      setToast("Task added successfully");
     } catch (err) { console.error(err); }
   };
 
@@ -137,6 +139,14 @@ export default function Tasks() {
     try {
       setTasks(tasks.filter(t => (t._id || t.id) !== taskId));
       await api.patch(`/tasks/${taskId}`, { completed: true });
+    } catch (err) { console.error(err); }
+  };
+
+  const deleteTask = async (taskId) => {
+    try {
+      setTasks(tasks.filter(t => (t._id || t.id) !== taskId));
+      await api.delete(`/tasks/${taskId}`);
+      setToast("Task deleted successfully");
     } catch (err) { console.error(err); }
   };
 
@@ -235,9 +245,6 @@ export default function Tasks() {
             <h1 className="text-2xl font-bold tracking-tight">Today's Tasks</h1>
           </div>
           <div className="flex items-center gap-3">
-             <div className="bg-white/5 border border-white/10 p-2 rounded-xl text-gray-400 hover:text-white transition-colors cursor-pointer">
-                <Search size={20} />
-             </div>
              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
                 <CheckCircle size={22} />
              </div>
@@ -301,6 +308,8 @@ export default function Tasks() {
                                     time={formatTime12Hour(task.startTime)}
                                     priority={task.priority}
                                     onComplete={() => completeTask(id)}
+                                    onDelete={() => deleteTask(id)}
+                                    onReschedule={() => rescheduleTask(task)}
                                     isExpired={expiredIds.has(id)}
                                     category={task.category || "General"}
                                   />
@@ -316,18 +325,32 @@ export default function Tasks() {
                 </DragDropContext>
 
                 {/* Inline Add Task */}
-                <div className="glass-card p-3 flex items-center gap-4 bg-white/[0.02] border-dashed border-white/10 hover:bg-white/[0.04] transition-all">
-                  <div className="w-10 h-10 flex items-center justify-center text-gray-600"><Plus size={20} /></div>
-                  <input 
-                    type="text" 
-                    placeholder="Quick add task..." 
-                    value={title} 
-                    onChange={(e) => setTitle(e.target.value)} 
-                    onKeyDown={(e) => e.key === 'Enter' && addTask()} 
-                    className="flex-1 bg-transparent border-none outline-none text-gray-300 placeholder:text-gray-600 font-medium text-sm" 
-                  />
-                  <div onClick={addTask} className="p-2 text-gray-500 hover:text-amber-500 cursor-pointer transition-colors">
-                    <Plus size={18} />
+                <div className="glass-card p-3 flex flex-col sm:flex-row items-center gap-4 bg-white/[0.02] border-dashed border-white/10 hover:bg-white/[0.04] transition-all">
+                  <div className="flex items-center gap-4 flex-1 w-full">
+                    <div className="w-10 h-10 flex items-center justify-center text-gray-600"><Plus size={20} /></div>
+                    <input 
+                      type="text" 
+                      placeholder="Quick add task..." 
+                      value={title} 
+                      onChange={(e) => setTitle(e.target.value)} 
+                      onKeyDown={(e) => e.key === 'Enter' && addTask()} 
+                      className="flex-1 bg-transparent border-none outline-none text-gray-300 placeholder:text-gray-600 font-medium text-sm" 
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-3 w-full sm:w-auto px-4 sm:px-0">
+                    <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5">
+                      <Timer size={14} className="text-amber-500" />
+                      <input 
+                        type="time" 
+                        value={startTime} 
+                        onChange={(e) => setStartTime(e.target.value)}
+                        className="bg-transparent border-none outline-none text-[10px] font-bold text-gray-400 uppercase tracking-widest w-[80px]"
+                      />
+                    </div>
+                    <div onClick={addTask} className="p-2 bg-amber-500/20 border border-amber-500/30 rounded-lg text-amber-500 hover:bg-amber-500 hover:text-white cursor-pointer transition-all">
+                      <Plus size={18} />
+                    </div>
                   </div>
                 </div>
               </div>

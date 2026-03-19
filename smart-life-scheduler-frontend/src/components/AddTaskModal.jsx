@@ -98,7 +98,7 @@ export default function AddTaskModal({ isOpen, onClose }) {
                  type="date"
                  value={selectedDate}
                  onChange={(e) => setSelectedDate(e.target.value)}
-                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400/50 transition-all text-sm font-medium appearance-none"
+                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400/50 transition-all text-sm font-medium"
                />
             </div>
 
@@ -112,7 +112,7 @@ export default function AddTaskModal({ isOpen, onClose }) {
                  type="time"
                  value={startTime}
                  onChange={(e) => setStartTime(e.target.value)}
-                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400/50 transition-all text-sm font-medium appearance-none"
+                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400/50 transition-all text-sm font-medium"
                />
             </div>
           </div>

@@ -4,7 +4,7 @@ import API from "../api";
 import { 
   ChevronLeft, Droplets, Dumbbell, Brain, Zap, Trophy, Target, Award, 
   MessageSquare, AlertCircle, HeartPulse, CheckCircle2, Bot, TrendingUp,
-  Activity, BarChart3, Search, Calendar, Layout, MoreHorizontal
+  Activity, BarChart3, Calendar, Layout, MoreHorizontal
 } from "lucide-react";
 import { ThemeContext } from "../ThemeContext";
 import {
@@ -143,9 +143,6 @@ function Analytics() {
             <h1 className="text-2xl font-bold tracking-tight text-white/90">Performance Intelligence</h1>
           </div>
           <div className="flex items-center gap-3">
-             <div className="bg-white/[0.03] border border-white/10 p-2 rounded-xl text-gray-400 hover:text-white transition-colors cursor-pointer">
-                <Search size={20} />
-             </div>
              <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
                 <Activity size={22} />
              </div>

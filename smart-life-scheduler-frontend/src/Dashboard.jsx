@@ -8,7 +8,6 @@ import {
   DollarSign, 
   PlayCircle, 
   MoreHorizontal,
-  Search,
   Bell,
   ArrowUpRight,
   Eye,
@@ -108,6 +107,11 @@ const Dashboard = () => {
     fetchStats();
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   const handleStartAnalysis = () => {
     setIsAnalyzing(true);
     setShowStats(false);
@@ -133,10 +137,6 @@ const Dashboard = () => {
              <h1 className="text-lg font-black tracking-tight text-white/90">Smart Life Scheduler</h1>
           </div>
           <div className="flex items-center gap-3">
-            <div className="bg-white/[0.03] border border-white/10 p-2 rounded-xl text-slate-500 hover:text-white transition-all cursor-pointer backdrop-blur-md">
-              <Search size={18} strokeWidth={2.5} />
-            </div>
-            
             {/* Notification Menu */}
             <div className="relative">
               <div 
@@ -220,7 +220,7 @@ const Dashboard = () => {
                         </div>
                         <div className="h-px bg-white/5 my-1" />
                         <div 
-                          onClick={() => navigate('/login')}
+                          onClick={handleLogout}
                           className="px-3 py-2.5 hover:bg-rose-500/10 rounded-xl transition-colors cursor-pointer flex items-center gap-3 text-sm text-rose-400 hover:text-rose-300"
                         >
                            <LogOut size={16} />

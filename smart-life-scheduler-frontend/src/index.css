@@ -4,10 +4,10 @@
 @tailwind utilities;
 
 :root {
-  /* PREMIUM ULTRA DARK GREY PALETTE */
-  --bg-dark: #050608;     /* Main dark background (almost black) */
-  --bg-slate: #0d0f12;    /* Secondary layer (cards / panels) */
-  --bg-pure: #16181d;     /* Lighter grey surfaces */
+  /* PREMIUM WARM DARK GREY PALETTE */
+  --bg-dark: #121418;     /* Main dark grey background */
+  --bg-slate: #1c1f26;    /* Secondary layer (cards / panels) */
+  --bg-pure: #252932;     /* Lighter grey surfaces */
   
   --primary-amber: #f59e0b;
   --primary-orange: #f97316;
@@ -18,26 +18,26 @@
    Add or replace this in your index.css / global.css file   */
 
 .glass-morphism {
-  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%) !important;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.1) !important;
 }
 
 .glass-card {
-  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255,255,255,0.08);
   border-radius: 1.25rem;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg') center/cover fixed no-repeat;
+  background: linear-gradient(rgba(10, 12, 16, 0.75), rgba(10, 12, 16, 0.75)), url('https://images.pexels.com/photos/3122779/pexels-photo-3122779.jpeg') center/cover fixed no-repeat;
   color: #ffffff !important;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
@@ -50,7 +50,7 @@ body::before {
   inset: 0;
   background: radial-gradient(
     circle at 65% 15%,
-    rgba(255, 140, 60, 0.05),
+    rgba(255, 140, 60, 0.08),
     transparent 50%
   );
   pointer-events: none;
