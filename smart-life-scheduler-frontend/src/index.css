@@ -60,7 +60,6 @@ body {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
 }
-}
 
 .glass-card:hover {
   border-color: rgba(255, 255, 255, 0.20);
