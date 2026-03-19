@@ -348,7 +348,11 @@ function Dashboard() {
       : 0;
 
   return (
-    <div className="relative min-h-[calc(100vh-2rem)] flex flex-col items-center justify-between py-6 px-4 md:px-8 overflow-hidden font-sans">
+    <div className="relative min-h-[calc(100vh-2rem)] flex flex-col items-center justify-between py-6 px-4 md:px-8 overflow-hidden font-sans bg-[#0a0a0c] text-white">
+      {/* Cinematic Failsafe Background */}
+      <div className="fixed inset-0 bg-[#0a0a0c] -z-20" />
+      <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] -z-10" />
+      <div className="fixed bottom-[10%] right-[-10%] w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[120px] -z-10" />
       
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <motion.div 
@@ -414,17 +418,22 @@ function Dashboard() {
         transition={{ duration: 1, ease: "easeOut" }}
         className="flex-1 flex items-center justify-center relative w-full h-[300px] md:h-auto min-h-[300px]"
       >
-        <div className="absolute inset-0 bg-radial-gradient from-indigo-500/10 to-transparent blur-3xl rounded-full" />
+        <div className="absolute inset-0 bg-radial-gradient from-indigo-500/20 to-transparent blur-3xl rounded-full" />
         <img 
-          src="/assets/3d/glass_illustration.png" 
+          src="https://img.freepik.com/free-vector/3d-isometric-time-management-concept-working-process_107791-16447.jpg" 
           alt="Dashboard Hero"
-          className="relative z-10 max-h-[400px] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+          className="relative z-10 max-h-[400px] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[2.5rem]"
         />
-        {/* Soft floating particle */}
+        {/* Soft floating particles */}
         <motion.div 
-          animate={{ y: [0, -15, 0], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 4, repeat: Infinity }}
-          className="absolute right-[30%] top-1/2 w-4 h-4 rounded-full bg-purple-400/40 blur-md"
+          animate={{ y: [0, -25, 0], opacity: [0.3, 0.7, 0.3] }}
+          transition={{ duration: 5, repeat: Infinity }}
+          className="absolute right-[25%] top-[20%] w-6 h-6 rounded-full bg-purple-400/30 blur-xl"
+        />
+        <motion.div 
+          animate={{ y: [0, 20, 0], opacity: [0.2, 0.5, 0.2] }}
+          transition={{ duration: 7, repeat: Infinity, delay: 1 }}
+          className="absolute left-[20%] bottom-[30%] w-10 h-10 rounded-full bg-cyan-400/20 blur-xl"
         />
       </motion.div>
 
