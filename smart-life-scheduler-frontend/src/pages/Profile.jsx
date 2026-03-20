@@ -27,6 +27,8 @@ function Profile() {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncResults, setSyncResults] = useState(null);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -51,8 +53,30 @@ function Profile() {
     navigate("/login");
   };
 
-  const handleUpgrade = () => {
-    setToast("Pro synchronization is currently in development. You will be notified when it's live! 🚀");
+  const handleUpgrade = async () => {
+    setIsSyncing(true);
+    setToast("Initiating Pro Synchronization... Analyzing operational nodes.");
+    
+    try {
+      // Re-fetch latest summary for accurate analysis
+      const res = await API.get("/intelligence/summary");
+      setSummary(res.data);
+      
+      // Simulate "Deep Scan" processing time
+      setTimeout(() => {
+        setSyncResults({
+          completed: res.data.completed,
+          pending: res.data.pending,
+          missing: res.data.overdue
+        });
+        setIsSyncing(false);
+        setToast("Synchronization Complete. Task matrix classified.");
+      }, 2000);
+    } catch (err) {
+      console.error(err);
+      setIsSyncing(false);
+      setToast("Synchronization failed. Check system connection.");
+    }
   };
 
   const getMilestoneIcon = (iconName) => {
@@ -191,19 +215,48 @@ function Profile() {
               </div>
            </div>
 
-           <div className="glass-card p-10 bg-gradient-to-br from-orange-500 to-amber-600 border-none shadow-2xl shadow-orange-500/20">
+           <div className="glass-card p-10 bg-gradient-to-br from-orange-500 to-amber-600 border-none shadow-2xl shadow-orange-500/20 relative overflow-hidden">
+              {isSyncing && (
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-20">
+                   <div className="flex flex-col items-center gap-3">
+                      <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span className="text-[10px] font-black uppercase tracking-widest text-white">Analyzing...</span>
+                   </div>
+                </div>
+              )}
+
               <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white mb-6">
                  <Zap size={24} strokeWidth={2.5} />
               </div>
               <h3 className="text-xl font-black text-white tracking-tight mb-3 uppercase">Pro Synchronization</h3>
-              <p className="text-xs text-white/70 font-bold leading-relaxed mb-8 uppercase tracking-widest">
-                Unlock advanced AI modeling and multi-device cloud sync.
-              </p>
+              
+              {!syncResults ? (
+                <p className="text-xs text-white/70 font-bold leading-relaxed mb-8 uppercase tracking-widest">
+                  Analyze and classify your task matrix for peak operational efficiency.
+                </p>
+              ) : (
+                <div className="grid grid-cols-3 gap-4 mb-8">
+                   <div className="text-center">
+                      <p className="text-[8px] font-black text-white/60 uppercase tracking-tighter mb-1">Completed</p>
+                      <p className="text-xl font-black text-white">{syncResults.completed}</p>
+                   </div>
+                   <div className="text-center">
+                      <p className="text-[8px] font-black text-white/60 uppercase tracking-tighter mb-1">Pending</p>
+                      <p className="text-xl font-black text-white">{syncResults.pending}</p>
+                   </div>
+                   <div className="text-center">
+                      <p className="text-[8px] font-black text-white/60 uppercase tracking-tighter mb-1">Missing</p>
+                      <p className="text-xl font-black text-rose-200">{syncResults.missing}</p>
+                   </div>
+                </div>
+              )}
+
               <button 
                 onClick={handleUpgrade}
-                className="w-full py-4 bg-white text-orange-500 font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all"
+                disabled={isSyncing}
+                className="w-full py-4 bg-white text-orange-500 font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all disabled:opacity-50"
               >
-                Upgrade Node
+                {syncResults ? "Re-Synchronize Node" : "Initiate Sync"}
               </button>
            </div>
         </div>
