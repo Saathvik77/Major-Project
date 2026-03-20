@@ -27,6 +27,8 @@ function Profile() {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
+  const [isUpgrading, setIsUpgrading] = useState(false);
+  const [isPro, setIsPro] = useState(localStorage.getItem('isPro') === 'true');
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -48,11 +50,34 @@ function Profile() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("isPro");
     navigate("/login");
   };
 
   const handleUpgrade = () => {
-    setToast("Pro synchronization is currently in development. You will be notified when it's live! 🚀");
+    if (isPro) {
+      setToast("Your operational node is already at PRO level. All synchronization protocols are active! ⚡");
+      return;
+    }
+
+    setIsUpgrading(true);
+    setToast("Initiating secure upgrade protocol... Verifying operational node.");
+    
+    // ─── Cinematic Mock Upgrade Sequence ─────────────────────────────
+    setTimeout(() => {
+      setToast("Synchronizing with global cloud nodes... [35%]");
+    }, 1200);
+
+    setTimeout(() => {
+      setToast("Finalizing multi-device operational sync... [88%]");
+    }, 2500);
+
+    setTimeout(() => {
+      setIsPro(true);
+      setIsUpgrading(false);
+      localStorage.setItem('isPro', 'true');
+      setToast("Node Upgrade Successful! You are now a PRO OPERATIVE. 🚀✨");
+    }, 4000);
   };
 
   const getMilestoneIcon = (iconName) => {
@@ -72,19 +97,33 @@ function Profile() {
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </AnimatePresence>
       {/* Background Glows */}
-      <div className="fixed top-[-10%] right-[-5%] w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
-      <div className="fixed bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
+      <div className={`fixed top-[-10%] right-[-5%] w-[500px] h-[500px] ${isPro ? 'bg-amber-500/10' : 'bg-orange-500/5'} rounded-full blur-[120px] -z-10 transition-colors duration-1000`} />
+      <div className={`fixed bottom-[-10%] left-[-5%] w-[500px] h-[500px] ${isPro ? 'bg-amber-500/10' : 'bg-orange-500/5'} rounded-full blur-[120px] -z-10 transition-colors duration-1000`} />
 
       {/* Header */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-8">
         <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white shadow-2xl shadow-orange-500/20 border border-white/10 relative group">
+          <div className={`w-20 h-20 rounded-[2.5rem] bg-gradient-to-br ${isPro ? 'from-amber-400 to-orange-600 shadow-amber-500/40' : 'from-orange-500 to-amber-600 shadow-orange-500/20'} flex items-center justify-center text-white shadow-2xl border border-white/10 relative group transition-all duration-1000`}>
              <User size={36} strokeWidth={2.5} />
+             {isPro && (
+               <motion.div 
+                 initial={{ scale: 0 }}
+                 animate={{ scale: 1 }}
+                 className="absolute -top-2 -right-2 bg-amber-400 text-[#0a0c10] text-[8px] font-black px-2 py-1 rounded-lg shadow-xl uppercase tracking-tighter"
+               >
+                 PRO
+               </motion.div>
+             )}
              <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-emerald-500 rounded-2xl border-4 border-[#0a0c10] shadow-xl" />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tighter">{user?.name || "Operative"}</h1>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">System Security Clearance: L3</p>
+            <h1 className="text-4xl font-black text-white tracking-tighter flex items-center gap-3">
+              {user?.name || "Operative"}
+              {isPro && <Sparkles size={24} className="text-amber-400 animate-pulse" />}
+            </h1>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">
+              {isPro ? "System Security Clearance: PRO OPERATIVE" : "System Security Clearance: L3"}
+            </p>
           </div>
         </div>
 
@@ -191,19 +230,36 @@ function Profile() {
               </div>
            </div>
 
-           <div className="glass-card p-10 bg-gradient-to-br from-orange-500 to-amber-600 border-none shadow-2xl shadow-orange-500/20">
+           <div className={`glass-card p-10 bg-gradient-to-br ${isPro ? 'from-amber-400 to-orange-600 shadow-amber-500/20' : 'from-orange-500 to-amber-600 shadow-orange-500/20'} border-none shadow-2xl transition-all duration-1000`}>
               <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white mb-6">
-                 <Zap size={24} strokeWidth={2.5} />
+                 {isPro ? <Trophy size={24} strokeWidth={2.5} /> : <Zap size={24} strokeWidth={2.5} />}
               </div>
-              <h3 className="text-xl font-black text-white tracking-tight mb-3 uppercase">Pro Synchronization</h3>
+              <h3 className="text-xl font-black text-white tracking-tight mb-3 uppercase">
+                {isPro ? "Node Fully Optimized" : "Pro Synchronization"}
+              </h3>
               <p className="text-xs text-white/70 font-bold leading-relaxed mb-8 uppercase tracking-widest">
-                Unlock advanced AI modeling and multi-device cloud sync.
+                {isPro 
+                  ? "Advanced AI modeling and multi-device cloud sync are now active on your node." 
+                  : "Unlock advanced AI modeling and multi-device cloud sync."}
               </p>
               <button 
                 onClick={handleUpgrade}
-                className="w-full py-4 bg-white text-orange-500 font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all"
+                disabled={isUpgrading}
+                className={`w-full py-4 ${isPro ? 'bg-[#0a0c10] text-amber-400 cursor-default' : 'bg-white text-orange-500 hover:scale-105'} font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3`}
               >
-                Upgrade Node
+                {isUpgrading ? (
+                  <>
+                    <RefreshCcw size={14} className="animate-spin" />
+                    Synchronizing...
+                  </>
+                ) : isPro ? (
+                  <>
+                    <Shield size={14} />
+                    PRO ACTIVE
+                  </>
+                ) : (
+                  "Upgrade Node"
+                )}
               </button>
            </div>
         </div>
