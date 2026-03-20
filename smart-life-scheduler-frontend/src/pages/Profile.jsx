@@ -37,7 +37,7 @@ function Profile() {
           API.get("/auth/profile"),
           API.get("/intelligence/summary")
         ]);
-        setUser(userRes.data);
+        setUser(userRes.data.user || userRes.data);
         setSummary(summaryRes.data);
       } catch (err) {
         console.error("Profile Error:", err);
@@ -107,7 +107,7 @@ function Profile() {
              <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-emerald-500 rounded-2xl border-4 border-[#0a0c10] shadow-xl" />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tighter">{user?.name || "Operative"}</h1>
+            <h1 className="text-4xl font-black text-white tracking-tighter">{user?.name || "User"}</h1>
             <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">System Security Clearance: L3</p>
           </div>
         </div>
@@ -136,7 +136,7 @@ function Profile() {
                 <Activity size={24} />
               </div>
               <div>
-                <h3 className="text-xl font-black text-white tracking-tight">{user?.name || "Operative"}</h3>
+                <h3 className="text-xl font-black text-white tracking-tight">{user?.name || "User"}'s Matrix</h3>
                 <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Real-time Performance Metrics</p>
               </div>
             </div>

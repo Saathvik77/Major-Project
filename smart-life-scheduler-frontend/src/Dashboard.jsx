@@ -91,7 +91,7 @@ const Dashboard = () => {
           api.get('/auth/profile')
         ]);
         
-        setUser(userRes.data);
+        setUser(userRes.data.user || userRes.data);
         setStats({
           totalTasks: String(statsRes.data.completed || 0),
           efficiency: statsRes.data.completedRatio || "0%",
