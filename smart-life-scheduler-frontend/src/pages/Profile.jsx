@@ -14,21 +14,19 @@ import {
   Star,
   CheckCircle2,
   Brain,
-  Clock
-} from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import API from "../api";
-import { motion, AnimatePresence } from "framer-motion";
-import Toast from "../components/Toast";
-import { 
+  Clock,
   X, 
   Loader2, 
   ShieldCheck, 
   Database, 
   CloudLightning,
   RefreshCcw,
-  Sparkles as SparkleIcon
+  Sparkles
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import API from "../api";
+import { motion, AnimatePresence } from "framer-motion";
+import Toast from "../components/Toast";
 
 // ─── Upgrade Modal Component ─────────────────────────────────────────
 const UpgradeModal = ({ step, onClose }) => {
