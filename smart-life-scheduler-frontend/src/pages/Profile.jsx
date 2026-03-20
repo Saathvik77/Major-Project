@@ -136,7 +136,7 @@ function Profile() {
                 <Activity size={24} />
               </div>
               <div>
-                <h3 className="text-xl font-black text-white tracking-tight">Operational Stats</h3>
+                <h3 className="text-xl font-black text-white tracking-tight">{user?.name || "Operative"}</h3>
                 <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Real-time Performance Metrics</p>
               </div>
             </div>

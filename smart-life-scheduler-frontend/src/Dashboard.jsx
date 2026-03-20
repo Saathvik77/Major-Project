@@ -80,14 +80,18 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTasks, setActiveTasks] = useState([]);
 
+  const [user, setUser] = useState(null);
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [statsRes, tasksRes] = await Promise.all([
+        const [statsRes, tasksRes, userRes] = await Promise.all([
           api.get('/intelligence/summary'),
-          api.get('/tasks?limit=3')
+          api.get('/tasks?limit=3'),
+          api.get('/auth/profile')
         ]);
         
+        setUser(userRes.data);
         setStats({
           totalTasks: String(statsRes.data.completed || 0),
           efficiency: statsRes.data.completedRatio || "0%",
@@ -178,7 +182,7 @@ const Dashboard = () => {
                   className="absolute right-0 mt-3 w-56 glass-morphism rounded-2xl p-2 z-[110] border border-white/10 shadow-2xl"
                 >
                   <div className="px-3 py-3 border-b border-white/5 mb-2">
-                    <p className="text-xs font-black text-white uppercase tracking-widest">Smart User</p>
+                    <p className="text-xs font-black text-white uppercase tracking-widest">{user?.name || "Smart User"}</p>
                     <p className="text-[9px] text-gray-500 font-bold truncate">Synchronized Session</p>
                   </div>
                   <div className="space-y-1">
