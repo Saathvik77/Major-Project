@@ -18,13 +18,15 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import Toast from "../components/Toast";
 
 function Profile() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -49,6 +51,10 @@ function Profile() {
     navigate("/login");
   };
 
+  const handleUpgrade = () => {
+    setToast("Pro synchronization is currently in development. You will be notified when it's live! 🚀");
+  };
+
   const getMilestoneIcon = (iconName) => {
     switch(iconName) {
       case 'Flame': return <Flame className="text-orange-500" size={20} />;
@@ -62,6 +68,9 @@ function Profile() {
 
   return (
     <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-12 max-w-7xl mx-auto page-transition overflow-x-hidden">
+      <AnimatePresence>
+        {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+      </AnimatePresence>
       {/* Background Glows */}
       <div className="fixed top-[-10%] right-[-5%] w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
       <div className="fixed bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
@@ -190,7 +199,10 @@ function Profile() {
               <p className="text-xs text-white/70 font-bold leading-relaxed mb-8 uppercase tracking-widest">
                 Unlock advanced AI modeling and multi-device cloud sync.
               </p>
-              <button className="w-full py-4 bg-white text-orange-500 font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all">
+              <button 
+                onClick={handleUpgrade}
+                className="w-full py-4 bg-white text-orange-500 font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all"
+              >
                 Upgrade Node
               </button>
            </div>
