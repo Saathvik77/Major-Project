@@ -281,22 +281,26 @@ This will analyze your remaining windows and automatically reschedule these task
       </AnimatePresence>
 
       {/* ── Header ─────────────────────────────────────────────────── */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
+      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
         <div className="flex items-center gap-6">
-          <div className="w-16 h-16 rounded-[2rem] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/20">
+          <div className="w-16 h-16 rounded-[2rem] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/20 shrink-0">
             <Layout size={32} strokeWidth={2} />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tighter">Operational Flow</h1>
+            <h1 className="text-3xl md:text-4xl font-black text-white tracking-tighter">Operational Flow</h1>
             <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Manage Tasks & Performance</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 backdrop-blur-xl">
-          <button onClick={() => navigate(-1)} className="p-2.5 hover:bg-white/10 rounded-xl transition-all text-gray-400 hover:text-white">
+        <div className="flex items-center justify-between lg:justify-end gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 backdrop-blur-xl w-full lg:w-auto">
+          <button onClick={() => {
+            const prev = new Date(selectedDate);
+            prev.setDate(prev.getDate() - 1);
+            setSelectedDate(prev);
+          }} className="p-2.5 hover:bg-white/10 rounded-xl transition-all text-gray-400 hover:text-white">
             <ChevronLeft size={20} />
           </button>
-          <div className="px-6 py-2 bg-orange-500 text-white rounded-xl shadow-lg shadow-orange-500/20">
+          <div className="flex-1 lg:flex-none text-center px-6 py-2 bg-orange-500 text-white rounded-xl shadow-lg shadow-orange-500/20">
             <span className="text-[10px] font-black uppercase tracking-widest">{selectedDate.toLocaleDateString('default', { month: 'short', day: 'numeric' })}</span>
           </div>
           <button onClick={() => {
@@ -309,33 +313,35 @@ This will analyze your remaining windows and automatically reschedule these task
         </div>
       </header>
 
-      <div className="grid grid-cols-12 gap-8 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
           
           {/* Main Task Column */}
-          <div className="col-span-12 lg:col-span-8 flex flex-col gap-8">
+          <div className="col-span-1 lg:col-span-8 flex flex-col gap-8">
             
             {/* Date Scroller */}
-            <div className="glass-card p-6 flex items-center justify-between gap-4 overflow-x-auto scrollbar-hide">
-              {weekDates.map((d, i) => {
-                const isActive = d.getDate() === selectedDate.getDate() && d.getMonth() === selectedDate.getMonth();
-                const dStr = d.toLocaleString('default', { weekday: 'short' });
-                return (
-                  <div 
-                    key={i} 
-                    onClick={() => setSelectedDate(new Date(d))} 
-                    className={`
-                      flex flex-col items-center justify-center min-w-[65px] h-[85px] rounded-2xl transition-all cursor-pointer border
-                      ${isActive 
-                        ? 'bg-amber-500/10 border-amber-500/30 shadow-[0_0_20px_rgba(249,115,22,0.1)]' 
-                        : 'bg-white/5 border-white/5 hover:bg-white/10'}
-                    `}
-                  >
-                    <span className={`text-[10px] font-black uppercase tracking-widest mb-1 ${isActive ? 'text-amber-500' : 'text-gray-500'}`}>{dStr}</span>
-                    <span className={`text-xl font-bold ${isActive ? 'text-white' : 'text-gray-300'}`}>{d.getDate()}</span>
-                    {isActive && <div className="w-1 h-1 rounded-full bg-amber-500 mt-2" />}
-                  </div>
-                );
-              })}
+            <div className="glass-card p-6 overflow-hidden">
+              <div className="flex items-center justify-between gap-4 overflow-x-auto scrollbar-hide pb-2">
+                {weekDates.map((d, i) => {
+                  const isActive = d.getDate() === selectedDate.getDate() && d.getMonth() === selectedDate.getMonth();
+                  const dStr = d.toLocaleString('default', { weekday: 'short' });
+                  return (
+                    <div 
+                      key={i} 
+                      onClick={() => setSelectedDate(new Date(d))} 
+                      className={`
+                        flex flex-col items-center justify-center min-w-[70px] h-[90px] rounded-2xl transition-all cursor-pointer border shrink-0
+                        ${isActive 
+                          ? 'bg-amber-500/10 border-amber-500/30 shadow-[0_0_20px_rgba(249,115,22,0.1)]' 
+                          : 'bg-white/5 border-white/5 hover:bg-white/10'}
+                      `}
+                    >
+                      <span className={`text-[10px] font-black uppercase tracking-widest mb-1 ${isActive ? 'text-amber-500' : 'text-gray-500'}`}>{dStr}</span>
+                      <span className={`text-xl font-bold ${isActive ? 'text-white' : 'text-gray-300'}`}>{d.getDate()}</span>
+                      {isActive && <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2" />}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Task List Section */}
@@ -479,8 +485,8 @@ This will analyze your remaining windows and automatically reschedule these task
                 )}
 
                 {/* Inline Add Task */}
-                <div className="glass-card p-2.5 flex flex-col md:flex-row items-center gap-3 border border-white/10 shadow-2xl">
-                  <div className="flex-1 w-full flex items-center bg-white/5 rounded-2xl px-6 py-4 border border-white/5 focus-within:border-orange-500/30 transition-all">
+                <div className="glass-card p-4 flex flex-col gap-4 border border-white/10 shadow-2xl">
+                  <div className="flex items-center bg-white/5 rounded-2xl px-6 py-4 border border-white/5 focus-within:border-orange-500/30 transition-all">
                     <input 
                       type="text" 
                       placeholder="Initiate new operational task..." 
@@ -490,17 +496,17 @@ This will analyze your remaining windows and automatically reschedule these task
                       className="flex-1 bg-transparent border-none outline-none text-sm font-medium text-white placeholder:text-gray-600"
                     />
                   </div>
-                  <div className="flex items-center gap-2 w-full md:w-auto">
+                  <div className="flex flex-wrap items-center gap-3">
                     <input 
                       type="time"
                       value={startTime}
                       onChange={(e) => setStartTime(e.target.value)}
-                      className="w-[110px]"
+                      className="flex-1 min-w-[120px] bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-sm text-white"
                     />
                     <select 
                       value={priority}
                       onChange={(e) => setPriority(e.target.value)}
-                      className="bg-white/5 border border-white/5 rounded-xl px-4 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 outline-none focus:border-orange-500/30 cursor-pointer"
+                      className="flex-1 min-w-[120px] bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 outline-none focus:border-orange-500/30 cursor-pointer"
                     >
                       <option value="High">High</option>
                       <option value="Medium">Medium</option>
@@ -508,7 +514,7 @@ This will analyze your remaining windows and automatically reschedule these task
                     </select>
                     <button 
                       onClick={addTask}
-                      className="w-14 h-14 rounded-xl bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/20 flex-shrink-0"
+                      className="w-full md:w-14 h-14 rounded-xl bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/20 flex-shrink-0"
                     >
                       <Plus size={24} strokeWidth={3} />
                     </button>

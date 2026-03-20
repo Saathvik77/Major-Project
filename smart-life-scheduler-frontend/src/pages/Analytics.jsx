@@ -174,10 +174,15 @@ function Analytics() {
   const last7DaysData = Array.from({ length: 7 }).map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
-    d.setHours(0, 0, 0, 0);
+    const dStr = d.toISOString().split('T')[0];
+    
+    const count = completedTasks.filter(t => 
+      t.date && new Date(t.date).toISOString().split('T')[0] === dStr
+    ).length;
+
     return {
       date: d.toLocaleDateString(undefined, { weekday: 'short' }),
-      completed: Math.floor(Math.random() * 8) + 3 // Higher visibility bars
+      completed: count
     };
   });
 
@@ -197,18 +202,18 @@ function Analytics() {
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
 
       {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
         <div className="flex items-center gap-6">
           <button onClick={() => navigate(-1)} className="p-3.5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white shadow-xl">
             <ChevronLeft size={24} />
           </button>
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tighter">Intelligence Overview</h1>
+            <h1 className="text-3xl md:text-4xl font-black text-white tracking-tighter">Intelligence Overview</h1>
             <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Operational Data Feed</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl">
+        <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl overflow-x-auto scrollbar-hide">
           <FilterButton label="Today" active={filter === "Today"} onClick={() => setFilter("Today")} />
           <FilterButton label="Week" active={filter === "Week"} onClick={() => setFilter("Week")} />
           <FilterButton label="Month" active={filter === "Month"} onClick={() => setFilter("Month")} />
@@ -217,10 +222,10 @@ function Analytics() {
 
       {/* Top Summary Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard icon={CheckCircle2} label="Completed Tasks" value={summary?.completed || "24"} trend="+12%" />
-        <StatCard icon={AlertCircle} label="Missed Syncs" value={summary?.overdue || "6"} trend="-2%" />
-        <StatCard icon={Clock} label="Focus Time" value="12.4h" trend="+5.4%" />
-        <StatCard icon={Zap} label="Smart Score" value={summary?.productivityScore || "78%"} trend="+8.2%" />
+        <StatCard icon={CheckCircle2} label="Completed Tasks" value={summary?.completed || "0"} trend="+12%" />
+        <StatCard icon={AlertCircle} label="Missed Syncs" value={summary?.overdue || "0"} trend="-2%" />
+        <StatCard icon={Clock} label="Focus Time" value={summary?.focusTime || "0h"} trend="+5.4%" />
+        <StatCard icon={Zap} label="Smart Score" value={summary?.productivityScore || "0%"} trend="+8.2%" />
       </div>
 
       {/* Main Charts Grid */}
@@ -246,32 +251,32 @@ function Analytics() {
           
           {/* Productivity Velocity (Bar Chart) */}
           <div className="col-span-12 lg:col-span-8">
-            <div className="glass-card p-10 h-full chart-container">
-              <div className="flex items-center justify-between mb-12">
+            <div className="glass-card p-6 md:p-10 h-full chart-container overflow-hidden">
+              <div className="flex items-center justify-between mb-8 md:mb-12">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+                  <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 shrink-0">
                     <BarChart3 size={24} />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-black text-white tracking-tight">Performance Velocity</h3>
+                  <div className="min-w-0">
+                    <h3 className="text-lg md:text-xl font-black text-white tracking-tight truncate">Performance Velocity</h3>
                     <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">7-Day Completion Cycle</p>
                   </div>
                 </div>
-                <MoreHorizontal size={20} className="text-gray-700 cursor-pointer hover:text-white transition-colors" />
+                <MoreHorizontal size={20} className="text-gray-700 cursor-pointer hover:text-white transition-colors shrink-0" />
               </div>
 
-              <div className="w-full h-[350px]">
+              <div className="w-full h-[300px] md:h-[350px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={last7DaysData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.03)" vertical={false} />
-                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 11, fontWeight: 900 }} dy={15} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 11, fontWeight: 900 }} />
+                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 10, fontWeight: 900 }} dy={15} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 10, fontWeight: 900 }} />
                     <Tooltip 
                       cursor={{ fill: 'rgba(255,255,255,0.02)' }}
                       contentStyle={{ backgroundColor: '#0f1115', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '12px' }}
                       itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: '900' }}
                     />
-                    <Bar dataKey="completed" fill="#ff8c3c" radius={[10, 10, 10, 10]} barSize={40} animationDuration={2000} />
+                    <Bar dataKey="completed" fill="#ff8c3c" radius={[6, 6, 6, 6]} barSize={30} animationDuration={2000} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -280,19 +285,19 @@ function Analytics() {
 
           {/* Smart Score Ring (Circular Progress) */}
           <div className="col-span-12 lg:col-span-4">
-            <div className="glass-card p-10 h-full chart-container flex flex-col items-center justify-center text-center relative overflow-hidden group">
+            <div className="glass-card p-8 md:p-10 h-full chart-container flex flex-col items-center justify-center text-center relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-orange-500/10 transition-all" />
                
-               <h3 className="text-xl font-black text-white tracking-tight mb-2 self-start">Smart Sync</h3>
-               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-12 self-start">Cognitive Efficiency</p>
+               <h3 className="text-lg md:text-xl font-black text-white tracking-tight mb-2 self-start">Smart Sync</h3>
+               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-10 md:mb-12 self-start">Cognitive Efficiency</p>
                
-               <div className="relative w-64 h-64 mb-12">
+               <div className="relative w-48 h-48 md:w-64 md:h-64 mb-10 md:mb-12">
                   <svg className="w-full h-full transform -rotate-90">
-                    <circle cx="128" cy="128" r="110" className="stroke-white/5 fill-none" strokeWidth="12" />
+                    <circle cx="50%" cy="50%" r="42%" className="stroke-white/5 fill-none" strokeWidth="10" />
                     <motion.circle 
-                      cx="128" cy="128" r="110" 
+                      cx="50%" cy="50%" r="42%" 
                       className="stroke-orange-500 fill-none" 
-                      strokeWidth="12" 
+                      strokeWidth="10" 
                       strokeLinecap="round"
                       initial={{ strokeDasharray: "0 691" }}
                       animate={{ strokeDasharray: `${(parseInt(summary?.productivityScore || 78) / 100) * 691} 691` }}
@@ -300,7 +305,7 @@ function Analytics() {
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-6xl font-black text-white tracking-tighter">{summary?.productivityScore || "78%"}</span>
+                    <span className="text-4xl md:text-6xl font-black text-white tracking-tighter">{summary?.productivityScore || "78%"}</span>
                     <span className="text-[10px] font-black uppercase text-gray-500 tracking-widest mt-2">Efficiency</span>
                   </div>
                </div>
@@ -308,11 +313,11 @@ function Analytics() {
                <div className="grid grid-cols-2 gap-4 w-full">
                   <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5">
                      <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Status</p>
-                     <p className="text-sm font-black text-emerald-500 uppercase tracking-widest">Optimized</p>
+                     <p className="text-[11px] md:text-sm font-black text-emerald-500 uppercase tracking-widest">Optimized</p>
                   </div>
                   <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5">
                      <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Target</p>
-                     <p className="text-sm font-black text-white tracking-widest">95%</p>
+                     <p className="text-[11px] md:text-sm font-black text-white tracking-widest">95%</p>
                   </div>
                </div>
             </div>

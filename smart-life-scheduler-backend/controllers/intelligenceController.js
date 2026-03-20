@@ -81,35 +81,81 @@ const runIntelligence = async (req, res) => {
 const getSummary = async (req, res) => {
   try {
     const userId = req.user._id;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    const totalTasks = await Task.countDocuments({ user: userId });
+    const tasks = await Task.find({ user: userId });
+    const totalTasks = tasks.length;
+    const completedTasks = tasks.filter(t => t.completed);
+    const completed = completedTasks.length;
+    const pending = tasks.filter(t => !t.completed).length;
+    
+    const overdue = tasks.filter(t => 
+      !t.completed && 
+      t.date && 
+      new Date(t.date) < today
+    ).length;
 
-    const completed = await Task.countDocuments({
-      user: userId,
-      completed: true,
-    });
+    // Calculate Focus Time (sum of durations of completed tasks)
+    const focusTimeMinutes = completedTasks.reduce((acc, t) => acc + (t.duration || 0), 0);
+    const focusTimeHours = (focusTimeMinutes / 60).toFixed(1);
 
-    const pending = await Task.countDocuments({
-      user: userId,
-      completed: false,
-    });
+    // Calculate Productivity Score
+    const completedRatio = totalTasks === 0 ? 0 : Math.round((completed / totalTasks) * 100);
+    const productivityScore = `${completedRatio}%`;
 
-    const overdue = await Task.countDocuments({
-      user: userId,
-      completed: false,
-      deadline: { $lt: new Date() },
-    });
+    // Calculate Active Streak
+    const completedDates = [...new Set(completedTasks.map(t => 
+      new Date(t.date).toISOString().split('T')[0]
+    ))].sort().reverse();
 
-    const completedRatio = totalTasks === 0 ? "0%" : `${Math.round((completed / totalTasks) * 100)}%`;
-    const productivityScore = completedRatio; // For now, use completion ratio as score
+    let activeStreak = 0;
+    if (completedDates.length > 0) {
+      let current = new Date();
+      current.setHours(0, 0, 0, 0);
+      
+      // If the latest completed task was not today or yesterday, streak is broken
+      const latestTaskDate = new Date(completedDates[0]);
+      latestTaskDate.setHours(0, 0, 0, 0);
+      
+      const diffTime = Math.abs(current - latestTaskDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays <= 1) {
+        activeStreak = 1;
+        for (let i = 0; i < completedDates.length - 1; i++) {
+          const d1 = new Date(completedDates[i]);
+          const d2 = new Date(completedDates[i + 1]);
+          const diff = (d1 - d2) / (1000 * 60 * 60 * 24);
+          if (diff === 1) {
+            activeStreak++;
+          } else {
+            break;
+          }
+        }
+      }
+    }
+
+    // Dynamic Milestones
+    const milestones = [];
+    if (activeStreak >= 7) milestones.push({ icon: "Flame", label: "Focus Master", desc: `${activeStreak} Day Streak Achieved` });
+    else milestones.push({ icon: "Flame", label: "Streak in Progress", desc: `${activeStreak}/7 Days to Focus Master` });
+
+    if (completedRatio === 100 && totalTasks > 0) milestones.push({ icon: "Zap", label: "Peak Sync", desc: "100% Daily Efficiency" });
+    
+    if (completed >= 100) milestones.push({ icon: "Star", label: "System Veteran", desc: "100+ Tasks Logged" });
+    else milestones.push({ icon: "Star", label: "Rising Operative", desc: `${completed}/100 Tasks to Veteran` });
 
     res.json({
       totalTasks,
       completed,
       pending,
       overdue,
-      completedRatio,
-      productivityScore
+      completedRatio: `${completedRatio}%`,
+      productivityScore,
+      focusTime: `${focusTimeHours}h`,
+      activeStreak: `${activeStreak} Days`,
+      milestones
     });
 
   } catch (error) {

@@ -58,28 +58,30 @@ const TaskItem = ({ title, time, priority, onComplete, onDelete, onReschedule, i
         </div>
       </div>
 
-      <div className="flex items-center gap-1 sm:gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-1 sm:gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
         <button 
           onClick={onReschedule}
-          className="p-2 text-gray-500 hover:text-amber-500 hover:bg-amber-500/10 rounded-xl transition-all"
+          className="p-2 text-gray-500 hover:text-amber-500 hover:bg-amber-500/10 rounded-xl transition-all shrink-0"
           title="Reschedule"
         >
           <CalendarClock size={18} />
         </button>
         <button 
           onClick={onDelete}
-          className="p-2 text-gray-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
+          className="p-2 text-gray-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all shrink-0"
           title="Delete"
         >
           <Trash2 size={18} />
         </button>
-        <button 
-          onClick={onComplete}
-          className="bg-white/5 border border-white/10 p-2 rounded-xl text-gray-400 hover:text-emerald-500 hover:bg-emerald-500/10 transition-all ml-1"
-          title="Mark Complete"
-        >
-          <ChevronRight size={18} />
-        </button>
+        {!isCompleted && (
+          <button 
+            onClick={onComplete}
+            className="bg-white/5 border border-white/10 p-2 rounded-xl text-gray-400 hover:text-emerald-500 hover:bg-emerald-500/10 transition-all ml-1 shrink-0"
+            title="Mark Complete"
+          >
+            <ChevronRight size={18} />
+          </button>
+        )}
       </div>
     </motion.div>
   );
