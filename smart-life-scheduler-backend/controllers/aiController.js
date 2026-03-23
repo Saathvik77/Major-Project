@@ -54,12 +54,16 @@ const chatWithAI = async (req, res) => {
         completed: completedToday
       });
 
-      // 🚀 COMMIT THE CHANGES TO THE DATABASE
-      if (aiSchedule.schedule && aiSchedule.schedule.length > 0) {
-        for (const item of aiSchedule.schedule) {
-          if (item.title.toLowerCase() === "break") continue; // Skip breaks in database
+      // 🚀 COMMIT THE CHANGES TO THE DATABASE (Only for missed and pending)
+      const flatSchedule = [
+        ...(aiSchedule.categorizedSchedule?.missed || []),
+        ...(aiSchedule.categorizedSchedule?.pending || [])
+      ];
 
-          // Try to find the existing task to update it
+      if (flatSchedule.length > 0) {
+        for (const item of flatSchedule) {
+          if (item.title.toLowerCase() === "break") continue;
+
           const existingTask = await Task.findOne({ 
             user: userId, 
             title: { $regex: new RegExp(item.title, 'i') },
@@ -67,7 +71,6 @@ const chatWithAI = async (req, res) => {
           });
 
           const [startTimeStr] = item.timeRange.split(" - ");
-          // Convert "09:00 AM" to "09:00" for the database format if needed
           let formattedTime = startTimeStr;
           if (startTimeStr.includes("AM") || startTimeStr.includes("PM")) {
              const [time, modifier] = startTimeStr.split(" ");
@@ -83,7 +86,6 @@ const chatWithAI = async (req, res) => {
             existingTask.date = today;
             await existingTask.save();
           } else {
-            // If the AI suggests a new task not in the list, create it
             await Task.create({
               user: userId,
               title: item.title,
@@ -108,7 +110,7 @@ const chatWithAI = async (req, res) => {
 
       return res.json({
         reply: (aiSchedule.explanation || "Your schedule has been updated.") + extraNote,
-        actions: aiSchedule.schedule.map(s => ({ type: "schedule", ...s }))
+        actions: [{ type: "categorized_schedule", ...aiSchedule.categorizedSchedule }]
       });
     }
 

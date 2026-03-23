@@ -36,12 +36,12 @@ const generateSchedule = async ({ pending, missed, completed }) => {
       
       Response Requirements:
       Return a JSON object with:
-      1. "explanation": A detailed breakdown. Start with "INTELLIGENCE REPORT:" 
-         - List "COMPLETED: X milestones achieved"
-         - List "MISSED: Y overdue operations identified and prioritized"
-         - List "PENDING: Z tasks synchronized into the new flow"
-         Then add 1-2 sentences about the optimization logic.
-      2. "schedule": An array of objects: { "timeRange": "HH:MM AM/PM - HH:MM AM/PM", "title": "Task Name" }. 
+      1. "explanation": A detailed breakdown starting with "INTELLIGENCE REPORT:". 
+      2. "categorizedSchedule": {
+          "completed": [{ "title": "..." }],
+          "missed": [{ "timeRange": "...", "title": "..." }],
+          "pending": [{ "timeRange": "...", "title": "..." }]
+      }
       
       Return ONLY a JSON object without markdown blocks.
     `;
@@ -57,60 +57,17 @@ const generateSchedule = async ({ pending, missed, completed }) => {
     }
 };
 
-const generateMockSchedule = (tasks) => {
-    const schedule = [];
-    let currentHour = 9;
-    let currentMinute = 0;
-
-    if (!tasks || tasks.length === 0) {
-        return {
-            explanation: "I created a basic daily structure since there are no pending tasks.",
-            schedule: [
-                { timeRange: "09:00 AM - 10:00 AM", title: "Review goals for the day" },
-                { timeRange: "10:00 AM - 10:15 AM", title: "Break" },
-                { timeRange: "10:15 AM - 11:30 AM", title: "Deep Work Session" }
-            ]
-        };
-    }
-
-    const formatTime12h = (h, m) => {
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        const h12 = h % 12 || 12;
-        return `${h12.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} ${ampm}`;
-    };
-
-    tasks.forEach((task, index) => {
-        let nextHour = currentHour + 1;
-        let nextMinute = currentMinute;
-
-        schedule.push({
-            timeRange: `${formatTime12h(currentHour, currentMinute)} - ${formatTime12h(nextHour, nextMinute)}`,
-            title: task.title
-        });
-
-        currentHour = nextHour;
-        currentMinute = nextMinute;
-
-        // Add a 15 min break after every task
-        let breakEndHour = currentHour;
-        let breakEndMinute = currentMinute + 15;
-        if (breakEndMinute >= 60) {
-            breakEndHour++;
-            breakEndMinute -= 60;
-        }
-
-        schedule.push({
-            timeRange: `${formatTime12h(currentHour, currentMinute)} - ${formatTime12h(breakEndHour, breakEndMinute)}`,
-            title: "Break"
-        });
-
-        currentHour = breakEndHour;
-        currentMinute = breakEndMinute;
-    });
-
+const generateMockSchedule = (pendingTasks) => {
     return {
-        explanation: "This schedule spaces out your tasks evenly while ensuring you take a 15-minute break after each task to maintain focus.",
-        schedule
+        explanation: "INTELLIGENCE REPORT: I've organized your operational flow for the day.",
+        categorizedSchedule: {
+            completed: [],
+            missed: [],
+            pending: (pendingTasks || []).map((t, i) => ({
+                timeRange: `${String(9 + i).padStart(2, '0')}:00 AM - ${String(10 + i).padStart(2, '0')}:00 AM`,
+                title: t.title
+            }))
+        }
     };
 };
 

@@ -14,7 +14,10 @@ import {
   MoreHorizontal,
   Layout,
   PieChart,
-  MessageSquare
+  MessageSquare,
+  CheckCircle,
+  AlertCircle,
+  Clock
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
@@ -230,23 +233,65 @@ const AIAssistant = () => {
                     }`}>
                       {msg.content}
 
-                      {/* Render Schedule if available */}
-                      {msg.actions && msg.actions.length > 0 && msg.actions.some(a => a.type === "schedule") && (
-                        <div className="mt-6 space-y-3 pt-6 border-t border-white/10">
-                          <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-4">Proposed Operational Flow</p>
-                          {msg.actions.filter(a => a.type === "schedule").map((action, idx) => (
-                            <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10 group/item hover:bg-white/10 transition-all">
-                            <div className="w-16 text-[10px] font-black text-gray-500 group-hover/item:text-orange-400 transition-colors">
-                              {action.timeRange?.includes(' - ') ? action.timeRange.split(' - ')[0] : (action.timeRange || "09:00 AM")}
-                            </div>
-                              <div className="flex-1 text-xs font-bold text-white">{action.title}</div>
-                              {action.title.toLowerCase().includes('break') && (
-                                <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                      {/* Categorized Schedule UI */}
+                      {msg.actions?.find(a => a.type === "categorized_schedule") && (() => {
+                        const action = msg.actions.find(a => a.type === "categorized_schedule");
+                        return (
+                          <div className="mt-6 space-y-6 pt-6 border-t border-white/10">
+                            {/* COMPLETED */}
+                            {action.completed?.length > 0 && (
+                              <div>
+                                <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                  <CheckCircle size={12} /> Operational Milestones Achieved
+                                </p>
+                                <div className="space-y-2">
+                                  {action.completed.map((t, idx) => (
+                                    <div key={idx} className="p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20 text-xs font-bold text-emerald-200/70 line-through">
+                                      {t.title}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* MISSED */}
+                            {action.missed?.length > 0 && (
+                              <div>
+                                <p className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                  <AlertCircle size={12} /> Prioritized Rescheduling (Missed)
+                                </p>
+                                <div className="space-y-2">
+                                  {action.missed.map((t, idx) => (
+                                    <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-rose-500/5 border border-rose-500/20 group/item">
+                                      <div className="w-16 text-[10px] font-black text-rose-400">{t.timeRange.split(' - ')[0]}</div>
+                                      <div className="flex-1 text-xs font-bold text-white">{t.title}</div>
+                                      <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* UPCOMING / PENDING */}
+                            {action.pending?.length > 0 && (
+                              <div>
+                                <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                  <Clock size={12} /> Optimized Operational Flow
+                                </p>
+                                <div className="space-y-2">
+                                  {action.pending.map((t, idx) => (
+                                    <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group/item">
+                                      <div className="w-16 text-[10px] font-black text-gray-400 group-hover/item:text-orange-400">{t.timeRange.split(' - ')[0]}</div>
+                                      <div className="flex-1 text-xs font-bold text-white">{t.title}</div>
+                                      {t.title.toLowerCase().includes('break') && <div className="w-2 h-2 rounded-full bg-emerald-500/50" />}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
 
                       {/* Render Task List if available */}
                       {msg.actions && msg.actions.length > 0 && msg.actions.some(a => a.type === "task_list") && (
