@@ -34,7 +34,8 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      if (!err.response) setError("Network error: Please ensure the backend server is running.");
+      if (err.code === 'ECONNABORTED') setError("GitHub Login timed out. Please try again.");
+      else if (!err.response) setError("Network error: Please ensure the backend server is running.");
       else if (err.response?.data?.errors) setError(err.response.data.errors.join(", "));
       else setError(err.response?.data?.message || "GitHub Login failed.");
     } finally {
@@ -52,8 +53,10 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      if (!err.response) {
-        setError("Network error: The backend server might be starting up (especially on Render free tier). Please wait 30 seconds and try again.");
+      if (err.code === 'ECONNABORTED') {
+        setError("Request timed out. The backend server on Render is likely sleeping. It usually takes 60 seconds to wake up. Please wait a minute and try again.");
+      } else if (!err.response) {
+        setError("Network error: The backend server might be starting up or is unreachable. If you're developing locally, please ensure the server is running on port 5000.");
       } else if (err.response?.data?.errors) {
         setError(err.response.data.errors.join(", "));
       } else {

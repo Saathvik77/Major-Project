@@ -55,8 +55,10 @@ function Register() {
          localStorage.setItem("token", loginRes.data.token);
          navigate("/dashboard");
       } catch (err) {
-         if (!err.response) {
-            setError("Network error: The backend server might be starting up. Please wait 30 seconds and try again.");
+         if (err.code === 'ECONNABORTED') {
+            setError("Request timed out. The backend server might be starting up. Please wait a minute and try again.");
+         } else if (!err.response) {
+            setError("Network error: The backend server might be starting up or is unreachable. Check your internet connection or the server status.");
          } else if (err.response?.data?.errors) {
             setError(err.response.data.errors.join(", "));
          } else {
