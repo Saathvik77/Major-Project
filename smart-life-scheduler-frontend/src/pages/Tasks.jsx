@@ -85,9 +85,29 @@ export default function Tasks() {
   const [repeatDays, setRepeatDays] = useState([]);
   const [isReschedulingModalOpen, setIsReschedulingModalOpen] = useState(false);
   const [reschedulingTasks, setReschedulingTasks] = useState([]);
+  const alarmRef = useRef(null);
   const informedRef  = useRef(new Set());
   const autoRescheduledRef = useRef(new Set());
   const navigate = useNavigate();
+
+  // Initialize Alarm Audio (One-time)
+  useEffect(() => {
+    alarmRef.current = new Audio("https://assets.mixkit.co/active_storage/sfx/1017/1017-preview.mp3");
+    alarmRef.current.loop = true;
+  }, []);
+
+  const playAlarm = () => {
+    if (alarmRef.current) {
+      alarmRef.current.play().catch(e => console.log("Audio blocked by browser. Click anywhere to enable."));
+    }
+  };
+
+  const stopAlarm = () => {
+    if (alarmRef.current) {
+      alarmRef.current.pause();
+      alarmRef.current.currentTime = 0;
+    }
+  };
 
   useEffect(() => {
     // Basic weather fetch for AI suggestions
@@ -133,13 +153,7 @@ export default function Tasks() {
       const res = await api.get(`/tasks?date=${dateStr}&limit=100`);
       
       const allTasks = res.data.tasks || [];
-      const filtered = allTasks.filter(task => {
-        const tDate = new Date(task.date);
-        return tDate.getUTCFullYear() === selectedDate.getFullYear() &&
-               tDate.getUTCMonth() === selectedDate.getMonth() &&
-               tDate.getUTCDate() === selectedDate.getDate();
-      });
-      setTasks(filtered);
+      setTasks(allTasks); 
     } catch (err) { 
       console.error(err); 
     } finally {
@@ -157,19 +171,32 @@ export default function Tasks() {
     fetchTasks();
     const interval = setInterval(() => {
       const now = Date.now();
+      let newAlarmTriggered = false;
+
       setTasks(prev => {
         const nextExpired = new Set(expiredIds);
         prev.forEach(task => {
           if (task.completed) return;
           const endMs = getTaskEndMs(task);
-          if (endMs && now > endMs) nextExpired.add(task._id || task.id);
+          const taskId = task._id || task.id;
+          if (endMs && now > endMs && !nextExpired.has(taskId)) {
+            nextExpired.add(taskId);
+            newAlarmTriggered = true;
+            if (!pendingNotification) {
+              setPendingNotification(task);
+            }
+          }
         });
-        setExpiredIds(nextExpired);
+
+        if (newAlarmTriggered) {
+          playAlarm();
+          setExpiredIds(nextExpired);
+        }
         return prev;
       });
-    }, 30000);
+    }, 10000); // Check every 10s for snappier alarms
     return () => clearInterval(interval);
-  }, [fetchTasks]);
+  }, [fetchTasks, expiredIds, pendingNotification]);
 
   const addTask = async () => {
     if (!title.trim()) return;
@@ -306,6 +333,23 @@ export default function Tasks() {
     <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-10 max-w-7xl mx-auto page-transition overflow-hidden">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {pendingNotification && (
+          <RescheduleNotification 
+            task={pendingNotification}
+            onDismiss={() => {
+              setPendingNotification(null);
+              stopAlarm();
+            }}
+            onReschedule={(t) => {
+              setPendingNotification(null);
+              stopAlarm();
+              openRescheduleModal(t);
+            }}
+          />
+        )}
       </AnimatePresence>
 
       <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
@@ -531,7 +575,11 @@ export default function Tasks() {
                            <div className="flex flex-col items-center gap-2">
                              <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Hour</span>
                              <div className="text-5xl font-black text-white tracking-tighter flex items-end gap-1">
-                                {startTime?.includes(':') ? startTime.split(':')[0] : "09"}
+                                {startTime?.includes(':') ? (() => {
+                                  const h24 = parseInt(startTime.split(':')[0]);
+                                  const h12 = h24 % 12 || 12;
+                                  return String(h12).padStart(2, '0');
+                                })() : "09"}
                                 <span className="text-sm text-gray-500 mb-2 font-bold">h</span>
                              </div>
                            </div>
