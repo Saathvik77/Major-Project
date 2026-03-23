@@ -36,22 +36,22 @@ const StatBadge = ({ dotColor, label, value, isVisible }) => (
 );
 
 const StatCard = ({ icon: Icon, label, value, trend }) => (
-  <div className="glass-card p-6 flex flex-col gap-4 group card-hover-lift">
+  <div className="glass-card p-5 flex flex-col gap-3 group card-hover-lift border-white/[0.03]">
     <div className="flex items-center justify-between relative z-10">
-      <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20 shadow-lg shadow-orange-500/5">
-        <Icon size={20} />
+      <div className="w-9 h-9 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20 shadow-lg shadow-orange-500/5 group-hover:bg-orange-500 group-hover:text-white transition-all">
+        <Icon size={18} />
       </div>
       <div className="flex flex-col items-end">
-        <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{label}</span>
-        <span className="text-2xl font-black text-white tracking-tighter mt-1">{value}</span>
+        <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">{label}</span>
+        <span className="text-xl font-black text-white tracking-tighter mt-0.5">{value}</span>
       </div>
     </div>
-    <div className="flex items-center gap-2 pt-4 border-t border-white/5 relative z-10">
-      <div className="flex items-center gap-1 text-[10px] font-black text-emerald-500 uppercase tracking-widest">
-        <TrendingUp size={12} />
+    <div className="flex items-center gap-2 pt-3 border-t border-white/5 relative z-10">
+      <div className="flex items-center gap-1 text-[9px] font-black text-emerald-500 uppercase tracking-widest">
+        <TrendingUp size={10} />
         {trend}
       </div>
-      <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">vs last cycle</span>
+      <span className="text-[9px] font-black text-gray-600 uppercase tracking-widest">Growth</span>
     </div>
   </div>
 );
@@ -142,7 +142,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-6xl mx-auto page-transition pb-32 overflow-y-auto overflow-x-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-7xl mx-auto page-transition pb-32 overflow-y-auto overflow-x-hidden">
       
       {/* ── Header Area ────────────────────────────────────────────── */}
       <header className="flex items-center justify-between">
@@ -202,7 +202,9 @@ const Dashboard = () => {
 
       {/* ── Main Hero Card ────────────────────────────────────────── */}
     <div className="relative">
-        <div className="hero-card p-8 md:p-12 flex flex-col lg:flex-row items-center gap-12 min-h-[460px]">
+        <div className="absolute -inset-1 bg-gradient-to-r from-orange-500/20 to-orange-600/20 rounded-[2.5rem] blur-2xl opacity-50 -z-10" />
+        <div className="hero-card p-8 md:p-10 flex flex-col lg:flex-row items-center gap-10 min-h-[420px] overflow-hidden">
+           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2" />
            
            {/* Data Visualization Column */}
            <div className="flex-1 w-full relative z-20">
@@ -211,7 +213,7 @@ const Dashboard = () => {
                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-500/60">System Intelligence Active</span>
               </div>
               
-              <h2 className="text-4xl md:text-6xl font-black leading-[1.1] mb-8 text-white tracking-tighter">
+              <h2 className="text-4xl md:text-5xl font-black leading-tight mb-8 text-white tracking-tighter drop-shadow-2xl">
                 Strategic <br /> Performance
               </h2>
               
@@ -239,7 +241,7 @@ const Dashboard = () => {
                  </motion.button>
               </div>
 
-              <div className="grid grid-cols-2 md:flex md:gap-12 pt-8 border-t border-white/5">
+              <div className="grid grid-cols-2 lg:flex lg:gap-10 pt-8 border-t border-white/5">
                  <StatBadge dotColor="bg-orange-500" label="Focus Score" value={stats.efficiency} isVisible={showStats} />
                  <StatBadge dotColor="bg-orange-400" label="Completed" value={stats.totalTasks} isVisible={showStats} />
                  <StatBadge dotColor="bg-orange-300" label="Active Momentum" value={stats.growth} isVisible={showStats} />
@@ -287,7 +289,7 @@ const Dashboard = () => {
       </div>
 
       {/* ── Stats Overview Row ────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {isLoading ? (
           [1, 2, 3, 4].map(i => (
             <div key={i} className="glass-card p-6 h-32 skeleton border-none" />
@@ -326,7 +328,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Quick Access Card */}
-        <div className="lg:col-span-8 glass-card p-8 flex flex-col gap-8 relative overflow-hidden group min-h-[400px]">
+        <div className="lg:col-span-8 glass-card p-6 md:p-8 flex flex-col gap-6 md:gap-8 relative overflow-hidden group min-h-[400px]">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xl font-black text-white tracking-tight">Active Operational Flow</h3>
@@ -359,20 +361,20 @@ const Dashboard = () => {
                </div>
              ) : (
                activeTasks.map((task, i) => (
-                 <div key={task._id || i} className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-between group/item hover:bg-white/[0.06] transition-all hover:border-white/10">
-                   <div className="flex items-center gap-5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(255,140,60,0.5)]" />
-                      <div>
-                         <p className="text-sm font-black text-white group-hover/item:text-orange-400 transition-colors tracking-tight">{task.title}</p>
-                         <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">{task.category || "General"}</p>
-                      </div>
-                   </div>
-                   <div className="text-right">
-                      <p className="text-xs font-black text-white">{formatTime12Hour(task.startTime)}</p>
-                      <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">Scheduled</p>
-                   </div>
-                 </div>
-               ))
+                  <div key={task._id || i} className="p-4 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-between group/item hover:bg-white/[0.04] transition-all hover:border-orange-500/10 hover:translate-x-1">
+                    <div className="flex items-center gap-4">
+                       <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(255,140,60,0.4)]" />
+                       <div>
+                          <p className="text-sm font-black text-white group-hover/item:text-orange-400 transition-colors tracking-tight">{task.title}</p>
+                          <p className="text-[8px] font-black text-gray-600 uppercase tracking-widest mt-0.5">{task.category || "General"}</p>
+                       </div>
+                    </div>
+                    <div className="text-right">
+                       <p className="text-[11px] font-black text-white">{formatTime12Hour(task.startTime)}</p>
+                       <p className="text-[8px] font-black text-gray-700 uppercase tracking-widest mt-0.5">Scheduled</p>
+                    </div>
+                  </div>
+                ))
              )}
           </div>
         </div>
@@ -397,7 +399,7 @@ const Dashboard = () => {
            
            <button 
              onClick={() => navigate('/ai-assistant')}
-             className="w-full py-4 rounded-[1.25rem] bg-orange-500 text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-2 ripple"
+             className="w-full py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black text-[10px] uppercase tracking-[0.2em] hover:shadow-orange-500/20 hover:shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2"
            >
               Command Sync
               <ChevronRight size={14} />
