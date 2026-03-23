@@ -36,19 +36,19 @@ const StatBadge = ({ dotColor, label, value, isVisible }) => (
 );
 
 const StatCard = ({ icon: Icon, label, value, trend }) => (
-  <div className="glass-card p-6 flex flex-col gap-4 group card-hover-lift">
+  <div className="glass-card p-8 flex flex-col gap-5 group card-hover-lift">
     <div className="flex items-center justify-between relative z-10">
-      <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20 shadow-lg shadow-orange-500/5">
-        <Icon size={20} />
+      <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20 shadow-lg shadow-orange-500/5 transition-all group-hover:scale-110">
+        <Icon size={24} />
       </div>
       <div className="flex flex-col items-end">
-        <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{label}</span>
-        <span className="text-2xl font-black text-white tracking-tighter mt-1">{value}</span>
+        <span className="text-[11px] font-black text-gray-500 uppercase tracking-widest">{label}</span>
+        <span className="text-3xl font-black text-white tracking-tighter mt-1">{value}</span>
       </div>
     </div>
-    <div className="flex items-center gap-2 pt-4 border-t border-white/5 relative z-10">
-      <div className="flex items-center gap-1 text-[10px] font-black text-emerald-500 uppercase tracking-widest">
-        <TrendingUp size={12} />
+    <div className="flex items-center gap-2 pt-5 border-t border-white/5 relative z-10">
+      <div className="flex items-center gap-1.5 text-[11px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/5 px-2 py-1 rounded-full">
+        <TrendingUp size={14} />
         {trend}
       </div>
       <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">vs last cycle</span>
@@ -142,7 +142,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-6xl mx-auto page-transition pb-32">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-7xl mx-auto page-transition pb-32">
       
       {/* ── Header Area ────────────────────────────────────────────── */}
       <header className="flex items-center justify-between">
@@ -287,7 +287,7 @@ const Dashboard = () => {
       </div>
 
       {/* ── Stats Overview Row ────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {isLoading ? (
           [1, 2, 3, 4].map(i => (
             <div key={i} className="glass-card p-6 h-32 skeleton border-none" />
@@ -323,7 +323,7 @@ const Dashboard = () => {
       </div>
 
       {/* ── Bottom Content Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mt-16">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mt-16">
         
         {/* Quick Access Card */}
         <div className="lg:col-span-8 glass-card p-8 flex flex-col gap-8 relative overflow-hidden group min-h-[400px]">

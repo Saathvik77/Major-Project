@@ -23,7 +23,7 @@ const TaskItem = ({ title, time, priority, onComplete, onDelete, onReschedule, i
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className={`
-        group glass-card p-4 flex items-center justify-between transition-all duration-300
+        group glass-card p-5 flex items-center justify-between transition-all duration-300
         ${isExpired ? 'border-rose-500/30 bg-rose-500/[0.03]' : 'hover:border-white/20'}
         ${isCompleted ? 'border-emerald-500/20 bg-emerald-500/[0.02]' : ''}
       `}

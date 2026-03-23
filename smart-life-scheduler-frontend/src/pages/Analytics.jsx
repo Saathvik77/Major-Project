@@ -57,8 +57,8 @@ const StatCard = ({ icon: Icon, label, value, trend, color = "orange" }) => (
   >
     <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 blur-[40px] -z-10 group-hover:bg-orange-500/10 transition-all" />
     <div className="flex items-center justify-between">
-      <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20">
-        <Icon size={22} />
+      <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20 transition-all group-hover:scale-110">
+        <Icon size={24} />
       </div>
       <div className="flex items-center gap-1.5 text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/5 px-3 py-1.5 rounded-full border border-emerald-500/10">
         <ArrowUpRight size={12} />
@@ -247,7 +247,7 @@ function Analytics() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-12 gap-12">
+        <div className="grid grid-cols-12 gap-8">
           
           {/* Productivity Velocity (Bar Chart) */}
           <div className="col-span-12 lg:col-span-8">
