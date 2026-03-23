@@ -201,7 +201,7 @@ const Dashboard = () => {
       </header>
 
       {/* ── Main Hero Card ────────────────────────────────────────── */}
-    <div className="relative">
+    <div className="relative mb-20">
         <div className="hero-card p-8 md:p-12 flex flex-col lg:flex-row items-center gap-12 min-h-[460px]">
            
            {/* Data Visualization Column */}
