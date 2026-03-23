@@ -51,7 +51,7 @@ async function getLocationByIP() {
 // ─── Challenge icon & color by type ──────────────────────────────────────────
 const CHALLENGE_STYLES = {
   health: { Icon: Heart, color: "from-pink-400 to-rose-600", iconClass: "text-rose-400", glow: "rgba(244,63,94,0.8)" },
-  productivity: { Icon: Trophy, color: "from-amber-300 to-orange-600", iconClass: "text-amber-400", glow: "rgba(245,158,11,0.8)" },
+  productivity: { Icon: Trophy, color: "from-lime-300 to-emerald-600", iconClass: "text-lime-400", glow: "rgba(132,204,22,0.8)" },
   focus: { Icon: Brain, color: "from-fuchsia-400 to-purple-600", iconClass: "text-fuchsia-400", glow: "rgba(192,38,211,0.8)" },
   fitness: { Icon: Dumbbell, color: "from-cyan-300 to-blue-600", iconClass: "text-cyan-400", glow: "rgba(6,182,212,0.8)" },
 };
@@ -205,8 +205,8 @@ function Health() {
         icon: <Sun size={48} className="text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.8)]" />,
         title: "Sunny & Clear",
         suggestion: "Perfect weather for an outdoor run, cycling, or tennis!",
-        bg: "from-yellow-500/20 to-orange-500/5",
-        border: "border-yellow-500/30",
+        bg: "from-lime-500/20 to-emerald-500/5",
+        border: "border-lime-500/30",
       };
     if (code >= 51)
       return {
@@ -245,8 +245,8 @@ function Health() {
   return (
     <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
       {/* Dynamic Animated background orbs */}
-      <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-orange-600/10 rounded-full blur-[120px] -z-10 animate-pulse" />
-      <div className="fixed bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-600/5 rounded-full blur-[150px] -z-10" />
+      <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-lime-600/10 rounded-full blur-[120px] -z-10 animate-pulse" />
+      <div className="fixed bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-600/5 rounded-full blur-[150px] -z-10" />
 
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
@@ -264,20 +264,20 @@ function Health() {
         {/* ── AI Weekly Challenge ── */}
         <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable glareMaxOpacity={0.1} className="w-full h-full flex justify-center items-center">
           <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl group-hover:bg-orange-500/20 transition-colors" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 rounded-full blur-3xl group-hover:bg-lime-500/20 transition-colors" />
 
             {/* Badge */}
             <div className="flex items-center gap-2 mb-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
-              <Target size={18} className="text-orange-400" />
-              <span className="text-sm font-bold tracking-widest uppercase text-orange-300">
+              <Target size={18} className="text-lime-400" />
+              <span className="text-sm font-bold tracking-widest uppercase text-lime-300">
                 AI Weekly Challenge
               </span>
-              <Sparkles size={14} className="text-amber-300" />
+              <Sparkles size={14} className="text-yellow-300" />
             </div>
 
             {challengeLoading ? (
               <div className="flex flex-col items-center justify-center py-10 gap-3">
-                <Loader2 size={36} className="text-orange-400 animate-spin" />
+                <Loader2 size={36} className="text-lime-400 animate-spin" />
                 <p className="text-gray-400 text-sm">Analyzing your tasks with AI...</p>
               </div>
             ) : challengeError ? (
@@ -294,7 +294,7 @@ function Health() {
               <>
                 <ChallengeIcon
                   size={48}
-                  className={`mt-4 mb-3 ${challengeStyle.iconClass.replace('rose', 'orange').replace('amber', 'orange').replace('fuchsia', 'orange').replace('cyan', 'orange')} drop-shadow-[0_0_15px_${challengeStyle.glow}] transform group-hover:scale-110 transition-transform duration-300`}
+                  className={`mt-4 mb-3 ${challengeStyle.iconClass.replace('rose', 'lime').replace('amber', 'lime').replace('fuchsia', 'lime').replace('cyan', 'lime').replace('orange', 'lime')} drop-shadow-[0_0_15px_${challengeStyle.glow}] transform group-hover:scale-110 transition-transform duration-300`}
                 />
 
                 <h3 className="text-2xl font-black tracking-tight text-white mb-2 leading-tight drop-shadow-sm">
@@ -308,21 +308,21 @@ function Health() {
                 {/* Progress bar */}
                 <div className="w-full bg-slate-800/80 rounded-full h-4 mb-3 border border-slate-700/50 overflow-hidden shadow-inner">
                   <div
-                    className={`bg-gradient-to-r from-orange-400 to-orange-600 h-full rounded-full transition-all duration-1000 ease-out`}
+                    className={`bg-gradient-to-r from-lime-400 to-lime-600 h-full rounded-full transition-all duration-1000 ease-out`}
                     style={{ width: `${(0 / (challenge.target || 7)) * 100}%` }}
                   />
                 </div>
 
                 <div className="flex justify-between w-full text-sm font-bold text-gray-300 tracking-wide mt-1">
                   <span>Progress</span>
-                  <span className="text-orange-300 bg-orange-500/20 px-2 py-0.5 rounded-md border border-orange-500/30">
+                  <span className="text-lime-300 bg-lime-500/20 px-2 py-0.5 rounded-md border border-lime-500/30">
                     0 / {challenge.target} {challenge.unit}
                   </span>
                 </div>
 
                 <div className="w-full mt-6 flex gap-2">
                   <button className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center justify-center gap-2 group/btn">
-                    <Flame size={18} className="text-orange-400 group-hover/btn:scale-125 transition-transform" />
+                    <Flame size={18} className="text-lime-400 group-hover/btn:scale-125 transition-transform" />
                     <span className="font-bold text-white tracking-wide">Log Progress</span>
                   </button>
                   {/* Refresh challenge */}
@@ -331,7 +331,7 @@ function Health() {
                     title="Generate new AI challenge"
                     className="px-3 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
                   >
-                    <Sparkles size={18} className="text-amber-300" />
+                    <Sparkles size={18} className="text-yellow-300" />
                   </button>
                 </div>
               </>
@@ -378,7 +378,7 @@ function Health() {
 
                 {/* Only show error if it's truly a problem, not just "using IP" */}
                 {locationError && locationError.includes("denied") && (
-                  <p className="text-xs text-orange-300/70 mt-4">
+                  <p className="text-xs text-lime-300/70 mt-4">
                     📡 Using IP-based location for weather accuracy.
                   </p>
                 )}
@@ -398,11 +398,11 @@ function Health() {
         {/* Focus Tracker */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
           <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
-            <div className="absolute top-0 left-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl group-hover:bg-orange-500/20 transition-colors" />
+            <div className="absolute top-0 left-0 w-32 h-32 bg-lime-500/10 rounded-full blur-3xl group-hover:bg-lime-500/20 transition-colors" />
 
             <div className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
-              <Activity size={18} className="text-orange-400" />
-              <span className="text-sm font-bold tracking-widest uppercase text-orange-300">Focus Intensity</span>
+              <Activity size={18} className="text-lime-400" />
+              <span className="text-sm font-bold tracking-widest uppercase text-lime-300">Focus Intensity</span>
             </div>
 
             <div className="relative flex justify-center items-center w-40 h-40 mb-6 group-hover:scale-105 transition-transform">
@@ -412,7 +412,7 @@ function Health() {
                   strokeDasharray="477"
                   strokeDashoffset={477 - 477 * (focusTime / 1500)}
                   strokeLinecap="round"
-                  className="text-orange-500 transition-all duration-1000 ease-linear"
+                  className="text-lime-500 transition-all duration-1000 ease-linear"
                 />
               </svg>
               <p className="text-4xl font-black text-white tracking-widest drop-shadow-md">
@@ -421,7 +421,7 @@ function Health() {
             </div>
 
             <div className="flex items-center gap-4">
-              <button onClick={() => setIsFocusing((f) => !f)} className="bg-orange-600 hover:bg-orange-500 text-white p-4 rounded-full shadow-[0_0_15px_rgba(255,140,60,0.5)] transition-transform active:scale-95">
+              <button onClick={() => setIsFocusing((f) => !f)} className="bg-lime-600 hover:bg-lime-500 text-white p-4 rounded-full shadow-[0_0_15px_rgba(132,204,22,0.5)] transition-transform active:scale-95">
                 {isFocusing ? <Pause fill="currentColor" /> : <Play fill="currentColor" className="ml-1" />}
               </button>
               <button onClick={() => { setIsFocusing(false); setFocusTime(1500); }} className="bg-white/10 hover:bg-white/20 text-white p-4 rounded-full border border-white/10 transition-colors active:scale-95">
@@ -442,7 +442,7 @@ function Health() {
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
           <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-start border border-white/20 shadow-2xl h-full group bg-slate-900/20">
             <div className="flex items-center gap-2 mb-6">
-              <CalendarDays size={24} className="text-orange-400 drop-shadow-[0_0_10px_rgba(255,140,60,0.5)]" />
+              <CalendarDays size={24} className="text-lime-400 drop-shadow-[0_0_10px_rgba(132,204,22,0.5)]" />
               <h3 className="text-xl font-bold tracking-tight text-white">Activity Heat Map</h3>
             </div>
 
@@ -458,9 +458,9 @@ function Health() {
                 ))}
                 {heatMapData.map((data, i) => {
                   let colorClass = "bg-white/5 border border-white/5";
-                  if (data.count === 1) colorClass = "bg-orange-900/40 border border-orange-800/20 shadow-[0_0_8px_rgba(255,140,60,0.3)]";
-                  else if (data.count === 2) colorClass = "bg-orange-700/60 border border-orange-600 shadow-[0_0_10px_rgba(255,140,60,0.5)]";
-                  else if (data.count >= 3) colorClass = "bg-orange-400 border border-orange-300 shadow-[0_0_12px_rgba(255,140,60,0.7)]";
+                  if (data.count === 1) colorClass = "bg-lime-900/40 border border-lime-800/20 shadow-[0_0_8px_rgba(132,204,22,0.3)]";
+                  else if (data.count === 2) colorClass = "bg-lime-700/60 border border-lime-600 shadow-[0_0_10px_rgba(132,204,22,0.5)]";
+                  else if (data.count >= 3) colorClass = "bg-lime-400 border border-lime-300 shadow-[0_0_12px_rgba(132,204,22,0.7)]";
                   return (
                     <div key={i} className={`w-6 h-6 rounded-md transition-all duration-300 hover:scale-125 hover:z-10 relative group/tile ${colorClass}`}>
                       <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#0b0b12] text-white text-[10px] py-1 px-2 rounded-md opacity-0 group-hover/tile:opacity-100 pointer-events-none whitespace-nowrap z-20 shadow-xl border border-white/20">
@@ -476,9 +476,9 @@ function Health() {
               <span>Less</span>
               <div className="flex gap-1">
                 <div className="w-3 h-3 rounded-sm bg-white/5 border border-white/5" />
-                <div className="w-3 h-3 rounded-sm bg-orange-900/40 border border-orange-800/20" />
-                <div className="w-3 h-3 rounded-sm bg-orange-700/60 border border-orange-600" />
-                <div className="w-3 h-3 rounded-sm bg-orange-400 border border-orange-300" />
+                <div className="w-3 h-3 rounded-sm bg-lime-900/40 border border-lime-800/20" />
+                <div className="w-3 h-3 rounded-sm bg-lime-700/60 border border-lime-600" />
+                <div className="w-3 h-3 rounded-sm bg-lime-400 border border-lime-300" />
               </div>
               <span>More</span>
             </div>

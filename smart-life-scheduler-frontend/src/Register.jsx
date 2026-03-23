@@ -79,19 +79,19 @@ function Register() {
 
    return (
       <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 relative overflow-y-auto overflow-x-hidden font-sans">
-         {/* Dynamic Background Accents — warm amber to match stone theme */}
-         <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-amber-600/10 rounded-full blur-[100px] -z-10 animate-floatGlow"></div>
-         <div className="fixed bottom-[10%] right-[-10%] w-[500px] h-[500px] bg-orange-700/10 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '2s' }}></div>
+         {/* Dynamic Background Accents — lime emerald to match theme */}
+         <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-lime-600/10 rounded-full blur-[100px] -z-10 animate-floatGlow"></div>
+         <div className="fixed bottom-[10%] right-[-10%] w-[500px] h-[500px] bg-emerald-700/10 rounded-full blur-[100px] -z-10 animate-floatGlow" style={{ animationDelay: '2s' }}></div>
 
          <div className="w-full max-w-5xl animate-slideUpFade bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
 
             {/* Left Col: Auth Form */}
-            <div className="w-full md:w-1/2 p-8 sm:p-12 relative">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-[40px] -translate-y-1/2 translate-x-1/3"></div>
+            <div className="w-full md:w-1/2 p-8 sm:p-12 relative border border-white/5">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 rounded-full blur-[40px] -translate-y-1/2 translate-x-1/3"></div>
 
                <div className="relative z-10 text-center md:text-left mb-8">
                   <h2 className="text-3xl font-black text-white tracking-tight drop-shadow-md">Create Account</h2>
-                  <p className="text-indigo-200 mt-2 text-[15px] font-medium tracking-wide">Join Smart Life Scheduler today</p>
+                  <p className="text-lime-200 mt-2 text-[15px] font-medium tracking-wide">Join Smart Life Scheduler today</p>
                </div>
 
                {error && (
@@ -103,7 +103,7 @@ function Register() {
                <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
                   <div className="relative">
                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <User className="h-5 w-5 text-indigo-300 drop-shadow-sm" />
+                        <User className="h-5 w-5 text-lime-300 drop-shadow-sm" />
                      </div>
                      <input
                         type="text"
@@ -111,7 +111,7 @@ function Register() {
                         placeholder="Full Name"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 focus:bg-white/10 transition-all font-medium text-[15px] shadow-inner"
+                        className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500/50 focus:bg-white/10 transition-all font-medium text-[15px] shadow-inner"
                         required
                         disabled={loading}
                      />
@@ -119,7 +119,7 @@ function Register() {
 
                   <div className="relative">
                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Mail className="h-5 w-5 text-indigo-300 drop-shadow-sm" />
+                        <Mail className="h-5 w-5 text-lime-300 drop-shadow-sm" />
                      </div>
                      <input
                         type="email"
@@ -127,7 +127,7 @@ function Register() {
                         placeholder="Email address"
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 focus:bg-white/10 transition-all font-medium text-[15px] shadow-inner"
+                        className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500/50 focus:bg-white/10 transition-all font-medium text-[15px] shadow-inner"
                         required
                         disabled={loading}
                      />
@@ -135,7 +135,7 @@ function Register() {
 
                   <div className="relative">
                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Lock className="h-5 w-5 text-indigo-300 drop-shadow-sm" />
+                        <Lock className="h-5 w-5 text-lime-300 drop-shadow-sm" />
                      </div>
                      <input
                         type="password"
@@ -143,7 +143,7 @@ function Register() {
                         placeholder="Password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 focus:bg-white/10 transition-all font-medium text-[15px] shadow-inner"
+                        className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500/50 focus:bg-white/10 transition-all font-medium text-[15px] shadow-inner"
                         required
                         disabled={loading}
                      />
@@ -151,7 +151,7 @@ function Register() {
 
                   <div className="relative">
                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Phone className="h-5 w-5 text-indigo-300 drop-shadow-sm" />
+                        <Phone className="h-5 w-5 text-lime-300 drop-shadow-sm" />
                      </div>
                      <input
                         type="tel"
@@ -159,7 +159,7 @@ function Register() {
                         placeholder="Phone Number (e.g. 1234567890)"
                         value={formData.phno}
                         onChange={handleChange}
-                        className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 focus:bg-white/10 transition-all font-medium text-[15px] shadow-inner"
+                        className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500/50 focus:bg-white/10 transition-all font-medium text-[15px] shadow-inner"
                         required
                         disabled={loading}
                      />
@@ -168,7 +168,7 @@ function Register() {
                   <button
                      type="submit"
                      disabled={loading}
-                     className={`w-full mt-2 py-3.5 rounded-2xl font-bold text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all duration-300 tracking-wide text-[16px] ${loading ? "bg-gray-500/50 cursor-not-allowed opacity-70" : "bg-gradient-to-r from-indigo-600 to-cyan-500 hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(99,102,241,0.6)] active:scale-[0.98]"}`}
+                     className={`w-full mt-2 py-3.5 rounded-2xl font-bold text-white shadow-[0_0_20px_rgba(132,204,22,0.4)] transition-all duration-300 tracking-wide text-[16px] ${loading ? "bg-gray-500/50 cursor-not-allowed opacity-70" : "bg-gradient-to-r from-lime-600 to-emerald-500 hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(132,204,22,0.6)] active:scale-[0.98]"}`}
                   >
                      {loading ? "Registering..." : "Create Account"}
                   </button>
@@ -191,14 +191,14 @@ function Register() {
 
                <p className="text-center md:text-left text-[14px] mt-8 text-gray-400 font-medium relative z-10">
                   Already have an account?{" "}
-                  <Link to="/login" className="text-cyan-400 hover:text-cyan-300 transition-colors font-bold tracking-wide underline decoration-cyan-400/30 underline-offset-4">
+                  <Link to="/login" className="text-lime-400 hover:text-lime-300 transition-colors font-bold tracking-wide underline decoration-lime-400/30 underline-offset-4">
                      Log in
                   </Link>
                </p>
             </div>
 
             {/* Right Col: Illustration */}
-            <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-indigo-600/20 to-cyan-500/20 p-12 items-center justify-center relative border-l border-white/5">
+            <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-lime-600/20 to-emerald-500/20 p-12 items-center justify-center relative border-l border-white/5">
                <div className="absolute inset-0 bg-black/20 decoration-squares"></div>
 
                {/* Abstract Calendar/Task Illustration */}
@@ -216,14 +216,14 @@ function Register() {
                   {/* Mock Tasks */}
                   <div className="space-y-4">
                      {[
-                        { title: "Review product roadmap", width: "w-3/4", color: "bg-indigo-400" },
-                        { title: "Team sync meeting", width: "w-full", color: "bg-teal-400" },
-                        { title: "Design system update", width: "w-5/6", color: "bg-purple-400" }
+                        { title: "Review product roadmap", width: "w-3/4", color: "text-lime-400" },
+                        { title: "Team sync meeting", width: "w-full", color: "text-emerald-400" },
+                        { title: "Design system update", width: "w-5/6", color: "text-yellow-400" }
                      ].map((mockTask, i) => (
                         <div key={i} className="flex items-center space-x-4 p-3 rounded-xl bg-white/5 border border-white/10 group-hover:bg-white/10 transition-colors">
-                           <CheckCircle2 className={`w-5 h-5 ${mockTask.color} rounded-full text-slate-900 border-none shadow-lg`} />
+                           <CheckCircle2 className={`w-5 h-5 ${mockTask.color.replace('text', 'bg')} rounded-full text-slate-900 border-none shadow-lg`} />
                            <div className="flex-1">
-                              <div className={`h-2 ${mockTask.width} ${mockTask.color} rounded opacity-80 mb-2`}></div>
+                              <div className={`h-2 ${mockTask.width} ${mockTask.color.replace('text', 'bg')} rounded opacity-80 mb-2`}></div>
                               <div className="h-1.5 w-1/3 bg-white/20 rounded"></div>
                            </div>
                         </div>
@@ -231,8 +231,8 @@ function Register() {
                   </div>
 
                   {/* Floating Decoration */}
-                  <div className="absolute -right-8 -top-8 w-24 h-24 bg-gradient-to-tr from-cyan-400 to-indigo-500 rounded-full blur-[20px] opacity-50 animate-pulse"></div>
-                  <div className="absolute -left-6 -bottom-6 w-20 h-20 bg-gradient-to-tr from-purple-400 to-pink-500 rounded-full blur-[20px] opacity-40 animate-pulse" style={{ animationDelay: '1s' }}></div>
+                  <div className="absolute -right-8 -top-8 w-24 h-24 bg-gradient-to-tr from-lime-400 to-emerald-500 rounded-full blur-[20px] opacity-50 animate-pulse"></div>
+                  <div className="absolute -left-6 -bottom-6 w-20 h-20 bg-gradient-to-tr from-yellow-400 to-orange-500 rounded-full blur-[20px] opacity-40 animate-pulse" style={{ animationDelay: '1s' }}></div>
                </div>
             </div>
 

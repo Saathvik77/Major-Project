@@ -41,7 +41,7 @@ const FilterButton = ({ label, active, onClick }) => (
     onClick={onClick}
     className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
       active 
-        ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' 
+        ? 'bg-lime-500 text-white shadow-lg shadow-lime-500/20' 
         : 'bg-white/5 text-gray-500 hover:text-white border border-white/5 hover:border-white/10'
     }`}
   >
@@ -55,9 +55,9 @@ const StatCard = ({ icon: Icon, label, value, trend, color = "orange" }) => (
     animate={{ opacity: 1, y: 0 }}
     className="glass-card p-8 flex flex-col gap-4 relative overflow-hidden group hover:bg-white/[0.04]"
   >
-    <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 blur-[40px] -z-10 group-hover:bg-orange-500/10 transition-all" />
+    <div className="absolute top-0 right-0 w-24 h-24 bg-lime-500/5 blur-[40px] -z-10 group-hover:bg-lime-500/10 transition-all" />
     <div className="flex items-center justify-between">
-      <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20 transition-all group-hover:scale-110">
+      <div className="w-12 h-12 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 transition-all group-hover:scale-110">
         <Icon size={24} />
       </div>
       <div className="flex items-center gap-1.5 text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/5 px-3 py-1.5 rounded-full border border-emerald-500/10">
@@ -79,14 +79,14 @@ function Analytics() {
    const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("Week");
 
-  const PRIMARY_ACCENT = "#ff8c3c";
-  const CHART_COLORS = [PRIMARY_ACCENT, "rgba(255, 140, 60, 0.6)", "rgba(255, 140, 60, 0.3)", "rgba(255, 255, 255, 0.05)"];
+  const PRIMARY_ACCENT = "#84cc16";
+  const CHART_COLORS = [PRIMARY_ACCENT, "rgba(132, 204, 22, 0.6)", "rgba(132, 204, 22, 0.3)", "rgba(255, 255, 255, 0.05)"];
 
   const [insights, setInsights] = useState([
-    { text: "Operational analysis in progress...", icon: <Zap size={14} className="text-orange-500" /> },
+    { text: "Operational analysis in progress...", icon: <Zap size={14} className="text-lime-500" /> },
     { text: "Scanning task patterns...", icon: <TrendingUp size={14} className="text-emerald-500" /> },
     { text: "Evaluating focus cycles...", icon: <Clock size={14} className="text-blue-500" /> },
-    { text: "Calibrating smart score...", icon: <Target size={14} className="text-orange-500" /> }
+    { text: "Calibrating smart score...", icon: <Target size={14} className="text-lime-500" /> }
   ]);
 
   useEffect(() => {
@@ -109,7 +109,7 @@ function Analytics() {
         
         // 1. Completion Insight
         if (ratio > 0.8) {
-          newInsights.push({ text: "Peak efficiency detected. You are operating at 80%+ capacity.", icon: <Zap size={14} className="text-orange-500" /> });
+          newInsights.push({ text: "Peak efficiency detected. You are operating at 80%+ capacity.", icon: <Zap size={14} className="text-lime-500" /> });
         } else if (ratio > 0.5) {
           newInsights.push({ text: "Steady progress maintained. Focus on high-priority morning slots.", icon: <TrendingUp size={14} className="text-emerald-500" /> });
         } else {
@@ -131,7 +131,7 @@ function Analytics() {
         }
 
         // 4. Time Insight
-        newInsights.push({ text: `Average completion velocity: ${Math.round(ratio * 100)}% per operational cycle.`, icon: <Clock size={14} className="text-orange-500" /> });
+        newInsights.push({ text: `Average completion velocity: ${Math.round(ratio * 100)}% per operational cycle.`, icon: <Clock size={14} className="text-lime-500" /> });
 
         if (newInsights.length > 0) setInsights(newInsights);
 
@@ -199,17 +199,17 @@ function Analytics() {
   return (
     <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
       {/* Lighting FX */}
-      <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
+      <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
 
       {/* Header */}
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-12">
         <div className="flex items-center gap-6">
           <button onClick={() => navigate(-1)} className="p-3.5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white shadow-xl">
             <ChevronLeft size={24} />
           </button>
           <div>
             <h1 className="text-3xl md:text-4xl font-black text-white tracking-tighter">Intelligence Overview</h1>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Operational Data Feed</p>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60">Operational Data Feed</p>
           </div>
         </div>
 
@@ -221,7 +221,7 @@ function Analytics() {
       </header>
 
       {/* Top Summary Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
         <StatCard icon={CheckCircle2} label="Completed Tasks" value={summary?.completed || "0"} trend="+12%" />
         <StatCard icon={AlertCircle} label="Missed Syncs" value={summary?.overdue || "0"} trend="-2%" />
         <StatCard icon={Clock} label="Focus Time" value={summary?.focusTime || "0h"} trend="+5.4%" />
@@ -231,7 +231,7 @@ function Analytics() {
       {/* Main Charts Grid */}
       {hasNoData ? (
         <div className="flex flex-col items-center justify-center text-center py-32 glass-card border-dashed">
-          <div className="w-24 h-24 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500/40 mb-8 border border-orange-500/20 shadow-inner">
+          <div className="w-24 h-24 rounded-full bg-lime-500/10 flex items-center justify-center text-lime-500/40 mb-8 border border-lime-500/20 shadow-inner">
             <BarChart3 size={48} strokeWidth={1} />
           </div>
           <h2 className="text-2xl font-black text-white mb-3">Intelligence analysis pending</h2>
@@ -241,20 +241,20 @@ function Analytics() {
           </p>
           <button 
             onClick={() => navigate('/tasks')}
-            className="px-10 py-4 rounded-2xl bg-orange-500 text-white font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl shadow-orange-500/20 hover:bg-orange-600 transition-all active:scale-95"
+            className="px-10 py-4 rounded-2xl bg-lime-500 text-white font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl shadow-lime-500/20 hover:bg-lime-600 transition-all active:scale-95"
           >
             Access Task Interface
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-12 gap-8">
+        <div className="grid grid-cols-12 gap-12">
           
           {/* Productivity Velocity (Bar Chart) */}
-          <div className="col-span-12 lg:col-span-8">
-            <div className="glass-card p-6 md:p-10 h-full chart-container overflow-hidden">
+           <div className="col-span-12 lg:col-span-8">
+            <div className="glass-card p-8 md:p-12 h-full chart-container overflow-hidden">
               <div className="flex items-center justify-between mb-8 md:mb-12">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shrink-0">
                     <BarChart3 size={24} />
                   </div>
                   <div className="min-w-0">
@@ -265,7 +265,7 @@ function Analytics() {
                 <MoreHorizontal size={20} className="text-gray-700 cursor-pointer hover:text-white transition-colors shrink-0" />
               </div>
 
-              <div className="w-full h-[300px] md:h-[350px]">
+              <div className="w-full h-[350px] md:h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={last7DaysData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.03)" vertical={false} />
@@ -276,7 +276,7 @@ function Analytics() {
                       contentStyle={{ backgroundColor: '#0f1115', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '12px' }}
                       itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: '900' }}
                     />
-                    <Bar dataKey="completed" fill="#ff8c3c" radius={[6, 6, 6, 6]} barSize={30} animationDuration={2000} />
+                    <Bar dataKey="completed" fill="#84cc16" radius={[6, 6, 6, 6]} barSize={30} animationDuration={2000} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -285,8 +285,8 @@ function Analytics() {
 
           {/* Smart Score Ring (Circular Progress) */}
           <div className="col-span-12 lg:col-span-4">
-            <div className="glass-card p-8 md:p-10 h-full chart-container flex flex-col items-center justify-center text-center relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-orange-500/10 transition-all" />
+            <div className="glass-card p-10 md:p-12 h-full chart-container flex flex-col items-center justify-center text-center relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
                
                <h3 className="text-lg md:text-xl font-black text-white tracking-tight mb-2 self-start">Smart Sync</h3>
                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-10 md:mb-12 self-start">Cognitive Efficiency</p>
@@ -296,7 +296,7 @@ function Analytics() {
                     <circle cx="50%" cy="50%" r="42%" className="stroke-white/5 fill-none" strokeWidth="10" />
                     <motion.circle 
                       cx="50%" cy="50%" r="42%" 
-                      className="stroke-orange-500 fill-none" 
+                      className="stroke-lime-500 fill-none" 
                       strokeWidth="10" 
                       strokeLinecap="round"
                       initial={{ strokeDasharray: "0 691" }}
@@ -325,17 +325,17 @@ function Analytics() {
 
           {/* Productivity Trend (Line/Area Chart) */}
           <div className="col-span-12 lg:col-span-7">
-            <div className="glass-card p-10 h-full chart-container">
+            <div className="glass-card p-12 h-full chart-container">
               <h3 className="text-xl font-black text-white tracking-tight mb-2">Activity Momentum</h3>
               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-12">Cognitive Score Trend</p>
               
-              <div className="w-full h-[300px]">
+              <div className="w-full h-[350px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={trendData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#ff8c3c" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#ff8c3c" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#84cc16" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#84cc16" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.03)" vertical={false} />
@@ -344,7 +344,7 @@ function Analytics() {
                     <Tooltip 
                       contentStyle={{ backgroundColor: '#0f1115', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px' }}
                     />
-                    <Area type="monotone" dataKey="score" stroke="#ff8c3c" strokeWidth={4} fillOpacity={1} fill="url(#colorScore)" animationDuration={2000} />
+                    <Area type="monotone" dataKey="score" stroke="#84cc16" strokeWidth={4} fillOpacity={1} fill="url(#colorScore)" animationDuration={2000} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -354,10 +354,10 @@ function Analytics() {
           {/* AI Insights Summary */}
           <div className="col-span-12 lg:col-span-5">
             <div className="glass-card p-10 h-full flex flex-col gap-8 relative overflow-hidden group">
-               <div className="absolute bottom-0 right-0 w-48 h-48 bg-orange-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-orange-500/10 transition-all" />
+               <div className="absolute bottom-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
                
                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 shadow-lg shadow-orange-500/5">
+                  <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shadow-lg shadow-lime-500/5">
                      <Brain size={24} />
                   </div>
                   <div>
@@ -377,7 +377,7 @@ function Analytics() {
 
                <button 
                  onClick={() => navigate('/ai-assistant')}
-                 className="mt-auto w-full py-4 rounded-[1.25rem] bg-orange-500/10 border border-orange-500/20 text-orange-500 font-black text-[10px] uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all ripple"
+                 className="mt-auto w-full py-4 rounded-[1.25rem] bg-lime-500/10 border border-lime-500/20 text-lime-500 font-black text-[10px] uppercase tracking-widest hover:bg-lime-500 hover:text-white transition-all ripple"
                >
                   Detailed Operational Report
                </button>
@@ -399,7 +399,7 @@ function Analytics() {
                       onClick={() => setFilter(cat)}
                       className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
                         (filter === cat || (filter === "Week" && cat === "All"))
-                          ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' 
+                          ? 'bg-lime-500 text-white shadow-lg shadow-lime-500/20' 
                           : 'bg-white/5 text-gray-500 hover:text-white'
                       }`}
                     >
@@ -450,7 +450,7 @@ function Analytics() {
                           <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
                             task.completed ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' :
                             expired ? 'bg-rose-500/10 border-rose-500/20 text-rose-500' :
-                            'bg-orange-500/10 border-orange-500/20 text-orange-500'
+                            'bg-lime-500/10 border-lime-500/20 text-lime-500'
                           }`}>
                             {task.completed ? <CheckCircle2 size={18} /> : expired ? <AlertCircle size={18} /> : <Clock size={18} />}
                           </div>
@@ -461,7 +461,7 @@ function Analytics() {
                               <div className="w-1 h-1 rounded-full bg-gray-700" />
                               <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full border ${
                                 task.priority === "High" ? "text-rose-400 border-rose-500/20 bg-rose-500/5" :
-                                task.priority === "Medium" ? "text-amber-400 border-amber-500/20 bg-amber-500/5" :
+                                task.priority === "Medium" ? "text-yellow-400 border-yellow-500/20 bg-yellow-500/5" :
                                 "text-emerald-400 border-emerald-500/20 bg-emerald-500/5"
                               }`}>
                                 {task.priority}

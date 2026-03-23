@@ -30,10 +30,10 @@ export default function AnimatedBackground() {
         },
         particles: {
             color: {
-                value: ["#c8a86b", "#e8c07a", "#a0845a"],
+                value: ["#84cc16", "#a3e635", "#65a30d"],
             },
             links: {
-                color: "#c8a86b",
+                color: "#84cc16",
                 distance: 140,
                 enable: true,
                 opacity: 0.10,
@@ -63,7 +63,7 @@ export default function AnimatedBackground() {
     return (
         <div className="fixed inset-0 pointer-events-none" style={{ zIndex: -1 }}>
 
-            {/* ── Warm Amber Glow — top right, like a distant forge light ── */}
+            {/* ── Lime Emerald Glow — top right ── */}
             <div
                 style={{
                     position: "absolute",
@@ -71,14 +71,14 @@ export default function AnimatedBackground() {
                     right: "-8%",
                     width: "55vw",
                     height: "55vh",
-                    background: "radial-gradient(ellipse, rgba(180,110,30,0.12) 0%, rgba(200,130,20,0.05) 45%, transparent 72%)",
+                    background: "radial-gradient(ellipse, rgba(132,204,22,0.12) 0%, rgba(16,185,129,0.05) 45%, transparent 72%)",
                     borderRadius: "50%",
                     filter: "blur(50px)",
                     animation: "stoneAmber 16s ease-in-out infinite alternate",
                 }}
             />
 
-            {/* ── Faint warm centre haze ────────────────────────────────── */}
+            {/* ── Faint lime centre haze ────────────────────────────────── */}
             <div
                 style={{
                     position: "absolute",
@@ -86,7 +86,7 @@ export default function AnimatedBackground() {
                     left: "20%",
                     width: "60vw",
                     height: "50vh",
-                    background: "radial-gradient(ellipse, rgba(140,90,20,0.05) 0%, transparent 65%)",
+                    background: "radial-gradient(ellipse, rgba(132,204,22,0.05) 0%, transparent 65%)",
                     borderRadius: "50%",
                     filter: "blur(70px)",
                     animation: "stoneAmber 22s ease-in-out infinite alternate-reverse",

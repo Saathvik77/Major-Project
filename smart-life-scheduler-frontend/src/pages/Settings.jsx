@@ -25,7 +25,7 @@ import { ThemeContext } from "../ThemeContext";
 const Toggle = ({ active, onClick }) => (
   <div 
     onClick={onClick}
-    className={`w-12 h-6 rounded-full relative cursor-pointer transition-all shadow-lg ${active ? 'bg-orange-500 shadow-orange-500/20' : 'bg-white/10'}`}
+    className={`w-12 h-6 rounded-full relative cursor-pointer transition-all shadow-lg ${active ? 'bg-lime-500 shadow-lime-500/20' : 'bg-white/10'}`}
   >
     <motion.div 
       initial={false}
@@ -42,9 +42,9 @@ const SettingsOption = ({ icon: Icon, title, desc, children, defaultOpen = false
     <div className="glass-card overflow-hidden transition-all duration-300">
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-5 p-6 hover:bg-white/[0.04] cursor-pointer transition-colors"
+        className="flex items-center gap-6 p-8 hover:bg-white/[0.04] cursor-pointer transition-colors"
       >
-        <div className="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20 shadow-lg shadow-orange-500/5">
+        <div className="w-14 h-14 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 shadow-lg shadow-lime-500/5">
           <Icon size={24} strokeWidth={1.5} />
         </div>
         <div className="flex-1">
@@ -69,7 +69,7 @@ const SettingsOption = ({ icon: Icon, title, desc, children, defaultOpen = false
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="border-t border-white/5 bg-white/[0.02]"
           >
-            <div className="p-8 space-y-6">
+            <div className="p-10 space-y-8">
               {children}
             </div>
           </motion.div>
@@ -98,31 +98,31 @@ function Settings() {
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </AnimatePresence>
       {/* Lighting FX */}
-      <div className={`fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[120px] -z-10 ${isLightMode ? 'opacity-0' : 'opacity-100'}`} />
+      <div className={`fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10 ${isLightMode ? 'opacity-0' : 'opacity-100'}`} />
       
-      <div className="max-w-[900px] mx-auto relative z-10 w-full flex flex-col gap-12">
+      <div className="max-w-[900px] mx-auto relative z-10 w-full flex flex-col gap-16">
         
         <header className="flex items-center gap-6">
-           <div className="w-16 h-16 rounded-[2rem] bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white shadow-2xl shadow-orange-500/30">
+           <div className="w-16 h-16 rounded-[2rem] bg-gradient-to-br from-lime-400 to-lime-600 flex items-center justify-center text-white shadow-2xl shadow-lime-500/30">
               <SettingsIcon size={32} strokeWidth={2} />
            </div>
            <div>
               <h1 className={`text-4xl font-black tracking-tighter ${isLightMode ? 'text-gray-900' : 'text-white'}`}>System Configuration</h1>
-              <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Manage System Parameters</p>
+              <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60">Manage System Parameters</p>
            </div>
         </header>
 
-        <div className="space-y-6">
+        <div className="space-y-10">
           
           {/* Appearance Section */}
           <SettingsOption icon={Eye} title="Interface Aesthetics" desc="Theme & Lighting Environment" defaultOpen={true}>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-5 bg-white/[0.03] rounded-2xl border border-white/5">
                 <div className="flex items-center gap-4">
-                  {isLightMode ? <Sun size={18} className="text-orange-500" /> : <Moon size={18} className="text-orange-500" />}
+                  {isLightMode ? <Sun size={18} className="text-lime-500" /> : <Moon size={18} className="text-lime-500" />}
                   <div>
                     <p className={`font-black tracking-tight ${isLightMode ? 'text-gray-900' : 'text-white'}`}>{isLightMode ? 'Smart Light Mode' : 'Smart Dark Mode'}</p>
-                    <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">Cinematic depth with amber accents</p>
+                    <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">Cinematic depth with lime accents</p>
                   </div>
                 </div>
                 <Toggle active={!isLightMode} onClick={() => { toggleTheme(); setToast("Theme synchronized"); }} />
@@ -145,7 +145,7 @@ function Settings() {
             <div className="space-y-4">
               <div className="flex items-center justify-between p-5 bg-white/[0.03] rounded-2xl border border-white/5">
                 <div className="flex items-center gap-4">
-                  <Smartphone size={18} className="text-orange-500" />
+                  <Smartphone size={18} className="text-lime-500" />
                   <div>
                     <p className="font-black text-white tracking-tight">Push Alerts</p>
                     <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">Receive operational updates</p>
@@ -155,7 +155,7 @@ function Settings() {
               </div>
               <div className="flex items-center justify-between p-5 bg-white/[0.03] rounded-2xl border border-white/5">
                 <div className="flex items-center gap-4">
-                  <Volume2 size={18} className="text-orange-500" />
+                  <Volume2 size={18} className="text-lime-500" />
                   <div>
                     <p className="font-black text-white tracking-tight">Audio Feedback</p>
                     <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">System status sounds</p>
@@ -171,7 +171,7 @@ function Settings() {
             <div className="space-y-4">
               <div className="flex items-center justify-between p-5 bg-white/[0.03] rounded-2xl border border-white/5">
                 <div className="flex items-center gap-4">
-                  <Zap size={18} className="text-orange-500" />
+                  <Zap size={18} className="text-lime-500" />
                   <div>
                     <p className="font-black text-white tracking-tight">Auto-Reschedule</p>
                     <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">Automatically optimize missed syncs</p>
@@ -188,7 +188,7 @@ function Settings() {
                <div className="grid grid-cols-1 gap-6">
                   <div className="space-y-2">
                     <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest ml-1">Update Security Key</label>
-                    <input type="password" placeholder="New Password" className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-orange-500/50 transition-all font-medium" />
+                    <input type="password" placeholder="New Password" className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-lime-500/50 transition-all font-medium" />
                   </div>
                </div>
                <button className="bg-white/5 border border-white/10 text-white px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all ripple">
@@ -198,10 +198,10 @@ function Settings() {
           </SettingsOption>
 
           {/* Danger Zone */}
-          <div className="pt-12 border-t border-white/5 space-y-6">
+          <div className="pt-16 border-t border-white/5 space-y-8">
              <h3 className="text-xs font-black text-rose-500 uppercase tracking-[0.2em] ml-2">Danger Zone</h3>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="glass-card p-6 border-rose-500/20 hover:bg-rose-500/5 group transition-all">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="glass-card p-8 border-rose-500/20 hover:bg-rose-500/5 group transition-all">
                    <div className="flex items-center gap-4 mb-4">
                       <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500">
                          <Trash2 size={20} />
@@ -215,7 +215,7 @@ function Settings() {
                       Confirm Wipe
                    </button>
                 </div>
-                <div className="glass-card p-6 border-white/10 hover:bg-white/5 group transition-all">
+                <div className="glass-card p-8 border-white/10 hover:bg-white/5 group transition-all">
                    <div className="flex items-center gap-4 mb-4">
                       <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400">
                          <LogOut size={20} />

@@ -1,98 +1,108 @@
-import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import React from "react";
 import { 
   LayoutDashboard, 
-  CheckSquare, 
-  BarChart3, 
-  User, 
+  ClipboardList, 
+  PieChart, 
+  Bot, 
   Settings, 
+  User, 
   LogOut,
-  Bot,
-  BrainCircuit,
-  PieChart
-} from 'lucide-react';
-import { motion } from 'framer-motion';
+  Target,
+  Brain,
+  Activity
+} from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
-const SidebarItem = ({ icon: Icon, to, label }) => (
-  <NavLink
-    to={to}
-    className={({ isActive }) => `
-      group relative flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300
-      ${isActive 
-        ? 'bg-orange-500/10 text-orange-500 border border-orange-500/20' 
-        : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
-    `}
-  >
-    {({ isActive }) => (
-      <>
-        <Icon size={22} strokeWidth={1.5} />
-        
-        {/* Tooltip */}
-        <div className="absolute left-16 px-2 py-1 rounded-md bg-zinc-900 border border-white/10 text-white text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 z-50">
-          {label}
-        </div>
+const NavItem = ({ icon: Icon, label, path, active, isBottom = false }) => (
+  <Link to={path} className="relative group w-full flex justify-center py-3">
+    <div className={`
+      relative z-10 p-3.5 rounded-2xl transition-all duration-300 flex items-center justify-center
+      ${active 
+        ? "bg-lime-500 text-white shadow-xl shadow-lime-500/20 scale-110" 
+        : "text-gray-500 hover:text-white hover:bg-white/5"}
+    `}>
+      <Icon size={22} strokeWidth={active ? 2.5 : 2} />
+    </div>
 
-        {/* Active Indicator Dot */}
-        {isActive && (
-          <motion.div 
-            layoutId="activeSideDot"
-            className="absolute -left-1 w-1 h-3 bg-orange-500 rounded-full shadow-[0_0_8px_rgba(255,140,60,0.5)]"
-          />
-        )}
-      </>
+    {active && (
+      <motion.div 
+        layoutId="activeNav"
+        className={`absolute ${isBottom ? "top-0 left-1/4 right-1/4 h-1 rounded-b-full" : "left-0 top-1/4 bottom-1/4 w-1 rounded-r-full"} bg-lime-500 shadow-[0_0_15px_rgba(132,204,22,0.8)]`} 
+      />
     )}
-  </NavLink>
+    
+    {!isBottom && (
+      <div className="absolute left-20 px-3 py-2 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all pointer-events-none whitespace-nowrap border border-white/10 shadow-2xl z-50">
+        {label}
+      </div>
+    )}
+  </Link>
 );
 
 const Sidebar = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const path = location.pathname;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
 
+  const navItems = [
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+    { icon: ClipboardList, label: "Tasks", path: "/tasks" },
+    { icon: PieChart, label: "Analytics", path: "/analytics" },
+    { icon: Bot, label: "AI Assistant", path: "/ai-assistant" },
+    { icon: Settings, label: "Settings", path: "/settings" },
+  ];
+
   return (
-    <aside className="fixed bottom-0 md:top-0 left-0 w-full md:w-[84px] h-[72px] md:h-screen sidebar-glass flex flex-row md:flex-col items-center justify-around md:justify-start md:py-8 z-[100] border-t md:border-t-0 border-white/10 px-4 md:px-0 transition-all duration-300">
-      {/* Logo */}
-      <div className="hidden md:flex mb-12 flex-col items-center gap-2">
-        <div className="w-12 h-12 rounded-[18px] bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/30">
-          <Settings size={24} strokeWidth={2} />
-        </div>
-      </div>
+    <>
+      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-[84px] glass-morphism border-r border-white/5 flex-col items-center py-10 z-[100] shadow-2xl overflow-visible">
+        <Link to="/dashboard" className="mb-12 group relative">
+          <div className="w-12 h-12 rounded-[1.5rem] bg-gradient-to-br from-lime-400 to-lime-600 flex items-center justify-center text-white shadow-2xl shadow-lime-500/20 transform group-hover:rotate-12 transition-all duration-500 border border-white/10">
+            <Brain size={26} strokeWidth={2.5} />
+          </div>
+          <div className="absolute -inset-2 bg-lime-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+        </Link>
 
-      {/* Nav Items */}
-      <nav className="flex flex-row md:flex-col gap-2 md:gap-5 items-center w-full md:w-auto justify-around md:justify-start md:flex-1">
-        <SidebarItem icon={LayoutDashboard} to="/dashboard" label="Dashboard" />
-        <SidebarItem icon={CheckSquare} to="/tasks" label="Tasks" />
-        <SidebarItem icon={BarChart3} to="/analytics" label="Analytics" />
-        <SidebarItem icon={Bot} to="/ai-assistant" label="AI Assistant" />
-        
-        {/* Mobile-only shortcuts */}
-        <div className="md:hidden">
-          <SidebarItem icon={User} to="/profile" label="Profile" />
-        </div>
-        <div className="md:hidden">
-          <SidebarItem icon={Settings} to="/settings" label="Settings" />
-        </div>
+        <nav className="flex-1 w-full flex flex-col items-center gap-4">
+          {navItems.map((item) => (
+            <NavItem 
+              key={item.path}
+              {...item}
+              active={path === item.path}
+            />
+          ))}
+        </nav>
 
-        <div className="hidden md:block">
-          <SidebarItem icon={PieChart} to="/reports" label="Reports" />
+        <div className="mt-auto flex flex-col items-center gap-6">
+          <Link to="/profile" className={`p-3.5 rounded-2xl transition-all ${path === '/profile' ? 'bg-lime-500/10 text-lime-500 border border-lime-500/20' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}>
+            <User size={22} />
+          </Link>
+          <button 
+            onClick={handleLogout}
+            className="p-3.5 text-gray-600 hover:text-rose-500 hover:bg-rose-500/5 transition-all rounded-2xl group"
+          >
+            <LogOut size={22} className="group-hover:-translate-x-1 transition-transform" />
+          </button>
         </div>
+      </aside>
+
+      {/* Mobile Bottom Nav */}
+      <nav className="md:hidden fixed bottom-6 left-6 right-6 h-20 glass-morphism border border-white/10 rounded-[2.5rem] flex items-center justify-around px-4 z-[100] shadow-2xl backdrop-blur-2xl">
+        {navItems.map((item) => (
+          <NavItem 
+            key={item.path}
+            {...item}
+            active={path === item.path}
+            isBottom={true}
+          />
+        ))}
       </nav>
-
-      {/* Bottom Actions */}
-      <div className="hidden md:flex mt-auto flex-col gap-6 items-center">
-        <SidebarItem icon={Settings} to="/settings" label="Settings" />
-        <SidebarItem icon={User} to="/profile" label="Profile" />
-        <button 
-          onClick={handleLogout}
-          className="w-12 h-12 flex items-center justify-center text-gray-500 hover:text-red-400 hover:bg-red-500/5 rounded-2xl transition-all active:scale-90"
-        >
-          <LogOut size={22} strokeWidth={1.5} />
-        </button>
-      </div>
-    </aside>
+    </>
   );
 };
 

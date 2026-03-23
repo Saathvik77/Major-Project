@@ -36,14 +36,14 @@ const StatBadge = ({ dotColor, label, value, isVisible }) => (
 );
 
 const StatCard = ({ icon: Icon, label, value, trend }) => (
-  <div className="glass-card p-8 flex flex-col gap-5 group card-hover-lift">
+  <div className="glass-card p-10 flex flex-col gap-6 group card-hover-lift">
     <div className="flex items-center justify-between relative z-10">
-      <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20 shadow-lg shadow-orange-500/5 transition-all group-hover:scale-110">
-        <Icon size={24} />
+      <div className="w-14 h-14 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 shadow-lg shadow-lime-500/5 transition-all group-hover:scale-110">
+        <Icon size={28} />
       </div>
       <div className="flex flex-col items-end">
-        <span className="text-[11px] font-black text-gray-500 uppercase tracking-widest">{label}</span>
-        <span className="text-3xl font-black text-white tracking-tighter mt-1">{value}</span>
+        <span className="text-xs font-black text-gray-500 uppercase tracking-widest">{label}</span>
+        <span className="text-4xl font-black text-white tracking-tighter mt-1">{value}</span>
       </div>
     </div>
     <div className="flex items-center gap-2 pt-5 border-t border-white/5 relative z-10">
@@ -147,7 +147,7 @@ const Dashboard = () => {
       {/* ── Header Area ────────────────────────────────────────────── */}
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-orange-500 shadow-xl backdrop-blur-xl">
+          <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-lime-500 shadow-xl backdrop-blur-xl">
             <LayoutDashboard size={24} strokeWidth={1.5} />
           </div>
           <div>
@@ -160,7 +160,7 @@ const Dashboard = () => {
           {/* AI Floating Button Trigger (Instead of notification) */}
           <div 
             onClick={() => navigate('/ai-assistant')}
-            className="bg-orange-500 text-white p-2.5 rounded-xl hover:bg-orange-600 transition-all cursor-pointer shadow-lg shadow-orange-500/20 group"
+            className="bg-lime-500 text-white p-2.5 rounded-xl hover:bg-lime-600 transition-all cursor-pointer shadow-lg shadow-lime-500/20 group"
           >
             <Bot size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
           </div>
@@ -168,7 +168,7 @@ const Dashboard = () => {
           <div className="relative">
             <div 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 cursor-pointer hover:bg-orange-500/20 transition-all shadow-lg shadow-orange-500/5"
+              className="w-10 h-10 rounded-xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 cursor-pointer hover:bg-lime-500/20 transition-all shadow-lg shadow-lime-500/5"
             >
               <User size={20} strokeWidth={2} />
             </div>
@@ -201,14 +201,14 @@ const Dashboard = () => {
       </header>
 
       {/* ── Main Hero Card ────────────────────────────────────────── */}
-    <div className="relative mb-20">
-        <div className="hero-card p-8 md:p-12 flex flex-col lg:flex-row items-center gap-12 min-h-[460px]">
+    <div className="relative mb-32">
+        <div className="hero-card p-10 md:p-16 flex flex-col lg:flex-row items-center gap-16 min-h-[500px]">
            
            {/* Data Visualization Column */}
            <div className="flex-1 w-full relative z-20">
               <div className="flex items-center gap-2 mb-6">
-                 <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-500/60">System Intelligence Active</span>
+                 <div className="w-2 h-2 rounded-full bg-lime-500 animate-pulse" />
+                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-lime-500/60">System Intelligence Active</span>
               </div>
               
               <h2 className="text-4xl md:text-6xl font-black leading-[1.1] mb-8 text-white tracking-tighter">
@@ -221,7 +221,7 @@ const Dashboard = () => {
                    whileTap={{ scale: 0.98 }}
                    onClick={handleAIPlanDay}
                    disabled={isAnalyzing}
-                   className="w-full md:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl shadow-orange-500/20 flex items-center justify-center gap-3 relative overflow-hidden group"
+                   className="w-full md:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-lime-500 to-lime-600 text-white font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl shadow-lime-500/20 flex items-center justify-center gap-3 relative overflow-hidden group"
                  >
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                     <Sparkles size={16} className="relative z-10" />
@@ -234,51 +234,51 @@ const Dashboard = () => {
                    onClick={() => navigate('/tasks')}
                    className="w-full md:w-auto px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-white/10 transition-all flex items-center justify-center gap-3"
                  >
-                    <Plus size={16} className="text-orange-500" />
+                    <Plus size={16} className="text-lime-500" />
                     Quick Task
                  </motion.button>
               </div>
 
               <div className="grid grid-cols-2 md:flex md:gap-12 pt-8 border-t border-white/5">
-                 <StatBadge dotColor="bg-orange-500" label="Focus Score" value={stats.efficiency} isVisible={showStats} />
-                 <StatBadge dotColor="bg-orange-400" label="Completed" value={stats.totalTasks} isVisible={showStats} />
-                 <StatBadge dotColor="bg-orange-300" label="Active Momentum" value={stats.growth} isVisible={showStats} />
+                 <StatBadge dotColor="bg-lime-500" label="Focus Score" value={stats.efficiency} isVisible={showStats} />
+                 <StatBadge dotColor="bg-lime-400" label="Completed" value={stats.totalTasks} isVisible={showStats} />
+                 <StatBadge dotColor="bg-lime-300" label="Active Momentum" value={stats.growth} isVisible={showStats} />
                  <StatBadge dotColor="bg-rose-500" label="Missed" value={stats.missed} isVisible={showStats} />
               </div>
            </div>
 
            {/* Right Column: Productivity Ring (Glassmorphism design) */}
            <div className="hidden lg:flex flex-1 items-center justify-center relative">
-              <div className="relative w-72 h-72">
+              <div className="relative w-80 h-80">
                  {/* Background Glow */}
-                 <div className="absolute inset-0 bg-orange-500/10 blur-[60px] rounded-full animate-pulse" />
+                 <div className="absolute inset-0 bg-lime-500/10 blur-[60px] rounded-full animate-pulse" />
                  
                  {/* Outer Ring */}
                  <svg className="w-full h-full transform -rotate-90">
                     <circle 
-                      cx="144" cy="144" r="130" 
+                      cx="160" cy="160" r="145" 
                       className="stroke-white/5 fill-none" 
-                      strokeWidth="12" 
+                      strokeWidth="14" 
                     />
                     <motion.circle 
-                      cx="144" cy="144" r="130" 
-                      className="stroke-orange-500 fill-none" 
-                      strokeWidth="12" 
+                      cx="160" cy="160" r="145" 
+                      className="stroke-lime-500 fill-none" 
+                      strokeWidth="14" 
                       strokeLinecap="round"
-                      initial={{ strokeDasharray: "0 816" }}
-                      animate={{ strokeDasharray: `${showStats ? (parseInt(stats.efficiency) * 8.16) : 0} 816` }}
+                      initial={{ strokeDasharray: "0 911" }}
+                      animate={{ strokeDasharray: `${showStats ? (parseInt(stats.efficiency) * 9.11) : 0} 911` }}
                       transition={{ duration: 2, ease: "easeOut" }}
                     />
                  </svg>
 
                  {/* Inner Glass Card */}
                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-48 h-48 rounded-full glass-morphism flex flex-col items-center justify-center border border-white/10 shadow-2xl">
-                       <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Efficiency</span>
-                       <span className="text-5xl font-black text-white tracking-tighter">
+                    <div className="w-56 h-56 rounded-full glass-morphism flex flex-col items-center justify-center border border-white/10 shadow-2xl">
+                       <span className="text-xs font-black text-gray-500 uppercase tracking-widest">Efficiency</span>
+                       <span className="text-6xl font-black text-white tracking-tighter">
                           {showStats ? stats.efficiency : "0%"}
                        </span>
-                       <Activity size={20} className="text-orange-500 mt-2" />
+                       <Activity size={24} className="text-lime-500 mt-2" />
                     </div>
                  </div>
               </div>
@@ -287,7 +287,7 @@ const Dashboard = () => {
       </div>
 
       {/* ── Stats Overview Row ────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-16">
         {isLoading ? (
           [1, 2, 3, 4].map(i => (
             <div key={i} className="glass-card p-6 h-32 skeleton border-none" />
@@ -323,10 +323,10 @@ const Dashboard = () => {
       </div>
 
       {/* ── Bottom Content Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mt-16">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mt-24">
         
         {/* Quick Access Card */}
-        <div className="lg:col-span-8 glass-card p-8 flex flex-col gap-8 relative overflow-hidden group min-h-[400px]">
+        <div className="lg:col-span-8 glass-card p-10 flex flex-col gap-10 relative overflow-hidden group min-h-[500px]">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xl font-black text-white tracking-tight">Active Operational Flow</h3>
@@ -334,7 +334,7 @@ const Dashboard = () => {
             </div>
             <button 
               onClick={() => navigate('/tasks')}
-              className="p-2 text-gray-600 hover:text-orange-500 transition-colors"
+              className="p-2 text-gray-600 hover:text-lime-500 transition-colors"
             >
               <MoreHorizontal size={20} />
             </button>
@@ -343,7 +343,7 @@ const Dashboard = () => {
           <div className="flex-1 flex flex-col gap-3 justify-center">
              {activeTasks.length === 0 ? (
                <div className="flex flex-col items-center justify-center text-center py-12 px-4 animate-fadeIn">
-                 <div className="w-20 h-20 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500/40 mb-6 border border-orange-500/20 shadow-inner">
+                 <div className="w-20 h-20 rounded-full bg-lime-500/10 flex items-center justify-center text-lime-500/40 mb-6 border border-lime-500/20 shadow-inner">
                    <Plus size={40} strokeWidth={1} />
                  </div>
                  <h4 className="text-white font-black text-lg mb-2">No active tasks detected</h4>
@@ -352,7 +352,7 @@ const Dashboard = () => {
                  </p>
                  <button 
                    onClick={() => navigate('/tasks')}
-                   className="px-8 py-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-500 font-black text-[10px] uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all active:scale-95"
+                   className="px-8 py-3 rounded-xl bg-lime-500/10 border border-lime-500/20 text-lime-500 font-black text-[10px] uppercase tracking-widest hover:bg-lime-500 hover:text-white transition-all active:scale-95"
                  >
                    Add your first task
                  </button>
@@ -361,9 +361,9 @@ const Dashboard = () => {
                 activeTasks.map((task, i) => (
                   <div key={task._id || i} className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-between group/item hover:bg-white/[0.06] transition-all hover:border-white/10">
                     <div className="flex items-center gap-5">
-                       <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(255,140,60,0.5)]" />
+                       <div className="w-1.5 h-1.5 rounded-full bg-lime-500 shadow-[0_0_10px_rgba(132,204,22,0.5)]" />
                        <div>
-                          <p className="text-sm font-black text-white group-hover/item:text-orange-400 transition-colors tracking-tight">{task.title}</p>
+                          <p className="text-sm font-black text-white group-hover/item:text-lime-400 transition-colors tracking-tight">{task.title}</p>
                           <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">{task.category || "General"}</p>
                        </div>
                     </div>
@@ -378,26 +378,26 @@ const Dashboard = () => {
         </div>
 
         {/* AI Insight Card */}
-        <div className="lg:col-span-4 glass-card p-8 bg-gradient-to-br from-orange-500/5 to-transparent border-orange-500/20 relative overflow-hidden group">
-           <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[40px] -z-10 group-hover:bg-orange-500/20 transition-all" />
+        <div className="lg:col-span-4 glass-card p-10 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative overflow-hidden group">
+           <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 blur-[40px] -z-10 group-hover:bg-lime-500/20 transition-all" />
            <div className="flex items-start justify-between mb-8">
-              <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 shadow-lg shadow-orange-500/5">
+              <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shadow-lg shadow-lime-500/5">
                  <Bot size={24} />
               </div>
               <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
-                 <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                 <div className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse" />
                  <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Smart Coach</span>
               </div>
            </div>
            
            <h4 className="text-lg font-black text-white tracking-tight mb-3">Optimize Peak Performance</h4>
            <p className="text-sm text-gray-400 leading-relaxed mb-10">
-              Based on your operational data, you are operating at <span className="text-orange-400 font-bold">88% efficiency</span>. Consider rescheduling high-load tasks to your peak focus window at 16:00.
+              Based on your operational data, you are operating at <span className="text-lime-400 font-bold">88% efficiency</span>. Consider rescheduling high-load tasks to your peak focus window at 16:00.
            </p>
            
            <button 
              onClick={() => navigate('/ai-assistant')}
-             className="w-full py-4 rounded-[1.25rem] bg-orange-500 text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-2 ripple"
+             className="w-full py-4 rounded-[1.25rem] bg-lime-500 text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-lime-600 transition-all shadow-xl shadow-lime-500/20 flex items-center justify-center gap-2 ripple"
            >
               Command Sync
               <ChevronRight size={14} />

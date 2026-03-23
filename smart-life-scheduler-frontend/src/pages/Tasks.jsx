@@ -42,15 +42,15 @@ const getTaskEndMs = (task) => {
 function RescheduleNotification({ task, onReschedule, onDismiss }) {
   return (
     <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[200] w-[92vw] max-w-md animate-slideDown">
-      <div className="bg-slate-900/95 backdrop-blur-xl border border-orange-500/30 rounded-2xl p-4 shadow-[0_0_30px_rgba(249,115,22,0.2)] flex flex-col gap-3">
+      <div className="bg-slate-900/95 backdrop-blur-xl border border-lime-500/30 rounded-2xl p-4 shadow-[0_0_30px_rgba(132,204,22,0.2)] flex flex-col gap-3">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center flex-shrink-0">
-            <Bell size={16} className="text-orange-400" />
+          <div className="w-9 h-9 rounded-xl bg-lime-500/20 border border-lime-500/30 flex items-center justify-center flex-shrink-0">
+            <Bell size={16} className="text-lime-400" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-white font-semibold text-[14px] leading-tight">Task Window Ended</p>
             <p className="text-sm text-gray-400 mt-0.5 truncate">
-              "<span className="text-orange-300 font-medium">{task.title}</span>" was missed and remains uncompleted.
+              "<span className="text-lime-300 font-medium">{task.title}</span>" was missed and remains uncompleted.
             </p>
           </div>
           <button onClick={onDismiss} className="text-gray-500 hover:text-gray-300 transition-colors flex-shrink-0">
@@ -60,7 +60,7 @@ function RescheduleNotification({ task, onReschedule, onDismiss }) {
         <div className="flex gap-2">
           <button
             onClick={() => onReschedule(task)}
-            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold shadow-lg shadow-orange-500/20 flex items-center justify-center gap-1.5"
+            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-lime-500 to-yellow-500 text-white text-xs font-bold shadow-lg shadow-lime-500/20 flex items-center justify-center gap-1.5"
           >
             <CalendarClock size={13} />
             Reschedule
@@ -363,14 +363,14 @@ export default function Tasks() {
         )}
       </AnimatePresence>
 
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
+      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 relative z-10 mb-20">
         <div className="flex items-center gap-6">
           <div className="w-16 h-16 rounded-[2rem] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/20 shrink-0">
             <Layout size={32} strokeWidth={2} />
           </div>
           <div>
             <h1 className="text-3xl md:text-4xl font-black text-white tracking-tighter">Operational Flow</h1>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Manage Tasks & Performance</p>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60">Manage Tasks & Performance</p>
           </div>
         </div>
 
@@ -382,7 +382,7 @@ export default function Tasks() {
           }} className="p-2.5 hover:bg-white/10 rounded-xl transition-all text-gray-400 hover:text-white">
             <ChevronLeft size={20} />
           </button>
-          <div className="flex-1 lg:flex-none text-center px-6 py-2 bg-orange-500 text-white rounded-xl shadow-lg shadow-orange-500/20">
+          <div className="flex-1 lg:flex-none text-center px-6 py-2 bg-lime-500 text-white rounded-xl shadow-lg shadow-lime-500/20">
             <span className="text-[10px] font-black uppercase tracking-widest">{selectedDate.toLocaleDateString('default', { month: 'short', day: 'numeric' })}</span>
           </div>
           <button onClick={() => {
@@ -395,10 +395,10 @@ export default function Tasks() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 relative z-10">
           
-          <div className="col-span-1 lg:col-span-8 flex flex-col gap-10">
-            <div className="glass-card p-6 overflow-hidden">
+          <div className="col-span-1 lg:col-span-8 flex flex-col gap-16">
+            <div className="glass-card p-8 overflow-hidden">
               <div className="flex items-center justify-between gap-4 overflow-x-auto scrollbar-hide pb-2">
                 {weekDates.map((d, i) => {
                   const isActive = d.getDate() === selectedDate.getDate() && d.getMonth() === selectedDate.getMonth();
@@ -408,37 +408,37 @@ export default function Tasks() {
                       key={i} 
                       onClick={() => setSelectedDate(new Date(d))} 
                       className={`
-                        flex flex-col items-center justify-center min-w-[70px] h-[90px] rounded-2xl transition-all cursor-pointer border shrink-0
+                        flex flex-col items-center justify-center min-w-[80px] h-[100px] rounded-2xl transition-all cursor-pointer border shrink-0
                         ${isActive 
-                          ? 'bg-amber-500/10 border-amber-500/30 shadow-[0_0_20px_rgba(249,115,22,0.1)]' 
+                          ? 'bg-yellow-500/10 border-yellow-500/30 shadow-[0_0_20px_rgba(132,204,22,0.1)]' 
                           : 'bg-white/5 border-white/5 hover:bg-white/10'}
                       `}
                     >
-                      <span className={`text-[10px] font-black uppercase tracking-widest mb-1 ${isActive ? 'text-amber-500' : 'text-gray-500'}`}>{dStr}</span>
+                      <span className={`text-[10px] font-black uppercase tracking-widest mb-1 ${isActive ? 'text-yellow-500' : 'text-gray-500'}`}>{dStr}</span>
                       <span className={`text-xl font-bold ${isActive ? 'text-white' : 'text-gray-300'}`}>{d.getDate()}</span>
-                      {isActive && <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2" />}
+                      {isActive && <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 mt-2" />}
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            <div className="glass-card p-8 flex flex-col gap-6">
+            <div className="glass-card p-10 flex flex-col gap-8">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <h3 className="text-lg font-bold">Planned Schedule</h3>
-                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shadow-[0_0_8px_rgba(249,115,22,0.6)]" />
+                  <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse shadow-[0_0_8px_rgba(132,204,22,0.6)]" />
                 </div>
                 <div onClick={fetchTasks} className="text-[10px] font-bold text-gray-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/10 transition-all cursor-pointer">
                    SYNC CALENDAR
                 </div>
               </div>
 
-              <div className="space-y-8 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="space-y-10 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
                 
                 {tasks.length === 0 ? (
                   <div className="flex flex-col items-center justify-center text-center py-20 glass-card border-dashed bg-white/[0.01]">
-                    <div className="w-20 h-20 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500/40 mb-6 border border-orange-500/20">
+                    <div className="w-20 h-20 rounded-full bg-lime-500/10 flex items-center justify-center text-lime-500/40 mb-6 border border-lime-500/20">
                       <CalendarIcon size={32} strokeWidth={1} />
                     </div>
                     <h4 className="text-white font-black text-lg mb-2">Operational void detected</h4>
@@ -454,7 +454,7 @@ export default function Tasks() {
                           <AlertCircle size={14} className="text-rose-500" />
                           <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-500/80">Missed Tasks</h4>
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-4">
                           {tasks.filter(t => !t.completed && expiredIds.has(t._id || t.id)).map((task) => (
                             <TaskItem 
                               key={task._id || task.id}
@@ -475,7 +475,7 @@ export default function Tasks() {
 
                     <div className="space-y-4">
                       <div className="flex items-center gap-2 px-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-lime-500" />
                         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Today's Schedule</h4>
                       </div>
                       
@@ -485,7 +485,7 @@ export default function Tasks() {
                           animate={{ opacity: 1 }}
                           className="py-12 flex flex-col items-center justify-center text-center glass-card border-dashed bg-white/[0.01]"
                         >
-                          <div className="w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 mb-4">
+                          <div className="w-16 h-16 rounded-full bg-lime-500/10 flex items-center justify-center text-lime-500 mb-4">
                             <CheckCircle size={32} strokeWidth={1.5} />
                           </div>
                           <h4 className="text-white font-bold">No pending tasks today 🎉</h4>
@@ -495,7 +495,7 @@ export default function Tasks() {
                         <DragDropContext onDragEnd={onDragEnd}>
                           <Droppable droppableId="tasks-list">
                             {(provided) => (
-                              <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-3">
+                              <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                                 {tasks.filter(t => !t.completed && !expiredIds.has(t._id || t.id)).map((task, index) => {
                                   const id = task._id || task.id;
                                   return (
@@ -558,18 +558,18 @@ export default function Tasks() {
                 )}
 
                 <div className="glass-card p-8 flex flex-col gap-8 border border-white/10 shadow-2xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 blur-[40px] -z-10" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[40px] -z-10" />
                   
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">Task Configuration</h4>
                       <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10">
-                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse" />
                         <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Alarm Mode</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center bg-white/5 rounded-[2rem] px-8 py-6 border border-white/5 focus-within:border-orange-500/30 transition-all shadow-inner">
+                    <div className="flex items-center bg-white/5 rounded-[2rem] px-8 py-6 border border-white/5 focus-within:border-lime-500/30 transition-all shadow-inner">
                       <input 
                         type="text" 
                         placeholder="What's the next objective?" 
@@ -603,7 +603,7 @@ export default function Tasks() {
                            </div>
                            <div className="flex flex-col items-center gap-2">
                              <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Period</span>
-                             <div className="text-3xl font-black text-orange-500 tracking-tighter mt-2">
+                             <div className="text-3xl font-black text-lime-500 tracking-tighter mt-2">
                                 {startTime?.includes(':') ? (parseInt(startTime.split(':')[0]) >= 12 ? "PM" : "AM") : "AM"}
                              </div>
                            </div>
@@ -632,7 +632,7 @@ export default function Tasks() {
                             onClick={() => setRepeatFrequency(mode)}
                             className={`flex-1 py-3 rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest transition-all ${
                               repeatFrequency === mode 
-                                ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' 
+                                ? 'bg-lime-500 text-white shadow-lg shadow-lime-500/20' 
                                 : 'text-gray-500 hover:text-gray-300'
                             }`}
                           >
@@ -646,7 +646,7 @@ export default function Tasks() {
                       <div className="space-y-4 animate-fadeIn">
                         <div className="flex items-center justify-between px-2">
                            <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Repeat Schedule</span>
-                           <span className="text-[10px] font-bold text-orange-500">
+                           <span className="text-[10px] font-bold text-lime-500">
                              {repeatFrequency === 'workdays' ? 'Mon - Fri' : 'Every day'}
                            </span>
                         </div>
@@ -667,7 +667,7 @@ export default function Tasks() {
                                  }}
                                  className={`w-10 h-10 rounded-full flex items-center justify-center text-[10px] font-black transition-all ${
                                    isSelected 
-                                     ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20 scale-110' 
+                                     ? 'bg-lime-500 text-white shadow-lg shadow-lime-500/20 scale-110' 
                                      : 'bg-white/5 text-gray-500 border border-white/5'
                                  }`}
                                >
@@ -694,7 +694,7 @@ export default function Tasks() {
                       </div>
                       <button 
                         onClick={addTask}
-                        className="h-14 px-8 rounded-2xl bg-orange-500 text-white flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 group"
+                        className="h-14 px-8 rounded-2xl bg-lime-500 text-white flex items-center justify-center gap-3 hover:bg-lime-600 transition-all shadow-xl shadow-lime-500/20 group"
                       >
                         <span className="text-[11px] font-black uppercase tracking-[0.2em]">Deploy Task</span>
                         <Plus size={20} strokeWidth={3} className="group-hover:rotate-90 transition-transform" />
@@ -706,12 +706,12 @@ export default function Tasks() {
             </div>
           </div>
 
-          <div className="col-span-12 lg:col-span-4 flex flex-col gap-8">
-            <div className="glass-card p-8 bg-gradient-to-br from-orange-500/5 to-transparent border-orange-500/20 relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[40px] -z-10 group-hover:bg-orange-500/20 transition-all" />
+          <div className="col-span-12 lg:col-span-4 flex flex-col gap-12">
+            <div className="glass-card p-8 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 blur-[40px] -z-10 group-hover:bg-lime-500/20 transition-all" />
                <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-3">
-                     <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 shadow-lg shadow-orange-500/5">
+                     <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shadow-lg shadow-lime-500/5">
                         <Sparkles size={24} />
                      </div>
                      <div>
@@ -720,19 +720,19 @@ export default function Tasks() {
                      </div>
                   </div>
                   <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
-                     <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                     <div className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse" />
                      <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">AI Engine Active</span>
                   </div>
                </div>
                <p className="text-sm text-gray-400 leading-relaxed mb-8">
-                  Detected <span className="text-orange-400 font-bold">{expiredIds.size} missed syncs</span>. Our smart engine can automatically find the next optimal window based on your performance patterns.
+                  Detected <span className="text-lime-400 font-bold">{expiredIds.size} missed syncs</span>. Our smart engine can automatically find the next optimal window based on your performance patterns.
                </p>
                <motion.button 
                  whileHover={{ scale: 1.02, y: -2 }}
                  whileTap={{ scale: 0.98 }}
                  onClick={applyOptimization}
                  disabled={isOptimizing || expiredIds.size === 0}
-                 className="w-full py-4 rounded-[1.25rem] bg-orange-500 text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-3 ripple"
+                 className="w-full py-4 rounded-[1.25rem] bg-lime-500 text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-lime-600 transition-all shadow-xl shadow-lime-500/20 disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-3 ripple"
                >
                   {isOptimizing ? (
                     <>
@@ -749,9 +749,9 @@ export default function Tasks() {
             </div>
 
             <div className="glass-card p-8 flex flex-col items-center justify-center relative overflow-hidden group">
-               <div className="absolute top-0 left-0 w-full h-full bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+               <div className="absolute top-0 left-0 w-full h-full bg-lime-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-8 self-start flex items-center gap-2">
-                  <TrendingUp size={14} className="text-orange-500" />
+                  <TrendingUp size={14} className="text-lime-500" />
                   Activity Momentum
                </h3>
                
@@ -760,7 +760,7 @@ export default function Tasks() {
                     <circle cx="96" cy="96" r="88" className="stroke-white/5 fill-none" strokeWidth="10" />
                     <motion.circle 
                       cx="96" cy="96" r="88" 
-                      className="stroke-orange-500 fill-none shadow-[0_0_15px_rgba(255,140,60,0.4)]" 
+                      className="stroke-lime-500 fill-none shadow-[0_0_15px_rgba(132,204,22,0.4)]" 
                       strokeWidth="10" 
                       strokeLinecap="round"
                       initial={{ strokeDasharray: "0 553" }}
@@ -777,7 +777,7 @@ export default function Tasks() {
                <div className="grid grid-cols-2 gap-4 w-full">
                   <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
                      <p className="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Completed</p>
-                     <p className="text-lg font-black text-orange-500">{completedStat}</p>
+                     <p className="text-lg font-black text-lime-500">{completedStat}</p>
                   </div>
                   <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
                      <p className="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Remaining</p>

@@ -326,19 +326,19 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
             style={{ background: "linear-gradient(145deg, rgba(5,8,15,0.98) 0%, rgba(2,4,10,0.99) 100%)", backdropFilter: "blur(24px)" }}
           >
             {/* Subtle top glow line */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-neonPrimary/50 to-transparent" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-lime-500/50 to-transparent" />
 
             {/* ── Chat Header ─────────────────────────────────────── */}
             <div className="relative px-5 py-4 border-b border-white/[0.07] overflow-hidden flex-shrink-0">
               {/* Animated gradient header bg */}
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 via-purple-600/15 to-pink-600/10 pointer-events-none" />
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(124,108,255,0.18),transparent_60%)] pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-r from-lime-600/20 via-emerald-600/15 to-yellow-600/10 pointer-events-none" />
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(132,204,22,0.18),transparent_60%)] pointer-events-none" />
 
               <div className="relative flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {/* AI avatar with pulse ring */}
                   <div className="relative">
-                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-[0_0_20px_rgba(99,102,241,0.5)]">
+                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-lime-500 via-emerald-500 to-yellow-500 flex items-center justify-center shadow-[0_0_20px_rgba(132,204,22,0.5)]">
                       <Bot size={20} className="text-white" />
                     </div>
                     <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-900 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
@@ -346,7 +346,7 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                   <div>
                     <h3 className="text-white font-bold tracking-wide flex items-center gap-1.5">
                       AI Coach
-                      <Sparkles size={13} className="text-indigo-400 animate-pulse" />
+                      <Sparkles size={13} className="text-lime-400 animate-pulse" />
                     </h3>
                     <p className="text-[11px] text-emerald-400 font-semibold tracking-wider uppercase flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
@@ -376,7 +376,7 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                   >
                     <div
                       className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 ${msg.type === "bot"
-                        ? "bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_10px_rgba(99,102,241,0.4)]"
+                        ? "bg-gradient-to-br from-lime-500 to-emerald-600 shadow-[0_0_10px_rgba(132,204,22,0.4)]"
                         : "bg-slate-700 border border-white/10"
                         }`}
                     >
@@ -390,7 +390,7 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                     <div
                       className={`max-w-[78%] rounded-2xl px-4 py-3 ${msg.type === "bot"
                         ? "bg-white/[0.07] border border-white/[0.08] text-gray-200 rounded-bl-none shadow-lg"
-                        : "bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-br-none shadow-md shadow-indigo-500/20"
+                        : "bg-gradient-to-br from-lime-600 to-emerald-600 text-white rounded-br-none shadow-md shadow-lime-500/20"
                         }`}
                     >
                       <p className="text-[13.5px] leading-relaxed whitespace-pre-line font-medium">{msg.text}</p>
@@ -405,13 +405,13 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                   animate={{ opacity: 1, y: 0 }}
                   className="flex items-end gap-2.5"
                 >
-                  <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_10px_rgba(99,102,241,0.4)] flex items-center justify-center flex-shrink-0">
+                  <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-lime-500 to-emerald-600 shadow-[0_0_10px_rgba(132,204,22,0.4)] flex items-center justify-center flex-shrink-0">
                     <Bot size={13} className="text-white" />
                   </div>
                   <div className="bg-white/[0.07] border border-white/[0.08] rounded-2xl rounded-bl-none px-4 py-3.5 shadow-lg flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "300ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-lime-400 animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-lime-400 animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-lime-400 animate-bounce" style={{ animationDelay: "300ms" }} />
                   </div>
                 </motion.div>
               )}
@@ -425,7 +425,7 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                   <button
                     key={chip.label}
                     onClick={() => handleSend(chip.label)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.06] border border-white/[0.10] rounded-full text-[11px] font-semibold text-gray-300 hover:bg-neonPrimary/20 hover:border-neonPrimary/40 hover:text-white transition-all duration-200"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.06] border border-white/[0.10] rounded-full text-[11px] font-semibold text-gray-300 hover:bg-lime-500/20 hover:border-lime-500/40 hover:text-white transition-all duration-200"
                   >
                     {chip.icon}
                     {chip.label}
@@ -436,7 +436,7 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
 
             {/* ── Input Area ────────────────────────────────────────── */}
             <div className="p-4 border-t border-white/[0.07] flex-shrink-0" style={{ background: "rgba(4,6,10,0.8)", backdropFilter: "blur(12px)" }}>
-              <div className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] rounded-2xl p-1.5 pl-4 focus-within:bg-white/[0.07] focus-within:border-neonPrimary/30 transition-all duration-300">
+              <div className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] rounded-2xl p-1.5 pl-4 focus-within:bg-white/[0.07] focus-within:border-lime-500/30 transition-all duration-300">
                 <input
                   type="text"
                   placeholder="Ask AI Coach anything..."
@@ -449,7 +449,7 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                 <button
                   onClick={() => handleSend()}
                   disabled={!input.trim() || isTyping}
-                  className="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white disabled:opacity-40 disabled:cursor-not-allowed hover:from-indigo-400 hover:to-purple-500 transition-all duration-200 shadow-[0_0_12px_rgba(99,102,241,0.4)] hover:shadow-[0_0_18px_rgba(99,102,241,0.6)] hover:scale-105 active:scale-95"
+                  className="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-lime-500 to-emerald-600 flex items-center justify-center text-white disabled:opacity-40 disabled:cursor-not-allowed hover:from-lime-400 hover:to-emerald-500 transition-all duration-200 shadow-[0_0_12px_rgba(132,204,22,0.4)] hover:shadow-[0_0_18px_rgba(132,204,22,0.6)] hover:scale-105 active:scale-95"
                 >
                   <Send size={14} className="ml-0.5" />
                 </button>
@@ -464,19 +464,19 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
-        className={`relative flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-3.5 rounded-2xl shadow-[0_0_24px_rgba(99,102,241,0.45)] hover:shadow-[0_0_32px_rgba(99,102,241,0.65)] font-bold tracking-wide z-50 transition-all duration-300 ${isOpen ? "opacity-0 scale-90 pointer-events-none absolute" : "opacity-100 scale-100"
+        className={`relative flex items-center gap-2 bg-gradient-to-r from-lime-600 to-emerald-600 text-white px-5 py-3.5 rounded-2xl shadow-[0_0_24px_rgba(132,204,22,0.45)] hover:shadow-[0_0_32px_rgba(132,204,22,0.65)] font-bold tracking-wide z-50 transition-all duration-300 ${isOpen ? "opacity-0 scale-90 pointer-events-none absolute" : "opacity-100 scale-100"
           }`}
       >
         {/* Pulse ring when not opened yet */}
         {showPulse && (
           <>
-            <span className="absolute inset-0 rounded-2xl animate-ping bg-indigo-500 opacity-25 pointer-events-none" />
-            <span className="absolute inset-0 rounded-2xl animate-ping bg-purple-500 opacity-15 pointer-events-none" style={{ animationDelay: "0.4s" }} />
+            <span className="absolute inset-0 rounded-2xl animate-ping bg-lime-500 opacity-25 pointer-events-none" />
+            <span className="absolute inset-0 rounded-2xl animate-ping bg-emerald-500 opacity-15 pointer-events-none" style={{ animationDelay: "0.4s" }} />
           </>
         )}
         <MessageSquareHeart size={20} className="animate-pulse" />
         AI Coach
-        <Sparkles size={13} className="text-indigo-300" />
+        <Sparkles size={13} className="text-lime-300" />
       </motion.button>
     </div>
   );

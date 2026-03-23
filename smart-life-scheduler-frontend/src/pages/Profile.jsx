@@ -22,6 +22,8 @@ import { useNavigate } from "react-router-dom";
 import API from "../api";
 import { motion, AnimatePresence } from "framer-motion";
 import Toast from "../components/Toast";
+import maleAvatar from "../assets/male_avatar.png";
+import femaleAvatar from "../assets/female_avatar.png";
 
 function Profile() {
   const navigate = useNavigate();
@@ -102,21 +104,21 @@ function Profile() {
 
   const getMilestoneIcon = (iconName) => {
     switch(iconName) {
-      case 'Flame': return <Flame className="text-orange-500" size={20} />;
-      case 'Zap': return <Zap className="text-orange-500" size={20} />;
-      case 'Star': return <Star className="text-orange-500" size={20} />;
-      default: return <Trophy className="text-orange-500" size={20} />;
+      case 'Flame': return <Flame className="text-lime-500" size={20} />;
+      case 'Zap': return <Zap className="text-lime-500" size={20} />;
+      case 'Star': return <Star className="text-lime-500" size={20} />;
+      default: return <Trophy className="text-lime-500" size={20} />;
     }
   };
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-[#0a0c10]">
-      <div className="w-10 h-10 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
+      <div className="w-10 h-10 border-2 border-lime-500/30 border-t-lime-500 rounded-full animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-12 max-w-7xl mx-auto page-transition overflow-x-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-16 max-w-7xl mx-auto page-transition overflow-x-hidden">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
         
@@ -165,19 +167,25 @@ function Profile() {
       </AnimatePresence>
 
       {/* Background Glows */}
-      <div className="fixed top-[-10%] right-[-5%] w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
-      <div className="fixed bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
+      <div className="fixed top-[-10%] right-[-5%] w-[500px] h-[500px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
+      <div className="fixed bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
 
       {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-12">
         <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white shadow-2xl shadow-orange-500/20 border border-white/10 relative group">
-             <User size={36} strokeWidth={2.5} />
-             <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-emerald-500 rounded-2xl border-4 border-[#0a0c10] shadow-xl" />
+          <div className="w-24 h-24 rounded-[2.5rem] bg-gradient-to-br from-lime-500/10 to-lime-600/10 flex items-center justify-center text-white shadow-2xl shadow-lime-500/10 border border-white/10 relative group overflow-hidden">
+             {user?.gender?.toLowerCase() === 'male' ? (
+                <img src={maleAvatar} alt="Male Avatar" className="w-full h-full object-cover" />
+             ) : user?.gender?.toLowerCase() === 'female' ? (
+                <img src={femaleAvatar} alt="Female Avatar" className="w-full h-full object-cover" />
+             ) : (
+                <User size={36} strokeWidth={2.5} className="text-lime-500" />
+             )}
+             <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-emerald-500 rounded-2xl border-4 border-[#0a0c10] shadow-xl z-10" />
           </div>
           <div>
             <h1 className="text-4xl font-black text-white tracking-tighter">{user?.name || "User"}</h1>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Node Integrity: Fully Operational</p>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60">Node Integrity: Fully Operational</p>
           </div>
         </div>
 
@@ -192,15 +200,15 @@ function Profile() {
         </button>
       </header>
 
-      <div className="grid grid-cols-12 gap-8">
+      <div className="grid grid-cols-12 gap-12">
         {/* Main Operational Log Column */}
-        <div className="col-span-12 lg:col-span-8 space-y-8">
+        <div className="col-span-12 lg:col-span-8 space-y-12">
           
           {/* Performance Matrix */}
           <div className="glass-card p-10 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/5 rounded-full blur-[60px] -z-10" />
+            <div className="absolute top-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10" />
             <div className="flex items-center gap-4 mb-10">
-              <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+              <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500">
                 <Activity size={24} />
               </div>
               <div>
@@ -209,25 +217,25 @@ function Profile() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
+                   <div className="flex items-center justify-between">
                     <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Completed</p>
-                    <CheckCircle2 size={16} className="text-orange-500" />
+                    <CheckCircle2 size={16} className="text-lime-500" />
                   </div>
                   <p className="text-4xl font-black text-white tracking-tighter">{summary?.completed || 0}</p>
                </div>
                <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all flex flex-col gap-4">
                   <div className="flex items-center justify-between">
                     <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Active Streak</p>
-                    <Flame size={16} className="text-orange-500" />
+                    <Flame size={16} className="text-lime-500" />
                   </div>
-                  <p className="text-4xl font-black text-orange-500 tracking-tighter">{summary?.activeStreak || "0 Days"}</p>
+                  <p className="text-4xl font-black text-lime-500 tracking-tighter">{summary?.activeStreak || "0 Days"}</p>
                </div>
                <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all flex flex-col gap-4">
                   <div className="flex items-center justify-between">
                     <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Efficiency</p>
-                    <Target size={16} className="text-orange-500" />
+                    <Target size={16} className="text-lime-500" />
                   </div>
                   <p className="text-4xl font-black text-white tracking-tighter">{summary?.productivityScore || "0%"}</p>
                </div>
@@ -237,7 +245,7 @@ function Profile() {
           {/* Completed Task Log */}
           <div className="glass-card p-10 relative overflow-hidden group">
             <div className="flex items-center gap-4 mb-10">
-              <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+              <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500">
                 <Clock size={24} />
               </div>
               <div>
@@ -255,7 +263,7 @@ function Profile() {
                  allTasks?.filter(t => t.completed).map((task, idx) => (
                    <div key={task._id || idx} className="flex items-center justify-between p-6 rounded-[2rem] bg-white/[0.03] border border-white/5 group/item hover:bg-white/[0.06] transition-all">
                       <div className="flex items-center gap-5">
-                         <div className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]" />
+                         <div className="w-2 h-2 rounded-full bg-lime-500 shadow-[0_0_8px_rgba(132,204,22,0.4)]" />
                          <span className="text-sm font-bold text-white group-hover/item:translate-x-1 transition-transform">{task.title}</span>
                       </div>
                       <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
@@ -272,7 +280,7 @@ function Profile() {
         <div className="col-span-12 lg:col-span-4 space-y-8">
            
            {/* Pro Synchronization */}
-           <div className="glass-card p-10 bg-gradient-to-br from-orange-500 to-amber-600 border-none shadow-2xl shadow-orange-500/20 relative overflow-hidden group">
+           <div className="glass-card p-10 bg-gradient-to-br from-lime-500 to-lime-600 border-none shadow-2xl shadow-lime-500/20 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-[40px] -z-10 group-hover:bg-white/20 transition-all" />
               {isSyncing && (
                 <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-20">
@@ -312,7 +320,7 @@ function Profile() {
               <button 
                 onClick={handleUpgrade}
                 disabled={isSyncing}
-                className="w-full py-4 bg-white text-orange-500 font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                className="w-full py-4 bg-white text-lime-500 font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
               >
                 {syncResults ? "Refresh Synchronization" : "Initiate Sync Protocol"}
               </button>
@@ -322,14 +330,14 @@ function Profile() {
            <div className="glass-card p-10 relative overflow-hidden group">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
-                   <Trophy size={14} className="text-orange-500" />
+                   <Trophy size={14} className="text-lime-500" />
                    Achievements
                 </h3>
               </div>
               <div className="space-y-4">
                  {(summary?.milestones || []).slice(0, 3).map((milestone, idx) => (
                    <div key={idx} className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-                      <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                      <div className="w-10 h-10 rounded-xl bg-lime-500/10 flex items-center justify-center text-lime-500">
                          {getMilestoneIcon(milestone.icon)}
                       </div>
                       <div>

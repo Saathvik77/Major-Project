@@ -14,8 +14,8 @@
   --card-border: rgba(255, 255, 255, 0.12);
   --glass-blur: 18px;
   
-  --accent: #ff8c3c;
-  --accent-glow: rgba(255, 140, 60, 0.15);
+  --accent: #84cc16;
+  --accent-glow: rgba(132, 204, 22, 0.15);
   
   /* Spacing System */
   --sp-1: 16px;
@@ -224,7 +224,7 @@ body::before {
 .text-accent { color: var(--accent); }
 .text-amber-glow { 
   color: var(--accent);
-  text-shadow: 0 0 15px rgba(255, 140, 60, 0.4);
+  text-shadow: 0 0 15px rgba(132, 204, 22, 0.4);
 }
 
 /* UI Transitions */

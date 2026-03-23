@@ -67,16 +67,16 @@ function WeatherWidget() {
   }, []);
 
   const getWeatherIcon = (code) => {
-    if (code <= 1) return <Sun className="text-amber-400" size={32} />;
+    if (code <= 1) return <Sun className="text-yellow-400" size={32} />;
     if (code <= 3) return <Cloud className="text-gray-400" size={32} />;
     if (code <= 67) return <CloudRain className="text-blue-400" size={32} />;
     if (code <= 99) return <CloudLightning className="text-purple-400" size={32} />;
-    return <Sun className="text-amber-400" size={32} />;
+    return <Sun className="text-yellow-400" size={32} />;
   };
 
   if (loading) return (
     <div className="h-full flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+      <div className="w-8 h-8 border-2 border-lime-500/30 border-t-lime-500 rounded-full animate-spin" />
     </div>
   );
 
@@ -84,7 +84,7 @@ function WeatherWidget() {
     <div className="flex flex-col h-full justify-between">
       <div className="flex items-start justify-between">
         <div>
-          <div className="flex items-center gap-2 text-amber-500 mb-1">
+          <div className="flex items-center gap-2 text-lime-500 mb-1">
             <MapPin size={14} />
             <span className="text-[10px] font-black uppercase tracking-widest">{location}</span>
           </div>
@@ -95,10 +95,10 @@ function WeatherWidget() {
         {getWeatherIcon(weather?.current_weather?.weathercode)}
       </div>
 
-      <div className="mt-4 p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10">
+      <div className="mt-4 p-4 rounded-2xl bg-lime-500/5 border border-lime-500/10">
         <div className="flex items-center gap-2 mb-2">
-          <Sparkles size={12} className="text-amber-500" />
-          <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">AI Activity Suggestion</span>
+          <Sparkles size={12} className="text-lime-500" />
+          <span className="text-[9px] font-black text-lime-500 uppercase tracking-widest">AI Activity Suggestion</span>
         </div>
         <p className="text-[11px] text-gray-300 leading-relaxed italic">
           "{aiSuggestion}"
@@ -147,9 +147,9 @@ function ActivityHeatMap({ tasks }) {
 
   const getColor = (count) => {
     if (count === 0) return "bg-white/[0.03] border-white/5";
-    if (count === 1) return "bg-amber-900/40 border-amber-500/20";
-    if (count === 2) return "bg-amber-700/60 border-amber-500/40";
-    if (count >= 3) return "bg-amber-500 border-amber-400 shadow-[0_0_10px_rgba(249,115,22,0.4)]";
+    if (count === 1) return "bg-lime-900/40 border-lime-500/20";
+    if (count === 2) return "bg-lime-700/60 border-lime-500/40";
+    if (count >= 3) return "bg-lime-500 border-lime-400 shadow-[0_0_10px_rgba(132,204,22,0.4)]";
     return "bg-white/[0.03]";
   };
 
@@ -183,8 +183,8 @@ export default function Reports() {
   const [loading, setLoading] = useState(true);
 
   // Dynamic theme colors for charts
-  const [primaryColor, setPrimaryColor] = useState("#ff8c3c");
-  const [secondaryColor, setSecondaryColor] = useState("rgba(255, 140, 60, 0.2)");
+  const [primaryColor, setPrimaryColor] = useState("#84cc16");
+  const [secondaryColor, setSecondaryColor] = useState("rgba(132, 204, 22, 0.2)");
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -207,7 +207,7 @@ export default function Reports() {
 
     // Tiny timeout ensures custom properties are applied first
     setTimeout(() => {
-      const primary = computedStyles.getPropertyValue('--accent').trim() || "#ff8c3c";
+      const primary = computedStyles.getPropertyValue('--accent').trim() || "#84cc16";
       setPrimaryColor(primary);
     }, 50);
   }, [theme, activeTheme]);
@@ -216,8 +216,8 @@ export default function Reports() {
     return (
       <div className="min-h-screen flex items-center justify-center text-white bg-transparent pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12">
         <div className="flex flex-col items-center gap-4">
-           <div className="w-12 h-12 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin" />
-           <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-500/50">Synchronizing Intelligence...</p>
+           <div className="w-12 h-12 border-4 border-lime-500/20 border-t-lime-500 rounded-full animate-spin" />
+           <p className="text-sm font-bold uppercase tracking-[0.2em] text-lime-500/50">Synchronizing Intelligence...</p>
         </div>
       </div>
     );
@@ -229,10 +229,10 @@ export default function Reports() {
   const total = tasks.length;
 
   let condition = "Neutral";
-  let conditionColor = "text-orange-400";
-  let conditionBg = "bg-orange-500/5 border-orange-500/20";
+  let conditionColor = "text-lime-400";
+  let conditionBg = "bg-lime-500/5 border-lime-500/20";
   let message = "Intelligence gathering in progress. Keep optimizing your schedule!";
-  let icon = <BrainCircuit size={48} className="text-orange-400" />;
+  let icon = <BrainCircuit size={48} className="text-lime-400" />;
 
   let efficiency = 0;
 
@@ -242,16 +242,16 @@ export default function Reports() {
 
     if (completionRate >= 0.8) {
       condition = "Excellent";
-      conditionColor = "text-orange-400";
-      conditionBg = "bg-orange-500/10 border-orange-500/30 shadow-[inset_0_0_40px_rgba(255,140,60,0.05)]";
+      conditionColor = "text-lime-400";
+      conditionBg = "bg-lime-500/10 border-lime-500/30 shadow-[inset_0_0_40px_rgba(132,204,22,0.05)]";
       message = "You are operating at peak efficiency! Your focus remains unmatched.";
-      icon = <Activity size={48} className="text-orange-400" />;
+      icon = <Activity size={48} className="text-lime-400" />;
     } else if (completionRate >= 0.5) {
       condition = "Stable";
-      conditionColor = "text-orange-400";
-      conditionBg = "bg-orange-500/5 border-orange-500/20";
+      conditionColor = "text-lime-400";
+      conditionBg = "bg-lime-500/5 border-lime-500/20";
       message = "Your productivity is consistent. Strategic adjustments could boost performance.";
-      icon = <HeartPulse size={48} className="text-orange-400" />;
+      icon = <HeartPulse size={48} className="text-lime-400" />;
     } else {
       condition = "Overloaded";
       conditionColor = "text-rose-400";
@@ -262,7 +262,7 @@ export default function Reports() {
   }
 
   const pieData = [
-    { name: "Completed", value: completed, color: "#ff8c3c" },
+    { name: "Completed", value: completed, color: "#84cc16" },
     { name: "Pending", value: pending, color: "rgba(255,255,255,0.05)" },
   ];
 
@@ -290,8 +290,8 @@ export default function Reports() {
   return (
     <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
       {/* ── Premium Lighting FX ────────────────────────────────────── */}
-      <div className="fixed top-[-20%] right-[-10%] w-[800px] h-[800px] bg-orange-600/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
-      <div className="fixed bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-orange-700/5 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
+      <div className="fixed top-[-20%] right-[-10%] w-[800px] h-[800px] bg-lime-600/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+      <div className="fixed bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-lime-700/5 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
       
       {/* ── Header ─────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between mb-12">
@@ -304,12 +304,12 @@ export default function Reports() {
           </button>
           <div>
             <h1 className="text-4xl font-black tracking-tighter text-white">System Reports</h1>
-            <p className="text-[10px] font-black text-orange-500 uppercase tracking-[0.3em] mt-1">Operational Performance Analysis</p>
+            <p className="text-[10px] font-black text-lime-500 uppercase tracking-[0.3em] mt-1">Operational Performance Analysis</p>
           </div>
         </div>
         
         <div className="hidden md:flex items-center gap-3 px-5 py-3 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-xl">
-          <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-lime-500 animate-pulse" />
           <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Real-time Feed Active</span>
         </div>
       </div>
@@ -321,24 +321,24 @@ export default function Reports() {
           <Tilt tiltMaxAngleX={2} tiltMaxAngleY={2} glareEnable={true} glareMaxOpacity={0.03} className="h-full">
             <div className={`p-10 rounded-[2.5rem] backdrop-blur-2xl border shadow-2xl relative overflow-hidden transition-all h-full flex flex-col justify-center ${conditionBg}`}>
               {/* Internal Glows */}
-              <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/5 rounded-full blur-[100px] -z-10"></div>
-              <div className="absolute bottom-0 left-0 w-40 h-40 bg-orange-500/5 rounded-full blur-[60px] -z-10"></div>
+              <div className="absolute top-0 right-0 w-80 h-80 bg-lime-500/5 rounded-full blur-[100px] -z-10"></div>
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-lime-500/5 rounded-full blur-[60px] -z-10"></div>
 
               <div className="flex flex-col md:flex-row items-center gap-10 relative z-10">
                 <div className={`w-36 h-36 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 shadow-2xl relative group`}>
-                  <div className="absolute inset-0 bg-amber-500/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-lime-500/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
                   {icon}
                 </div>
 
                 <div className="flex-1 text-center md:text-left">
                   <div className="flex items-center gap-2 justify-center md:justify-start mb-4">
-                    <Sparkles size={14} className="text-amber-500" />
+                    <Sparkles size={14} className="text-lime-500" />
                     <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Operational Readiness</span>
                   </div>
                   <div className="flex items-center gap-4 justify-center md:justify-start mb-5">
                     <h3 className={`text-6xl font-black tracking-tighter ${conditionColor}`}>{condition}</h3>
                     {condition === "Excellent" && (
-                      <div className="px-4 py-1.5 bg-amber-500 text-black text-[10px] font-black rounded-full shadow-[0_0_20px_rgba(245,158,11,0.4)] uppercase tracking-widest">
+                      <div className="px-4 py-1.5 bg-lime-500 text-black text-[10px] font-black rounded-full shadow-[0_0_20px_rgba(132,204,22,0.4)] uppercase tracking-widest">
                         Peak
                       </div>
                     )}
@@ -352,9 +352,9 @@ export default function Reports() {
 
         <div className="col-span-12 lg:col-span-4">
           <div className="p-8 rounded-[2.5rem] backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl h-full relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-full h-full bg-radial-gradient from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            <div className="absolute top-0 right-0 w-full h-full bg-radial-gradient from-lime-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             <h2 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-              <Cloud size={14} className="text-amber-500" />
+              <Cloud size={14} className="text-lime-500" />
               Environment
             </h2>
             <WeatherWidget />
@@ -374,8 +374,8 @@ export default function Reports() {
                       <span className="text-[9px] font-bold text-gray-600 uppercase">Less</span>
                       <div className="flex gap-1">
                          <div className="w-3 h-3 rounded-[2px] bg-white/[0.03] border border-white/5" />
-                         <div className="w-3 h-3 rounded-[2px] bg-amber-900/40 border border-amber-500/20" />
-                         <div className="w-3 h-3 rounded-[2px] bg-amber-500 border border-amber-400" />
+                         <div className="w-3 h-3 rounded-[2px] bg-lime-900/40 border border-lime-500/20" />
+                         <div className="w-3 h-3 rounded-[2px] bg-lime-500 border border-lime-400" />
                       </div>
                       <span className="text-[9px] font-bold text-gray-600 uppercase">More</span>
                    </div>
@@ -418,7 +418,7 @@ export default function Reports() {
             <div className="flex flex-col gap-3 mt-8">
               <div className="flex items-center justify-between p-3 rounded-2xl bg-white/[0.03] border border-white/5">
                 <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+                  <div className="w-2 h-2 rounded-full bg-lime-500 shadow-[0_0_10px_rgba(132,204,22,0.5)]" />
                   <span className="text-xs font-bold text-gray-300">Completed</span>
                 </div>
                 <span className="text-sm font-black text-white">{completed}</span>
@@ -438,9 +438,9 @@ export default function Reports() {
           <div className="p-8 rounded-[2.5rem] backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl relative overflow-hidden group h-full">
             <div className="flex justify-between items-center mb-10">
               <h2 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em]">Productivity Velocity</h2>
-              <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full">
-                <TrendingUp size={12} className="text-amber-500" />
-                <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">Growth +12%</span>
+              <div className="flex items-center gap-2 bg-lime-500/10 border border-lime-500/20 px-3 py-1 rounded-full">
+                <TrendingUp size={12} className="text-lime-500" />
+                <span className="text-[9px] font-black text-lime-500 uppercase tracking-widest">Growth +12%</span>
               </div>
             </div>
 
@@ -453,7 +453,7 @@ export default function Reports() {
                   <Tooltip content={<CustomTooltip />} cursor={{ fill: '#ffffff03' }} />
                   <Bar
                     dataKey="tasks"
-                    fill="#f59e0b"
+                    fill="#84cc16"
                     radius={[12, 12, 12, 12]}
                     barSize={45}
                     animationDuration={1500}

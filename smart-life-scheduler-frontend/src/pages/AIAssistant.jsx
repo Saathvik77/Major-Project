@@ -35,16 +35,16 @@ const QuickActionCard = ({ icon: Icon, label, onClick }) => (
     whileHover={{ scale: 1.05, y: -2 }}
     whileTap={{ scale: 0.95 }}
     onClick={onClick}
-    className="flex flex-col items-center justify-center gap-3 p-6 glass-card hover:bg-orange-500/10 hover:border-orange-500/30 transition-all text-center group"
+    className="flex flex-col items-center justify-center gap-3 p-6 glass-card hover:bg-lime-500/10 hover:border-lime-500/30 transition-all text-center group"
   >
-    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-orange-500 transition-colors">
+    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-lime-500 transition-colors">
       <Icon size={24} />
     </div>
     <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 group-hover:text-white transition-colors">{label}</span>
   </motion.button>
 );
 
-const Badge = ({ icon: Icon, label, description, unlocked, color = "orange" }) => (
+const Badge = ({ icon: Icon, label, description, unlocked, color = "lime" }) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.9 }}
     animate={{ opacity: 1, scale: 1 }}
@@ -72,9 +72,9 @@ const Badge = ({ icon: Icon, label, description, unlocked, color = "orange" }) =
 
 const AchievementVault = ({ ratio, tasks }) => {
   const getRank = (r) => {
-    if (r >= 1) return { title: "Nexus Grandmaster", color: "text-orange-500", glow: "shadow-orange-500/30" };
-    if (r >= 0.8) return { title: "Operational Elite", color: "text-orange-400", glow: "shadow-orange-400/20" };
-    if (r >= 0.5) return { title: "Strategic Specialist", color: "text-amber-400", glow: "shadow-amber-400/10" };
+    if (r >= 1) return { title: "Nexus Grandmaster", color: "text-lime-500", glow: "shadow-lime-500/30" };
+    if (r >= 0.8) return { title: "Operational Elite", color: "text-lime-400", glow: "shadow-lime-400/20" };
+    if (r >= 0.5) return { title: "Strategic Specialist", color: "text-yellow-400", glow: "shadow-yellow-400/10" };
     return { title: "System Novice", color: "text-gray-400", glow: "" };
   };
 
@@ -87,19 +87,19 @@ const AchievementVault = ({ ratio, tasks }) => {
   const hasPerfectSync = ratio === 1 && tasks.length > 0;
 
   return (
-    <div className="glass-card p-8 flex flex-col gap-6 relative overflow-hidden group border-orange-500/20">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 blur-[40px] -z-10 group-hover:bg-orange-500/10 transition-all" />
+    <div className="glass-card p-8 flex flex-col gap-6 relative overflow-hidden group border-lime-500/20">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[40px] -z-10 group-hover:bg-lime-500/10 transition-all" />
       
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
-           <Trophy size={14} className="text-orange-500" />
+           <Trophy size={14} className="text-lime-500" />
            Achievement Vault
         </h3>
-        <Sparkles size={14} className="text-orange-500/40" />
+        <Sparkles size={14} className="text-lime-500/40" />
       </div>
 
       <div className="text-center py-4 relative">
-        <div className="absolute inset-0 bg-orange-500/5 blur-3xl rounded-full -z-10" />
+        <div className="absolute inset-0 bg-lime-500/5 blur-3xl rounded-full -z-10" />
         <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-1">Current Protocol Rank</p>
         <h4 className={`text-2xl font-black tracking-tighter uppercase ${rank.color} ${rank.glow}`}>
           {rank.title}
@@ -122,7 +122,7 @@ const AchievementVault = ({ ratio, tasks }) => {
           <motion.div 
             initial={{ width: 0 }}
             animate={{ width: `${ratio * 100}%` }}
-            className="h-full bg-gradient-to-r from-orange-600 to-orange-400 shadow-[0_0_10px_rgba(255,140,60,0.4)]"
+            className="h-full bg-gradient-to-r from-lime-600 to-lime-400 shadow-[0_0_10px_rgba(132,204,22,0.4)]"
           />
         </div>
       </div>
@@ -268,10 +268,10 @@ const AIAssistant = () => {
   return (
     <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
       {/* Lighting FX */}
-      <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
+      <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
       
       {/* Header */}
-      <div className="flex items-center justify-between mb-12">
+      <div className="flex items-center justify-between mb-16">
         <div className="flex items-center gap-6">
           <button
             onClick={() => navigate(-1)}
@@ -283,21 +283,21 @@ const AIAssistant = () => {
             <h1 className="text-4xl font-black tracking-tighter flex items-center gap-4 text-white">
               Smart Control Center
             </h1>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Advanced Intelligence Node</p>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60">Advanced Intelligence Node</p>
           </div>
         </div>
         
         <div className="hidden md:flex items-center gap-3 px-5 py-3 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-xl">
-           <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+           <div className="w-2 h-2 rounded-full bg-lime-500 animate-pulse" />
            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Core Synchronized</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 flex-1">
         
         {/* ── Left Column: Chat Area ──────────────────────────────── */}
-        <div className="lg:col-span-8 flex flex-col gap-8">
-          <div className="flex-1 overflow-y-auto pr-4 space-y-8 custom-scrollbar min-h-[500px]">
+        <div className="lg:col-span-8 flex flex-col gap-12">
+          <div className="flex-1 overflow-y-auto pr-4 space-y-12 custom-scrollbar min-h-[550px]">
             <AnimatePresence initial={false}>
               {messages.map((msg, i) => (
                 <motion.div
@@ -308,13 +308,13 @@ const AIAssistant = () => {
                 >
                   <div className={`max-w-[85%] flex gap-5 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border shadow-lg ${
-                      msg.role === "user" ? "bg-white/5 border-white/10" : "bg-orange-500/10 border-orange-500/20 shadow-orange-500/5"
+                      msg.role === "user" ? "bg-white/5 border-white/10" : "bg-lime-500/10 border-lime-500/20 shadow-lime-500/5"
                     }`}>
-                      {msg.role === "user" ? <User size={22} className="text-gray-400" /> : <Bot size={22} className="text-orange-500" />}
+                      {msg.role === "user" ? <User size={22} className="text-gray-400" /> : <Bot size={22} className="text-lime-500" />}
                     </div>
-                    <div className={`p-6 rounded-[2.5rem] text-sm font-medium leading-relaxed shadow-2xl ${
+                    <div className={`p-8 rounded-[3rem] text-sm font-medium leading-relaxed shadow-2xl ${
                       msg.role === "user" 
-                        ? "user-bubble text-white border border-orange-500/20 rounded-tr-none" 
+                        ? "user-bubble text-white border border-lime-500/20 rounded-tr-none" 
                         : "ai-bubble text-white border border-white/5 rounded-tl-none"
                     }`}>
                       {msg.content || "Operational synchronization complete."}
@@ -364,14 +364,14 @@ const AIAssistant = () => {
 
                             {/* UPCOMING / PENDING */}
                             <div>
-                              <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                              <p className="text-[10px] font-black text-lime-500 uppercase tracking-widest mb-3 flex items-center gap-2">
                                 <Clock size={12} /> Optimized Operational Flow
                               </p>
                               <div className="space-y-2">
                                 {action.pending?.length > 0 ? (
                                   action.pending.map((t, idx) => (
                                     <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group/item">
-                                      <div className="w-16 text-[10px] font-black text-gray-400 group-hover/item:text-orange-400">{t.timeRange?.split(' - ')[0] || "??:??"}</div>
+                                      <div className="w-16 text-[10px] font-black text-gray-400 group-hover/item:text-lime-400">{t.timeRange?.split(' - ')[0] || "??:??"}</div>
                                       <div className="flex-1 text-xs font-bold text-white">{t.title}</div>
                                       {t.title?.toLowerCase().includes('break') && <div className="w-2 h-2 rounded-full bg-emerald-500/50" />}
                                     </div>
@@ -388,14 +388,14 @@ const AIAssistant = () => {
                       {/* Render Task List if available */}
                       {msg.actions && msg.actions.length > 0 && msg.actions.some(a => a.type === "task_list") && (
                         <div className="mt-6 space-y-3 pt-6 border-t border-white/10">
-                          <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-4">Active Task List</p>
+                          <p className="text-[10px] font-black text-lime-500 uppercase tracking-widest mb-4">Active Task List</p>
                           {msg.actions.filter(a => a.type === "task_list").map((action, idx) => (
                             <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10 group/item hover:bg-white/10 transition-all">
-                              <div className="w-16 text-[10px] font-black text-gray-500 group-hover/item:text-orange-400 transition-colors">{formatTime12Hour(action.time)}</div>
+                              <div className="w-16 text-[10px] font-black text-gray-500 group-hover/item:text-lime-400 transition-colors">{formatTime12Hour(action.time)}</div>
                               <div className="flex-1 text-xs font-bold text-white">{action.title}</div>
                               <div className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-tighter border ${
                                 action.priority === 'High' ? 'text-rose-400 border-rose-500/20' : 
-                                action.priority === 'Medium' ? 'text-amber-400 border-amber-500/20' : 
+                                action.priority === 'Medium' ? 'text-yellow-400 border-yellow-500/20' : 
                                 'text-emerald-400 border-emerald-500/20'
                               }`}>
                                 {action.priority}
@@ -416,13 +416,13 @@ const AIAssistant = () => {
                   className="flex justify-start"
                 >
                   <div className="flex gap-5">
-                    <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center shrink-0">
-                      <Bot size={22} className="text-orange-500" />
+                    <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center shrink-0">
+                      <Bot size={22} className="text-lime-500" />
                     </div>
-                    <div className="px-8 py-5 ai-bubble rounded-[2.5rem] rounded-tl-none flex gap-2">
-                      <span className="w-2 h-2 bg-orange-500/40 rounded-full animate-bounce" />
-                      <span className="w-2 h-2 bg-orange-500/60 rounded-full animate-bounce [animation-delay:0.2s]" />
-                      <span className="w-2 h-2 bg-orange-500/80 rounded-full animate-bounce [animation-delay:0.4s]" />
+                    <div className="px-10 py-6 ai-bubble rounded-[3rem] rounded-tl-none flex gap-2">
+                      <span className="w-2 h-2 bg-lime-500/40 rounded-full animate-bounce" />
+                      <span className="w-2 h-2 bg-lime-500/60 rounded-full animate-bounce [animation-delay:0.2s]" />
+                      <span className="w-2 h-2 bg-lime-500/80 rounded-full animate-bounce [animation-delay:0.4s]" />
                     </div>
                   </div>
                 </motion.div>
@@ -432,7 +432,7 @@ const AIAssistant = () => {
           </div>
 
           {/* Input Bar */}
-          <div className="glass-card p-2.5 flex items-center gap-4 border border-white/10 shadow-2xl mt-auto">
+          <div className="glass-card p-4 flex items-center gap-4 border border-white/10 shadow-2xl mt-auto">
             <input 
               type="text" 
               placeholder="Transmit command..." 
@@ -443,7 +443,7 @@ const AIAssistant = () => {
             />
             <button 
               onClick={() => handleSend()}
-              className="w-14 h-14 rounded-2xl bg-orange-500 flex items-center justify-center text-white shadow-xl shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all ripple"
+              className="w-14 h-14 rounded-2xl bg-lime-500 flex items-center justify-center text-white shadow-xl shadow-lime-500/30 hover:scale-105 active:scale-95 transition-all ripple"
             >
               <Send size={24} />
             </button>
@@ -451,15 +451,15 @@ const AIAssistant = () => {
         </div>
 
         {/* ── Right Column: Insights & Actions ────────────────────── */}
-        <div className="lg:col-span-4 flex flex-col gap-8">
+        <div className="lg:col-span-4 flex flex-col gap-12">
           
           {/* Quick Actions Grid */}
           <div className="space-y-4">
             <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] ml-2 flex items-center gap-2">
-               <Zap size={14} className="text-orange-500" />
+               <Zap size={14} className="text-lime-500" />
                Quick Commands
             </h3>
-            <div className="grid grid-cols-2 gap-4">
+             <div className="grid grid-cols-2 gap-6">
               <QuickActionCard icon={ClipboardList} label="Plan Day" onClick={() => handleSend("Analyze my load and plan my day for maximum focus")} />
               <QuickActionCard icon={Calendar} label="Optimize" onClick={() => handleSend("Reschedule my missed tasks to better times")} />
               <QuickActionCard icon={Zap} label="Boost" onClick={() => handleSend("Give me a productivity boost tip")} />
@@ -471,13 +471,13 @@ const AIAssistant = () => {
           <AchievementVault ratio={insightData.ratio} tasks={allTasks} />
 
           {/* Mini Progress Card */}
-          <div className="glass-card p-6 flex items-center gap-6">
+          <div className="glass-card p-8 flex items-center gap-6">
              <div className="relative w-16 h-16 flex-shrink-0">
                 <svg className="w-full h-full transform -rotate-90">
                   <circle cx="32" cy="32" r="28" className="stroke-white/5 fill-none" strokeWidth="6" />
                   <motion.circle 
                     cx="32" cy="32" r="28" 
-                    className="stroke-orange-500 fill-none" 
+                    className="stroke-lime-500 fill-none" 
                     strokeWidth="6" 
                     strokeDasharray="176" 
                     initial={{ strokeDashoffset: 176 }}
