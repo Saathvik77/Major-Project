@@ -264,7 +264,7 @@ const Dashboard = () => {
 
 
       {/* ── Bottom Content Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
         
         {/* Quick Access Card */}
         <div className="lg:col-span-8 glass-card p-10 flex flex-col gap-10 relative overflow-hidden group min-h-[500px]">

@@ -401,7 +401,7 @@ export default function Tasks() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 relative z-10">
           
           <div className="col-span-1 lg:col-span-8 flex flex-col gap-20">
             <div className="glass-card p-8 overflow-hidden">

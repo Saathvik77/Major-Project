@@ -259,7 +259,7 @@ function Health() {
         <h1 className="text-4xl font-bold tracking-tight">Health & Fitness</h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-20 max-w-5xl mx-auto mb-20">
 
         {/* ── AI Weekly Challenge ── */}
         <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable glareMaxOpacity={0.1} className="w-full h-full flex justify-center items-center">
@@ -393,7 +393,7 @@ function Health() {
       </div>
 
       {/* ── Focus Tracker + Heat Map ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto pb-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-20 max-w-5xl mx-auto pb-10">
 
         {/* Focus Tracker */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">

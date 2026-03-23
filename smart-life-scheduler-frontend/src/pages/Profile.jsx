@@ -116,7 +116,7 @@ function Profile() {
   );
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-16 max-w-7xl mx-auto page-transition overflow-x-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-20 max-w-7xl mx-auto page-transition overflow-x-hidden">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
         
@@ -169,7 +169,7 @@ function Profile() {
       <div className="fixed bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
 
       {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-12">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-20">
         <div className="flex items-center gap-6">
           <div className="w-24 h-24 rounded-[2.5rem] bg-gradient-to-br from-lime-500/10 to-lime-600/10 flex items-center justify-center text-white shadow-2xl shadow-lime-500/10 border border-white/10 relative group overflow-hidden">
              {user?.gender?.toLowerCase() === 'male' ? (
@@ -209,7 +209,7 @@ function Profile() {
         </button>
       </header>
 
-      <div className="grid grid-cols-12 gap-12">
+      <div className="grid grid-cols-12 gap-20">
         {/* Main Operational Log Column */}
         <div className="col-span-12 lg:col-span-8 space-y-12">
           
