@@ -24,12 +24,18 @@ const formatTime12Hour = (time24) => {
   return `${h12}:${minutes} ${ampm}`;
 };
 
-const getTaskEndMs = (task) => {
+const getTaskStartMs = (task) => {
   if (!task.startTime || !task.date) return null;
   const [hh, mm] = task.startTime.split(":").map(Number);
   const base = new Date(task.date);
   base.setHours(hh, mm, 0, 0);
-  return base.getTime() + (task.duration || 60) * 60 * 1000;
+  return base.getTime();
+};
+
+const getTaskEndMs = (task) => {
+  const start = getTaskStartMs(task);
+  if (!start) return null;
+  return start + (task.duration || 60) * 60 * 1000;
 };
 
 // ─── Notification Toast Component ─────────────────────────────────────────
@@ -42,9 +48,9 @@ function RescheduleNotification({ task, onReschedule, onDismiss }) {
             <Bell size={16} className="text-orange-400" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-white font-semibold text-[14px] leading-tight">Task time ended</p>
+            <p className="text-white font-semibold text-[14px] leading-tight">Task Window Ended</p>
             <p className="text-sm text-gray-400 mt-0.5 truncate">
-              "<span className="text-orange-300 font-medium">{task.title}</span>" wasn't marked complete.
+              "<span className="text-orange-300 font-medium">{task.title}</span>" was missed and remains uncompleted.
             </p>
           </div>
           <button onClick={onDismiss} className="text-gray-500 hover:text-gray-300 transition-colors flex-shrink-0">
@@ -179,11 +185,16 @@ export default function Tasks() {
           if (task.completed) return;
           const endMs = getTaskEndMs(task);
           const taskId = task._id || task.id;
-          if (endMs && now > endMs && !nextExpired.has(taskId)) {
-            nextExpired.add(taskId);
-            newAlarmTriggered = true;
-            if (!pendingNotification) {
-              setPendingNotification(task);
+          if (endMs && now >= endMs && !nextExpired.has(taskId)) {
+            // Check if it's the current date
+            const tDate = new Date(task.date);
+            const today = new Date();
+            if (tDate.toDateString() === today.toDateString()) {
+              nextExpired.add(taskId);
+              newAlarmTriggered = true;
+              if (!pendingNotification) {
+                setPendingNotification(task);
+              }
             }
           }
         });
