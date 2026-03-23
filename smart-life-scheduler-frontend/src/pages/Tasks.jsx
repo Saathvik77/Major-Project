@@ -341,7 +341,7 @@ export default function Tasks() {
   }
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-6 lg:p-10 text-white relative flex flex-col max-w-[1400px] mx-auto pb-24 page-transition overflow-y-auto overflow-x-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition overflow-y-auto overflow-x-hidden">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </AnimatePresence>
