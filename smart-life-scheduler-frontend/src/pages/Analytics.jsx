@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import { 
   ChevronLeft, 
   Activity, 
@@ -91,7 +91,7 @@ function Analytics() {
   const PRIMARY_ACCENT = "#84cc16";
   const CHART_COLORS = [PRIMARY_ACCENT, "rgba(132, 204, 22, 0.6)", "rgba(132, 204, 22, 0.3)", "rgba(255, 255, 255, 0.05)"];
 
-  const currentInsights = React.useMemo(() => {
+  const currentInsights = useMemo(() => {
     if (!allTasks.length) return [
       { text: "Operational analysis in progress...", icon: <Zap size={14} className="text-lime-500" /> },
       { text: "Scanning task patterns...", icon: <TrendingUp size={14} className="text-emerald-500" /> },
@@ -155,38 +155,17 @@ function Analytics() {
     fetchAnalytics();
   }, []);
 
-  if (loading) return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white flex flex-col gap-12 max-w-7xl mx-auto">
-      <div className="flex items-center gap-6">
-        <div className="w-12 h-12 rounded-2xl skeleton" />
-        <div className="space-y-2">
-          <div className="w-48 h-8 skeleton" />
-          <div className="w-32 h-4 skeleton" />
-        </div>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[1, 2, 3, 4].map(i => <div key={i} className="glass-card p-8 h-40 skeleton border-none" />)}
-      </div>
-      <div className="grid grid-cols-12 gap-8 h-[400px]">
-        <div className="col-span-12 lg:col-span-8 skeleton rounded-3xl" />
-        <div className="col-span-12 lg:col-span-4 skeleton rounded-3xl" />
-      </div>
-    </div>
-  );
-
-  const hasNoData = !summary || (summary.completed === 0 && summary.pending === 0 && summary.overdue === 0);
-
-  const filteredSummary = React.useMemo(() => {
+  const filteredSummary = useMemo(() => {
     const todayStr = new Date().toISOString().split('T')[0];
     const filteredTasks = filter === "Today" 
       ? allTasks.filter(t => t.date && new Date(t.date).toISOString().split('T')[0] === todayStr)
       : allTasks;
     
-    const completed = filteredTasks.filter(t => t.completed).length;
-    const pending = filteredTasks.filter(t => !t.completed && !t.overdue).length;
-    const overdue = filteredTasks.filter(t => t.overdue).length;
+    const completedCount = filteredTasks.filter(t => t.completed).length;
+    const pendingCount = filteredTasks.filter(t => !t.completed && !t.overdue).length;
+    const overdueCount = filteredTasks.filter(t => t.overdue).length;
     
-    return { completed, pending, overdue };
+    return { completed: completedCount, pending: pendingCount, overdue: overdueCount };
   }, [allTasks, filter]);
 
   const pieData = [
@@ -209,6 +188,28 @@ function Analytics() {
       completed: count
     };
   });
+
+  if (loading) return (
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white flex flex-col gap-12 max-w-7xl mx-auto">
+      <div className="flex items-center gap-6">
+        <div className="w-12 h-12 rounded-2xl skeleton" />
+        <div className="space-y-2">
+          <div className="w-48 h-8 skeleton" />
+          <div className="w-32 h-4 skeleton" />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[1, 2, 3, 4].map(i => <div key={i} className="glass-card p-8 h-40 skeleton border-none" />)}
+      </div>
+      <div className="grid grid-cols-12 gap-8 h-[400px]">
+        <div className="col-span-12 lg:col-span-8 skeleton rounded-3xl" />
+        <div className="col-span-12 lg:col-span-4 skeleton rounded-3xl" />
+      </div>
+    </div>
+  );
+
+  const hasNoData = !summary || (summary.completed === 0 && summary.pending === 0 && summary.overdue === 0);
+
 
   const trendData = [
     { name: "Mon", score: 65 },
@@ -411,7 +412,7 @@ function Analytics() {
                </div>
 
                <div className="space-y-4">
-                  {insights.map((insight, i) => (
+                  {currentInsights.map((insight, i) => (
                     <div key={i} className="flex items-center gap-4 p-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/[0.06] transition-all group/item">
                        <div className="shrink-0">{insight.icon}</div>
                        <p className="text-sm font-bold text-gray-400 group-hover/item:text-white transition-colors">{insight.text}</p>
