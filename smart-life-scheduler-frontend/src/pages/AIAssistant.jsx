@@ -16,6 +16,7 @@ import {
   PieChart,
   MessageSquare,
   CheckCircle,
+  AlertCircle,
   Clock,
   Award,
   Trophy,
@@ -255,19 +256,17 @@ const AIAssistant = () => {
         }
       }, 1000);
     } catch (error) {
+      setIsTyping(false);
       console.error("AI Assistant Error:", error);
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Signal interference detected. Please re-transmit your command." },
+        { role: "assistant", content: "I encountered a minor interference in my neural processing. Please retry your command or ensure the gateway is operational." }
       ]);
-      setIsTyping(false);
     }
   };
 
-  if (loading) return <div className="min-h-screen pl-0 md:pl-[84px] flex items-center justify-center"><div className="w-12 h-12 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin" /></div>;
-
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition overflow-y-auto overflow-x-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-6 lg:p-10 text-white relative flex flex-col max-w-[1400px] mx-auto pb-24 page-transition overflow-y-auto overflow-x-hidden">
       {/* Lighting FX */}
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
       
@@ -318,7 +317,7 @@ const AIAssistant = () => {
                         ? "user-bubble text-white border border-orange-500/20 rounded-tr-none" 
                         : "ai-bubble text-white border border-white/5 rounded-tl-none"
                     }`}>
-                      {msg.content}
+                      {msg.content || "Operational synchronization complete."}
 
                       {/* Categorized Schedule UI */}
                       {msg.actions?.find(a => a.type === "categorized_schedule") && (() => {

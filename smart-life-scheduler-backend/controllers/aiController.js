@@ -15,7 +15,7 @@ const chatWithAI = async (req, res) => {
     const tasks = await Task.find({ user: userId, completed: false }).sort({ startTime: 1 });
     const completedTasks = await Task.find({ user: userId, completed: true });
     
-    if (msg.includes("plan my day") || msg.includes("schedule") || msg.includes("organize")) {
+    if (msg.includes("plan my day") || msg.includes("plan day") || msg.includes("schedule") || msg.includes("organize")) {
       const now = new Date();
       const today = new Date();
       today.setHours(0,0,0,0);
@@ -122,7 +122,7 @@ const chatWithAI = async (req, res) => {
     }
 
     // 3. Optimize / Reschedule
-    if (msg.includes("optimize") || msg.includes("reschedule") || msg.includes("missed")) {
+    if (msg.includes("optimize") || msg.includes("reschedule") || msg.includes("missed targets")) {
        const now = new Date();
        const today = new Date();
        today.setHours(0,0,0,0);
@@ -163,7 +163,7 @@ const chatWithAI = async (req, res) => {
     }
 
     // 4. Review / Performance / Habits
-    if (msg.includes("review") || (msg.includes("performance") && !msg.includes("plan"))) {
+    if (msg.includes("review") || msg.includes("operational review") || (msg.includes("performance") && !msg.includes("plan"))) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const allTasks = await Task.find({ user: userId });

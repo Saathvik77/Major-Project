@@ -142,7 +142,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-6xl mx-auto page-transition pb-32 overflow-y-auto overflow-x-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-6 lg:p-10 relative z-10 font-sans text-white max-w-[1400px] mx-auto page-transition pb-32 overflow-y-auto overflow-x-hidden">
       
       {/* ── Header Area ────────────────────────────────────────────── */}
       <header className="flex items-center justify-between">
@@ -201,8 +201,8 @@ const Dashboard = () => {
       </header>
 
       {/* ── Main Hero Card ────────────────────────────────────────── */}
-      <div className="relative">
-        <div className="hero-card p-8 md:p-12 flex flex-col lg:flex-row items-center gap-12 min-h-[460px]">
+    <div className="relative">
+        <div className="hero-card p-6 md:p-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-12 min-h-[460px]">
            
            {/* Data Visualization Column */}
            <div className="flex-1 w-full relative z-20">
@@ -326,7 +326,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Quick Access Card */}
-        <div className="lg:col-span-8 glass-card p-8 flex flex-col gap-8 relative overflow-hidden group min-h-[400px]">
+        <div className="lg:col-span-8 glass-card p-6 md:p-8 flex flex-col gap-6 md:gap-8 relative overflow-hidden group min-h-[400px]">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xl font-black text-white tracking-tight">Active Operational Flow</h3>
@@ -378,7 +378,7 @@ const Dashboard = () => {
         </div>
 
         {/* AI Insight Card */}
-        <div className="lg:col-span-4 glass-card p-8 bg-gradient-to-br from-orange-500/5 to-transparent border-orange-500/20 relative overflow-hidden group">
+        <div className="lg:col-span-4 glass-card p-6 md:p-8 bg-gradient-to-br from-orange-500/5 to-transparent border-orange-500/20 relative overflow-hidden group">
            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[40px] -z-10 group-hover:bg-orange-500/20 transition-all" />
            <div className="flex items-start justify-between mb-8">
               <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 shadow-lg shadow-orange-500/5">
