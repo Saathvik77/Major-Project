@@ -26,13 +26,11 @@ const chatWithAI = async (req, res) => {
       // Fetch ALL uncompleted tasks (AI will decide what is overdue/today)
       const allUncompleted = await Task.find({ user: userId, completed: false });
       
-      // Fetch Today's completed tasks
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
+      // Fetch tasks completed TODAY (using updatedAt since it's most reliable)
       const completedToday = await Task.find({ 
         user: userId, 
         completed: true, 
-        date: { $gte: today, $lt: tomorrow } 
+        updatedAt: { $gte: today } 
       });
 
       const aiSchedule = await generateSchedule({
@@ -125,22 +123,58 @@ const chatWithAI = async (req, res) => {
 
     // 3. Review / Performance / Sports
     if (msg.includes("review") || msg.includes("performance") || msg.includes("how am i doing")) {
-      const total = tasks.length + completedTasks.length;
-      const ratio = completedTasks.length / (total || 1);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const now = new Date();
+      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const currentDateStr = now.toDateString();
+
+      const allUncompleted = await Task.find({ user: userId, completed: false });
+      const totalCompletedCount = await Task.countDocuments({ user: userId, completed: true });
       
-      const highPriorityTasks = tasks.filter(t => t.priority === "High");
-      const categoryCounts = completedTasks.reduce((acc, t) => {
-        acc[t.category || "General"] = (acc[t.category || "General"] || 0) + 1;
-        return acc;
-      }, {});
+      let completedToReview = await Task.find({ 
+        user: userId, 
+        completed: true, 
+        updatedAt: { $gte: today } 
+      });
+
+      // If nothing today, show the 5 most recent achievements
+      if (completedToReview.length === 0) {
+        completedToReview = await Task.find({ 
+          user: userId, 
+          completed: true 
+        }).sort({ updatedAt: -1 }).limit(5);
+      }
+
+      const total = allUncompleted.length + totalCompletedCount;
+      const ratio = totalCompletedCount / (total || 1);
+      
+      const highPriorityTasks = allUncompleted.filter(t => t.priority === "High");
 
       let feedback = "";
       if (ratio > 0.8) feedback = "You are operating at peak efficiency. Your synchronization with the schedule is flawless.";
       else if (ratio > 0.5) feedback = "Steady operational progress. I recommend focusing on your " + (highPriorityTasks.length > 0 ? highPriorityTasks[0].title : "remaining") + " high-priority items next.";
       else feedback = "System load is high. You have " + highPriorityTasks.length + " high-priority tasks pending. I recommend rescheduling low-priority items to prevent cognitive fatigue.";
 
+      // Use AI to get the categorization if we want a formal report
+      const aiSchedule = await generateSchedule({
+        tasks: allUncompleted,
+        completedToday: completedToReview,
+        context: { currentTime, currentDateStr }
+      });
+
+      // Defensive fallback
+      if (!aiSchedule.categorizedSchedule) {
+        aiSchedule.categorizedSchedule = {
+          completed: completedToReview.map(t => ({ title: t.title })),
+          missed: [],
+          pending: aiSchedule.schedule || []
+        };
+      }
+
       return res.json({
-        reply: `Operational Review: ${Math.round(ratio * 100)}% completion rate today. ${feedback}`
+        reply: `Operational Review: ${totalCompletedCount} total milestones achieved (${Math.round(ratio * 100)}% completion rate). ${feedback} ${aiSchedule.explanation}`,
+        actions: [{ type: "categorized_schedule", ...aiSchedule.categorizedSchedule }]
       });
     }
 

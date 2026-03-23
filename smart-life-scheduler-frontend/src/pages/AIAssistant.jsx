@@ -103,31 +103,37 @@ const AIAssistant = () => {
     ratio: 0
   });
 
+  const fetchAIAssistantData = async () => {
+    try {
+      const [summaryRes, tasksRes] = await Promise.all([
+        api.get("/intelligence/summary"),
+        api.get("/tasks?limit=500")
+      ]);
+      
+      const allTasks = tasksRes.data?.tasks || [];
+      const completed = allTasks.filter(t => t.completed);
+      const ratio = allTasks.length > 0 ? (completed.length / allTasks.length) : 0;
+      
+      setInsightData({
+        peak: "11:00 AM", // Mocked for now
+        fatigue: ratio > 0.7 ? "Low @ 4pm" : "High @ 2pm",
+        streak: `${completed.length} Tasks`,
+        ratio: ratio
+      });
+    } catch (error) {
+      console.error("AI Assistant Data Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAIAssistantData = async () => {
-      try {
-        const [summaryRes, tasksRes] = await Promise.all([
-          api.get("/intelligence/summary"),
-          api.get("/tasks?limit=500")
-        ]);
-        
-        const allTasks = tasksRes.data?.tasks || [];
-        const completed = allTasks.filter(t => t.completed);
-        const ratio = allTasks.length > 0 ? (completed.length / allTasks.length) : 0;
-        
-        setInsightData({
-          peak: "11:00 AM", // Mocked for now
-          fatigue: ratio > 0.7 ? "Low @ 4pm" : "High @ 2pm",
-          streak: `${completed.length} Tasks`,
-          ratio: ratio
-        });
-      } catch (error) {
-        console.error("AI Assistant Data Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchAIAssistantData();
+    
+    // Listen for updates
+    const handleUpdate = () => fetchAIAssistantData();
+    window.addEventListener("tasksUpdated", handleUpdate);
+    return () => window.removeEventListener("tasksUpdated", handleUpdate);
   }, []);
 
   const handleSend = async (overrideInput) => {
