@@ -47,13 +47,19 @@ const generateSchedule = async ({ pending, missed, completed }) => {
     `;
 
         const result = await model.generateContent(prompt);
-        const text = result.response.text();
+        let text = result.response.text();
+
+        // More robust JSON extraction
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+            text = jsonMatch[0];
+        }
 
         const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
         return JSON.parse(cleanedText);
     } catch (error) {
         console.error("AI Schedule Error:", error);
-        return generateMockSchedule(tasks);
+        return generateMockSchedule(pending);
     }
 };
 

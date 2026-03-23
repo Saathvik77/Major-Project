@@ -245,7 +245,7 @@ const AIAssistant = () => {
                                   <CheckCircle size={12} /> Operational Milestones Achieved
                                 </p>
                                 <div className="space-y-2">
-                                  {action.completed.map((t, idx) => (
+                                  {action.completed?.map((t, idx) => (
                                     <div key={idx} className="p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20 text-xs font-bold text-emerald-200/70 line-through">
                                       {t.title}
                                     </div>
@@ -261,9 +261,9 @@ const AIAssistant = () => {
                                   <AlertCircle size={12} /> Prioritized Rescheduling (Missed)
                                 </p>
                                 <div className="space-y-2">
-                                  {action.missed.map((t, idx) => (
+                                  {action.missed?.map((t, idx) => (
                                     <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-rose-500/5 border border-rose-500/20 group/item">
-                                      <div className="w-16 text-[10px] font-black text-rose-400">{t.timeRange.split(' - ')[0]}</div>
+                                      <div className="w-16 text-[10px] font-black text-rose-400">{t.timeRange?.split(' - ')[0] || "??:??"}</div>
                                       <div className="flex-1 text-xs font-bold text-white">{t.title}</div>
                                       <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
                                     </div>
@@ -279,11 +279,11 @@ const AIAssistant = () => {
                                   <Clock size={12} /> Optimized Operational Flow
                                 </p>
                                 <div className="space-y-2">
-                                  {action.pending.map((t, idx) => (
+                                  {action.pending?.map((t, idx) => (
                                     <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group/item">
-                                      <div className="w-16 text-[10px] font-black text-gray-400 group-hover/item:text-orange-400">{t.timeRange.split(' - ')[0]}</div>
+                                      <div className="w-16 text-[10px] font-black text-gray-400 group-hover/item:text-orange-400">{t.timeRange?.split(' - ')[0] || "??:??"}</div>
                                       <div className="flex-1 text-xs font-bold text-white">{t.title}</div>
-                                      {t.title.toLowerCase().includes('break') && <div className="w-2 h-2 rounded-full bg-emerald-500/50" />}
+                                      {t.title?.toLowerCase().includes('break') && <div className="w-2 h-2 rounded-full bg-emerald-500/50" />}
                                     </div>
                                   ))}
                                 </div>

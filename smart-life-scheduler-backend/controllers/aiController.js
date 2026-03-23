@@ -54,6 +54,15 @@ const chatWithAI = async (req, res) => {
         completed: completedToday
       });
 
+      // Defensive fallback
+      if (!aiSchedule.categorizedSchedule) {
+        aiSchedule.categorizedSchedule = {
+          completed: [],
+          missed: [],
+          pending: aiSchedule.schedule || []
+        };
+      }
+
       // 🚀 COMMIT THE CHANGES TO THE DATABASE (Only for missed and pending)
       const flatSchedule = [
         ...(aiSchedule.categorizedSchedule?.missed || []),
