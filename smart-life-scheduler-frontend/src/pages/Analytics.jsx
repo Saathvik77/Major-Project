@@ -62,21 +62,21 @@ const StatCard = ({ icon: Icon, label, value, trend, color = "orange" }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    className="glass-card p-8 flex flex-col gap-4 relative overflow-hidden group hover:bg-white/[0.04]"
+    className="glass-card p-6 py-8 flex flex-row items-center gap-6 relative overflow-hidden group hover:bg-white/[0.04] h-[130px]"
   >
     <div className="absolute top-0 right-0 w-24 h-24 bg-lime-500/5 blur-[40px] -z-10 group-hover:bg-lime-500/10 transition-all" />
-    <div className="flex items-center justify-between">
-      <div className="w-12 h-12 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 transition-all group-hover:scale-110">
-        <Icon size={24} />
-      </div>
-      <div className="flex items-center gap-1.5 text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/5 px-3 py-1.5 rounded-full border border-emerald-500/10">
-        <ArrowUpRight size={12} />
-        {trend}
-      </div>
+    <div className="w-14 h-14 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 transition-all group-hover:scale-110 shrink-0">
+      <Icon size={28} />
     </div>
-    <div>
-      <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">{label}</p>
-      <p className="text-4xl font-black text-white tracking-tighter">{value}</p>
+    <div className="flex-1 min-w-0">
+      <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1 truncate">{label}</p>
+      <div className="flex items-baseline gap-3">
+        <p className="text-4xl font-black text-white tracking-tighter">{value}</p>
+        <div className="flex items-center gap-1 text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/5 px-2 py-1 rounded-full border border-emerald-500/10">
+          <ArrowUpRight size={10} />
+          {trend}
+        </div>
+      </div>
     </div>
   </motion.div>
 );
@@ -91,12 +91,50 @@ function Analytics() {
   const PRIMARY_ACCENT = "#84cc16";
   const CHART_COLORS = [PRIMARY_ACCENT, "rgba(132, 204, 22, 0.6)", "rgba(132, 204, 22, 0.3)", "rgba(255, 255, 255, 0.05)"];
 
-  const [insights, setInsights] = useState([
-    { text: "Operational analysis in progress...", icon: <Zap size={14} className="text-lime-500" /> },
-    { text: "Scanning task patterns...", icon: <TrendingUp size={14} className="text-emerald-500" /> },
-    { text: "Evaluating focus cycles...", icon: <Clock size={14} className="text-blue-500" /> },
-    { text: "Calibrating smart score...", icon: <Target size={14} className="text-lime-500" /> }
-  ]);
+  const currentInsights = React.useMemo(() => {
+    if (!allTasks.length) return [
+      { text: "Operational analysis in progress...", icon: <Zap size={14} className="text-lime-500" /> },
+      { text: "Scanning task patterns...", icon: <TrendingUp size={14} className="text-emerald-500" /> },
+      { text: "Evaluating focus cycles...", icon: <Clock size={14} className="text-blue-500" /> },
+      { text: "Calibrating smart score...", icon: <Target size={14} className="text-lime-500" /> }
+    ];
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const filteredTasks = filter === "Today" 
+      ? allTasks.filter(t => t.date && new Date(t.date).toISOString().split('T')[0] === todayStr)
+      : allTasks;
+
+    const completed = filteredTasks.filter(t => t.completed);
+    const total = filteredTasks.length;
+    const ratio = total > 0 ? (completed.length / total) : 0;
+    
+    const newInsights = [];
+    
+    if (filter === "Today") {
+      if (total === 0) {
+        newInsights.push({ text: "No operational nodes detected for today. Initialize tasks to begin analysis.", icon: <Zap size={14} className="text-gray-400" /> });
+      } else if (ratio === 1) {
+        newInsights.push({ text: "Operational perfection achieved. All today's tasks are synchronized.", icon: <Zap size={14} className="text-lime-500" /> });
+      } else {
+        newInsights.push({ text: `Current velocity: ${Math.round(ratio * 100)}%. ${total - completed.length} nodes pending sync.`, icon: <TrendingUp size={14} className="text-emerald-500" /> });
+      }
+    } else {
+      if (ratio > 0.8) {
+        newInsights.push({ text: "Peak efficiency detected. You are operating at 80%+ capacity.", icon: <Zap size={14} className="text-lime-500" /> });
+      } else if (ratio > 0.5) {
+        newInsights.push({ text: "Steady progress maintained. Focus on high-priority morning slots.", icon: <TrendingUp size={14} className="text-emerald-500" /> });
+      } else {
+        newInsights.push({ text: "System load optimization recommended to prevent fatigue.", icon: <AlertCircle size={14} className="text-rose-500" /> });
+      }
+    }
+
+    const categories = [...new Set(filteredTasks.map(t => t.category || "General"))];
+    if (categories.length > 1) {
+      newInsights.push({ text: `Analysis covers ${categories.length} distinct operational sectors.`, icon: <Layout size={14} className="text-blue-500" /> });
+    }
+
+    return newInsights;
+  }, [allTasks, filter]);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -108,42 +146,6 @@ function Analytics() {
         setSummary(summaryRes.data);
         const tasks = tasksRes.data?.tasks || [];
         setAllTasks(tasks);
-
-        // 🧠 Dynamic AI Insights Logic
-        const completed = allTasks.filter(t => t.completed);
-        const total = allTasks.length;
-        const ratio = total > 0 ? (completed.length / total) : 0;
-        
-        const newInsights = [];
-        
-        // 1. Completion Insight
-        if (ratio > 0.8) {
-          newInsights.push({ text: "Peak efficiency detected. You are operating at 80%+ capacity.", icon: <Zap size={14} className="text-lime-500" /> });
-        } else if (ratio > 0.5) {
-          newInsights.push({ text: "Steady progress maintained. Focus on high-priority morning slots.", icon: <TrendingUp size={14} className="text-emerald-500" /> });
-        } else {
-          newInsights.push({ text: "System load optimization recommended to prevent fatigue.", icon: <AlertCircle size={14} className="text-rose-500" /> });
-        }
-
-        // 2. Category Insight (Mocking dynamic logic based on actual data if categories existed)
-        const categories = [...new Set(allTasks.map(t => t.category || "General"))];
-        if (categories.length > 2) {
-          newInsights.push({ text: `Diversity in tasks detected across ${categories.length} operational sectors.`, icon: <Layout size={14} className="text-blue-500" /> });
-        }
-
-        // 3. Priority Insight
-        const highPriority = allTasks.filter(t => t.priority === "High");
-        if (highPriority.length > 3) {
-          newInsights.push({ text: "High-density critical tasks identified. Strategic breaks advised.", icon: <Brain size={14} className="text-purple-500" /> });
-        } else {
-          newInsights.push({ text: "Balanced workload distribution confirmed for this cycle.", icon: <CheckCircle2 size={14} className="text-emerald-500" /> });
-        }
-
-        // 4. Time Insight
-        newInsights.push({ text: `Average completion velocity: ${Math.round(ratio * 100)}% per operational cycle.`, icon: <Clock size={14} className="text-lime-500" /> });
-
-        if (newInsights.length > 0) setInsights(newInsights);
-
       } catch (error) {
         console.error("Analytics Error:", error);
       } finally {
@@ -174,10 +176,23 @@ function Analytics() {
 
   const hasNoData = !summary || (summary.completed === 0 && summary.pending === 0 && summary.overdue === 0);
 
+  const filteredSummary = React.useMemo(() => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const filteredTasks = filter === "Today" 
+      ? allTasks.filter(t => t.date && new Date(t.date).toISOString().split('T')[0] === todayStr)
+      : allTasks;
+    
+    const completed = filteredTasks.filter(t => t.completed).length;
+    const pending = filteredTasks.filter(t => !t.completed && !t.overdue).length;
+    const overdue = filteredTasks.filter(t => t.overdue).length;
+    
+    return { completed, pending, overdue };
+  }, [allTasks, filter]);
+
   const pieData = [
-    { name: "Completed", value: summary?.completed || 0 },
-    { name: "Pending", value: summary?.pending || 0 },
-    { name: "Overdue", value: summary?.overdue || 0 },
+    { name: "Completed", value: filteredSummary.completed },
+    { name: "Pending", value: filteredSummary.pending },
+    { name: "Overdue", value: filteredSummary.overdue },
   ];
 
   const last7DaysData = Array.from({ length: 7 }).map((_, i) => {
@@ -211,7 +226,7 @@ function Analytics() {
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
 
       {/* Header */}
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-12">
+      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 mb-16">
         <div className="flex items-center gap-6">
           <button onClick={() => navigate(-1)} className="p-3.5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white shadow-xl">
             <ChevronLeft size={24} />
@@ -231,10 +246,30 @@ function Analytics() {
 
       {/* Top Summary Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-20 mb-20">
-        <StatCard icon={CheckCircle2} label="Completed Tasks" value={summary?.completed || "0"} trend="+12%" />
-        <StatCard icon={AlertCircle} label="Missed Syncs" value={summary?.overdue || "0"} trend="-2%" />
-        <StatCard icon={Clock} label="Focus Time" value={summary?.focusTime || "0h"} trend="+5.4%" />
-        <StatCard icon={Zap} label="Smart Score" value={summary?.productivityScore || "0%"} trend="+8.2%" />
+        <StatCard 
+          icon={CheckCircle2} 
+          label="Completed Tasks" 
+          value={filteredSummary.completed} 
+          trend="+12%" 
+        />
+        <StatCard 
+          icon={AlertCircle} 
+          label="Missed Syncs" 
+          value={filteredSummary.overdue} 
+          trend="-2%" 
+        />
+        <StatCard 
+          icon={Clock} 
+          label="Focus Time" 
+          value={summary?.focusTime || "0h"} 
+          trend="+5.4%" 
+        />
+        <StatCard 
+          icon={Zap} 
+          label="Smart Score" 
+          value={`${Math.round((filteredSummary.completed / Math.max(1, filteredSummary.completed + filteredSummary.pending + filteredSummary.overdue)) * 100)}%`} 
+          trend="+8.2%" 
+        />
       </div>
 
       {/* Main Charts Grid */}
