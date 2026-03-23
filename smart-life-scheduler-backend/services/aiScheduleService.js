@@ -1,10 +1,10 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const generateSchedule = async ({ pending, missed, completed }) => {
+const generateSchedule = async ({ tasks, completedToday, context }) => {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
         console.warn("GEMINI_API_KEY not found. Using mock response.");
-        return generateMockSchedule(pending);
+        return generateMockSchedule(tasks);
     }
 
     try {
@@ -12,38 +12,35 @@ const generateSchedule = async ({ pending, missed, completed }) => {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
-      You are an intelligent AI Daily Planner. You need to organize the user's day based on their current task matrix.
+      You are an intelligent AI Daily Planner. 
+      Current Context: Date is ${context.currentDateStr}, Time is ${context.currentTime}.
       
-      User Matrix:
-      - Completed Today: ${completed.length} tasks (Acknowledge these as operational successes)
-      - Missed Tasks (OVERDUE): ${missed.length} tasks (These are critical and missed their original slots. Prioritize rescheduling them!)
-      - Pending Tasks: ${pending.length} tasks (Upcoming scheduled operations)
+      User Task Data:
+      - Uncompleted: ${JSON.stringify(tasks.map(t => ({ title: t.title, priority: t.priority || "Medium", date: t.date, time: t.startTime })), null, 2)}
+      - Completed Today: ${JSON.stringify(completedToday.map(t => ({ title: t.title })), null, 2)}
       
-      Rules for Planning:
-      1. Create a realistic, optimized daily schedule starting from 09:00 AM (or the current time if it's later).
-      2. Plan ONLY for the Missed and Pending tasks. 
-      3. CRITICAL: Reschedule Missed tasks into the earliest available slots.
-      4. Place High priority tasks (from Missed or Pending) in peak focus windows.
-      5. Add 15-minute breaks after every 60-90 minutes of work.
-      6. Assume 45-60 minutes per task unless specified.
-      7. End the day by 22:00 max.
+      Categorization Rules:
+      1. COMPLETED: Tasks from 'Completed Today' list.
+      2. MISSED: Uncompleted tasks where (date < today) OR (date == today AND time < ${context.currentTime}).
+      3. PENDING: Uncompleted tasks where (date == today AND time >= ${context.currentTime}).
+      4. FUTURE: Uncompleted tasks where (date > today). IGNORE these in the schedule unless explicitly requested.
       
-      Pending Tasks Data:
-      ${JSON.stringify(pending.map(t => ({ title: t.title, priority: t.priority || "Medium", description: t.description })), null, 2)}
+      Planning Rules:
+      1. Create an optimized schedule for Today starting from ${context.currentTime}.
+      2. Plan ONLY for the MISSED and PENDING tasks.
+      3. CRITICAL: Prioritize Rescheduling MISSED tasks into the earliest available slots.
+      4. Add 15-min breaks every 90 mins.
       
-      Missed Tasks Data (Needs Rescheduling):
-      ${JSON.stringify(missed.map(t => ({ title: t.title, priority: t.priority || "Medium", description: t.description })), null, 2)}
-      
-      Response Requirements:
-      Return a JSON object with:
-      1. "explanation": A detailed breakdown starting with "INTELLIGENCE REPORT:". 
-      2. "categorizedSchedule": {
+      Response Requirements (JSON ONLY):
+      {
+        "explanation": "INTELLIGENCE REPORT: ... (mention counts of COMPLETED, MISSED, PENDING)",
+        "categorizedSchedule": {
           "completed": [{ "title": "..." }],
-          "missed": [{ "timeRange": "...", "title": "..." }],
-          "pending": [{ "timeRange": "...", "title": "..." }]
+          "missed": [{ "timeRange": "HH:MM AM/PM - HH:MM AM/PM", "title": "..." }],
+          "pending": [{ "timeRange": "HH:MM AM/PM - HH:MM AM/PM", "title": "..." }]
+        }
       }
-      
-      Return ONLY a JSON object without markdown blocks.
+      IMPORTANT: Return ONLY raw JSON. No markdown blocks.
     `;
 
         const result = await model.generateContent(prompt);
@@ -59,7 +56,7 @@ const generateSchedule = async ({ pending, missed, completed }) => {
         return JSON.parse(cleanedText);
     } catch (error) {
         console.error("AI Schedule Error:", error);
-        return generateMockSchedule(pending);
+        return generateMockSchedule(tasks);
     }
 };
 

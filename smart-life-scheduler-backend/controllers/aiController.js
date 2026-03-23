@@ -20,38 +20,25 @@ const chatWithAI = async (req, res) => {
       const today = new Date();
       today.setHours(0,0,0,0);
       
+      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const currentDateStr = now.toDateString();
+      
+      // Fetch ALL uncompleted tasks (AI will decide what is overdue/today)
+      const allUncompleted = await Task.find({ user: userId, completed: false });
+      
+      // Fetch Today's completed tasks
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
-      
-      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      
-      // Fetch all uncompleted tasks up to today (including overdue)
-      const uncompletedUpToToday = await Task.find({ 
-        user: userId, 
-        completed: false,
-        date: { $lt: tomorrow }
-      });
-      
       const completedToday = await Task.find({ 
         user: userId, 
         completed: true, 
         date: { $gte: today, $lt: tomorrow } 
       });
 
-      const missedTasks = uncompletedUpToToday.filter(t => {
-        const taskDate = new Date(t.date);
-        taskDate.setHours(0,0,0,0);
-        if (taskDate < today) return true;
-        if (taskDate.getTime() === today.getTime() && t.startTime < currentTime) return true;
-        return false;
-      });
-
-      const pendingToday = uncompletedUpToToday.filter(t => !missedTasks.includes(t));
-
       const aiSchedule = await generateSchedule({
-        pending: pendingToday,
-        missed: missedTasks,
-        completed: completedToday
+        tasks: allUncompleted,
+        completedToday: completedToday,
+        context: { currentTime, currentDateStr }
       });
 
       // Defensive fallback

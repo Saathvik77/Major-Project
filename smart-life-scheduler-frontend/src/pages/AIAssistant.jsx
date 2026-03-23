@@ -239,56 +239,62 @@ const AIAssistant = () => {
                         return (
                           <div className="mt-6 space-y-6 pt-6 border-t border-white/10">
                             {/* COMPLETED */}
-                            {action.completed?.length > 0 && (
-                              <div>
-                                <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                  <CheckCircle size={12} /> Operational Milestones Achieved
-                                </p>
-                                <div className="space-y-2">
-                                  {action.completed?.map((t, idx) => (
+                            <div>
+                              <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <CheckCircle size={12} /> Operational Milestones Achieved
+                              </p>
+                              <div className="space-y-2">
+                                {action.completed?.length > 0 ? (
+                                  action.completed.map((t, idx) => (
                                     <div key={idx} className="p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20 text-xs font-bold text-emerald-200/70 line-through">
                                       {t.title}
                                     </div>
-                                  ))}
-                                </div>
+                                  ))
+                                ) : (
+                                  <div className="p-3 text-[10px] text-gray-600 italic">No tasks completed yet today.</div>
+                                )}
                               </div>
-                            )}
+                            </div>
 
                             {/* MISSED */}
-                            {action.missed?.length > 0 && (
-                              <div>
-                                <p className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                  <AlertCircle size={12} /> Prioritized Rescheduling (Missed)
-                                </p>
-                                <div className="space-y-2">
-                                  {action.missed?.map((t, idx) => (
+                            <div>
+                              <p className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <AlertCircle size={12} /> Prioritized Rescheduling (Missed)
+                              </p>
+                              <div className="space-y-2">
+                                {action.missed?.length > 0 ? (
+                                  action.missed.map((t, idx) => (
                                     <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-rose-500/5 border border-rose-500/20 group/item">
                                       <div className="w-16 text-[10px] font-black text-rose-400">{t.timeRange?.split(' - ')[0] || "??:??"}</div>
                                       <div className="flex-1 text-xs font-bold text-white">{t.title}</div>
                                       <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
                                     </div>
-                                  ))}
-                                </div>
+                                  ))
+                                ) : (
+                                  <div className="p-3 text-[10px] text-gray-600 italic">No missed tasks detected. Operational flow is healthy.</div>
+                                )}
                               </div>
-                            )}
+                            </div>
 
                             {/* UPCOMING / PENDING */}
-                            {action.pending?.length > 0 && (
-                              <div>
-                                <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                  <Clock size={12} /> Optimized Operational Flow
-                                </p>
-                                <div className="space-y-2">
-                                  {action.pending?.map((t, idx) => (
+                            <div>
+                              <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <Clock size={12} /> Optimized Operational Flow
+                              </p>
+                              <div className="space-y-2">
+                                {action.pending?.length > 0 ? (
+                                  action.pending.map((t, idx) => (
                                     <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group/item">
                                       <div className="w-16 text-[10px] font-black text-gray-400 group-hover/item:text-orange-400">{t.timeRange?.split(' - ')[0] || "??:??"}</div>
                                       <div className="flex-1 text-xs font-bold text-white">{t.title}</div>
                                       {t.title?.toLowerCase().includes('break') && <div className="w-2 h-2 rounded-full bg-emerald-500/50" />}
                                     </div>
-                                  ))}
-                                </div>
+                                  ))
+                                ) : (
+                                  <div className="p-3 text-[10px] text-gray-600 italic">No pending tasks for the remainder of the day.</div>
+                                )}
                               </div>
-                            )}
+                            </div>
                           </div>
                         );
                       })()}
