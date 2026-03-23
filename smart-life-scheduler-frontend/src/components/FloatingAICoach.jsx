@@ -312,7 +312,7 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-32 md:bottom-10 right-6 z-50 flex flex-col items-end">
       {/* ── Chat Window Popup ──────────────────────────────────────── */}
       <AnimatePresence>
         {isOpen && (
@@ -462,21 +462,19 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
       {/* ── Floating Toggle Button ───────────────────────────────────── */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.94 }}
-        className={`relative flex items-center gap-2 bg-gradient-to-r from-lime-600 to-emerald-600 text-white px-5 py-3.5 rounded-2xl shadow-[0_0_24px_rgba(132,204,22,0.45)] hover:shadow-[0_0_32px_rgba(132,204,22,0.65)] font-bold tracking-wide z-50 transition-all duration-300 ${isOpen ? "opacity-0 scale-90 pointer-events-none absolute" : "opacity-100 scale-100"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.96 }}
+        className={`relative flex items-center gap-2 bg-gradient-to-r from-lime-600 to-emerald-600 text-white px-4 py-2.5 rounded-xl shadow-[0_0_20px_rgba(132,204,22,0.35)] hover:shadow-[0_0_28px_rgba(132,204,22,0.55)] font-black text-xs uppercase tracking-widest z-50 transition-all duration-300 ${isOpen ? "opacity-0 scale-90 pointer-events-none absolute" : "opacity-100 scale-100"
           }`}
       >
         {/* Pulse ring when not opened yet */}
         {showPulse && (
-          <>
-            <span className="absolute inset-0 rounded-2xl animate-ping bg-lime-500 opacity-25 pointer-events-none" />
-            <span className="absolute inset-0 rounded-2xl animate-ping bg-emerald-500 opacity-15 pointer-events-none" style={{ animationDelay: "0.4s" }} />
-          </>
+          <span className="absolute inset-0 rounded-xl animate-ping bg-lime-500 opacity-20 pointer-events-none" />
         )}
-        <MessageSquareHeart size={20} className="animate-pulse" />
+        <MessageSquareHeart size={16} />
+        {/* Removed text if it's too big, or kept it very short */}
         AI Coach
-        <Sparkles size={13} className="text-lime-300" />
+        <Sparkles size={11} className="text-lime-300" />
       </motion.button>
     </div>
   );

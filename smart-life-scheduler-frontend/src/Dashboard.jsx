@@ -333,7 +333,7 @@ const Dashboard = () => {
            
            <h4 className="text-lg font-black text-white tracking-tight mb-3">Optimize Peak Performance</h4>
            <p className="text-sm text-gray-400 leading-relaxed mb-10">
-              Based on your operational data, you are operating at <span className="text-lime-400 font-bold">88% efficiency</span>. Consider rescheduling high-load tasks to your peak focus window at 16:00.
+              Based on your operational data, you are operating at <span className="text-lime-400 font-bold">88% efficiency</span>. Consider rescheduling high-load tasks to your peak focus window at 4:00 PM.
            </p>
            
            <button 

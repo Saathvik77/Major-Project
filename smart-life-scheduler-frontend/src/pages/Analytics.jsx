@@ -49,6 +49,15 @@ const FilterButton = ({ label, active, onClick }) => (
   </button>
 );
 
+const formatTime12Hour = (time24) => {
+  if (!time24) return "—";
+  const [hours, minutes] = time24.split(':');
+  const h = parseInt(hours, 10);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  return `${h12}:${minutes} ${ampm}`;
+};
+
 const StatCard = ({ icon: Icon, label, value, trend, color = "orange" }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
@@ -470,7 +479,7 @@ function Analytics() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-xs font-black text-white">{task.startTime || "—"}</p>
+                          <p className="text-xs font-black text-white">{formatTime12Hour(task.startTime)}</p>
                           <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mt-1">
                             {new Date(task.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                           </p>

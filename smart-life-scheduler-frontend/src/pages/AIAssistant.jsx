@@ -178,7 +178,7 @@ const AIAssistant = () => {
 
   const [allTasks, setAllTasks] = useState([]);
   const [insightData, setInsightData] = useState({
-    peak: "19:00",
+    peak: "7:00 PM",
     fatigue: "Medium @ 3pm",
     streak: "0 Cycles",
     ratio: 0
