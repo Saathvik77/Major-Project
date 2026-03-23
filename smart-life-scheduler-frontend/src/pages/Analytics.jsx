@@ -227,18 +227,18 @@ function Analytics() {
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
 
       {/* Header */}
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 mb-16">
-        <div className="flex items-center gap-6">
-          <button onClick={() => navigate(-1)} className="p-3.5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white shadow-xl">
-            <ChevronLeft size={24} />
+      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 md:gap-12 mb-10 md:mb-16">
+        <div className="flex items-center gap-4 md:gap-6">
+          <button onClick={() => navigate(-1)} className="p-3 md:p-3.5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white shadow-xl">
+            <ChevronLeft size={20} md:size={24} />
           </button>
           <div>
-            <h1 className="text-3xl md:text-4xl font-black text-white tracking-tighter">Intelligence Overview</h1>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60">Operational Data Feed</p>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter">Intelligence Overview</h1>
+            <p className="text-[9px] md:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60 font-black">Operational Data Feed</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl overflow-x-auto scrollbar-hide w-fit">
           <FilterButton label="Today" active={filter === "Today"} onClick={() => setFilter("Today")} />
           <FilterButton label="Week" active={filter === "Week"} onClick={() => setFilter("Week")} />
           <FilterButton label="Month" active={filter === "Month"} onClick={() => setFilter("Month")} />
@@ -370,7 +370,7 @@ function Analytics() {
 
           {/* Productivity Trend (Line/Area Chart) */}
           <div className="col-span-12 lg:col-span-7">
-            <div className="glass-card p-12 h-full chart-container">
+            <div className="glass-card p-6 md:p-10 lg:p-12 h-full chart-container">
               <h3 className="text-xl font-black text-white tracking-tight mb-2">Activity Momentum</h3>
               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-12">Cognitive Score Trend</p>
               
@@ -398,7 +398,7 @@ function Analytics() {
 
           {/* AI Insights Summary */}
           <div className="col-span-12 lg:col-span-5">
-            <div className="glass-card p-10 h-full flex flex-col gap-8 relative overflow-hidden group">
+            <div className="glass-card p-6 md:p-8 lg:p-10 h-full flex flex-col gap-8 relative overflow-hidden group">
                <div className="absolute bottom-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
                
                <div className="flex items-center gap-4">
@@ -490,17 +490,17 @@ function Analytics() {
                     const expired = !task.completed && taskDate < now;
                     
                     return (
-                      <div key={task._id || task.id} className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/5 flex items-center justify-between group/item hover:bg-white/[0.06] transition-all">
-                        <div className="flex items-center gap-5">
-                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
+                      <div key={task._id || task.id} className="p-5 md:p-6 rounded-[2rem] bg-white/[0.03] border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group/item hover:bg-white/[0.06] transition-all">
+                        <div className="flex items-center gap-4 md:gap-5">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 ${
                             task.completed ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' :
                             expired ? 'bg-rose-500/10 border-rose-500/20 text-rose-500' :
                             'bg-lime-500/10 border-lime-500/20 text-lime-500'
                           }`}>
                             {task.completed ? <CheckCircle2 size={18} /> : expired ? <AlertCircle size={18} /> : <Clock size={18} />}
                           </div>
-                          <div>
-                            <h4 className="font-bold text-white tracking-tight">{task.title}</h4>
+                          <div className="min-w-0">
+                            <h4 className="font-bold text-white tracking-tight truncate">{task.title}</h4>
                             <div className="flex items-center gap-3 mt-1">
                               <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">{task.category || "General"}</span>
                               <div className="w-1 h-1 rounded-full bg-gray-700" />
@@ -514,9 +514,9 @@ function Analytics() {
                             </div>
                           </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-1 mt-2 sm:mt-0 border-t sm:border-t-0 border-white/5 pt-3 sm:pt-0">
                           <p className="text-xs font-black text-white">{formatTime12Hour(task.startTime)}</p>
-                          <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mt-1">
+                          <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest">
                             {new Date(task.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                           </p>
                         </div>

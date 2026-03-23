@@ -16,22 +16,22 @@ function Landing() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-lime-700 opacity-10 blur-3xl rounded-full animate-floatGlow"></div>
 
       {/* Navbar */}
-      <nav className="flex justify-between items-center px-8 py-5 backdrop-blur-md bg-white/5 border-b border-white/10 sticky top-0 z-50">
-        <h1 className="text-2xl font-bold tracking-wide bg-gradient-to-r from-lime-400 to-emerald-400 bg-clip-text text-transparent">
+      <nav className="flex justify-between items-center px-4 md:px-8 py-4 md:py-5 backdrop-blur-md bg-white/5 border-b border-white/10 sticky top-0 z-50">
+        <h1 className="text-xl md:text-2xl font-bold tracking-wide bg-gradient-to-r from-lime-400 to-emerald-400 bg-clip-text text-transparent truncate">
           Smart Life Scheduler
         </h1>
 
         {token ? (
           <button
             onClick={() => navigate("/dashboard")}
-            className="bg-lime-600 hover:bg-lime-500 px-4 py-2 rounded-lg"
+            className="bg-lime-600 hover:bg-lime-500 px-4 py-2 rounded-lg text-sm shrink-0"
           >
             Dashboard
           </button>
         ) : (
           <button
             onClick={() => navigate("/login")}
-            className="bg-lime-600 hover:bg-lime-500 px-4 py-2 rounded-lg"
+            className="bg-lime-600 hover:bg-lime-500 px-4 py-2 rounded-lg text-sm shrink-0"
           >
             Login
           </button>
@@ -39,15 +39,15 @@ function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center text-center mt-28 px-6 animate-fadeIn">
+      <section className="flex flex-col items-center justify-center text-center mt-20 md:mt-28 px-6 animate-fadeIn">
 
-        <h2 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight bg-gradient-to-r from-lime-400 via-emerald-400 to-lime-300 bg-clip-text text-transparent">
+        <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 leading-tight bg-gradient-to-r from-lime-400 via-emerald-400 to-lime-300 bg-clip-text text-transparent">
           Design Your Life.
-          <br />
+          <br className="hidden sm:block" />
           Master Your Time.
         </h2>
 
-        <p className="text-slate-400 max-w-xl mb-10 text-lg">
+        <p className="text-slate-400 max-w-xl mb-10 text-base md:text-lg">
           AI-powered scheduling, intelligent analytics, and adaptive life optimization — all in one powerful system.
         </p>
 

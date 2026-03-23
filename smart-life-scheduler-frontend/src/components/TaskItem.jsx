@@ -28,11 +28,11 @@ const TaskItem = ({ title, time, priority, onComplete, onDelete, onReschedule, i
         ${isCompleted ? 'border-emerald-500/20 bg-emerald-500/[0.02]' : ''}
       `}
     >
-      <div className="flex items-center gap-4 flex-1 min-w-0">
+      <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
         <button 
           onClick={onComplete}
           disabled={isCompleted}
-          className={`transition-colors ${isCompleted ? 'text-emerald-500' : 'text-gray-600 hover:text-amber-500'}`}
+          className={`transition-colors shrink-0 ${isCompleted ? 'text-emerald-500' : 'text-gray-600 hover:text-amber-500'}`}
         >
           {isCompleted ? <CheckCircle size={22} strokeWidth={2} /> : <Circle size={22} strokeWidth={1.5} />}
         </button>
@@ -42,18 +42,18 @@ const TaskItem = ({ title, time, priority, onComplete, onDelete, onReschedule, i
              <h4 className={`text-sm font-bold truncate ${isExpired ? 'text-rose-200' : isCompleted ? 'text-gray-400 line-through' : 'text-white'}`}>
                {title}
              </h4>
-             {isExpired && <AlertCircle size={14} className="text-rose-400" />}
-             {isCompleted && <CheckCircle size={12} className="text-emerald-500" />}
+             {isExpired && <AlertCircle size={14} className="text-rose-400 shrink-0" />}
+             {isCompleted && <CheckCircle size={12} className="text-emerald-500 shrink-0" />}
           </div>
           
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+          <div className="flex items-center flex-wrap gap-x-3 gap-y-1">
+            <span className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">
               <Clock size={12} className="text-amber-500/60" /> {time}
             </span>
-            <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter border ${priorityColor[priority] || priorityColor.Medium}`}>
+            <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter border whitespace-nowrap ${priorityColor[priority] || priorityColor.Medium}`}>
               {priority}
             </span>
-            <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">{category}</span>
+            <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest truncate">{category}</span>
           </div>
         </div>
       </div>

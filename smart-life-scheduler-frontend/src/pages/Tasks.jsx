@@ -369,34 +369,34 @@ export default function Tasks() {
         )}
       </AnimatePresence>
 
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 relative z-10 mb-20">
-        <div className="flex items-center gap-6">
-          <div className="w-16 h-16 rounded-[2rem] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/20 shrink-0">
-            <Layout size={32} strokeWidth={2} />
+      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 md:gap-12 relative z-10 mb-12 md:mb-20">
+        <div className="flex items-center gap-4 md:gap-6">
+          <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/20 shrink-0">
+            <Layout size={24} md:size={32} strokeWidth={2} />
           </div>
-          <div>
-            <h1 className="text-3xl md:text-4xl font-black text-white tracking-tighter">Operational Flow</h1>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60">Manage Tasks & Performance</p>
+          <div className="min-w-0">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter truncate">Operational Flow</h1>
+            <p className="text-[9px] md:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60 font-black">Manage Tasks & Performance</p>
           </div>
         </div>
 
-        <div className="flex items-center justify-between lg:justify-end gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 backdrop-blur-xl w-full lg:w-auto">
+        <div className="flex items-center justify-between lg:justify-end gap-3 md:gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 backdrop-blur-xl w-full lg:w-auto">
           <button onClick={() => {
             const prev = new Date(selectedDate);
             prev.setDate(prev.getDate() - 1);
             setSelectedDate(prev);
-          }} className="p-2.5 hover:bg-white/10 rounded-xl transition-all text-gray-400 hover:text-white">
-            <ChevronLeft size={20} />
+          }} className="p-2 md:p-2.5 hover:bg-white/10 rounded-xl transition-all text-gray-400 hover:text-white">
+            <ChevronLeft size={18} md:size={20} />
           </button>
-          <div className="flex-1 lg:flex-none text-center px-6 py-2 bg-lime-500 text-white rounded-xl shadow-lg shadow-lime-500/20">
-            <span className="text-[10px] font-black uppercase tracking-widest">{selectedDate.toLocaleDateString('default', { month: 'short', day: 'numeric' })}</span>
+          <div className="flex-1 lg:flex-none text-center px-4 md:px-6 py-2 bg-lime-500 text-white rounded-xl shadow-lg shadow-lime-500/20">
+            <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">{selectedDate.toLocaleDateString('default', { month: 'short', day: 'numeric' })}</span>
           </div>
           <button onClick={() => {
             const next = new Date(selectedDate);
             next.setDate(next.getDate() + 1);
             setSelectedDate(next);
-          }} className="p-2.5 hover:bg-white/10 rounded-xl transition-all text-gray-400 hover:text-white">
-            <ChevronRight size={20} />
+          }} className="p-2 md:p-2.5 hover:bg-white/10 rounded-xl transition-all text-gray-400 hover:text-white">
+            <ChevronRight size={18} md:size={20} />
           </button>
         </div>
       </header>
@@ -404,8 +404,8 @@ export default function Tasks() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 relative z-10">
           
           <div className="col-span-1 lg:col-span-8 flex flex-col gap-20">
-            <div className="glass-card p-8 overflow-hidden">
-              <div className="flex items-center justify-between gap-8 overflow-x-auto scrollbar-hide pb-2">
+            <div className="glass-card p-4 md:p-8 overflow-hidden">
+              <div className="flex items-center justify-between gap-4 md:gap-8 overflow-x-auto scrollbar-hide pb-2">
                 {weekDates.map((d, i) => {
                   const isActive = d.getDate() === selectedDate.getDate() && d.getMonth() === selectedDate.getMonth();
                   const dStr = d.toLocaleString('default', { weekday: 'short' });
@@ -414,14 +414,14 @@ export default function Tasks() {
                       key={i} 
                       onClick={() => setSelectedDate(new Date(d))} 
                       className={`
-                        flex flex-col items-center justify-center min-w-[80px] h-[100px] rounded-2xl transition-all cursor-pointer border shrink-0
+                        flex flex-col items-center justify-center min-w-[70px] md:min-w-[80px] h-[90px] md:h-[100px] rounded-2xl transition-all cursor-pointer border shrink-0
                         ${isActive 
                           ? 'bg-yellow-500/10 border-yellow-500/30 shadow-[0_0_20px_rgba(132,204,22,0.1)]' 
                           : 'bg-white/5 border-white/5 hover:bg-white/10'}
                       `}
                     >
-                      <span className={`text-[10px] font-black uppercase tracking-widest mb-1 ${isActive ? 'text-yellow-500' : 'text-gray-500'}`}>{dStr}</span>
-                      <span className={`text-xl font-bold ${isActive ? 'text-white' : 'text-gray-300'}`}>{d.getDate()}</span>
+                      <span className={`text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-1 ${isActive ? 'text-yellow-500' : 'text-gray-500'}`}>{dStr}</span>
+                      <span className={`text-lg md:text-xl font-bold ${isActive ? 'text-white' : 'text-gray-300'}`}>{d.getDate()}</span>
                       {isActive && <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 mt-2" />}
                     </div>
                   );
@@ -563,10 +563,10 @@ export default function Tasks() {
                   </>
                 )}
 
-                <div className="glass-card p-8 flex flex-col gap-8 border border-white/10 shadow-2xl relative overflow-hidden">
+                <div className="glass-card p-6 md:p-8 flex flex-col gap-6 md:gap-8 border border-white/10 shadow-2xl relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[40px] -z-10" />
                   
-                  <div className="space-y-6">
+                  <div className="space-y-4 md:space-y-6">
                     <div className="flex items-center justify-between">
                       <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">Task Configuration</h4>
                       <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10">
@@ -575,14 +575,14 @@ export default function Tasks() {
                       </div>
                     </div>
 
-                    <div className="flex items-center bg-white/5 rounded-[2rem] px-8 py-6 border border-white/5 focus-within:border-lime-500/30 transition-all shadow-inner">
+                    <div className="flex items-center bg-white/5 rounded-[2rem] px-6 md:px-8 py-4 md:py-6 border border-white/5 focus-within:border-lime-500/30 transition-all shadow-inner">
                       <input 
                         type="text" 
                         placeholder="What's the next objective?" 
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && addTask()}
-                        className="flex-1 bg-transparent border-none outline-none text-xl font-bold text-white placeholder:text-gray-700 tracking-tight"
+                        className="flex-1 bg-transparent border-none outline-none text-lg md:text-xl font-bold text-white placeholder:text-gray-700 tracking-tight"
                       />
                     </div>
 
