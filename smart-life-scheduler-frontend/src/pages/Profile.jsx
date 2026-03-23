@@ -22,8 +22,6 @@ import { useNavigate } from "react-router-dom";
 import API from "../api";
 import { motion, AnimatePresence } from "framer-motion";
 import Toast from "../components/Toast";
-import maleAvatar from "../assets/male_avatar.png";
-import femaleAvatar from "../assets/female_avatar.png";
 
 function Profile() {
   const navigate = useNavigate();
@@ -175,9 +173,9 @@ function Profile() {
         <div className="flex items-center gap-6">
           <div className="w-24 h-24 rounded-[2.5rem] bg-gradient-to-br from-lime-500/10 to-lime-600/10 flex items-center justify-center text-white shadow-2xl shadow-lime-500/10 border border-white/10 relative group overflow-hidden">
              {user?.gender?.toLowerCase() === 'male' ? (
-                <img src={maleAvatar} alt="Male Avatar" className="w-full h-full object-cover" />
+                <img src="/assets/male_avatar.png" alt="Male Avatar" className="w-full h-full object-cover" />
              ) : user?.gender?.toLowerCase() === 'female' ? (
-                <img src={femaleAvatar} alt="Female Avatar" className="w-full h-full object-cover" />
+                <img src="/assets/female_avatar.png" alt="Female Avatar" className="w-full h-full object-cover" />
              ) : (
                 <User size={36} strokeWidth={2.5} className="text-lime-500" />
              )}
