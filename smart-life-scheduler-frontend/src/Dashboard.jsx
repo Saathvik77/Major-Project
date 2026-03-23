@@ -2,6 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
+  ClipboardList,
+  PieChart,
+  Settings,
   BarChart3, 
   BrainCircuit, 
   Plus,
@@ -39,6 +42,55 @@ const formatTime12Hour = (time24) => {
   const ampm = h >= 12 ? 'PM' : 'AM';
   const h12 = h % 12 || 12;
   return `${h12}:${minutes} ${ampm}`;
+};
+
+const QuickLaunchHero = ({ onNavigate }) => {
+  const [imageError, setImageError] = useState(false);
+  
+  const launchOptions = [
+    { label: "Tasks", icon: <ClipboardList />, path: "/tasks", color: "text-lime-500" },
+    { label: "Analytics", icon: <PieChart />, path: "/analytics", color: "text-lime-500" },
+    { label: "Settings", icon: <Settings />, path: "/settings", color: "text-lime-500" },
+    { label: "AI Assistant", icon: <Bot />, path: "/ai-assistant", color: "text-lime-500" },
+  ];
+
+  return (
+    <div className="relative w-full mb-16 px-4 md:px-0">
+      <div className="relative aspect-[16/10] md:aspect-[2.35/1] w-full rounded-[3.5rem] overflow-hidden border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] group bg-[#0a0c10]">
+        
+        {/* Deep Glow Layer */}
+        <div className="absolute inset-0 bg-gradient-to-br from-lime-500/10 via-transparent to-blue-500/5 opacity-50" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,rgba(132,204,22,0.08)_0%,transparent_70%)] animate-pulse" />
+
+        {/* The Exact Image Background */}
+        {!imageError && (
+          <img 
+            src="/assets/dashboard_hero.jpeg" 
+            alt="Dashboard Hero" 
+            className="absolute inset-0 w-full h-full object-cover mix-blend-lighten opacity-60 group-hover:opacity-80 transition-all duration-1000 scale-105 group-hover:scale-100"
+            onError={() => setImageError(true)}
+          />
+        )}
+
+        {/* Helper Instructions (Only if image is missing) */}
+        {imageError && (
+          <div className="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center p-6 text-center z-30 animate-pulse">
+            <p className="text-lime-500 font-black text-[10px] uppercase tracking-widest mb-2 bg-black/40 px-4 py-1.5 rounded-full border border-lime-500/20">
+              Custom Hero Setup Required
+            </p>
+            <p className="text-[9px] text-gray-500 font-bold max-w-sm">
+              Please save your chat image as <span className="text-white">dashboard_hero.png</span> 
+              <br />in your <span className="text-white">public/assets/</span> folder to see the boy at the desk!
+            </p>
+          </div>
+        )}
+        {/* The background image is displayed via the <img> tag above. No interactive overlays here. */}
+
+        {/* Vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.6)_100%)] pointer-events-none" />
+      </div>
+    </div>
+  );
 };
 
 const Dashboard = () => {
@@ -175,6 +227,9 @@ const Dashboard = () => {
           </div>
         </div>
       </header>
+
+      {/* ── Quick Launch Hero (Monitor) ────────────────────────── */}
+      <QuickLaunchHero onNavigate={navigate} />
 
       {/* ── Main Hero Card ────────────────────────────────────────── */}
     <div className="relative mb-20">
