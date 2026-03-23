@@ -395,9 +395,9 @@ export default function Tasks() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10">
           
-          <div className="col-span-1 lg:col-span-8 flex flex-col gap-8">
+          <div className="col-span-1 lg:col-span-8 flex flex-col gap-10">
             <div className="glass-card p-6 overflow-hidden">
               <div className="flex items-center justify-between gap-4 overflow-x-auto scrollbar-hide pb-2">
                 {weekDates.map((d, i) => {
@@ -706,7 +706,7 @@ export default function Tasks() {
             </div>
           </div>
 
-          <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">
+          <div className="col-span-12 lg:col-span-4 flex flex-col gap-8">
             <div className="glass-card p-8 bg-gradient-to-br from-orange-500/5 to-transparent border-orange-500/20 relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[40px] -z-10 group-hover:bg-orange-500/20 transition-all" />
                <div className="flex items-start justify-between mb-6">

@@ -314,7 +314,7 @@ export default function Reports() {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-10">
 
         {/* ── Top Row: Status & Weather ─────────────────────────────── */}
         <div className="col-span-12 lg:col-span-8">

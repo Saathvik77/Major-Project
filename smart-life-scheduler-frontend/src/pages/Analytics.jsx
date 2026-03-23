@@ -221,7 +221,7 @@ function Analytics() {
       </header>
 
       {/* Top Summary Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
         <StatCard icon={CheckCircle2} label="Completed Tasks" value={summary?.completed || "0"} trend="+12%" />
         <StatCard icon={AlertCircle} label="Missed Syncs" value={summary?.overdue || "0"} trend="-2%" />
         <StatCard icon={Clock} label="Focus Time" value={summary?.focusTime || "0h"} trend="+5.4%" />
@@ -247,7 +247,7 @@ function Analytics() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-12 gap-8">
+        <div className="grid grid-cols-12 gap-12">
           
           {/* Productivity Velocity (Bar Chart) */}
           <div className="col-span-12 lg:col-span-8">

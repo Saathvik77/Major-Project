@@ -200,7 +200,7 @@ function Settings() {
           {/* Danger Zone */}
           <div className="pt-12 border-t border-white/5 space-y-6">
              <h3 className="text-xs font-black text-rose-500 uppercase tracking-[0.2em] ml-2">Danger Zone</h3>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="glass-card p-6 border-rose-500/20 hover:bg-rose-500/5 group transition-all">
                    <div className="flex items-center gap-4 mb-4">
                       <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500">
