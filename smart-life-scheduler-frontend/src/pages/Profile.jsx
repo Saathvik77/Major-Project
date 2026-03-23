@@ -173,12 +173,23 @@ function Profile() {
         <div className="flex items-center gap-6">
           <div className="w-24 h-24 rounded-[2.5rem] bg-gradient-to-br from-lime-500/10 to-lime-600/10 flex items-center justify-center text-white shadow-2xl shadow-lime-500/10 border border-white/10 relative group overflow-hidden">
              {user?.gender?.toLowerCase() === 'male' ? (
-                <img src="/assets/male_avatar.png" alt="Male Avatar" className="w-full h-full object-cover" />
+                <img 
+                  src="/assets/male_avatar.png" 
+                  alt="Male Avatar" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                />
              ) : user?.gender?.toLowerCase() === 'female' ? (
-                <img src="/assets/female_avatar.png" alt="Female Avatar" className="w-full h-full object-cover" />
-             ) : (
+                <img 
+                  src="/assets/female_avatar.png" 
+                  alt="Female Avatar" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                />
+             ) : null}
+             <div className="w-full h-full flex items-center justify-center bg-lime-500/5" style={{display: user?.gender?.toLowerCase() === 'male' || user?.gender?.toLowerCase() === 'female' ? 'none' : 'flex'}}>
                 <User size={36} strokeWidth={2.5} className="text-lime-500" />
-             )}
+             </div>
              <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-emerald-500 rounded-2xl border-4 border-[#0a0c10] shadow-xl z-10" />
           </div>
           <div>

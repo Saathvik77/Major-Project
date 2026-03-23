@@ -2,15 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
-  CheckCircle, 
   BarChart3, 
   BrainCircuit, 
   Plus,
-  Zap,
   Sparkles,
   Activity,
-  TrendingUp,
-  AlertCircle,
   Calendar as CalendarIcon,
   Bot,
   Loader2,
@@ -35,26 +31,6 @@ const StatBadge = ({ dotColor, label, value, isVisible }) => (
   </div>
 );
 
-const StatCard = ({ icon: Icon, label, value, trend }) => (
-  <div className="glass-card p-10 flex flex-col gap-6 group card-hover-lift">
-    <div className="flex items-center justify-between relative z-10">
-      <div className="w-14 h-14 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 shadow-lg shadow-lime-500/5 transition-all group-hover:scale-110">
-        <Icon size={28} />
-      </div>
-      <div className="flex flex-col items-end">
-        <span className="text-xs font-black text-gray-500 uppercase tracking-widest">{label}</span>
-        <span className="text-4xl font-black text-white tracking-tighter mt-1">{value}</span>
-      </div>
-    </div>
-    <div className="flex items-center gap-2 pt-5 border-t border-white/5 relative z-10">
-      <div className="flex items-center gap-1.5 text-[11px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/5 px-2 py-1 rounded-full">
-        <TrendingUp size={14} />
-        {trend}
-      </div>
-      <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">vs last cycle</span>
-    </div>
-  </div>
-);
 
 const formatTime12Hour = (time24) => {
   if (!time24) return "—";
@@ -201,7 +177,7 @@ const Dashboard = () => {
       </header>
 
       {/* ── Main Hero Card ────────────────────────────────────────── */}
-    <div className="relative mb-40">
+    <div className="relative mb-20">
         <div className="hero-card p-10 md:p-16 flex flex-col lg:flex-row items-center gap-16 min-h-[500px]">
            
            {/* Data Visualization Column */}
@@ -286,44 +262,9 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* ── Stats Overview Row ────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-20">
-        {isLoading ? (
-          [1, 2, 3, 4].map(i => (
-            <div key={i} className="glass-card p-6 h-32 skeleton border-none" />
-          ))
-        ) : (
-          <>
-            <StatCard 
-              icon={CheckCircle} 
-              label="Tasks Completed" 
-              value={stats.totalTasks} 
-              trend="+12%" 
-            />
-            <StatCard 
-              icon={Zap} 
-              label="Smart Efficiency" 
-              value={stats.efficiency} 
-              trend="+5.4%" 
-            />
-            <StatCard 
-              icon={Activity} 
-              label="Focus Momentum" 
-              value={stats.growth} 
-              trend="+8.2%" 
-            />
-            <StatCard 
-              icon={AlertCircle} 
-              label="Missed Syncs" 
-              value={stats.missed} 
-              trend="-2%" 
-            />
-          </>
-        )}
-      </div>
 
       {/* ── Bottom Content Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mt-24">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
         
         {/* Quick Access Card */}
         <div className="lg:col-span-8 glass-card p-10 flex flex-col gap-10 relative overflow-hidden group min-h-[500px]">
