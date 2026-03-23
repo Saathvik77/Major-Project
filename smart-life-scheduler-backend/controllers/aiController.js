@@ -14,17 +14,32 @@ const chatWithAI = async (req, res) => {
     const msg = message.toLowerCase();
     const tasks = await Task.find({ user: userId, completed: false }).sort({ startTime: 1 });
     const completedTasks = await Task.find({ user: userId, completed: true });
-
-    // ─── Command Routing ───────────────────────────────────────────────
     
-    // 1. Plan My Day / Schedule
     if (msg.includes("plan my day") || msg.includes("schedule") || msg.includes("organize")) {
-      // Fetch only PENDING user tasks for the current/future dates
+      const now = new Date();
       const today = new Date();
       today.setHours(0,0,0,0);
       
-      const pendingTasks = await Task.find({ user: userId, completed: false }).sort({ priority: 1 });
-      const aiSchedule = await generateSchedule(pendingTasks);
+      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      
+      const allUncompleted = await Task.find({ user: userId, completed: false });
+      const completedToday = await Task.find({ user: userId, completed: true, date: { $gte: today } });
+
+      const missedTasks = allUncompleted.filter(t => {
+        const taskDate = new Date(t.date);
+        taskDate.setHours(0,0,0,0);
+        if (taskDate < today) return true;
+        if (taskDate.getTime() === today.getTime() && t.startTime < currentTime) return true;
+        return false;
+      });
+
+      const pendingTasks = allUncompleted.filter(t => !missedTasks.includes(t));
+
+      const aiSchedule = await generateSchedule({
+        pending: pendingTasks,
+        missed: missedTasks,
+        completed: completedToday
+      });
 
       // 🚀 COMMIT THE CHANGES TO THE DATABASE
       if (aiSchedule.schedule && aiSchedule.schedule.length > 0) {

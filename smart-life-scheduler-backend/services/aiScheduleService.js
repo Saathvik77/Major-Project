@@ -1,10 +1,10 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const generateSchedule = async (tasks) => {
+const generateSchedule = async ({ pending, missed, completed }) => {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
         console.warn("GEMINI_API_KEY not found. Using mock response.");
-        return generateMockSchedule(tasks);
+        return generateMockSchedule(pending);
     }
 
     try {
@@ -12,35 +12,34 @@ const generateSchedule = async (tasks) => {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
-      You are an intelligent AI Daily Planner. The user has ${tasks.length} pending task(s) they need to accomplish.
-      Create a realistic, optimized daily schedule starting from 09:00.
+      You are an intelligent AI Daily Planner. You need to organize the user's day based on their current task matrix.
       
-      Rules:
-      - Organize ALL provided tasks into a chronological flow for the day.
-      - Place High priority tasks first (morning peak energy)
-      - Place Medium priority tasks mid-day
-      - Place Low priority tasks in the afternoon
-      - Add 15-minute breaks after every 60 minutes of work
-      - Assume 45-60 minutes per task unless a duration is specified
-      - End the day by 22:00 max
+      User Matrix:
+      - Completed Today: ${completed.length} tasks (Acknowledge these as operational successes)
+      - Missed Tasks (OVERDUE): ${missed.length} tasks (These are critical and missed their original slots. Prioritize rescheduling them!)
+      - Pending Tasks: ${pending.length} tasks (Upcoming scheduled operations)
       
-      Tasks (with priority):
-      ${JSON.stringify(tasks.map(t => ({ title: t.title, priority: t.priority || "Medium", description: t.description, duration: t.duration })), null, 2)}
+      Rules for Planning:
+      1. Create a realistic, optimized daily schedule starting from 09:00 AM (or the current time if it's later).
+      2. Plan ONLY for the Missed and Pending tasks. 
+      3. CRITICAL: Reschedule Missed tasks into the earliest available slots.
+      4. Place High priority tasks (from Missed or Pending) in peak focus windows.
+      5. Add 15-minute breaks after every 60-90 minutes of work.
+      6. Assume 45-60 minutes per task unless specified.
+      7. End the day by 22:00 max.
       
-      Write a 2-3 sentence 'explanation' that tells the user:
-      1. How many tasks you scheduled
-      2. Why you ordered them the way you did (mention High/Medium/Low priorities specifically)
-      3. How breaks were placed
+      Pending Tasks Data:
+      ${JSON.stringify(pending.map(t => ({ title: t.title, priority: t.priority || "Medium", description: t.description })), null, 2)}
       
-      Return ONLY a JSON object with this exact format, without markdown blocks (\`\`\`json):
-      {
-        "explanation": "I scheduled X tasks for your day. High priority tasks like '...' are placed first in the morning when your energy is highest. Breaks are added after each major block to maintain focus throughout the day.",
-        "schedule": [
-          { "timeRange": "09:00 AM - 10:00 AM", "title": "Task Name" },
-          { "timeRange": "10:00 AM - 10:15 AM", "title": "Break" }
-        ]
-      }
-      IMPORTANT: All times in the timeRange MUST use 12-hour format with AM/PM (e.g., 09:00 AM, 02:30 PM).
+      Missed Tasks Data (Needs Rescheduling):
+      ${JSON.stringify(missed.map(t => ({ title: t.title, priority: t.priority || "Medium", description: t.description })), null, 2)}
+      
+      Response Requirements:
+      Return a JSON object with:
+      1. "explanation": A 2-3 sentence overview. Mentions completed tasks as "milestones achieved", specifically highlights how you handled the ${missed.length} missed tasks, and summarizes the new flow.
+      2. "schedule": An array of objects: { "timeRange": "HH:MM AM/PM - HH:MM AM/PM", "title": "Task Name" }. 
+      
+      Return ONLY a JSON object without markdown blocks.
     `;
 
         const result = await model.generateContent(prompt);
