@@ -201,7 +201,7 @@ const Dashboard = () => {
       </header>
 
       {/* ── Main Hero Card ────────────────────────────────────────── */}
-    <div className="relative mb-32">
+    <div className="relative mb-40">
         <div className="hero-card p-10 md:p-16 flex flex-col lg:flex-row items-center gap-16 min-h-[500px]">
            
            {/* Data Visualization Column */}
@@ -287,7 +287,7 @@ const Dashboard = () => {
       </div>
 
       {/* ── Stats Overview Row ────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-20">
         {isLoading ? (
           [1, 2, 3, 4].map(i => (
             <div key={i} className="glass-card p-6 h-32 skeleton border-none" />

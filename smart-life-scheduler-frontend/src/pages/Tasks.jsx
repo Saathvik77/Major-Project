@@ -397,9 +397,9 @@ export default function Tasks() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 relative z-10">
           
-          <div className="col-span-1 lg:col-span-8 flex flex-col gap-16">
+          <div className="col-span-1 lg:col-span-8 flex flex-col gap-20">
             <div className="glass-card p-8 overflow-hidden">
-              <div className="flex items-center justify-between gap-4 overflow-x-auto scrollbar-hide pb-2">
+              <div className="flex items-center justify-between gap-8 overflow-x-auto scrollbar-hide pb-2">
                 {weekDates.map((d, i) => {
                   const isActive = d.getDate() === selectedDate.getDate() && d.getMonth() === selectedDate.getMonth();
                   const dStr = d.toLocaleString('default', { weekday: 'short' });
@@ -706,7 +706,7 @@ export default function Tasks() {
             </div>
           </div>
 
-          <div className="col-span-12 lg:col-span-4 flex flex-col gap-12">
+          <div className="col-span-12 lg:col-span-4 flex flex-col gap-20">
             <div className="glass-card p-8 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 blur-[40px] -z-10 group-hover:bg-lime-500/20 transition-all" />
                <div className="flex items-start justify-between mb-6">
