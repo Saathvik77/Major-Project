@@ -6,7 +6,7 @@ const protect = require("../middleware/authMiddleware");
 const express = require("express");
 
 // ✅ Import controllers from separate file
-const { registerUser, loginUser, updateProfile, githubLogin, phoneLogin } = require("../controllers/authController");
+const { registerUser, loginUser, updateProfile, githubLogin, phoneLogin, deleteProfile } = require("../controllers/authController");
 
 const router = express.Router();
 // =======================
@@ -77,5 +77,8 @@ router.get("/profile", protect, async (req, res) => {
 
 // UPDATE PROFILE
 router.put("/profile", protect, updateProfile);
+
+// DELETE PROFILE
+router.delete("/profile", protect, deleteProfile);
 
 module.exports = router;

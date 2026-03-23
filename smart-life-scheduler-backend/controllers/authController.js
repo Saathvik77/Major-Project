@@ -247,10 +247,38 @@ const githubLogin = async (req, res) => {
   }
 };
 
+// DELETE PROFILE
+const deleteProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Delete all associated data
+    await Promise.all([
+      Task.deleteMany({ user: userId }),
+      // Import other models if necessary, e.g. IntelligenceReport
+      mongoose.model("IntelligenceReport").deleteMany({ user: userId }),
+      User.findByIdAndDelete(userId)
+    ]);
+
+    res.json({
+      success: true,
+      message: "Account and all associated data deleted successfully"
+    });
+
+  } catch (error) {
+    console.error("Delete Profile Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete account"
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   updateProfile,
   githubLogin,
   phoneLogin,
+  deleteProfile,
 };

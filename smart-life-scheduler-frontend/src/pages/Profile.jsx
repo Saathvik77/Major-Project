@@ -14,7 +14,9 @@ import {
   Star,
   CheckCircle2,
   Brain,
-  Clock
+  Clock,
+  AlertTriangle,
+  Trash2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
@@ -30,6 +32,8 @@ function Profile() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncResults, setSyncResults] = useState(null);
   const [allTasks, setAllTasks] = useState([]);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -56,16 +60,30 @@ function Profile() {
     navigate("/login");
   };
 
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      await API.delete("/auth/profile");
+      localStorage.removeItem("token");
+      setToast("Account and all associated data have been permanently removed.");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    } catch (err) {
+      console.error("Delete Account Error:", err);
+      setToast("Failed to delete account. System interference detected.");
+      setIsDeleting(false);
+    }
+  };
+
   const handleUpgrade = async () => {
     setIsSyncing(true);
     setToast("Initiating Pro Synchronization... Analyzing operational nodes.");
     
     try {
-      // Re-fetch latest summary for accurate analysis
       const res = await API.get("/intelligence/summary");
       setSummary(res.data);
       
-      // Simulate "Deep Scan" processing time
       setTimeout(() => {
         setSyncResults({
           completed: res.data.completed,
@@ -91,13 +109,61 @@ function Profile() {
     }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-[#0a0c10]"><div className="w-10 h-10 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" /></div>;
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0c10]">
+      <div className="w-10 h-10 border-2 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-12 max-w-7xl mx-auto page-transition overflow-x-hidden">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+        
+        {showDeleteConfirm && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[200] flex items-center justify-center p-6"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="glass-card p-10 max-w-md w-full border-rose-500/30 shadow-[0_0_50px_rgba(244,63,94,0.1)]"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500 mb-8 mx-auto">
+                <AlertTriangle size={32} />
+              </div>
+              <h2 className="text-2xl font-black text-white text-center mb-4 uppercase tracking-tight">Terminate Identity?</h2>
+              <p className="text-xs text-gray-400 text-center leading-relaxed mb-10 font-bold uppercase tracking-widest">
+                This action will permanently erase your user profile, task history, and intelligence reports. <span className="text-rose-500">This protocol cannot be reversed.</span>
+              </p>
+              <div className="flex flex-col gap-4">
+                <button 
+                  onClick={handleDeleteAccount}
+                  disabled={isDeleting}
+                  className="w-full py-4 bg-rose-500 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl shadow-rose-500/20 hover:bg-rose-600 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                >
+                  {isDeleting ? (
+                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : <Trash2 size={14} />}
+                  Confirm Permanent Erasure
+                </button>
+                <button 
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={isDeleting}
+                  className="w-full py-4 bg-white/5 border border-white/10 text-gray-400 font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-white/10 transition-all disabled:opacity-50"
+                >
+                  Abort Protocol
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
+
       {/* Background Glows */}
       <div className="fixed top-[-10%] right-[-5%] w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
       <div className="fixed bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
@@ -111,13 +177,13 @@ function Profile() {
           </div>
           <div>
             <h1 className="text-4xl font-black text-white tracking-tighter">{user?.name || "User"}</h1>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">System Security Clearance: L3</p>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-orange-500/60">Node Integrity: Fully Operational</p>
           </div>
         </div>
 
         <button 
           onClick={handleLogout}
-          className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-500/10 hover:border-rose-500/20 hover:text-rose-500 transition-all shadow-xl group"
+          className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all shadow-xl group"
         >
           <div className="flex items-center gap-3">
             <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" />
@@ -127,20 +193,19 @@ function Profile() {
       </header>
 
       <div className="grid grid-cols-12 gap-8">
-        {/* Main Stats Column */}
+        {/* Main Operational Log Column */}
         <div className="col-span-12 lg:col-span-8 space-y-8">
           
-          {/* Operational Stats Grid */}
+          {/* Performance Matrix */}
           <div className="glass-card p-10 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/5 rounded-full blur-[60px] -z-10" />
-            
             <div className="flex items-center gap-4 mb-10">
               <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
                 <Activity size={24} />
               </div>
               <div>
-                <h3 className="text-xl font-black text-white tracking-tight">{user?.name || "User"}'s Matrix</h3>
-                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Real-time Performance Metrics</p>
+                <h3 className="text-xl font-black text-white tracking-tight">System Performance Matrix</h3>
+                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Real-time Node Metrics</p>
               </div>
             </div>
 
@@ -169,58 +234,31 @@ function Profile() {
             </div>
           </div>
 
-          {/* Smart Milestones */}
+          {/* Completed Task Log */}
           <div className="glass-card p-10 relative overflow-hidden group">
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-orange-500/5 rounded-full blur-[60px] -z-10" />
-            
             <div className="flex items-center gap-4 mb-10">
               <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
-                <Trophy size={24} />
+                <Clock size={24} />
               </div>
               <div>
-                <h3 className="text-xl font-black text-white tracking-tight">Smart Milestones</h3>
-                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">System Achievements</p>
+                <h3 className="text-xl font-black text-white tracking-tight">Completed Operational Log</h3>
+                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Verification of finalized tasks</p>
               </div>
             </div>
-
-            <div className="space-y-4">
-               {(summary?.milestones || []).map((milestone, idx) => (
-                 <div key={idx} className="flex items-center gap-6 p-6 rounded-[2rem] bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all group/item">
-                    <div className="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center shadow-lg shadow-orange-500/5">
-                       {getMilestoneIcon(milestone.icon)}
-                    </div>
-                    <div>
-                       <h4 className="text-sm font-black text-white uppercase tracking-wider mb-1">{milestone.label}</h4>
-                       <p className="text-[11px] font-bold text-gray-500 tracking-wide uppercase">{milestone.desc}</p>
-                    </div>
-                    <div className="ml-auto p-3 bg-white/5 rounded-xl text-gray-700 group-hover/item:text-orange-500 transition-colors">
-                       <ChevronRight size={16} />
-                    </div>
-                 </div>
-               ))}
-               
-               {(!summary?.milestones || summary.milestones.length === 0) && (
-                 <p className="text-center py-10 text-gray-500 font-bold text-sm">Complete tasks to unlock milestones</p>
-               )}
-            </div>
-          </div>
-
-          {/* Completed Task Log (Transparency Feature) */}
-          <div className="glass-card p-10 relative overflow-hidden group">
-            <h3 className="text-lg font-black text-white tracking-tight mb-2">Completed Operational Log</h3>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-8">Verification of finalized tasks</p>
             
-            <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                {allTasks?.filter(t => t.completed).length === 0 ? (
-                 <p className="text-center py-10 text-gray-500 font-bold text-xs uppercase tracking-widest">No completed tasks logged in the matrix</p>
+                 <div className="text-center py-20 bg-white/[0.02] rounded-3xl border border-dashed border-white/10">
+                    <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">No completed tasks logged in the matrix</p>
+                 </div>
                ) : (
                  allTasks?.filter(t => t.completed).map((task, idx) => (
-                   <div key={task._id || idx} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5">
-                      <div className="flex items-center gap-4">
-                         <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]" />
-                         <span className="text-sm font-bold text-white">{task.title}</span>
+                   <div key={task._id || idx} className="flex items-center justify-between p-6 rounded-[2rem] bg-white/[0.03] border border-white/5 group/item hover:bg-white/[0.06] transition-all">
+                      <div className="flex items-center gap-5">
+                         <div className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]" />
+                         <span className="text-sm font-bold text-white group-hover/item:translate-x-1 transition-transform">{task.title}</span>
                       </div>
-                      <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">
+                      <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
                          {new Date(task.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                       </span>
                    </div>
@@ -230,24 +268,17 @@ function Profile() {
           </div>
         </div>
 
-        {/* Settings Column */}
+        {/* Action Column */}
         <div className="col-span-12 lg:col-span-4 space-y-8">
-           <div className="glass-card p-8">
-              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-8 border-b border-white/5 pb-4">System Settings</h3>
-              <div className="space-y-2">
-                 <SettingItem icon={Settings} label="Interface Calibration" />
-                 <SettingItem icon={Shield} label="Security Protocol" />
-                 <SettingItem icon={Bell} label="Notification Feed" />
-                 <SettingItem icon={Activity} label="Data Management" />
-              </div>
-           </div>
-
-           <div className="glass-card p-10 bg-gradient-to-br from-orange-500 to-amber-600 border-none shadow-2xl shadow-orange-500/20 relative overflow-hidden">
+           
+           {/* Pro Synchronization */}
+           <div className="glass-card p-10 bg-gradient-to-br from-orange-500 to-amber-600 border-none shadow-2xl shadow-orange-500/20 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-[40px] -z-10 group-hover:bg-white/20 transition-all" />
               {isSyncing && (
                 <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-20">
                    <div className="flex flex-col items-center gap-3">
                       <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-white">Analyzing...</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-white">Analyzing Matrix...</span>
                    </div>
                 </div>
               )}
@@ -255,24 +286,24 @@ function Profile() {
               <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white mb-6">
                  <Zap size={24} strokeWidth={2.5} />
               </div>
-              <h3 className="text-xl font-black text-white tracking-tight mb-3 uppercase">Pro Synchronization</h3>
+              <h3 className="text-xl font-black text-white tracking-tight mb-3 uppercase">Pro Dynamic Sync</h3>
               
               {!syncResults ? (
                 <p className="text-xs text-white/70 font-bold leading-relaxed mb-8 uppercase tracking-widest">
-                  Analyze and classify your task matrix for peak operational efficiency.
+                  Classify and optimize your operational nodes for maximum efficiency.
                 </p>
               ) : (
                 <div className="grid grid-cols-3 gap-4 mb-8">
-                   <div className="text-center">
-                      <p className="text-[8px] font-black text-white/60 uppercase tracking-tighter mb-1">Completed</p>
+                   <div className="text-center p-3 rounded-xl bg-black/10">
+                      <p className="text-[8px] font-black text-white/60 uppercase tracking-tighter mb-1">Done</p>
                       <p className="text-xl font-black text-white">{syncResults.completed}</p>
                    </div>
-                   <div className="text-center">
-                      <p className="text-[8px] font-black text-white/60 uppercase tracking-tighter mb-1">Pending</p>
+                   <div className="text-center p-3 rounded-xl bg-black/10">
+                      <p className="text-[8px] font-black text-white/60 uppercase tracking-tighter mb-1">Wait</p>
                       <p className="text-xl font-black text-white">{syncResults.pending}</p>
                    </div>
-                   <div className="text-center">
-                      <p className="text-[8px] font-black text-white/60 uppercase tracking-tighter mb-1">Missing</p>
+                   <div className="text-center p-3 rounded-xl bg-black/10">
+                      <p className="text-[8px] font-black text-rose-200/60 uppercase tracking-tighter mb-1">Miss</p>
                       <p className="text-xl font-black text-rose-200">{syncResults.missing}</p>
                    </div>
                 </div>
@@ -281,27 +312,62 @@ function Profile() {
               <button 
                 onClick={handleUpgrade}
                 disabled={isSyncing}
-                className="w-full py-4 bg-white text-orange-500 font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all disabled:opacity-50"
+                className="w-full py-4 bg-white text-orange-500 font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
               >
-                {syncResults ? "Re-Synchronize Node" : "Initiate Sync"}
+                {syncResults ? "Refresh Synchronization" : "Initiate Sync Protocol"}
               </button>
            </div>
+
+           {/* Achievements */}
+           <div className="glass-card p-10 relative overflow-hidden group">
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                   <Trophy size={14} className="text-orange-500" />
+                   Achievements
+                </h3>
+              </div>
+              <div className="space-y-4">
+                 {(summary?.milestones || []).slice(0, 3).map((milestone, idx) => (
+                   <div key={idx} className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+                      <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                         {getMilestoneIcon(milestone.icon)}
+                      </div>
+                      <div>
+                         <p className="text-[10px] font-black text-white uppercase tracking-tight">{milestone.label}</p>
+                         <p className="text-[8px] font-bold text-gray-500 uppercase">{milestone.desc}</p>
+                      </div>
+                   </div>
+                 ))}
+                 {(!summary?.milestones || summary.milestones.length === 0) && (
+                   <p className="text-center py-6 text-gray-600 text-[10px] font-black uppercase tracking-widest">No achievements yet</p>
+                 )}
+              </div>
+           </div>
+
+           {/* Danger Zone */}
+           <div className="glass-card p-10 border-rose-500/10 bg-rose-500/[0.02]">
+              <h3 className="text-xs font-black text-rose-500/60 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                 <Shield size={14} />
+                 Terminal Protocol
+              </h3>
+              <p className="text-[10px] text-gray-500 font-bold leading-relaxed mb-8 uppercase tracking-widest">
+                Deleting your account will permanently wipe all matrix data. This cannot be undone.
+              </p>
+              <button 
+                onClick={() => setShowDeleteConfirm(true)}
+                className="w-full py-4 border border-rose-500/20 text-rose-500 font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-rose-500 hover:text-white transition-all shadow-lg shadow-rose-500/5 group"
+              >
+                <div className="flex items-center justify-center gap-3">
+                  <Trash2 size={14} className="group-hover:rotate-12 transition-transform" />
+                  Delete My Account
+                </div>
+              </button>
+           </div>
+
         </div>
       </div>
     </div>
   );
 }
-
-const SettingItem = ({ icon: Icon, label }) => (
-  <div className="flex items-center justify-between p-4 rounded-2xl hover:bg-white/5 transition-all cursor-pointer group">
-    <div className="flex items-center gap-4">
-      <div className="text-gray-500 group-hover:text-orange-500 transition-colors">
-        <Icon size={18} />
-      </div>
-      <span className="text-[11px] font-black text-gray-400 group-hover:text-white uppercase tracking-widest transition-colors">{label}</span>
-    </div>
-    <ChevronRight size={14} className="text-gray-800 group-hover:text-white transition-all" />
-  </div>
-);
 
 export default Profile;

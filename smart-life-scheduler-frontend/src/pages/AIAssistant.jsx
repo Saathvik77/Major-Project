@@ -66,6 +66,7 @@ const AIAssistant = () => {
     },
   ]);
   const [isTyping, setIsTyping] = useState(false);
+  const [loading, setLoading] = useState(true);
   const chatEndRef = useRef(null);
 
   const [weatherData, setWeatherData] = useState(null);
@@ -115,6 +116,8 @@ const AIAssistant = () => {
         });
       } catch (error) {
         console.error("AI Assistant Data Error:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchAIAssistantData();
@@ -166,6 +169,8 @@ const AIAssistant = () => {
       setIsTyping(false);
     }
   };
+
+  if (loading) return <div className="min-h-screen pl-[84px] flex items-center justify-center"><div className="w-12 h-12 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin" /></div>;
 
   return (
     <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
@@ -227,7 +232,9 @@ const AIAssistant = () => {
                           <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-4">Proposed Operational Flow</p>
                           {msg.actions.filter(a => a.type === "schedule").map((action, idx) => (
                             <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10 group/item hover:bg-white/10 transition-all">
-                              <div className="w-16 text-[10px] font-black text-gray-500 group-hover/item:text-orange-400 transition-colors">{action.timeRange.split(' - ')[0]}</div>
+                            <div className="w-16 text-[10px] font-black text-gray-500 group-hover/item:text-orange-400 transition-colors">
+                              {action.timeRange?.includes(' - ') ? action.timeRange.split(' - ')[0] : (action.timeRange || "09:00 AM")}
+                            </div>
                               <div className="flex-1 text-xs font-bold text-white">{action.title}</div>
                               {action.title.toLowerCase().includes('break') && (
                                 <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />

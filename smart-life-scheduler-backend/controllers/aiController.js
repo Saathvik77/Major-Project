@@ -68,8 +68,18 @@ const chatWithAI = async (req, res) => {
         }
       }
 
+      const { weatherData } = req.body;
+      let extraNote = "";
+      if (weatherData) {
+        const temp = weatherData.temperature;
+        const code = weatherData.weathercode;
+        if (code <= 2 && temp >= 10 && temp <= 32) extraNote = " The weather is perfect for a 30-minute outdoor run or cycling session! 🏃‍♀️🚴‍♂️";
+        else if (code >= 51) extraNote = " It's raining, so I recommend an indoor HIIT workout or yoga session. 🧘‍♂️";
+        else extraNote = " Consider a light indoor stretching session to maintain operational flow. 🤸‍♂️";
+      }
+
       return res.json({
-        reply: aiSchedule.explanation || "I've analyzed all your tasks and synchronized your operational flow. Your schedule has been updated.",
+        reply: (aiSchedule.explanation || "Your schedule has been updated.") + extraNote,
         actions: aiSchedule.schedule.map(s => ({ type: "schedule", ...s }))
       });
     }
