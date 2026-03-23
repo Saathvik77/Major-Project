@@ -55,6 +55,14 @@ const TaskSchema = new mongoose.Schema(
   },
   status: {
     type: String,
+  },
+  repeatFrequency: {
+    type: String, // 'once', 'daily', 'workdays', 'custom'
+    default: 'once'
+  },
+  repeatDays: {
+    type: [Number], // 0-6 (Sun-Sat)
+    default: []
   }
 },
 { timestamps: true }

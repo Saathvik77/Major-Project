@@ -27,6 +27,8 @@ router.post(
       duration,
       deadline,
       startTime,
+      repeatFrequency,
+      repeatDays
     } = req.body;
 
     const taskDate = new Date(date);
@@ -41,6 +43,8 @@ router.post(
       deadline,
       startTime: startTime || "09:00",
       rescheduledCount: 0,
+      repeatFrequency: repeatFrequency || 'once',
+      repeatDays: repeatDays || []
     });
 
     res.status(201).json({
@@ -106,8 +110,12 @@ router.get(
       const start = new Date(date);
       const end = new Date(date);
       end.setHours(23, 59, 59, 999);
+      const dayOfWeek = start.getDay();
 
-      filter.date = { $gte: start, $lte: end };
+      filter.$or = [
+        { date: { $gte: start, $lte: end }, repeatFrequency: 'once' },
+        { repeatDays: dayOfWeek }
+      ];
     }
 
     if (from && to) {

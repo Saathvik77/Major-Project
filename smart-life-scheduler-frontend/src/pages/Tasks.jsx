@@ -81,6 +81,8 @@ export default function Tasks() {
   const [aiChatResponse, setAiChatResponse]   = useState("");
   const [isAiLoading, setIsAiLoading]         = useState(false);
   const [weatherData, setWeatherData] = useState(null);
+  const [repeatFrequency, setRepeatFrequency] = useState("once");
+  const [repeatDays, setRepeatDays] = useState([]);
   const [isReschedulingModalOpen, setIsReschedulingModalOpen] = useState(false);
   const [reschedulingTasks, setReschedulingTasks] = useState([]);
   const informedRef  = useRef(new Set());
@@ -172,14 +174,23 @@ export default function Tasks() {
   const addTask = async () => {
     if (!title.trim()) return;
     try {
+      let finalDays = [];
+      if (repeatFrequency === 'custom') finalDays = repeatDays;
+      else if (repeatFrequency === 'workdays') finalDays = [1, 2, 3, 4, 5];
+      else if (repeatFrequency === 'daily') finalDays = [0, 1, 2, 3, 4, 5, 6];
+
       const res = await api.post("/tasks", {
         title, date: selectedDate, duration: 60,
-        priority, startTime: startTime || "09:00"
+        priority, startTime: startTime || "09:00",
+        repeatFrequency,
+        repeatDays: finalDays
       });
       setTasks([...tasks, res.data.task]);
       setTitle(""); 
       setStartTime("");
-      setToast("Task added successfully");
+      setRepeatFrequency("once");
+      setRepeatDays([]);
+      setToast("Task deployed successfully 🚀");
     } catch (err) { console.error(err); }
   };
 
@@ -491,39 +502,145 @@ export default function Tasks() {
                   </>
                 )}
 
-                <div className="glass-card p-4 flex flex-col gap-4 border border-white/10 shadow-2xl">
-                  <div className="flex items-center bg-white/5 rounded-2xl px-6 py-4 border border-white/5 focus-within:border-orange-500/30 transition-all">
-                    <input 
-                      type="text" 
-                      placeholder="Initiate new operational task..." 
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && addTask()}
-                      className="flex-1 bg-transparent border-none outline-none text-sm font-medium text-white placeholder:text-gray-600"
-                    />
-                  </div>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <input 
-                      type="time"
-                      value={startTime}
-                      onChange={(e) => setStartTime(e.target.value)}
-                      className="flex-1 min-w-[120px] bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-sm text-white"
-                    />
-                    <select 
-                      value={priority}
-                      onChange={(e) => setPriority(e.target.value)}
-                      className="flex-1 min-w-[120px] bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 outline-none focus:border-orange-500/30 cursor-pointer"
-                    >
-                      <option value="High">High</option>
-                      <option value="Medium">Medium</option>
-                      <option value="Low">Low</option>
-                    </select>
-                    <button 
-                      onClick={addTask}
-                      className="w-full md:w-14 h-14 rounded-xl bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/20 flex-shrink-0"
-                    >
-                      <Plus size={24} strokeWidth={3} />
-                    </button>
+                <div className="glass-card p-8 flex flex-col gap-8 border border-white/10 shadow-2xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 blur-[40px] -z-10" />
+                  
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">Task Configuration</h4>
+                      <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10">
+                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Alarm Mode</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center bg-white/5 rounded-[2rem] px-8 py-6 border border-white/5 focus-within:border-orange-500/30 transition-all shadow-inner">
+                      <input 
+                        type="text" 
+                        placeholder="What's the next objective?" 
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && addTask()}
+                        className="flex-1 bg-transparent border-none outline-none text-xl font-bold text-white placeholder:text-gray-700 tracking-tight"
+                      />
+                    </div>
+
+                    {/* Alarm Time Picker Mock/UI */}
+                    <div className="flex flex-col items-center gap-8 py-8 bg-white/[0.02] rounded-[2.5rem] border border-white/5">
+                        <div className="flex items-center gap-12">
+                           <div className="flex flex-col items-center gap-2">
+                             <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Hour</span>
+                             <div className="text-5xl font-black text-white tracking-tighter flex items-end gap-1">
+                                {startTime?.includes(':') ? startTime.split(':')[0] : "09"}
+                                <span className="text-sm text-gray-500 mb-2 font-bold">h</span>
+                             </div>
+                           </div>
+                           <div className="flex flex-col items-center gap-2">
+                             <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Minute</span>
+                             <div className="text-5xl font-black text-white tracking-tighter flex items-end gap-1">
+                                {startTime?.includes(':') ? startTime.split(':')[1] : "00"}
+                                <span className="text-sm text-gray-500 mb-2 font-bold">min</span>
+                             </div>
+                           </div>
+                           <div className="flex flex-col items-center gap-2">
+                             <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Period</span>
+                             <div className="text-3xl font-black text-orange-500 tracking-tighter mt-2">
+                                {startTime?.includes(':') ? (parseInt(startTime.split(':')[0]) >= 12 ? "PM" : "AM") : "AM"}
+                             </div>
+                           </div>
+                        </div>
+
+                        <input 
+                          type="time"
+                          value={startTime}
+                          onChange={(e) => setStartTime(e.target.value)}
+                          className="absolute opacity-0 w-px h-px pointer-events-none"
+                          id="hidden-time-input"
+                        />
+                        <button 
+                          onClick={() => document.getElementById('hidden-time-input')?.showPicker?.()}
+                          className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+                        >
+                          Adjust Time
+                        </button>
+                    </div>
+
+                    {/* Mode Selector */}
+                    <div className="flex items-center gap-2 p-1.5 bg-white/5 rounded-2xl border border-white/10">
+                        {['once', 'workdays', 'custom'].map((mode) => (
+                          <button
+                            key={mode}
+                            onClick={() => setRepeatFrequency(mode)}
+                            className={`flex-1 py-3 rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest transition-all ${
+                              repeatFrequency === mode 
+                                ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' 
+                                : 'text-gray-500 hover:text-gray-300'
+                            }`}
+                          >
+                            {mode === 'once' ? 'Ring once' : mode === 'workdays' ? 'Workdays' : 'Custom'}
+                          </button>
+                        ))}
+                    </div>
+
+                    {/* Day Selector Component */}
+                    {(repeatFrequency === 'custom' || repeatFrequency === 'workdays' || repeatFrequency === 'daily') && (
+                      <div className="space-y-4 animate-fadeIn">
+                        <div className="flex items-center justify-between px-2">
+                           <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Repeat Schedule</span>
+                           <span className="text-[10px] font-bold text-orange-500">
+                             {repeatFrequency === 'workdays' ? 'Mon - Fri' : 'Every day'}
+                           </span>
+                        </div>
+                        <div className="flex items-center justify-between gap-1 bg-white/5 p-3 rounded-3xl border border-white/5">
+                           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, idx) => {
+                             const isSelected = repeatFrequency === 'daily' || 
+                                              (repeatFrequency === 'workdays' && idx >= 1 && idx <= 5) ||
+                                              (repeatFrequency === 'custom' && repeatDays.includes(idx));
+                             return (
+                               <button
+                                 key={idx}
+                                 onClick={() => {
+                                   if (repeatFrequency !== 'custom') return;
+                                   const next = repeatDays.includes(idx) 
+                                     ? repeatDays.filter(d => d !== idx)
+                                     : [...repeatDays, idx];
+                                   setRepeatDays(next);
+                                 }}
+                                 className={`w-10 h-10 rounded-full flex items-center justify-center text-[10px] font-black transition-all ${
+                                   isSelected 
+                                     ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20 scale-110' 
+                                     : 'bg-white/5 text-gray-500 border border-white/5'
+                                 }`}
+                               >
+                                 {day}
+                               </button>
+                             );
+                           })}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1 bg-white/5 rounded-2xl px-6 py-4 border border-white/5 flex items-center gap-3">
+                        <SlidersHorizontal size={16} className="text-gray-500" />
+                        <select 
+                          value={priority}
+                          onChange={(e) => setPriority(e.target.value)}
+                          className="flex-1 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-400 outline-none cursor-pointer"
+                        >
+                          <option value="High">High Priority</option>
+                          <option value="Medium">Medium Priority</option>
+                          <option value="Low">Low Priority</option>
+                        </select>
+                      </div>
+                      <button 
+                        onClick={addTask}
+                        className="h-14 px-8 rounded-2xl bg-orange-500 text-white flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 group"
+                      >
+                        <span className="text-[11px] font-black uppercase tracking-[0.2em]">Deploy Task</span>
+                        <Plus size={20} strokeWidth={3} className="group-hover:rotate-90 transition-transform" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
