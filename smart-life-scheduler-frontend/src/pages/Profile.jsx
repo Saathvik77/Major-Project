@@ -29,16 +29,19 @@ function Profile() {
   const [toast, setToast] = useState(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncResults, setSyncResults] = useState(null);
+  const [allTasks, setAllTasks] = useState([]);
 
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const [userRes, summaryRes] = await Promise.all([
+        const [userRes, summaryRes, tasksRes] = await Promise.all([
           API.get("/auth/profile"),
-          API.get("/intelligence/summary")
+          API.get("/intelligence/summary"),
+          API.get("/tasks?limit=500")
         ]);
         setUser(userRes.data.user || userRes.data);
         setSummary(summaryRes.data);
+        setAllTasks(tasksRes.data.tasks || []);
       } catch (err) {
         console.error("Profile Error:", err);
       } finally {
@@ -198,6 +201,30 @@ function Profile() {
                
                {(!summary?.milestones || summary.milestones.length === 0) && (
                  <p className="text-center py-10 text-gray-500 font-bold text-sm">Complete tasks to unlock milestones</p>
+               )}
+            </div>
+          </div>
+
+          {/* Completed Task Log (Transparency Feature) */}
+          <div className="glass-card p-10 relative overflow-hidden group">
+            <h3 className="text-lg font-black text-white tracking-tight mb-2">Completed Operational Log</h3>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-8">Verification of finalized tasks</p>
+            
+            <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+               {allTasks?.filter(t => t.completed).length === 0 ? (
+                 <p className="text-center py-10 text-gray-500 font-bold text-xs uppercase tracking-widest">No completed tasks logged in the matrix</p>
+               ) : (
+                 allTasks?.filter(t => t.completed).map((task, idx) => (
+                   <div key={task._id || idx} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+                      <div className="flex items-center gap-4">
+                         <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.4)]" />
+                         <span className="text-sm font-bold text-white">{task.title}</span>
+                      </div>
+                      <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">
+                         {new Date(task.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                      </span>
+                   </div>
+                 ))
                )}
             </div>
           </div>

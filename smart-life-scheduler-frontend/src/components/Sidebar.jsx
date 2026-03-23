@@ -23,22 +23,24 @@ const SidebarItem = ({ icon: Icon, to, label }) => (
         : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}
     `}
   >
-    <Icon size={22} strokeWidth={1.5} />
-    
-    {/* Tooltip */}
-    <div className="absolute left-16 px-2 py-1 rounded-md bg-zinc-900 border border-white/10 text-white text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 z-50">
-      {label}
-    </div>
+    {({ isActive }) => (
+      <>
+        <Icon size={22} strokeWidth={1.5} />
+        
+        {/* Tooltip */}
+        <div className="absolute left-16 px-2 py-1 rounded-md bg-zinc-900 border border-white/10 text-white text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 z-50">
+          {label}
+        </div>
 
-    {/* Active Indicator Dot */}
-    <NavLink to={to}>
-      {({ isActive }) => isActive && (
-        <motion.div 
-          layoutId="activeSideDot"
-          className="absolute -left-1 w-1 h-3 bg-orange-500 rounded-full shadow-[0_0_8px_rgba(255,140,60,0.5)]"
-        />
-      )}
-    </NavLink>
+        {/* Active Indicator Dot */}
+        {isActive && (
+          <motion.div 
+            layoutId="activeSideDot"
+            className="absolute -left-1 w-1 h-3 bg-orange-500 rounded-full shadow-[0_0_8px_rgba(255,140,60,0.5)]"
+          />
+        )}
+      </>
+    )}
   </NavLink>
 );
 

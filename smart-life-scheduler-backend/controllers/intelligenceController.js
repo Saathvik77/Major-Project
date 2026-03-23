@@ -90,11 +90,21 @@ const getSummary = async (req, res) => {
     const completed = completedTasks.length;
     const pending = tasks.filter(t => !t.completed).length;
     
-    const overdue = tasks.filter(t => 
-      !t.completed && 
-      t.date && 
-      new Date(t.date) < today
-    ).length;
+    const overdue = tasks.filter(t => {
+      if (t.completed || !t.date) return false;
+      
+      const taskDate = new Date(t.date);
+      taskDate.setHours(0, 0, 0, 0);
+      
+      if (taskDate < today) return true;
+      if (taskDate.getTime() === today.getTime() && t.startTime) {
+        const [h, m] = t.startTime.split(':').map(Number);
+        const taskTime = new Date(today);
+        taskTime.setHours(h, m, 0, 0);
+        return taskTime < new Date();
+      }
+      return false;
+    }).length;
 
     // Calculate Focus Time (sum of durations of completed tasks)
     const focusTimeMinutes = completedTasks.reduce((acc, t) => acc + (t.duration || 0), 0);

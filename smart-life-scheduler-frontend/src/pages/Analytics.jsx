@@ -74,9 +74,9 @@ const StatCard = ({ icon: Icon, label, value, trend, color = "orange" }) => (
 
 function Analytics() {
   const navigate = useNavigate();
-  const [summary, setSummary] = useState(null);
-  const [completedTasks, setCompletedTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
+   const [summary, setSummary] = useState(null);
+   const [allTasks, setAllTasks] = useState([]);
+   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("Week");
 
   const PRIMARY_ACCENT = "#ff8c3c";
@@ -97,8 +97,8 @@ function Analytics() {
           API.get("/tasks?limit=500")
         ]);
         setSummary(summaryRes.data);
-        const allTasks = tasksRes.data?.tasks || [];
-        setCompletedTasks(allTasks.filter(t => t.completed));
+        const tasks = tasksRes.data?.tasks || [];
+        setAllTasks(tasks);
 
         // 🧠 Dynamic AI Insights Logic
         const completed = allTasks.filter(t => t.completed);
@@ -176,8 +176,8 @@ function Analytics() {
     d.setDate(d.getDate() - (6 - i));
     const dStr = d.toISOString().split('T')[0];
     
-    const count = completedTasks.filter(t => 
-      t.date && new Date(t.date).toISOString().split('T')[0] === dStr
+    const count = allTasks.filter(t => 
+      t.completed && t.date && new Date(t.date).toISOString().split('T')[0] === dStr
     ).length;
 
     return {
@@ -381,6 +381,105 @@ function Analytics() {
                >
                   Detailed Operational Report
                </button>
+            </div>
+          </div>
+
+          {/* ── Task Explorer Section ─────────────────────────────── */}
+          <div className="col-span-12">
+            <div className="glass-card p-10 flex flex-col gap-8 relative overflow-hidden group">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                  <h3 className="text-2xl font-black text-white tracking-tight">Task Explorer</h3>
+                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Detailed Operational Log</p>
+                </div>
+                <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl overflow-x-auto scrollbar-hide">
+                  {["All", "Completed", "Pending", "Missed"].map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setFilter(cat)}
+                      className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
+                        (filter === cat || (filter === "Week" && cat === "All"))
+                          ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' 
+                          : 'bg-white/5 text-gray-500 hover:text-white'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                {allTasks.filter(task => {
+                  const now = new Date();
+                  const [h, m] = (task.startTime || "00:00").split(':').map(Number);
+                  const taskDate = new Date(task.date);
+                  taskDate.setHours(h, m, 0, 0);
+                  const expired = !task.completed && taskDate < now;
+
+                  if (filter === "Completed") return task.completed;
+                  if (filter === "Pending") return !task.completed && !expired;
+                  if (filter === "Missed") return expired;
+                  return true;
+                }).length === 0 ? (
+                  <div className="text-center py-20 bg-white/[0.02] rounded-3xl border border-dashed border-white/10">
+                    <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">No tasks matches this classification</p>
+                  </div>
+                ) : (
+                  allTasks.filter(task => {
+                    const now = new Date();
+                    const [h, m] = (task.startTime || "00:00").split(':').map(Number);
+                    const taskDate = new Date(task.date);
+                    taskDate.setHours(h, m, 0, 0);
+                    const expired = !task.completed && taskDate < now;
+
+                    if (filter === "Completed") return task.completed;
+                    if (filter === "Pending") return !task.completed && !expired;
+                    if (filter === "Missed") return expired;
+                    return true;
+                  }).map((task) => {
+                    const now = new Date();
+                    const [h, m] = (task.startTime || "00:00").split(':').map(Number);
+                    const taskDate = new Date(task.date);
+                    taskDate.setHours(h, m, 0, 0);
+                    const expired = !task.completed && taskDate < now;
+                    
+                    return (
+                      <div key={task._id || task.id} className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/5 flex items-center justify-between group/item hover:bg-white/[0.06] transition-all">
+                        <div className="flex items-center gap-5">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
+                            task.completed ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' :
+                            expired ? 'bg-rose-500/10 border-rose-500/20 text-rose-500' :
+                            'bg-orange-500/10 border-orange-500/20 text-orange-500'
+                          }`}>
+                            {task.completed ? <CheckCircle2 size={18} /> : expired ? <AlertCircle size={18} /> : <Clock size={18} />}
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-white tracking-tight">{task.title}</h4>
+                            <div className="flex items-center gap-3 mt-1">
+                              <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">{task.category || "General"}</span>
+                              <div className="w-1 h-1 rounded-full bg-gray-700" />
+                              <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                                task.priority === "High" ? "text-rose-400 border-rose-500/20 bg-rose-500/5" :
+                                task.priority === "Medium" ? "text-amber-400 border-amber-500/20 bg-amber-500/5" :
+                                "text-emerald-400 border-emerald-500/20 bg-emerald-500/5"
+                              }`}>
+                                {task.priority}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs font-black text-white">{task.startTime || "—"}</p>
+                          <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mt-1">
+                            {new Date(task.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
             </div>
           </div>
 

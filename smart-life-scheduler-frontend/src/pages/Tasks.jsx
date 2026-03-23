@@ -32,9 +32,6 @@ const getTaskEndMs = (task) => {
   return base.getTime() + (task.duration || 60) * 60 * 1000;
 };
 
-const ONE_HOUR_MS  = 60 * 60 * 1000;
-const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
-
 // ─── Notification Toast Component ─────────────────────────────────────────
 function RescheduleNotification({ task, onReschedule, onDismiss }) {
   return (
@@ -83,11 +80,12 @@ export default function Tasks() {
   const [aiMessage, setAiMessage]           = useState("");
   const [aiChatResponse, setAiChatResponse]   = useState("");
   const [isAiLoading, setIsAiLoading]         = useState(false);
-  const notifiedRef  = useRef(new Set());
+  const [weatherData, setWeatherData] = useState(null);
+  const [isReschedulingModalOpen, setIsReschedulingModalOpen] = useState(false);
+  const [reschedulingTasks, setReschedulingTasks] = useState([]);
+  const informedRef  = useRef(new Set());
   const autoRescheduledRef = useRef(new Set());
   const navigate = useNavigate();
-
-  const [weatherData, setWeatherData] = useState(null);
 
   useEffect(() => {
     // Basic weather fetch for AI suggestions
@@ -117,7 +115,6 @@ export default function Tasks() {
       setAiChatResponse(res.data.reply);
       setAiMessage("");
       if (res.data.actions) {
-         // If there are actions (like navigation or task creation), we might need to refresh
          fetchTasks();
       }
     } catch (err) {
@@ -130,12 +127,10 @@ export default function Tasks() {
   const fetchTasks = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Pass the selected date to the backend for robust filtering
       const dateStr = selectedDate.toISOString().split('T')[0];
       const res = await api.get(`/tasks?date=${dateStr}&limit=100`);
       
       const allTasks = res.data.tasks || [];
-      // Secondary local filter to ensure exact match ignoring time
       const filtered = allTasks.filter(task => {
         const tDate = new Date(task.date);
         return tDate.getUTCFullYear() === selectedDate.getFullYear() &&
@@ -190,13 +185,11 @@ export default function Tasks() {
 
   const completeTask = async (taskId) => {
     try {
-      // Optimistically update local state to show completion
       setTasks(prev => prev.map(t => (t._id || t.id) === taskId ? { ...t, completed: true } : t));
       await api.patch(`/tasks/${taskId}`, { completed: true });
       setToast("Task completed! Keep up the momentum 🔥");
     } catch (err) { 
       console.error(err); 
-      // Rollback on error
       fetchTasks();
     }
   };
@@ -209,19 +202,29 @@ export default function Tasks() {
     } catch (err) { console.error(err); }
   };
 
-  const rescheduleTask = async (task) => {
+  const openRescheduleModal = (tasksToReschedule) => {
+    const list = Array.isArray(tasksToReschedule) ? tasksToReschedule : [tasksToReschedule];
+    const prepared = list.map(t => ({ ...t, newTime: t.startTime }));
+    setReschedulingTasks(prepared);
+    setIsReschedulingModalOpen(true);
+  };
+
+  const handleApplyReschedule = async () => {
+    setIsLoading(true);
     try {
-      const id = task._id || task.id;
-      const res = await api.post(`/tasks/${id}/reschedule`);
-      setTasks(prev => prev.map(t => (t._id || t.id) === id ? res.data.task : t));
-      setExpiredIds(prev => {
-        const next = new Set(prev);
-        next.delete(id);
-        return next;
-      });
-      setToast(`Rescheduled to ${formatTime12Hour(res.data.task.startTime)}`);
-    } catch (err) { console.error(err); }
-    setPendingNotification(null);
+      const promises = reschedulingTasks.map(task => 
+        api.post(`/tasks/${task._id || task.id}/reschedule`, { targetTime: task.newTime })
+      );
+      await Promise.all(promises);
+      setIsReschedulingModalOpen(false);
+      fetchTasks();
+      setToast("Tasks rescheduled successfully! Operational flow restored. 🚀");
+    } catch (err) { 
+      console.error(err); 
+      setToast("Synchronization failed. Check your connection.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const applyOptimization = async () => {
@@ -230,42 +233,7 @@ export default function Tasks() {
       setToast("No missed tasks to optimize!");
       return;
     }
-    
-    // ─── Propose Optimization Flow ───────────────────────────────────
-    const confirm = window.confirm(`Smart Life Engine has detected ${missedTasks.length} missed operational tasks. 
-
-Would you like to initiate the 'Smart Sync' protocol? 
-This will analyze your remaining windows and automatically reschedule these tasks to the next available slots to maintain your daily momentum.`);
-
-    if (!confirm) return;
-
-    setIsOptimizing(true);
-    try {
-      // 🚀 WOW FEATURE: SMART AUTO RESCHEDULE
-      const promises = missedTasks.map(task => api.post(`/tasks/${task._id || task.id}/reschedule`));
-      const results = await Promise.all(promises);
-      
-      const newTasksMap = new Map();
-      results.forEach(res => {
-        const t = res.data.task;
-        newTasksMap.set(t._id || t.id, t);
-      });
-
-      setTasks(prev => prev.map(t => newTasksMap.has(t._id || t.id) ? newTasksMap.get(t._id || t.id) : t));
-      
-      setExpiredIds(prev => {
-        const next = new Set(prev);
-        results.forEach(res => next.delete(res.data.task._id || res.data.task.id));
-        return next;
-      });
-      
-      setToast(`Smart Sync complete. ${results.length} tasks successfully reintegrated into your flow.`);
-    } catch (err) {
-      console.error(err);
-      setToast("Optimization encountered an error.");
-    } finally {
-      setIsOptimizing(false);
-    }
+    openRescheduleModal(missedTasks);
   };
 
   const onDragEnd = (result) => {
@@ -288,8 +256,6 @@ This will analyze your remaining windows and automatically reschedule these task
   };
 
   const weekDates = generateWeek(selectedDate);
-  const monthName = selectedDate.toLocaleString('default', { month: 'short' });
-  const dayName   = selectedDate.getDate();
 
   const getDayStats = () => {
     const total = tasks.length;
@@ -327,12 +293,10 @@ This will analyze your remaining windows and automatically reschedule these task
 
   return (
     <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-10 max-w-7xl mx-auto page-transition overflow-hidden">
-      {pendingNotification && <RescheduleNotification task={pendingNotification} onReschedule={rescheduleTask} onDismiss={() => setPendingNotification(null)} />}
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </AnimatePresence>
 
-      {/* ── Header ─────────────────────────────────────────────────── */}
       <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
         <div className="flex items-center gap-6">
           <div className="w-16 h-16 rounded-[2rem] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/20 shrink-0">
@@ -367,10 +331,7 @@ This will analyze your remaining windows and automatically reschedule these task
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
           
-          {/* Main Task Column */}
           <div className="col-span-1 lg:col-span-8 flex flex-col gap-8">
-            
-            {/* Date Scroller */}
             <div className="glass-card p-6 overflow-hidden">
               <div className="flex items-center justify-between gap-4 overflow-x-auto scrollbar-hide pb-2">
                 {weekDates.map((d, i) => {
@@ -396,7 +357,6 @@ This will analyze your remaining windows and automatically reschedule these task
               </div>
             </div>
 
-            {/* Task List Section */}
             <div className="glass-card p-8 flex flex-col gap-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -422,7 +382,6 @@ This will analyze your remaining windows and automatically reschedule these task
                   </div>
                 ) : (
                   <>
-                    {/* Missed Tasks Section */}
                     {tasks.filter(t => !t.completed && expiredIds.has(t._id || t.id)).length > 0 && (
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 px-1">
@@ -430,7 +389,7 @@ This will analyze your remaining windows and automatically reschedule these task
                           <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-500/80">Missed Tasks</h4>
                         </div>
                         <div className="space-y-3">
-                          {tasks.filter(t => !t.completed && expiredIds.has(t._id || t.id)).map((task, index) => (
+                          {tasks.filter(t => !t.completed && expiredIds.has(t._id || t.id)).map((task) => (
                             <TaskItem 
                               key={task._id || task.id}
                               title={task.title}
@@ -438,7 +397,7 @@ This will analyze your remaining windows and automatically reschedule these task
                               priority={task.priority}
                               onComplete={() => completeTask(task._id || task.id)}
                               onDelete={() => deleteTask(task._id || task.id)}
-                              onReschedule={() => rescheduleTask(task)}
+                              onReschedule={() => openRescheduleModal(task)}
                               isExpired={true}
                               category={task.category || "General"}
                               className="task-missed"
@@ -448,7 +407,6 @@ This will analyze your remaining windows and automatically reschedule these task
                       </div>
                     )}
 
-                    {/* Today's Tasks Section */}
                     <div className="space-y-4">
                       <div className="flex items-center gap-2 px-1">
                         <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
@@ -484,7 +442,7 @@ This will analyze your remaining windows and automatically reschedule these task
                                             priority={task.priority}
                                             onComplete={() => completeTask(id)}
                                             onDelete={() => deleteTask(id)}
-                                            onReschedule={() => rescheduleTask(task)}
+                                            onReschedule={() => openRescheduleModal(task)}
                                             isExpired={false}
                                             category={task.category || "General"}
                                           />
@@ -501,7 +459,6 @@ This will analyze your remaining windows and automatically reschedule these task
                       )}
                     </div>
 
-                    {/* Completed Tasks Section */}
                     {tasks.filter(t => t.completed).length > 0 && (
                       <div className="space-y-4 mt-8 pt-8 border-t border-white/5">
                         <div className="flex items-center gap-2 px-1">
@@ -515,14 +472,12 @@ This will analyze your remaining windows and automatically reschedule these task
                               title={task.title}
                               time={formatTime12Hour(task.startTime)}
                               priority={task.priority}
-                              onComplete={() => {}} // Already complete
+                              onComplete={() => {}} 
                               onDelete={() => deleteTask(task._id || task.id)}
                               onReschedule={() => {
                                 const confirm = window.confirm(`Re-open "${task.title}" for rescheduling?`);
                                 if (confirm) {
-                                  // Call the reschedule logic which will also reset completed status on backend (if handled)
-                                  // Or we might need to manually set completed: false if the backend doesn't
-                                  rescheduleTask(task);
+                                  openRescheduleModal(task);
                                 }
                               }}
                               isExpired={false}
@@ -536,7 +491,6 @@ This will analyze your remaining windows and automatically reschedule these task
                   </>
                 )}
 
-                {/* Inline Add Task */}
                 <div className="glass-card p-4 flex flex-col gap-4 border border-white/10 shadow-2xl">
                   <div className="flex items-center bg-white/5 rounded-2xl px-6 py-4 border border-white/5 focus-within:border-orange-500/30 transition-all">
                     <input 
@@ -576,10 +530,7 @@ This will analyze your remaining windows and automatically reschedule these task
             </div>
           </div>
 
-          {/* Right Sidebar Column */}
           <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">
-            
-            {/* AI Optimization Card */}
             <div className="glass-card p-8 bg-gradient-to-br from-orange-500/5 to-transparent border-orange-500/20 relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[40px] -z-10 group-hover:bg-orange-500/20 transition-all" />
                <div className="flex items-start justify-between mb-6">
@@ -621,7 +572,6 @@ This will analyze your remaining windows and automatically reschedule these task
                </motion.button>
             </div>
 
-            {/* Day Stats Ring (Glassmorphism design) */}
             <div className="glass-card p-8 flex flex-col items-center justify-center relative overflow-hidden group">
                <div className="absolute top-0 left-0 w-full h-full bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-8 self-start flex items-center gap-2">
@@ -660,7 +610,6 @@ This will analyze your remaining windows and automatically reschedule these task
                </div>
             </div>
 
-            {/* AI Coach Sessions */}
             <div 
               onClick={() => setIsAiCoachOpen(true)}
               className="glass-card p-6 group cursor-pointer hover:bg-white/[0.05] transition-all border border-transparent hover:border-indigo-500/30"
@@ -676,11 +625,9 @@ This will analyze your remaining windows and automatically reschedule these task
                   <ChevronRight size={18} className="text-gray-600 group-hover:text-indigo-400 transition-colors" />
                </div>
             </div>
-
           </div>
         </div>
 
-        {/* Floating AI Coach Modal */}
         {isAiCoachOpen && (
           <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
             <motion.div 
@@ -688,9 +635,6 @@ This will analyze your remaining windows and automatically reschedule these task
               animate={{ opacity: 1, scale: 1, y: 0 }}
               className="w-full max-w-lg glass-card border border-indigo-500/30 bg-[#0f1115]/95 shadow-[0_20px_60px_rgba(99,102,241,0.2)] overflow-hidden flex flex-col relative"
             >
-              {/* Premium Glow Effect inside Modal */}
-              <div className="absolute top-0 inset-x-0 h-40 bg-radial-gradient from-indigo-500/20 to-transparent opacity-50 pointer-events-none" />
-              
               <div className="p-6 border-b border-white/5 flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
@@ -748,6 +692,91 @@ This will analyze your remaining windows and automatically reschedule these task
           </div>
         )}
 
+      <AnimatePresence>
+        {isReschedulingModalOpen && (
+          <div className="fixed inset-0 z-[600] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsReschedulingModalOpen(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg glass-morphism rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+            >
+              <div className="p-8 border-b border-white/5 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                    <RefreshCcw size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black text-white tracking-tight">Smart Reschedule</h3>
+                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Operational Sync Protocol</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setIsReschedulingModalOpen(false)}
+                  className="p-2 hover:bg-white/5 rounded-xl text-gray-500 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="p-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+                <p className="text-sm text-gray-400 leading-relaxed">
+                  Analyze your remaining capacity. At what time would you like to re-synchronize these missed operational windows?
+                </p>
+
+                {reschedulingTasks.map((task, idx) => (
+                  <div key={task._id || idx} className="p-5 rounded-2xl bg-white/5 border border-white/5 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-white text-sm">{task.title}</h4>
+                      <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-2 py-1 rounded-md">Missed</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-4">
+                       <div className="flex-1">
+                          <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-2 px-1">Original Time</label>
+                          <div className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-xs text-gray-400">
+                             {formatTime12Hour(task.startTime)}
+                          </div>
+                       </div>
+                       <div className="flex-1">
+                          <label className="text-[9px] font-black text-indigo-400 uppercase tracking-widest block mb-2 px-1">New Sync Time</label>
+                          <input 
+                             type="time"
+                             value={task.newTime || ""}
+                             onChange={(e) => {
+                               const next = [...reschedulingTasks];
+                               next[idx].newTime = e.target.value;
+                               setReschedulingTasks(next);
+                             }}
+                             className="w-full px-4 py-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-xs text-white focus:outline-none focus:border-indigo-500/50 transition-all font-black"
+                          />
+                       </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="p-8 border-t border-white/5 bg-black/20 shrink-0">
+                <button 
+                  onClick={handleApplyReschedule}
+                  disabled={isLoading || reschedulingTasks.some(t => !t.newTime)}
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-black text-[11px] uppercase tracking-[0.2em] shadow-xl shadow-indigo-500/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                >
+                  {isLoading ? "Resynchronizing..." : "Apply Operational Sync"}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
