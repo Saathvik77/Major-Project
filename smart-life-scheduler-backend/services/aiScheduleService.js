@@ -36,7 +36,11 @@ const generateSchedule = async ({ pending, missed, completed }) => {
       
       Response Requirements:
       Return a JSON object with:
-      1. "explanation": A 2-3 sentence overview. Mentions completed tasks as "milestones achieved", specifically highlights how you handled the ${missed.length} missed tasks, and summarizes the new flow.
+      1. "explanation": A detailed breakdown. Start with "INTELLIGENCE REPORT:" 
+         - List "COMPLETED: X milestones achieved"
+         - List "MISSED: Y overdue operations identified and prioritized"
+         - List "PENDING: Z tasks synchronized into the new flow"
+         Then add 1-2 sentences about the optimization logic.
       2. "schedule": An array of objects: { "timeRange": "HH:MM AM/PM - HH:MM AM/PM", "title": "Task Name" }. 
       
       Return ONLY a JSON object without markdown blocks.
