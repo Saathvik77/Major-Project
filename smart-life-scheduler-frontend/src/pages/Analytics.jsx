@@ -197,7 +197,7 @@ function Analytics() {
   ];
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition overflow-y-auto overflow-x-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
       {/* Lighting FX */}
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
 

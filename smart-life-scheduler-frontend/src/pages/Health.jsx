@@ -243,7 +243,7 @@ function Health() {
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition overflow-y-auto overflow-x-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
       {/* Dynamic Animated background orbs */}
       <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-orange-600/10 rounded-full blur-[120px] -z-10 animate-pulse" />
       <div className="fixed bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-600/5 rounded-full blur-[150px] -z-10" />

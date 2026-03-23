@@ -288,7 +288,7 @@ export default function Reports() {
   };
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition overflow-y-auto overflow-x-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
       {/* ── Premium Lighting FX ────────────────────────────────────── */}
       <div className="fixed top-[-20%] right-[-10%] w-[800px] h-[800px] bg-orange-600/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
       <div className="fixed bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-orange-700/5 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
