@@ -62,15 +62,15 @@ const StatCard = ({ icon: Icon, label, value, trend, color = "orange" }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    className="glass-card p-6 md:p-8 flex flex-row items-center gap-6 relative overflow-visible group hover:bg-white/[0.04] min-h-[150px]"
+    className="glass-card p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8 relative overflow-visible group hover:bg-white/[0.04] min-h-[160px] text-center sm:text-left"
   >
-    <div className="absolute top-0 right-0 w-24 h-24 bg-lime-500/5 blur-[40px] -z-10 group-hover:bg-lime-500/10 transition-all" />
-    <div className="w-14 h-14 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 transition-all group-hover:scale-110 shrink-0">
-      <Icon size={28} />
+    <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[50px] -z-10 group-hover:bg-lime-500/10 transition-all" />
+    <div className="w-16 h-16 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 transition-all group-hover:scale-110 shrink-0 mb-4 sm:mb-0">
+      <Icon size={32} />
     </div>
-    <div className="flex-1 min-w-0 pr-2">
-      <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 overflow-hidden text-ellipsis whitespace-nowrap">{label}</p>
-      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
+    <div className="flex-1 min-w-0 sm:pr-4 w-full">
+      <p className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">{label}</p>
+      <div className="flex flex-wrap items-baseline justify-center sm:justify-start gap-x-4 gap-y-2">
         <p className="text-3xl md:text-4xl font-black text-white tracking-tighter">{value}</p>
         <div className="flex items-center gap-1 text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/5 px-2.5 py-1 rounded-full border border-emerald-500/10 shrink-0 shadow-sm">
           <ArrowUpRight size={10} />

@@ -72,18 +72,6 @@ const QuickLaunchHero = ({ onNavigate }) => {
           />
         )}
 
-        {/* Helper Instructions (Only if image is missing) */}
-        {imageError && (
-          <div className="absolute inset-x-0 bottom-8 flex flex-col items-center justify-center p-6 text-center z-30 animate-pulse">
-            <p className="text-lime-500 font-black text-[10px] uppercase tracking-widest mb-2 bg-black/40 px-4 py-1.5 rounded-full border border-lime-500/20">
-              Custom Hero Setup Required
-            </p>
-            <p className="text-[9px] text-gray-500 font-bold max-w-sm">
-              Please save your chat image as <span className="text-white">dashboard_hero.png</span> 
-              <br />in your <span className="text-white">public/assets/</span> folder to see the boy at the desk!
-            </p>
-          </div>
-        )}
         {/* The background image is displayed via the <img> tag above. No interactive overlays here. */}
 
         {/* Vignette */}
@@ -173,13 +161,13 @@ const Dashboard = () => {
     <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-7xl mx-auto page-transition pb-32">
       
       {/* ── Header Area ────────────────────────────────────────────── */}
-      <header className="flex items-center justify-between">
+      <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-0">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-lime-500 shadow-xl backdrop-blur-xl">
             <LayoutDashboard size={24} strokeWidth={1.5} />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-black tracking-tighter text-white">Smart Life Scheduler</h1>
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-black tracking-tighter text-white truncate max-w-[200px] xs:max-w-none">Smart Life Scheduler</h1>
             <p className="text-[9px] md:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1">Operational Overview</p>
           </div>
         </div>
@@ -270,7 +258,7 @@ const Dashboard = () => {
                   </motion.button>
                </div>
 
-               <div className="grid grid-cols-2 md:flex md:gap-10 lg:gap-12 pt-8 border-t border-white/5 place-items-center lg:place-items-start">
+               <div className="grid grid-cols-1 xs:grid-cols-2 md:flex md:gap-10 lg:gap-12 pt-8 border-t border-white/5 place-items-center lg:place-items-start gap-y-6">
                   <StatBadge dotColor="bg-lime-500" label="Focus Score" value={stats.efficiency} isVisible={showStats} />
                   <StatBadge dotColor="bg-lime-400" label="Completed" value={stats.totalTasks} isVisible={showStats} />
                   <StatBadge dotColor="bg-lime-300" label="Active Momentum" value={stats.growth} isVisible={showStats} />
