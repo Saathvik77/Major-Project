@@ -31,66 +31,6 @@ router.post(
 
     const taskDate = new Date(date);
 
-    // Convert HH:mm to minutes
-    const timeToMinutes = (time) => {
-      const [hours, minutes] = time.split(":").map(Number);
-      return hours * 60 + minutes;
-    };
-
-    let newStartMinutes = timeToMinutes(startTime);
-    let newEndMinutes = newStartMinutes + duration;
-
-    // Get start and end of the day
-    const startOfDay = new Date(taskDate);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(taskDate);
-    endOfDay.setHours(23, 59, 59, 999);
-
-    // Fetch tasks for the same day
-    const sameDayTasks = await Task.find({
-      user: req.user.id,
-      date: { $gte: startOfDay, $lte: endOfDay },
-    });
-
-    // Conflict detection
-    let conflictFound = true;
-
-    while (conflictFound) {
-      conflictFound = false;
-
-      for (let task of sameDayTasks) {
-        if (!task.startTime) continue;
-
-        const existingStart = timeToMinutes(task.startTime);
-        const existingEnd = existingStart + (task.duration || 0);
-
-        if (
-          newStartMinutes < existingEnd &&
-          newEndMinutes > existingStart
-        ) {
-          // Push forward after existing task
-          newStartMinutes = existingEnd;
-          newEndMinutes = newStartMinutes + duration;
-          conflictFound = true;
-        }
-      }
-    }
-
-    // Convert minutes back to HH:mm
-    const minutesToTime = (minutes) => {
-      const hrs = Math.floor(minutes / 60)
-        .toString()
-        .padStart(2, "0");
-      const mins = (minutes % 60)
-        .toString()
-        .padStart(2, "0");
-
-      return `${hrs}:${mins}`;
-    };
-
-    const optimizedStartTime = minutesToTime(newStartMinutes);
-
     const task = await Task.create({
       user: req.user.id,
       title,
@@ -99,12 +39,12 @@ router.post(
       priority,
       duration,
       deadline,
-      startTime: optimizedStartTime,
+      startTime: startTime || "09:00",
       rescheduledCount: 0,
     });
 
     res.status(201).json({
-      message: "Task created successfully (Optimized)",
+      message: "Task created successfully",
       task,
     });
   })

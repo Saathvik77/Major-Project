@@ -87,17 +87,57 @@ const chatWithAI = async (req, res) => {
       });
     }
 
-    // 3. Review / Performance
+    // 3. Review / Performance / Sports
     if (msg.includes("review") || msg.includes("performance") || msg.includes("how am i doing")) {
-      const ratio = completedTasks.length / (tasks.length + completedTasks.length || 1);
+      const total = tasks.length + completedTasks.length;
+      const ratio = completedTasks.length / (total || 1);
+      
+      const highPriorityTasks = tasks.filter(t => t.priority === "High");
+      const categoryCounts = completedTasks.reduce((acc, t) => {
+        acc[t.category || "General"] = (acc[t.category || "General"] || 0) + 1;
+        return acc;
+      }, {});
+
       let feedback = "";
       if (ratio > 0.8) feedback = "You are operating at peak efficiency. Your synchronization with the schedule is flawless.";
-      else if (ratio > 0.5) feedback = "Steady operational progress. A few strategic adjustments to your morning routine could boost your output.";
-      else feedback = "System load is high. I recommend rescheduling low-priority items to prevent cognitive fatigue.";
+      else if (ratio > 0.5) feedback = "Steady operational progress. I recommend focusing on your " + (highPriorityTasks.length > 0 ? highPriorityTasks[0].title : "remaining") + " high-priority items next.";
+      else feedback = "System load is high. You have " + highPriorityTasks.length + " high-priority tasks pending. I recommend rescheduling low-priority items to prevent cognitive fatigue.";
 
       return res.json({
-        reply: `Operational Review: ${Math.round(ratio * 100)}% completion rate. ${feedback}`
+        reply: `Operational Review: ${Math.round(ratio * 100)}% completion rate today. ${feedback}`
       });
+    }
+
+    if (msg.includes("sport") || msg.includes("exercise") || msg.includes("workout")) {
+       const { weatherData } = req.body;
+       let sportSuggestion = "A 20-minute indoor yoga session is a great way to stay active today. 🧘‍♂️";
+       
+       if (weatherData) {
+         const temp = weatherData.temperature;
+         const code = weatherData.weathercode;
+
+         if (code <= 2 && temp >= 10 && temp <= 32) {
+           sportSuggestion = "It's beautifully sunny! I highly suggest a 30-minute outdoor cycling session or a run. 🚴‍♂️🏃‍♀️";
+         } else if (code >= 51) {
+           sportSuggestion = "It's rainy right now. How about a home HIIT workout or lifting weights at the gym? 🏋️‍♂️";
+         } else if (temp < 10 || (code >= 71 && code <= 77)) {
+           sportSuggestion = "It's pretty chilly outside! A nice warm indoor yoga or stretching session is perfect. 🧘‍♀️";
+         } else {
+           sportSuggestion = "Mild weather. A brisk outdoor walk or a light jog would be excellent. 🚶‍♂️";
+         }
+       } else {
+         const suggestions = [
+           "A 30-minute high-intensity interval training (HIIT) session would optimize your performance.",
+           "A brisk 5km run would be ideal for mental clarity right now.",
+           "I recommend a 20-minute yoga flow to reset your neural pathways.",
+           "A strength training session targeting your core is advised."
+         ];
+         sportSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+       }
+
+       return res.json({
+         reply: sportSuggestion
+       });
     }
 
     // 4. Navigation Commands

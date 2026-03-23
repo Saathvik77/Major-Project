@@ -68,13 +68,25 @@ const AIAssistant = () => {
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef(null);
 
-  const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  const [weatherData, setWeatherData] = useState(null);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
+
+  useEffect(() => {
+    // Basic weather fetch for AI suggestions
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        try {
+          const { latitude: lat, longitude: lon } = pos.coords;
+          const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+          const data = await res.json();
+          setWeatherData(data.current_weather);
+        } catch (e) { console.error("Weather fetch failed for AI Assistant", e); }
+      }, () => {});
+    }
+  }, []);
 
   const [insightData, setInsightData] = useState({
     peak: "19:00",
@@ -118,7 +130,10 @@ const AIAssistant = () => {
     setIsTyping(true);
 
     try {
-      const response = await api.post("/ai/chat", { message: messageText });
+      const response = await api.post("/ai/chat", { 
+        message: messageText,
+        weatherData: weatherData
+      });
       
       // Simulate thinking time for premium feel
       setTimeout(() => {
@@ -130,11 +145,11 @@ const AIAssistant = () => {
         setMessages((prev) => [...prev, assistantMessage]);
         setIsTyping(false);
 
-        if (response.data.actions?.length > 0) {
+        if (response.data.actions?.length > 0 || response.data.reply.toLowerCase().includes("rescheduled") || response.data.reply.toLowerCase().includes("marked as complete")) {
           window.dispatchEvent(new Event("tasksUpdated"));
           
           // Handle navigation actions
-          const navAction = response.data.actions.find(a => a.type === "navigation");
+          const navAction = response.data.actions?.find(a => a.type === "navigation");
           if (navAction) {
             setTimeout(() => {
               navigate(navAction.path);

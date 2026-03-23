@@ -148,18 +148,62 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
         return;
       }
 
+      if (text.includes("reschedule ") || text.includes("move ")) {
+        let fetchWord = text.includes("reschedule ") ? "reschedule " : "move ";
+        // Extract task title and time. Format: "reschedule [title] to [time]"
+        let parts = text.split(fetchWord)[1].split(" to ");
+        let targetTitle = parts[0].trim().replace(/the /g, "").replace(/task/g, "").trim();
+        let targetTimeRaw = parts[1] ? parts[1].trim() : "";
+
+        if (!targetTimeRaw) {
+          addBotMessage("Please specify a time, e.g., 'Reschedule reading to 5 PM'.");
+          return;
+        }
+
+        addBotMessage(`Searching for '${targetTitle}' to reschedule...`);
+
+        const res = await api.get("/tasks?limit=100");
+        const allTasks = res.data.tasks || [];
+        const match = allTasks.find((t) => t.title.toLowerCase().includes(targetTitle) && !t.completed);
+
+        if (match) {
+          // Robust time parsing (simple ver: "5 PM" -> "17:00")
+          let formattedTime = targetTimeRaw;
+          if (targetTimeRaw.includes("am") || targetTimeRaw.includes("pm")) {
+            let [time, modifier] = targetTimeRaw.split(" ");
+            let [hours, minutes] = time.split(":");
+            if (!minutes) minutes = "00";
+            let h = parseInt(hours, 10);
+            if (modifier === "pm" && h < 12) h += 12;
+            if (modifier === "am" && h === 12) h = 0;
+            formattedTime = `${String(h).padStart(2, '0')}:${minutes}`;
+          }
+
+          await api.post(`/tasks/${match._id || match.id}/reschedule`, { targetTime: formattedTime });
+          window.dispatchEvent(new Event("tasksUpdated"));
+          setTimeout(() => {
+            addBotMessage(`Task '${match.title}' has been successfully rescheduled to ${targetTimeRaw}. 🗓️`);
+          }, 1000);
+        } else {
+          setTimeout(() => {
+            addBotMessage(`I couldn't find a pending task named '${targetTitle}'.`);
+          }, 1000);
+        }
+        return;
+      }
+
       if (text.includes("complete ") || text.includes("finish ") || text.includes("done ")) {
         let fetchWord = text.includes("complete ") ? "complete " : text.includes("finish ") ? "finish " : "done ";
         let targetTitle = text.split(fetchWord)[1].trim().replace(/the /g, "").replace(/task/g, "").trim().replace(/[.!?]+$/, "");
 
         addBotMessage(`Looking for the '${targetTitle}' task to mark as completed...`);
 
-        const res = await api.get("/tasks?limit=50");
+        const res = await api.get("/tasks?limit=100");
         const allTasks = res.data.tasks || [];
         const match = allTasks.find((t) => t.title.toLowerCase().includes(targetTitle) && !t.completed);
 
         if (match) {
-          await api.put(`/tasks/${match._id || match.id}`, { ...match, completed: true });
+          await api.patch(`/tasks/${match._id || match.id}`, { completed: true });
           window.dispatchEvent(new Event("tasksUpdated"));
           setTimeout(() => {
             addBotMessage(`Awesome! '${match.title}' is marked as complete. Keep it up! ✅`);

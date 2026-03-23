@@ -80,21 +80,67 @@ export default function Tasks() {
   const [isAiCoachOpen, setIsAiCoachOpen]   = useState(false);
   const [isOptimizing, setIsOptimizing]     = useState(false);
   const [isLoading, setIsLoading]           = useState(true);
+  const [aiMessage, setAiMessage]           = useState("");
+  const [aiChatResponse, setAiChatResponse]   = useState("");
+  const [isAiLoading, setIsAiLoading]         = useState(false);
   const notifiedRef  = useRef(new Set());
   const autoRescheduledRef = useRef(new Set());
   const navigate = useNavigate();
 
+  const [weatherData, setWeatherData] = useState(null);
+
+  useEffect(() => {
+    // Basic weather fetch for AI suggestions
+    const fetchW = async () => {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+          try {
+            const { latitude: lat, longitude: lon } = pos.coords;
+            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+            const data = await res.json();
+            setWeatherData(data.current_weather);
+          } catch (e) { console.error("Weather fetch failed", e); }
+        }, () => {});
+      }
+    };
+    fetchW();
+  }, []);
+
+  const handleAiAsk = async () => {
+    if (!aiMessage.trim()) return;
+    setIsAiLoading(true);
+    try {
+      const res = await api.post("/ai/chat", { 
+        message: aiMessage,
+        weatherData: weatherData 
+      });
+      setAiChatResponse(res.data.reply);
+      setAiMessage("");
+      if (res.data.actions) {
+         // If there are actions (like navigation or task creation), we might need to refresh
+         fetchTasks();
+      }
+    } catch (err) {
+      setAiChatResponse("I'm having trouble connecting to my neural network. Please try again later.");
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
   const fetchTasks = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await api.get("/tasks?limit=50");
-      // Filter tasks based on the selected date
+      // Pass the selected date to the backend for robust filtering
+      const dateStr = selectedDate.toISOString().split('T')[0];
+      const res = await api.get(`/tasks?date=${dateStr}&limit=100`);
+      
       const allTasks = res.data.tasks || [];
+      // Secondary local filter to ensure exact match ignoring time
       const filtered = allTasks.filter(task => {
-        const taskDate = new Date(task.date);
-        return taskDate.getDate() === selectedDate.getDate() &&
-               taskDate.getMonth() === selectedDate.getMonth() &&
-               taskDate.getFullYear() === selectedDate.getFullYear();
+        const tDate = new Date(task.date);
+        return tDate.getUTCFullYear() === selectedDate.getFullYear() &&
+               tDate.getUTCMonth() === selectedDate.getMonth() &&
+               tDate.getUTCDate() === selectedDate.getDate();
       });
       setTasks(filtered);
     } catch (err) { 
@@ -103,6 +149,12 @@ export default function Tasks() {
       setIsLoading(false);
     }
   }, [selectedDate]);
+
+  useEffect(() => {
+    const handleUpdate = () => fetchTasks();
+    window.addEventListener("tasksUpdated", handleUpdate);
+    return () => window.removeEventListener("tasksUpdated", handleUpdate);
+  }, [fetchTasks]);
 
   useEffect(() => {
     fetchTasks();
@@ -663,9 +715,14 @@ This will analyze your remaining windows and automatically reschedule these task
                     <Sparkles size={14} className="text-indigo-400" />
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-gray-300 leading-relaxed rounded-tl-sm">
-                    Hey! I've analyzed your recent tasks. Your completion rate is looking solid at <strong>{percentStat}%</strong> today. 
-                    <br/><br/>
-                    However, I noticed a trend where afternoon energy dips. Try scheduling heavy cognitive tasks before 1 PM and leave administrative work for later.
+                    {aiChatResponse || (
+                      <>
+                        Hey! I've analyzed your recent tasks. Your completion rate is looking solid at <strong>{percentStat}%</strong> today. 
+                        <br/><br/>
+                        However, I noticed a trend where afternoon energy dips. Try scheduling heavy cognitive tasks before 1 PM and leave administrative work for later.
+                      </>
+                    )}
+                    {isAiLoading && <div className="mt-2 flex gap-1"><span className="w-1 h-1 bg-indigo-400 animate-bounce rounded-full" /><span className="w-1 h-1 bg-indigo-400 animate-bounce delay-75 rounded-full" /><span className="w-1 h-1 bg-indigo-400 animate-bounce delay-150 rounded-full" /></div>}
                   </div>
                 </div>
               </div>
@@ -674,9 +731,16 @@ This will analyze your remaining windows and automatically reschedule these task
                  <input 
                    type="text" 
                    placeholder="Ask the coach for strategic advice..." 
+                   value={aiMessage}
+                   onChange={(e) => setAiMessage(e.target.value)}
+                   onKeyDown={(e) => e.key === 'Enter' && handleAiAsk()}
                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/50"
                  />
-                 <button className="w-12 h-12 flex items-center justify-center rounded-xl bg-indigo-500 text-white hover:bg-indigo-600 transition-colors shadow-lg shadow-indigo-500/20">
+                 <button 
+                   onClick={handleAiAsk}
+                   disabled={isAiLoading || !aiMessage.trim()}
+                   className="w-12 h-12 flex items-center justify-center rounded-xl bg-indigo-500 text-white hover:bg-indigo-600 transition-colors shadow-lg shadow-indigo-500/20 disabled:opacity-50"
+                 >
                    <ChevronRight size={20} />
                  </button>
               </div>
