@@ -145,7 +145,7 @@ function Analytics() {
   }, []);
 
   if (loading) return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-8 lg:p-12 text-white flex flex-col gap-12 max-w-7xl mx-auto">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white flex flex-col gap-12 max-w-7xl mx-auto">
       <div className="flex items-center gap-6">
         <div className="w-12 h-12 rounded-2xl skeleton" />
         <div className="space-y-2">
@@ -197,7 +197,7 @@ function Analytics() {
   ];
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-12 max-w-7xl mx-auto page-transition">
+    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-12 max-w-7xl mx-auto page-transition overflow-y-auto overflow-x-hidden">
       {/* Lighting FX */}
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
 

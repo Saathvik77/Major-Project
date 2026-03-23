@@ -142,7 +142,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 font-sans text-white relative flex flex-col gap-10 max-w-7xl mx-auto page-transition">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-6xl mx-auto page-transition pb-32 overflow-y-auto overflow-x-hidden">
       
       {/* ── Header Area ────────────────────────────────────────────── */}
       <header className="flex items-center justify-between">

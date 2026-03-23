@@ -16,8 +16,14 @@ import {
   PieChart,
   MessageSquare,
   CheckCircle,
-  AlertCircle,
-  Clock
+  Clock,
+  Award,
+  Trophy,
+  Star,
+  Medal,
+  Flame,
+  Moon,
+  Sun as SunIcon
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
@@ -37,18 +43,91 @@ const QuickActionCard = ({ icon: Icon, label, onClick }) => (
   </motion.button>
 );
 
-const InsightItem = ({ label, value, trend, trendUp }) => (
-  <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all">
-    <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">{label}</p>
-    <div className="flex items-center justify-between">
-      <p className="text-lg font-black text-white">{value}</p>
-      <div className={`flex items-center gap-1 text-[9px] font-black uppercase ${trendUp ? 'text-emerald-500' : 'text-rose-500'}`}>
-        {trendUp ? <TrendingUp size={10} /> : <TrendingUp size={10} className="rotate-180" />}
-        {trend}
+const Badge = ({ icon: Icon, label, description, unlocked, color = "orange" }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className={`relative group p-4 rounded-2xl border transition-all duration-500 flex flex-col items-center justify-center text-center gap-2 ${
+      unlocked 
+        ? `bg-${color}-500/10 border-${color}-500/30 shadow-[0_0_20px_rgba(255,140,60,0.05)]` 
+        : 'bg-white/[0.02] border-white/5 opacity-40 grayscale'
+    }`}
+  >
+    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+      unlocked ? `text-${color}-500 bg-${color}-500/20` : 'text-gray-600 bg-white/5'
+    }`}>
+      <Icon size={20} strokeWidth={2.5} />
+    </div>
+    <div className="space-y-0.5">
+      <p className={`text-[9px] font-black uppercase tracking-widest ${unlocked ? 'text-white' : 'text-gray-500'}`}>{label}</p>
+      <p className="text-[7px] font-bold text-gray-600 uppercase tracking-tighter leading-none">{description}</p>
+    </div>
+    
+    {unlocked && (
+      <div className={`absolute inset-0 rounded-2xl bg-${color}-500/5 blur-xl group-hover:bg-${color}-500/10 transition-all -z-10`} />
+    )}
+  </motion.div>
+);
+
+const AchievementVault = ({ ratio, tasks }) => {
+  const getRank = (r) => {
+    if (r >= 1) return { title: "Nexus Grandmaster", color: "text-orange-500", glow: "shadow-orange-500/30" };
+    if (r >= 0.8) return { title: "Operational Elite", color: "text-orange-400", glow: "shadow-orange-400/20" };
+    if (r >= 0.5) return { title: "Strategic Specialist", color: "text-amber-400", glow: "shadow-amber-400/10" };
+    return { title: "System Novice", color: "text-gray-400", glow: "" };
+  };
+
+  const rank = getRank(ratio);
+  
+  // Logic for badges
+  const hasEarlyBird = tasks.some(t => t.completed && parseInt(t.startTime?.split(':')[0]) < 10);
+  const hasFlowMaster = tasks.filter(t => t.completed).length >= 3;
+  const hasNightOps = tasks.some(t => t.completed && parseInt(t.startTime?.split(':')[0]) >= 21);
+  const hasPerfectSync = ratio === 1 && tasks.length > 0;
+
+  return (
+    <div className="glass-card p-8 flex flex-col gap-6 relative overflow-hidden group border-orange-500/20">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 blur-[40px] -z-10 group-hover:bg-orange-500/10 transition-all" />
+      
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
+           <Trophy size={14} className="text-orange-500" />
+           Achievement Vault
+        </h3>
+        <Sparkles size={14} className="text-orange-500/40" />
+      </div>
+
+      <div className="text-center py-4 relative">
+        <div className="absolute inset-0 bg-orange-500/5 blur-3xl rounded-full -z-10" />
+        <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-1">Current Protocol Rank</p>
+        <h4 className={`text-2xl font-black tracking-tighter uppercase ${rank.color} ${rank.glow}`}>
+          {rank.title}
+        </h4>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <Badge icon={SunIcon} label="Early Bird" description="Pre-10AM Task" unlocked={hasEarlyBird} />
+        <Badge icon={Flame} label="Flow Master" description="3+ Task Streak" unlocked={hasFlowMaster} />
+        <Badge icon={Moon} label="Night Ops" description="Post-9PM Task" unlocked={hasNightOps} />
+        <Badge icon={Medal} label="Perfect Sync" description="100% Day Clear" unlocked={hasPerfectSync} />
+      </div>
+
+      <div className="mt-4 space-y-2">
+        <div className="flex justify-between text-[8px] font-black uppercase tracking-widest text-gray-500">
+          <span>Rank Progression</span>
+          <span>{Math.round(ratio * 100)}%</span>
+        </div>
+        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${ratio * 100}%` }}
+            className="h-full bg-gradient-to-r from-orange-600 to-orange-400 shadow-[0_0_10px_rgba(255,140,60,0.4)]"
+          />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const formatTime12Hour = (time24) => {
   if (!time24) return "—";
@@ -96,6 +175,7 @@ const AIAssistant = () => {
     }
   }, []);
 
+  const [allTasks, setAllTasks] = useState([]);
   const [insightData, setInsightData] = useState({
     peak: "19:00",
     fatigue: "Medium @ 3pm",
@@ -110,9 +190,10 @@ const AIAssistant = () => {
         api.get("/tasks?limit=500")
       ]);
       
-      const allTasks = tasksRes.data?.tasks || [];
-      const completed = allTasks.filter(t => t.completed);
-      const ratio = allTasks.length > 0 ? (completed.length / allTasks.length) : 0;
+      const tasks = tasksRes.data?.tasks || [];
+      setAllTasks(tasks);
+      const completed = tasks.filter(t => t.completed);
+      const ratio = tasks.length > 0 ? (completed.length / tasks.length) : 0;
       
       setInsightData({
         peak: "11:00 AM", // Mocked for now
@@ -183,10 +264,10 @@ const AIAssistant = () => {
     }
   };
 
-  if (loading) return <div className="min-h-screen pl-[84px] flex items-center justify-center"><div className="w-12 h-12 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin" /></div>;
+  if (loading) return <div className="min-h-screen pl-0 md:pl-[84px] flex items-center justify-center"><div className="w-12 h-12 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin" /></div>;
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition overflow-y-auto overflow-x-hidden">
       {/* Lighting FX */}
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[120px] -z-10" />
       
@@ -213,10 +294,10 @@ const AIAssistant = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1 overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1">
         
         {/* ── Left Column: Chat Area ──────────────────────────────── */}
-        <div className="lg:col-span-8 flex flex-col gap-6 overflow-hidden">
+        <div className="lg:col-span-8 flex flex-col gap-6">
           <div className="flex-1 overflow-y-auto pr-4 space-y-8 custom-scrollbar min-h-[500px]">
             <AnimatePresence initial={false}>
               {messages.map((msg, i) => (
@@ -387,34 +468,8 @@ const AIAssistant = () => {
             </div>
           </div>
 
-          {/* AI Insights Panel */}
-          <div className="glass-card p-8 flex flex-col gap-6 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 blur-[40px] -z-10 group-hover:bg-orange-500/10 transition-all" />
-            
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
-                 <Sparkles size={14} className="text-orange-500" />
-                 Smart Insights
-              </h3>
-              <MoreHorizontal size={16} className="text-gray-700" />
-            </div>
-
-            <div className="space-y-4">
-              <InsightItem label="Peak Productivity" value={insightData.peak} trend="+12%" trendUp={true} />
-              <InsightItem label="Cognitive Fatigue" value={insightData.fatigue} trend={insightData.ratio > 0.5 ? "-4%" : "+8%"} trendUp={insightData.ratio > 0.5} />
-              <InsightItem label="Operational Volume" value={insightData.streak} trend={`+${Math.round(insightData.ratio * 100)}%`} trendUp={true} />
-            </div>
-
-            <div className="mt-4 p-5 rounded-2xl bg-orange-500/5 border border-orange-500/10">
-               <p className="text-xs text-gray-400 leading-relaxed italic">
-                 {insightData.ratio > 0.7 
-                   ? "Operational patterns suggest peak synchronization. Your focus windows are perfectly aligned 🔥" 
-                   : insightData.ratio > 0.4
-                   ? "System load is stabilizing. Maintain current momentum to secure weekly targets."
-                   : "Analyzing performance gaps. I recommend shifting high-priority tasks to earlier slots."}
-               </p>
-            </div>
-          </div>
+          {/* Achievement Vault Panel */}
+          <AchievementVault ratio={insightData.ratio} tasks={allTasks} />
 
           {/* Mini Progress Card */}
           <div className="glass-card p-6 flex items-center gap-6">

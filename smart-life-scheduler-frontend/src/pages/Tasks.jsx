@@ -341,7 +341,7 @@ export default function Tasks() {
   }
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-10 max-w-7xl mx-auto page-transition overflow-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-10 max-w-7xl mx-auto page-transition overflow-y-auto overflow-x-hidden">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </AnimatePresence>
@@ -434,7 +434,7 @@ export default function Tasks() {
                 </div>
               </div>
 
-              <div className="space-y-8 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="space-y-8 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
                 
                 {tasks.length === 0 ? (
                   <div className="flex flex-col items-center justify-center text-center py-20 glass-card border-dashed bg-white/[0.01]">

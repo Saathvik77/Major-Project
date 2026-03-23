@@ -214,7 +214,7 @@ export default function Reports() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-transparent pl-0 md:pl-[84px]">
+      <div className="min-h-screen flex items-center justify-center text-white bg-transparent pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12">
         <div className="flex flex-col items-center gap-4">
            <div className="w-12 h-12 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin" />
            <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-500/50">Synchronizing Intelligence...</p>
@@ -288,7 +288,7 @@ export default function Reports() {
   };
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] px-6 py-10 relative z-10 font-sans text-white max-w-6xl mx-auto page-transition pb-32">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-6xl mx-auto page-transition pb-32 overflow-y-auto overflow-x-hidden">
       {/* ── Premium Lighting FX ────────────────────────────────────── */}
       <div className="fixed top-[-20%] right-[-10%] w-[800px] h-[800px] bg-orange-600/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
       <div className="fixed bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-orange-700/5 rounded-full blur-[100px] -z-10 pointer-events-none"></div>

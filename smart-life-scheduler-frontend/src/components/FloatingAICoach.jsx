@@ -322,7 +322,7 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.88, y: 20 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-4 w-[350px] sm:w-[410px] h-[530px] flex flex-col overflow-hidden rounded-3xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.05)] relative"
+            className="mb-4 w-[calc(100vw-2rem)] sm:w-[410px] h-[530px] flex flex-col overflow-hidden rounded-3xl border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.05)] relative"
             style={{ background: "linear-gradient(145deg, rgba(5,8,15,0.98) 0%, rgba(2,4,10,0.99) 100%)", backdropFilter: "blur(24px)" }}
           >
             {/* Subtle top glow line */}

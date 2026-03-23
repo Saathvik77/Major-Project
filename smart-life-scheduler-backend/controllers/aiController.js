@@ -110,71 +110,102 @@ const chatWithAI = async (req, res) => {
 
     // 2. Boost / Productivity Tip
     if (msg.includes("boost") || msg.includes("productivity") || msg.includes("tip")) {
-      const tips = [
-        "Your focus is currently peaking. Try tackling your most complex 'High' priority task right now.",
-        "Detected a pattern of afternoon fatigue. Shift your administrative tasks to after 3 PM.",
-        "Operational efficiency increases by 15% when you take a 5-minute movement break every hour.",
-        "Your streak is improving. Completing one more task now will secure your 'Focus Master' milestone."
-      ];
-      return res.json({
-        reply: tips[Math.floor(Math.random() * tips.length)]
+      const completedToday = await Task.countDocuments({ 
+        user: userId, 
+        completed: true, 
+        updatedAt: { $gte: new Date(new Date().setHours(0,0,0,0)) } 
       });
+      
+      const reply = `You've already completed ${completedToday} tasks today! 🔥 Every operational milestone brings you closer to earning new badges in the Achievement Vault. Keep this momentum to secure your 'Flow Master' rank!`;
+      
+      return res.json({ reply });
     }
 
-    // 3. Review / Performance / Sports
-    if (msg.includes("review") || msg.includes("performance") || msg.includes("how am i doing")) {
+    // 3. Optimize / Reschedule
+    if (msg.includes("optimize") || msg.includes("reschedule") || msg.includes("missed")) {
+       const now = new Date();
+       const today = new Date();
+       today.setHours(0,0,0,0);
+       const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+       const currentDateStr = now.toDateString();
+
+       // Fetch specifically MISSED tasks
+       const missedTasks = await Task.find({ 
+         user: userId, 
+         completed: false,
+         $or: [
+           { date: { $lt: today } },
+           { date: today, startTime: { $lt: currentTime } }
+         ]
+       });
+
+       if (missedTasks.length === 0) {
+         return res.json({ 
+           reply: "Operational Analysis: Your schedule is currently fully synchronized. No missed tasks detected. Excellent work maintainng the flow!" 
+         });
+       }
+
+       const aiSchedule = await generateSchedule({
+         tasks: missedTasks,
+         completedToday: [],
+         context: { currentTime, currentDateStr }
+       });
+
+       return res.json({
+         reply: `I've identified ${missedTasks.length} missed operational targets. I recommend rescheduling them to available slots now to recover your daily synchronization. Would you like me to apply these updates?`,
+         actions: [{ 
+           type: "categorized_schedule", 
+           completed: [],
+           missed: aiSchedule.categorizedSchedule?.missed || [],
+           pending: aiSchedule.categorizedSchedule?.pending || []
+         }]
+       });
+    }
+
+    // 4. Review / Performance / Habits
+    if (msg.includes("review") || (msg.includes("performance") && !msg.includes("plan"))) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      const now = new Date();
-      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      const currentDateStr = now.toDateString();
-
-      const allUncompleted = await Task.find({ user: userId, completed: false });
-      const totalCompletedCount = await Task.countDocuments({ user: userId, completed: true });
+      const allTasks = await Task.find({ user: userId });
       
-      let completedToReview = await Task.find({ 
+      const completedToday = await Task.find({ 
         user: userId, 
         completed: true, 
         updatedAt: { $gte: today } 
       });
 
-      // If nothing today, show the 5 most recent achievements
-      if (completedToReview.length === 0) {
-        completedToReview = await Task.find({ 
-          user: userId, 
-          completed: true 
-        }).sort({ updatedAt: -1 }).limit(5);
-      }
-
-      const total = allUncompleted.length + totalCompletedCount;
-      const ratio = totalCompletedCount / (total || 1);
-      
-      const highPriorityTasks = allUncompleted.filter(t => t.priority === "High");
-
-      let feedback = "";
-      if (ratio > 0.8) feedback = "You are operating at peak efficiency. Your synchronization with the schedule is flawless.";
-      else if (ratio > 0.5) feedback = "Steady operational progress. I recommend focusing on your " + (highPriorityTasks.length > 0 ? highPriorityTasks[0].title : "remaining") + " high-priority items next.";
-      else feedback = "System load is high. You have " + highPriorityTasks.length + " high-priority tasks pending. I recommend rescheduling low-priority items to prevent cognitive fatigue.";
-
-      // Use AI to get the categorization if we want a formal report
-      const aiSchedule = await generateSchedule({
-        tasks: allUncompleted,
-        completedToday: completedToReview,
-        context: { currentTime, currentDateStr }
+      const pendingToday = await Task.find({
+        user: userId,
+        completed: false,
+        date: { $gte: today }
       });
 
-      // Defensive fallback
-      if (!aiSchedule.categorizedSchedule) {
-        aiSchedule.categorizedSchedule = {
-          completed: completedToReview.map(t => ({ title: t.title })),
-          missed: [],
-          pending: aiSchedule.schedule || []
-        };
+      const completed = allTasks.filter(t => t.completed);
+      
+      // Analyze habit: Morning vs Evening
+      const morningCompleted = completed.filter(t => parseInt(t.startTime?.split(':')[0]) < 12).length;
+      const eveningCompleted = completed.filter(t => parseInt(t.startTime?.split(':')[0]) >= 12).length;
+      
+      let habitFeedback = "";
+      if (morningCompleted > eveningCompleted) {
+        habitFeedback = "You consistently complete tasks in the morning—that's a healthy habit! It shows high willpower early in the operational day.";
+      } else if (eveningCompleted > morningCompleted) {
+        habitFeedback = "Your productivity peaks in the evening. While effective, consider shifting one high-priority task to the morning to reduce end-of-day cognitive load.";
+      } else {
+        habitFeedback = "Your task distribution is perfectly balanced. This steady operational pace is sustainable for long-term productivity.";
       }
 
-      return res.json({
-        reply: `Operational Review: ${totalCompletedCount} total milestones achieved (${Math.round(ratio * 100)}% completion rate). ${feedback} ${aiSchedule.explanation}`,
-        actions: [{ type: "categorized_schedule", ...aiSchedule.categorizedSchedule }]
+      const ratio = allTasks.length > 0 ? (completed.length / allTasks.length) : 0;
+      const reply = `Operational Review: Your current completion rate is ${Math.round(ratio * 100)}%. ${habitFeedback} I've analyzed your daily flow patterns above.`;
+
+      return res.json({ 
+        reply,
+        actions: [{
+          type: "categorized_schedule",
+          completed: completedToday.map(t => ({ title: t.title })),
+          missed: [],
+          pending: pendingToday.map(t => ({ title: t.title, timeRange: t.startTime }))
+        }]
       });
     }
 

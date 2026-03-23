@@ -96,6 +96,7 @@ body {
   color: var(--text-main) !important;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .light-mode body {
@@ -137,7 +138,19 @@ body::before {
 }
 
 .page-padding {
-  padding: var(--sp-3);
+  padding: var(--sp-1);
+}
+
+@media (min-width: 768px) {
+  .page-padding {
+    padding: var(--sp-2);
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-padding {
+    padding: var(--sp-3);
+  }
 }
 
 /* Hero Card */

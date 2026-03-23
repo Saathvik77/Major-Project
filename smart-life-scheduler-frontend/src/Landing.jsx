@@ -10,7 +10,7 @@ function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-transparent text-white relative overflow-hidden">
+    <div className="min-h-screen bg-transparent text-white relative overflow-y-auto overflow-x-hidden pb-20">
 
       {/* Animated Background Glow — warm amber to match stone theme */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-amber-700 opacity-10 blur-3xl rounded-full animate-floatGlow"></div>

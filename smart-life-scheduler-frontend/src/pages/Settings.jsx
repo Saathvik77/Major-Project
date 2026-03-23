@@ -93,7 +93,7 @@ function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 page-transition text-white max-w-7xl mx-auto">
+    <div className="min-h-screen bg-transparent pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 page-transition text-white max-w-7xl mx-auto overflow-y-auto overflow-x-hidden">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </AnimatePresence>
