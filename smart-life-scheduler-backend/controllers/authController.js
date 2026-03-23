@@ -1,6 +1,10 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 const User = require("../models/User");
+const Task = require("../models/Task");
+const IntelligenceReport = require("../models/IntelligenceReport");
+const IntelligenceHistory = require("../models/IntelligenceHistory");
 
 // REGISTER USER
 const registerUser = async (req, res) => {
@@ -255,8 +259,8 @@ const deleteProfile = async (req, res) => {
     // Delete all associated data
     await Promise.all([
       Task.deleteMany({ user: userId }),
-      // Import other models if necessary, e.g. IntelligenceReport
-      mongoose.model("IntelligenceReport").deleteMany({ user: userId }),
+      IntelligenceReport.deleteMany({ user: userId }),
+      IntelligenceHistory.deleteMany({ user: userId }),
       User.findByIdAndDelete(userId)
     ]);
 
@@ -269,7 +273,7 @@ const deleteProfile = async (req, res) => {
     console.error("Delete Profile Error:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to delete account"
+      message: "Failed to delete account. Technical interference detected."
     });
   }
 };

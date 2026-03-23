@@ -71,6 +71,10 @@ const AIAssistant = () => {
 
   const [weatherData, setWeatherData] = useState(null);
 
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
