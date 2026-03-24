@@ -35,7 +35,7 @@ const QuickActionCard = ({ icon: Icon, label, onClick }) => (
     whileHover={{ scale: 1.05, y: -2 }}
     whileTap={{ scale: 0.95 }}
     onClick={onClick}
-    className="flex flex-col items-center justify-center gap-3 p-6 glass-card hover:bg-lime-500/10 hover:border-lime-500/30 transition-all text-center group"
+    className="flex flex-col items-center justify-center gap-2 p-4 sm:p-6 glass-card hover:bg-lime-500/10 hover:border-lime-500/30 transition-all text-center group"
   >
     <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-lime-500 transition-colors">
       <Icon size={24} />
@@ -87,7 +87,7 @@ const AchievementVault = ({ ratio, tasks }) => {
   const hasPerfectSync = ratio === 1 && tasks.length > 0;
 
   return (
-    <div className="glass-card p-8 flex flex-col gap-6 relative overflow-hidden group border-lime-500/20">
+    <div className="glass-card p-6 sm:p-8 flex flex-col gap-6 relative overflow-hidden group border-lime-500/20">
       <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[40px] -z-10 group-hover:bg-lime-500/10 transition-all" />
       
       <div className="flex items-center justify-between mb-2">
@@ -240,17 +240,19 @@ const AIAssistant = () => {
           content: response.data.reply || "Optimization complete. Is there anything else I can assist with?",
           actions: response.data.actions || [],
         };
+        console.log("AI Response Actions:", assistantMessage.actions);
         setMessages((prev) => [...prev, assistantMessage]);
         setIsTyping(false);
 
         if (response.data.actions?.length > 0 || response.data.reply.toLowerCase().includes("rescheduled") || response.data.reply.toLowerCase().includes("marked as complete")) {
+          console.log("Triggering tasksUpdated due to AI actions...");
           window.dispatchEvent(new Event("tasksUpdated"));
           
           // Handle navigation actions
-          const navAction = response.data.actions?.find(a => a.type === "navigation");
+          const navAction = response.data.actions?.find(a => a.type === "navigation" || a.type === "NAVIGATION");
           if (navAction) {
             setTimeout(() => {
-              navigate(navAction.path);
+              navigate(navAction.path || navAction.data?.path);
             }, 1200);
           }
         }
@@ -258,20 +260,35 @@ const AIAssistant = () => {
     } catch (error) {
       setIsTyping(false);
       console.error("AI Assistant Error:", error);
+      
+      let errorMsg = "I encountered a minor interference in my neural processing. Please retry your command or ensure the gateway is operational.";
+      
+      if (error.response?.data?.reply) {
+        errorMsg = error.response.data.reply;
+      } else if (error.response?.status === 401) {
+        errorMsg = "Authentication error: Your session is invalid. Redirecting to login to resynchronize...";
+        setTimeout(() => {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+        }, 2500);
+      } else if (error.code === 'ERR_NETWORK') {
+        errorMsg = "Network error: I cannot reach the backend server. Is it running on port 5000?";
+      }
+
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "I encountered a minor interference in my neural processing. Please retry your command or ensure the gateway is operational." }
+        { role: "assistant", content: errorMsg }
       ]);
     }
   };
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-32 page-transition">
       {/* Lighting FX */}
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
       
       {/* Header */}
-      <div className="flex items-center justify-between mb-16">
+      <div className="flex items-center justify-between mb-8 md:mb-16">
         <div className="flex items-center gap-6">
           <button
             onClick={() => navigate(-1)}
@@ -293,11 +310,11 @@ const AIAssistant = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 flex-1">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 flex-1">
         
         {/* ── Left Column: Chat Area ──────────────────────────────── */}
-        <div className="lg:col-span-8 flex flex-col gap-12">
-          <div className="flex-1 overflow-y-auto pr-4 space-y-12 custom-scrollbar min-h-[550px]">
+        <div className="lg:col-span-8 flex flex-col gap-8 md:gap-12">
+          <div className="flex-1 overflow-y-auto pr-4 space-y-8 md:space-y-12 custom-scrollbar min-h-[500px] md:min-h-[550px]">
             <AnimatePresence initial={false}>
               {messages.map((msg, i) => (
                 <motion.div
@@ -312,7 +329,7 @@ const AIAssistant = () => {
                     }`}>
                       {msg.role === "user" ? <User size={22} className="text-gray-400" /> : <Bot size={22} className="text-lime-500" />}
                     </div>
-                    <div className={`p-8 rounded-[3rem] text-sm font-medium leading-relaxed shadow-2xl ${
+                    <div className={`p-5 sm:p-8 rounded-[2rem] sm:rounded-[3rem] text-sm font-medium leading-relaxed shadow-2xl ${
                       msg.role === "user" 
                         ? "user-bubble text-white border border-lime-500/20 rounded-tr-none" 
                         : "ai-bubble text-white border border-white/5 rounded-tl-none"
@@ -385,23 +402,27 @@ const AIAssistant = () => {
                         );
                       })()}
 
-                      {/* Render Task List if available */}
-                      {msg.actions && msg.actions.length > 0 && msg.actions.some(a => a.type === "task_list") && (
-                        <div className="mt-6 space-y-3 pt-6 border-t border-white/10">
-                          <p className="text-[10px] font-black text-lime-500 uppercase tracking-widest mb-4">Active Task List</p>
-                          {msg.actions.filter(a => a.type === "task_list").map((action, idx) => (
-                            <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/10 group/item hover:bg-white/10 transition-all">
-                              <div className="w-16 text-[10px] font-black text-gray-500 group-hover/item:text-lime-400 transition-colors">{formatTime12Hour(action.time)}</div>
-                              <div className="flex-1 text-xs font-bold text-white">{action.title}</div>
-                              <div className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-tighter border ${
-                                action.priority === 'High' ? 'text-rose-400 border-rose-500/20' : 
-                                action.priority === 'Medium' ? 'text-yellow-400 border-yellow-500/20' : 
-                                'text-emerald-400 border-emerald-500/20'
-                              }`}>
-                                {action.priority}
-                              </div>
-                            </div>
-                          ))}
+                      {/* Render Executed Action Feedback */}
+                      {msg.actions && msg.actions.length > 0 && msg.actions.some(a => ['task_created', 'task_updated', 'task_deleted'].includes(a.type)) && (
+                        <div className="mt-4 space-y-2 pt-4 border-t border-white/10">
+                          {msg.actions.map((action, idx) => {
+                             if (action.type === 'task_created') return (
+                               <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-lime-500/10 border border-lime-500/20 text-[10px] font-bold text-lime-400">
+                                 <CheckCircle size={14} /> Task Created: {action.title}
+                               </div>
+                             );
+                             if (action.type === 'task_updated') return (
+                               <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-[10px] font-bold text-yellow-400">
+                                 <TrendingUp size={14} /> Task Updated: {action.title}
+                               </div>
+                             );
+                             if (action.type === 'task_deleted') return (
+                               <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-[10px] font-bold text-rose-400">
+                                 <AlertCircle size={14} /> Task Deleted: {action.title}
+                               </div>
+                             );
+                             return null;
+                          })}
                         </div>
                       )}
                     </div>
@@ -419,7 +440,7 @@ const AIAssistant = () => {
                     <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center shrink-0">
                       <Bot size={22} className="text-lime-500" />
                     </div>
-                    <div className="px-10 py-6 ai-bubble rounded-[3rem] rounded-tl-none flex gap-2">
+                    <div className="px-6 py-4 ai-bubble rounded-[2rem] sm:rounded-[3rem] rounded-tl-none flex gap-2">
                       <span className="w-2 h-2 bg-lime-500/40 rounded-full animate-bounce" />
                       <span className="w-2 h-2 bg-lime-500/60 rounded-full animate-bounce [animation-delay:0.2s]" />
                       <span className="w-2 h-2 bg-lime-500/80 rounded-full animate-bounce [animation-delay:0.4s]" />
@@ -451,7 +472,7 @@ const AIAssistant = () => {
         </div>
 
         {/* ── Right Column: Insights & Actions ────────────────────── */}
-        <div className="lg:col-span-4 flex flex-col gap-12">
+        <div className="lg:col-span-4 flex flex-col gap-8 md:gap-12 pb-10 lg:pb-0">
           
           {/* Quick Actions Grid */}
           <div className="space-y-4">
@@ -459,7 +480,7 @@ const AIAssistant = () => {
                <Zap size={14} className="text-lime-500" />
                Quick Commands
             </h3>
-             <div className="grid grid-cols-2 gap-6">
+             <div className="grid grid-cols-2 gap-4 md:gap-6">
               <QuickActionCard icon={ClipboardList} label="Plan Day" onClick={() => handleSend("Analyze my load and plan my day for maximum focus")} />
               <QuickActionCard icon={Calendar} label="Optimize" onClick={() => handleSend("Reschedule my missed tasks to better times")} />
               <QuickActionCard icon={Zap} label="Boost" onClick={() => handleSend("Give me a productivity boost tip")} />
@@ -471,7 +492,7 @@ const AIAssistant = () => {
           <AchievementVault ratio={insightData.ratio} tasks={allTasks} />
 
           {/* Mini Progress Card */}
-          <div className="glass-card p-8 flex items-center gap-6">
+          <div className="glass-card p-6 sm:p-8 flex items-center gap-6">
              <div className="relative w-16 h-16 flex-shrink-0">
                 <svg className="w-full h-full transform -rotate-90">
                   <circle cx="32" cy="32" r="28" className="stroke-white/5 fill-none" strokeWidth="6" />

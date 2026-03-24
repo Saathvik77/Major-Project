@@ -158,7 +158,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-7xl mx-auto page-transition pb-32">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-7xl mx-auto page-transition pb-32">
       
       {/* ── Header Area ────────────────────────────────────────────── */}
       <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-0">
@@ -220,8 +220,8 @@ const Dashboard = () => {
       <QuickLaunchHero onNavigate={navigate} />
 
       {/* ── Main Hero Card ────────────────────────────────────────── */}
-      <div className="relative mb-12 md:mb-20">
-         <div className="hero-card p-8 md:p-16 flex flex-col lg:flex-row items-center gap-12 md:gap-16 min-h-[450px] md:min-h-[500px]">
+      <div className="relative mb-8 md:mb-12 lg:mb-20">
+         <div className="hero-card p-6 sm:p-8 md:p-16 flex flex-col lg:flex-row items-center gap-8 md:gap-16 min-h-[400px] md:min-h-[500px]">
             
             {/* Data Visualization Column */}
             <div className="flex-1 w-full relative z-20 text-center lg:text-left">
@@ -258,7 +258,7 @@ const Dashboard = () => {
                   </motion.button>
                </div>
 
-               <div className="grid grid-cols-1 xs:grid-cols-2 md:flex md:gap-10 lg:gap-12 pt-8 border-t border-white/5 place-items-center lg:place-items-start gap-y-6">
+               <div className="grid grid-cols-1 xs:grid-cols-2 lg:flex lg:gap-12 pt-8 border-t border-white/5 place-items-center lg:place-items-start gap-6 md:gap-8">
                   <StatBadge dotColor="bg-lime-500" label="Focus Score" value={stats.efficiency} isVisible={showStats} />
                   <StatBadge dotColor="bg-lime-400" label="Completed" value={stats.totalTasks} isVisible={showStats} />
                   <StatBadge dotColor="bg-lime-300" label="Active Momentum" value={stats.growth} isVisible={showStats} />
@@ -307,10 +307,10 @@ const Dashboard = () => {
 
 
       {/* ── Bottom Content Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 lg:gap-20">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 lg:gap-20">
         
         {/* Quick Access Card */}
-        <div className="lg:col-span-8 glass-card p-6 md:p-8 lg:p-10 flex flex-col gap-8 md:gap-10 relative overflow-hidden group min-h-[400px] md:min-h-[500px]">
+        <div className="lg:col-span-8 glass-card p-5 sm:p-6 md:p-8 lg:p-10 flex flex-col gap-6 md:gap-10 relative overflow-hidden group min-h-[350px] md:min-h-[500px]">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xl font-black text-white tracking-tight">Active Operational Flow</h3>
@@ -362,7 +362,7 @@ const Dashboard = () => {
         </div>
 
         {/* AI Insight Card */}
-        <div className="lg:col-span-4 glass-card p-6 md:p-8 lg:p-10 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative overflow-hidden group">
+        <div className="lg:col-span-4 glass-card p-6 sm:p-8 md:p-10 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative overflow-hidden group">
            <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 blur-[40px] -z-10 group-hover:bg-lime-500/20 transition-all" />
            <div className="flex items-start justify-between mb-6 md:mb-8">
               <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shadow-lg shadow-lime-500/5">

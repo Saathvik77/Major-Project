@@ -69,228 +69,31 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
   };
 
   const handleCommand = async (userInput) => {
-    const text = userInput.toLowerCase();
-
     try {
+      // Small local bypass for UI themes
+      const text = userInput.toLowerCase();
       if (text.includes("tired") || text.includes("stress") || text.includes("calm") || text.includes("relax")) {
         addBotMessage("I see you're tired. Let's slow things down...\n\nSwitching to Calm Mode 🌙");
         setTimeout(() => setAppTheme("calm"), 1500);
         return;
       }
 
-      if (text.includes("hype") || text.includes("energy") || text.includes("activate") || text.includes("cyberpunk") || text.includes("hacker")) {
-        addBotMessage("System Overload detected. Initializing hyper-productivity protocols ⚡\n\nSwitching to Cyberpunk Mode 🤖");
-        setTimeout(() => setAppTheme("cyberpunk"), 1500);
-        return;
-      }
+      const response = await api.post("/ai/chat", { 
+        message: userInput,
+        weatherData: weatherData
+      });
 
-      if (text.includes("focus") || text.includes("deep work") || text.includes("ocean") || text.includes("flow")) {
-        addBotMessage("Entering a state of deep flow. Erasing distractions 🌊\n\nSwitching to Ocean Mode 🐬");
-        setTimeout(() => setAppTheme("ocean"), 1500);
-        return;
-      }
-
-      if (text.includes("add ") || text.includes("create ") || text.includes("new ")) {
-        let taskTitle = "";
-        if (text.includes("add a task to ")) taskTitle = text.split("add a task to ")[1];
-        else if (text.includes("add task to ")) taskTitle = text.split("add task to ")[1];
-        else if (text.includes("add ")) taskTitle = text.split("add ")[1];
-        else if (text.includes("create ")) taskTitle = text.split("create ")[1];
-
-        taskTitle = taskTitle.trim().replace(/[.!?]+$/, "");
-
-        if (!taskTitle) {
-          addBotMessage("I didn't quite catch the name of the task. Try saying 'Add a task to go grocery shopping'.");
-          return;
-        }
-
-        addBotMessage(`I'm creating the '${taskTitle}' task for you right now...`);
-
-        await api.post("/tasks", {
-          title: taskTitle,
-          description: "Created by AI",
-          date: new Date(),
-          duration: 60,
-          priority: "Medium",
-          deadline: new Date(),
-          startTime: "09:00",
-        });
-
+      addBotMessage(response.data.reply);
+      
+      if (response.data.actions?.length > 0) {
         window.dispatchEvent(new Event("tasksUpdated"));
-
-        setTimeout(() => {
-          addBotMessage(`Done! The task '${taskTitle}' has been added to your schedule. 🚀`);
-        }, 1000);
-        return;
-      }
-
-      if (text.includes("delete ") || text.includes("remove ") || text.includes("cancel ")) {
-        let fetchWord = text.includes("delete ") ? "delete " : text.includes("remove ") ? "remove " : "cancel ";
-        let targetTitle = text.split(fetchWord)[1].trim().replace(/the /g, "").replace(/task/g, "").trim().replace(/[.!?]+$/, "");
-
-        addBotMessage(`Looking for the '${targetTitle}' task in your database...`);
-
-        const res = await api.get("/tasks?limit=50");
-        const allTasks = res.data.tasks || [];
-        const match = allTasks.find((t) => t.title.toLowerCase().includes(targetTitle));
-
-        if (match) {
-          await api.delete(`/tasks/${match._id || match.id}`);
-          window.dispatchEvent(new Event("tasksUpdated"));
-          setTimeout(() => {
-            addBotMessage(`Success! I have deleted the '${match.title}' task. 🗑️`);
-          }, 1000);
-        } else {
-          setTimeout(() => {
-            addBotMessage(`I couldn't find any pending task that sounds like '${targetTitle}'.`);
-          }, 1000);
-        }
-        return;
-      }
-
-      if (text.includes("reschedule ") || text.includes("move ")) {
-        let fetchWord = text.includes("reschedule ") ? "reschedule " : "move ";
-        // Extract task title and time. Format: "reschedule [title] to [time]"
-        let parts = text.split(fetchWord)[1].split(" to ");
-        let targetTitle = parts[0].trim().replace(/the /g, "").replace(/task/g, "").trim();
-        let targetTimeRaw = parts[1] ? parts[1].trim() : "";
-
-        if (!targetTimeRaw) {
-          addBotMessage("Please specify a time, e.g., 'Reschedule reading to 5 PM'.");
-          return;
-        }
-
-        addBotMessage(`Searching for '${targetTitle}' to reschedule...`);
-
-        const res = await api.get("/tasks?limit=100");
-        const allTasks = res.data.tasks || [];
-        const match = allTasks.find((t) => t.title.toLowerCase().includes(targetTitle) && !t.completed);
-
-        if (match) {
-          // Robust time parsing (simple ver: "5 PM" -> "17:00")
-          let formattedTime = targetTimeRaw;
-          if (targetTimeRaw.includes("am") || targetTimeRaw.includes("pm")) {
-            let [time, modifier] = targetTimeRaw.split(" ");
-            let [hours, minutes] = time.split(":");
-            if (!minutes) minutes = "00";
-            let h = parseInt(hours, 10);
-            if (modifier === "pm" && h < 12) h += 12;
-            if (modifier === "am" && h === 12) h = 0;
-            formattedTime = `${String(h).padStart(2, '0')}:${minutes}`;
-          }
-
-          await api.post(`/tasks/${match._id || match.id}/reschedule`, { targetTime: formattedTime });
-          window.dispatchEvent(new Event("tasksUpdated"));
-          setTimeout(() => {
-            addBotMessage(`Task '${match.title}' has been successfully rescheduled to ${targetTimeRaw}. 🗓️`);
-          }, 1000);
-        } else {
-          setTimeout(() => {
-            addBotMessage(`I couldn't find a pending task named '${targetTitle}'.`);
-          }, 1000);
-        }
-        return;
-      }
-
-      if (text.includes("complete ") || text.includes("finish ") || text.includes("done ")) {
-        let fetchWord = text.includes("complete ") ? "complete " : text.includes("finish ") ? "finish " : "done ";
-        let targetTitle = text.split(fetchWord)[1].trim().replace(/the /g, "").replace(/task/g, "").trim().replace(/[.!?]+$/, "");
-
-        addBotMessage(`Looking for the '${targetTitle}' task to mark as completed...`);
-
-        const res = await api.get("/tasks?limit=100");
-        const allTasks = res.data.tasks || [];
-        const match = allTasks.find((t) => t.title.toLowerCase().includes(targetTitle) && !t.completed);
-
-        if (match) {
-          await api.patch(`/tasks/${match._id || match.id}`, { completed: true });
-          window.dispatchEvent(new Event("tasksUpdated"));
-          setTimeout(() => {
-            addBotMessage(`Awesome! '${match.title}' is marked as complete. Keep it up! ✅`);
-          }, 1000);
-        } else {
-          setTimeout(() => {
-            addBotMessage(`I couldn't find any pending task named '${targetTitle}'.`);
-          }, 1000);
-        }
-        return;
-      }
-
-      if (text.includes("go to ") || text.includes("open ") || text.includes("take me to ") || text.includes("navigate to ")) {
-        let destination = text.replace(/go to /g, "").replace(/open /g, "").replace(/take me to /g, "").replace(/navigate to /g, "").trim();
-
-        if (destination.includes("task")) {
-          addBotMessage(`Opening your Tasks board... 📋`);
-          setTimeout(() => navigate("/tasks"), 1000);
-          return;
-        } else if (destination.includes("report") || destination.includes("health")) {
-          addBotMessage(`Opening your Health & Reports... 📊`);
-          setTimeout(() => navigate("/reports"), 1000);
-          return;
-        } else if (destination.includes("analytic")) {
-          addBotMessage(`Opening your Analytics dashboard... 📈`);
-          setTimeout(() => navigate("/analytics"), 1000);
-          return;
-        } else if (destination.includes("profile") || destination.includes("setting")) {
-          addBotMessage(`Opening your Profile settings... ⚙️`);
-          setTimeout(() => navigate("/profile"), 1000);
-          return;
-        } else if (destination.includes("home") || destination.includes("dashboard")) {
-          addBotMessage(`Taking you Home... 🏠`);
-          setTimeout(() => navigate("/dashboard"), 1000);
-          return;
+        
+        // Handle navigation actions if any
+        const navAction = response.data.actions.find(a => a.type === "navigation" || a.type === "NAVIGATION");
+        if (navAction) {
+          setTimeout(() => navigate(navAction.path || navAction.data?.path), 1200);
         }
       }
-
-      if (text.includes("how productive") || text.includes("productivity") || text.includes("my progress")) {
-        const productivityPercent = stats && stats.todayTotal > 0 ? Math.round((stats.todayCompleted / stats.todayTotal) * 100) : 0;
-        addBotMessage(`You completed ${productivityPercent}% of your tasks today.\nTry finishing 1 more to maintain your streak! 🔥`);
-        return;
-      }
-
-      if (text.includes("suggest sport") || text.includes("what sport") || text.includes("exercise") || text.includes("workout") || text.includes("suggest workout")) {
-        let sportSuggestion = "A 20-minute indoor yoga session is a great way to stay active today. 🧘‍♂️";
-        if (weatherData) {
-          const temp = weatherData.temperature;
-          const code = weatherData.weathercode;
-
-          if (code <= 2 && temp >= 10 && temp <= 32) {
-            sportSuggestion = "It's beautifully sunny! I highly suggest a 30-minute outdoor cycling session or a run. 🚴‍♂️🏃‍♀️";
-          } else if (code >= 51) {
-            sportSuggestion = "It's rainy right now. How about a home HIIT workout or lifting weights at the gym? 🏋️‍♂️";
-          } else if (temp < 10 || (code >= 71 && code <= 77)) {
-            sportSuggestion = "It's pretty chilly outside! A nice warm indoor yoga or stretching session is perfect. 🧘‍♀️";
-          } else {
-            sportSuggestion = "Mild weather. A brisk outdoor walk or a light jog would be excellent. 🚶‍♂️";
-          }
-        }
-        addBotMessage(sportSuggestion);
-        return;
-      }
-
-      if (text.includes("plan my day") || text.includes("schedule") || text.includes("when should i work")) {
-        const pending = tasks?.filter((t) => !t.completed).length || 0;
-        addBotMessage(`You are most productive between 9AM–11AM. Schedule important work during this time.\nYou currently have ${pending} pending tasks left. 📅`);
-        return;
-      }
-
-      if (text.includes("my tasks") || text.includes("list tasks") || text.includes("show tasks")) {
-        const pending = tasks?.filter((t) => !t.completed) || [];
-        if (pending.length === 0) {
-          addBotMessage("You have no pending tasks right now. Great job! 🎉");
-        } else {
-          const list = pending.slice(0, 5).map((t, i) => `${i + 1}. ${t.title}`).join("\n");
-          addBotMessage(`Here are your pending tasks:\n${list}${pending.length > 5 ? `\n...and ${pending.length - 5} more.` : ""}`);
-        }
-        return;
-      }
-
-      if (text.includes("health") || text.includes("how healthy")) {
-        addBotMessage("Your health score improved by 12% this week. Great job staying active! 💚");
-        return;
-      }
-
-      addBotMessage("I am a Smart Assistant! Ask me to 'Add a task to read', 'Finish the coding task', or 'Take me to Reports'.");
     } catch (error) {
       console.error(error);
       addBotMessage("Oops, I lost connection to the database. Something went wrong on my end! 🔌");

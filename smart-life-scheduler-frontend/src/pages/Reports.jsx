@@ -288,13 +288,13 @@ export default function Reports() {
   };
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-32 page-transition">
       {/* ── Premium Lighting FX ────────────────────────────────────── */}
       <div className="fixed top-[-20%] right-[-10%] w-[800px] h-[800px] bg-lime-600/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
       <div className="fixed bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-lime-700/5 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
       
       {/* ── Header ─────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between mb-12">
+      <div className="flex items-center justify-between mb-10 md:mb-12">
         <div className="flex items-center gap-5">
           <button
             onClick={() => navigate(-1)}
@@ -314,18 +314,18 @@ export default function Reports() {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-10">
+      <div className="grid grid-cols-12 gap-8 md:gap-10">
 
         {/* ── Top Row: Status & Weather ─────────────────────────────── */}
         <div className="col-span-12 lg:col-span-8">
           <Tilt tiltMaxAngleX={2} tiltMaxAngleY={2} glareEnable={true} glareMaxOpacity={0.03} className="h-full">
-            <div className={`p-10 rounded-[2.5rem] backdrop-blur-2xl border shadow-2xl relative overflow-hidden transition-all h-full flex flex-col justify-center ${conditionBg}`}>
+            <div className={`p-6 sm:p-10 rounded-[2rem] md:rounded-[2.5rem] backdrop-blur-2xl border shadow-2xl relative overflow-hidden transition-all h-full flex flex-col justify-center ${conditionBg}`}>
               {/* Internal Glows */}
               <div className="absolute top-0 right-0 w-80 h-80 bg-lime-500/5 rounded-full blur-[100px] -z-10"></div>
               <div className="absolute bottom-0 left-0 w-40 h-40 bg-lime-500/5 rounded-full blur-[60px] -z-10"></div>
 
-              <div className="flex flex-col md:flex-row items-center gap-10 relative z-10">
-                <div className={`w-36 h-36 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 shadow-2xl relative group`}>
+              <div className="flex flex-col md:flex-row items-center gap-8 md:gap-10 relative z-10">
+                <div className={`w-28 h-28 md:w-36 md:h-36 rounded-2xl md:rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 shadow-2xl relative group`}>
                   <div className="absolute inset-0 bg-lime-500/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
                   {icon}
                 </div>
@@ -336,22 +336,22 @@ export default function Reports() {
                     <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Operational Readiness</span>
                   </div>
                   <div className="flex items-center gap-4 justify-center md:justify-start mb-5">
-                    <h3 className={`text-6xl font-black tracking-tighter ${conditionColor}`}>{condition}</h3>
+                    <h3 className={`text-5xl md:text-6xl font-black tracking-tighter ${conditionColor}`}>{condition}</h3>
                     {condition === "Excellent" && (
                       <div className="px-4 py-1.5 bg-lime-500 text-black text-[10px] font-black rounded-full shadow-[0_0_20px_rgba(132,204,22,0.4)] uppercase tracking-widest">
                         Peak
                       </div>
                     )}
                   </div>
-                  <p className="text-gray-400 font-medium text-lg leading-relaxed max-w-lg">{message}</p>
+                  <p className="text-gray-400 font-medium text-base md:text-lg leading-relaxed max-w-lg">{message}</p>
                 </div>
               </div>
             </div>
           </Tilt>
         </div>
 
-        <div className="col-span-12 lg:col-span-4">
-          <div className="p-8 rounded-[2.5rem] backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl h-full relative overflow-hidden group">
+          <div className="col-span-12 lg:col-span-4">
+            <div className="p-6 sm:p-8 rounded-[2rem] md:rounded-[2.5rem] backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl h-full relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-full h-full bg-radial-gradient from-lime-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             <h2 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
               <Cloud size={14} className="text-lime-500" />
@@ -363,7 +363,7 @@ export default function Reports() {
 
         {/* ── Middle Row: Heat Map ──────────────────────────────────── */}
         <div className="col-span-12">
-          <div className="p-8 rounded-[2.5rem] backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl relative overflow-hidden group">
+          <div className="p-6 sm:p-8 rounded-[2rem] md:rounded-[2.5rem] backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl relative overflow-hidden group">
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                 <div>
                    <h2 className="text-lg font-black text-white tracking-tight">Consistency Matrix</h2>
@@ -387,7 +387,7 @@ export default function Reports() {
 
         {/* ── Bottom Row: Charts ────────────────────────────────────── */}
         <div className="col-span-12 lg:col-span-5">
-          <div className="p-8 rounded-[2.5rem] backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl relative overflow-hidden group h-full">
+          <div className="p-6 sm:p-8 rounded-[2rem] md:rounded-[2.5rem] backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl relative overflow-hidden group h-full">
             <h2 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-8">Capacity Allocation</h2>
             <div className="h-64 relative">
               <ResponsiveContainer width="100%" height="100%">
@@ -435,7 +435,7 @@ export default function Reports() {
         </div>
 
         <div className="col-span-12 lg:col-span-7">
-          <div className="p-8 rounded-[2.5rem] backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl relative overflow-hidden group h-full">
+          <div className="p-6 sm:p-8 rounded-[2rem] md:rounded-[2.5rem] backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl relative overflow-hidden group h-full">
             <div className="flex justify-between items-center mb-10">
               <h2 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em]">Productivity Velocity</h2>
               <div className="flex items-center gap-2 bg-lime-500/10 border border-lime-500/20 px-3 py-1 rounded-full">

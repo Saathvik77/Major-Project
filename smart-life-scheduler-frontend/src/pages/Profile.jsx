@@ -116,7 +116,7 @@ function Profile() {
   );
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 md:pb-10 p-4 md:p-8 lg:p-12 text-white relative flex flex-col gap-20 max-w-7xl mx-auto page-transition overflow-x-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col gap-12 md:gap-20 max-w-7xl mx-auto page-transition overflow-x-hidden">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
         
@@ -169,7 +169,7 @@ function Profile() {
       <div className="fixed bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
 
       {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-20">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-20">
         <div className="flex items-center gap-6">
           <div className="w-24 h-24 rounded-[2.5rem] bg-gradient-to-br from-lime-500/10 to-lime-600/10 flex items-center justify-center text-white shadow-2xl shadow-lime-500/10 border border-white/10 relative group overflow-hidden">
               {user?.gender?.toLowerCase() === 'male' ? (
@@ -209,12 +209,12 @@ function Profile() {
         </button>
       </header>
 
-      <div className="grid grid-cols-12 gap-20">
+      <div className="grid grid-cols-12 gap-10 md:gap-20">
         {/* Main Operational Log Column */}
         <div className="col-span-12 lg:col-span-8 space-y-12">
           
           {/* Performance Matrix */}
-          <div className="glass-card p-10 relative overflow-hidden group">
+          <div className="glass-card p-6 sm:p-10 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10" />
             <div className="flex items-center gap-4 mb-10">
               <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500">
@@ -252,7 +252,7 @@ function Profile() {
           </div>
 
           {/* Completed Task Log */}
-          <div className="glass-card p-10 relative overflow-hidden group">
+          <div className="glass-card p-6 sm:p-10 relative overflow-hidden group">
             <div className="flex items-center gap-4 mb-10">
               <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500">
                 <Clock size={24} />
@@ -270,7 +270,7 @@ function Profile() {
                  </div>
                ) : (
                  allTasks?.filter(t => t.completed).map((task, idx) => (
-                   <div key={task._id || idx} className="flex items-center justify-between p-6 rounded-[2rem] bg-white/[0.03] border border-white/5 group/item hover:bg-white/[0.06] transition-all">
+                   <div key={task._id || idx} className="flex items-center justify-between p-4 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] bg-white/[0.03] border border-white/5 group/item hover:bg-white/[0.06] transition-all">
                       <div className="flex items-center gap-5">
                          <div className="w-2 h-2 rounded-full bg-lime-500 shadow-[0_0_8px_rgba(132,204,22,0.4)]" />
                          <span className="text-sm font-bold text-white group-hover/item:translate-x-1 transition-transform">{task.title}</span>
@@ -289,7 +289,7 @@ function Profile() {
         <div className="col-span-12 lg:col-span-4 space-y-8">
            
            {/* Pro Synchronization */}
-           <div className="glass-card p-10 bg-gradient-to-br from-lime-500 to-lime-600 border-none shadow-2xl shadow-lime-500/20 relative overflow-hidden group">
+           <div className="glass-card p-6 sm:p-10 bg-gradient-to-br from-lime-500 to-lime-600 border-none shadow-2xl shadow-lime-500/20 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-[40px] -z-10 group-hover:bg-white/20 transition-all" />
               {isSyncing && (
                 <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-20">
@@ -336,7 +336,7 @@ function Profile() {
            </div>
 
            {/* Achievements */}
-           <div className="glass-card p-10 relative overflow-hidden group">
+           <div className="glass-card p-6 sm:p-10 relative overflow-hidden group">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
                    <Trophy size={14} className="text-lime-500" />
@@ -362,7 +362,7 @@ function Profile() {
            </div>
 
            {/* Danger Zone */}
-           <div className="glass-card p-10 border-rose-500/10 bg-rose-500/[0.02]">
+           <div className="glass-card p-6 sm:p-10 border-rose-500/10 bg-rose-500/[0.02]">
               <h3 className="text-xs font-black text-rose-500/60 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
                  <Shield size={14} />
                  Terminal Protocol

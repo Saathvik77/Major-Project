@@ -42,7 +42,7 @@ const SettingsOption = ({ icon: Icon, title, desc, children, defaultOpen = false
     <div className="glass-card overflow-hidden transition-all duration-300">
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-6 p-8 hover:bg-white/[0.04] cursor-pointer transition-colors"
+        className="flex items-center gap-4 sm:gap-6 p-6 sm:p-8 hover:bg-white/[0.04] cursor-pointer transition-colors"
       >
         <div className="w-14 h-14 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 shadow-lg shadow-lime-500/5">
           <Icon size={24} strokeWidth={1.5} />
@@ -69,7 +69,7 @@ const SettingsOption = ({ icon: Icon, title, desc, children, defaultOpen = false
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="border-t border-white/5 bg-white/[0.02]"
           >
-            <div className="p-10 space-y-8">
+            <div className="p-6 sm:p-10 space-y-6 sm:space-y-8">
               {children}
             </div>
           </motion.div>
@@ -93,14 +93,14 @@ function Settings() {
   };
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-32 page-transition">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </AnimatePresence>
       {/* Lighting FX */}
       <div className={`fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10 ${isLightMode ? 'opacity-0' : 'opacity-100'}`} />
       
-      <div className="max-w-[900px] mx-auto relative z-10 w-full flex flex-col gap-16">
+      <div className="max-w-[900px] mx-auto relative z-10 w-full flex flex-col gap-10 md:gap-16">
         
         <header className="flex items-center gap-6">
            <div className="w-16 h-16 rounded-[2rem] bg-gradient-to-br from-lime-400 to-lime-600 flex items-center justify-center text-white shadow-2xl shadow-lime-500/30">
@@ -112,7 +112,7 @@ function Settings() {
            </div>
         </header>
 
-        <div className="space-y-10">
+        <div className="space-y-6 md:space-y-10">
           
           {/* Appearance Section */}
           <SettingsOption icon={Eye} title="Interface Aesthetics" desc="Theme & Lighting Environment" defaultOpen={true}>
@@ -200,8 +200,8 @@ function Settings() {
           {/* Danger Zone */}
           <div className="pt-16 border-t border-white/5 space-y-8">
              <h3 className="text-xs font-black text-rose-500 uppercase tracking-[0.2em] ml-2">Danger Zone</h3>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="glass-card p-8 border-rose-500/20 hover:bg-rose-500/5 group transition-all">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                <div className="glass-card p-6 sm:p-8 border-rose-500/20 hover:bg-rose-500/5 group transition-all">
                    <div className="flex items-center gap-4 mb-4">
                       <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500">
                          <Trash2 size={20} />
@@ -215,7 +215,7 @@ function Settings() {
                       Confirm Wipe
                    </button>
                 </div>
-                <div className="glass-card p-8 border-white/10 hover:bg-white/5 group transition-all">
+                <div className="glass-card p-6 sm:p-8 border-white/10 hover:bg-white/5 group transition-all">
                    <div className="flex items-center gap-4 mb-4">
                       <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400">
                          <LogOut size={20} />

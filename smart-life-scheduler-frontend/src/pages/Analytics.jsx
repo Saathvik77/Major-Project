@@ -62,7 +62,7 @@ const StatCard = ({ icon: Icon, label, value, trend, color = "orange" }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    className="glass-card p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8 relative overflow-visible group hover:bg-white/[0.04] min-h-[160px] text-center sm:text-left"
+    className="glass-card p-5 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8 relative overflow-visible group hover:bg-white/[0.04] min-h-[140px] md:min-h-[160px] text-center sm:text-left"
   >
     <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[50px] -z-10 group-hover:bg-lime-500/10 transition-all" />
     <div className="w-16 h-16 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 transition-all group-hover:scale-110 shrink-0 mb-4 sm:mb-0">
@@ -222,12 +222,12 @@ function Analytics() {
   ];
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-32 page-transition">
       {/* Lighting FX */}
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
 
       {/* Header */}
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 md:gap-12 mb-10 md:mb-16">
+      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 md:gap-12 mb-8 md:mb-16">
         <div className="flex items-center gap-4 md:gap-6">
           <button onClick={() => navigate(-1)} className="p-3 md:p-3.5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white shadow-xl">
             <ChevronLeft size={20} md:size={24} />
@@ -246,7 +246,7 @@ function Analytics() {
       </header>
 
       {/* Top Summary Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-20 px-2 lg:px-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-12 md:mb-20 px-2 lg:px-0">
         <StatCard 
           icon={CheckCircle2} 
           label="Completed Tasks" 
@@ -292,12 +292,12 @@ function Analytics() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-12 gap-12">
+        <div className="grid grid-cols-12 gap-8 md:gap-12">
           
           {/* Productivity Velocity (Bar Chart) */}
            <div className="col-span-12 lg:col-span-8">
-            <div className="glass-card p-8 md:p-12 h-full chart-container overflow-hidden">
-              <div className="flex items-center justify-between mb-8 md:mb-12">
+            <div className="glass-card p-6 sm:p-8 md:p-12 h-full chart-container overflow-hidden">
+              <div className="flex items-center justify-between mb-6 md:mb-12">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shrink-0">
                     <BarChart3 size={24} />
@@ -330,13 +330,13 @@ function Analytics() {
 
           {/* Smart Score Ring (Circular Progress) */}
           <div className="col-span-12 lg:col-span-4">
-            <div className="glass-card p-10 md:p-12 h-full chart-container flex flex-col items-center justify-center text-center relative overflow-hidden group">
+            <div className="glass-card p-8 sm:p-10 md:p-12 h-full chart-container flex flex-col items-center justify-center text-center relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
                
                <h3 className="text-lg md:text-xl font-black text-white tracking-tight mb-2 self-start">Smart Sync</h3>
-               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-10 md:mb-12 self-start">Cognitive Efficiency</p>
+               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-8 md:mb-12 self-start">Cognitive Efficiency</p>
                
-               <div className="relative w-48 h-48 md:w-64 md:h-64 mb-10 md:mb-12">
+               <div className="relative w-48 h-48 md:w-64 md:h-64 mb-8 md:mb-12">
                   <svg className="w-full h-full transform -rotate-90">
                     <circle cx="50%" cy="50%" r="42%" className="stroke-white/5 fill-none" strokeWidth="10" />
                     <motion.circle 
@@ -370,7 +370,7 @@ function Analytics() {
 
           {/* Productivity Trend (Line/Area Chart) */}
           <div className="col-span-12 lg:col-span-7">
-            <div className="glass-card p-6 md:p-10 lg:p-12 h-full chart-container">
+            <div className="glass-card p-6 sm:p-8 md:p-10 lg:p-12 h-full chart-container">
               <h3 className="text-xl font-black text-white tracking-tight mb-2">Activity Momentum</h3>
               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-12">Cognitive Score Trend</p>
               
@@ -398,7 +398,7 @@ function Analytics() {
 
           {/* AI Insights Summary */}
           <div className="col-span-12 lg:col-span-5">
-            <div className="glass-card p-6 md:p-8 lg:p-10 h-full flex flex-col gap-8 relative overflow-hidden group">
+            <div className="glass-card p-6 sm:p-8 md:p-10 h-full flex flex-col gap-6 md:gap-8 relative overflow-hidden group">
                <div className="absolute bottom-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
                
                <div className="flex items-center gap-4">
@@ -431,7 +431,7 @@ function Analytics() {
 
           {/* ── Task Explorer Section ─────────────────────────────── */}
           <div className="col-span-12">
-            <div className="glass-card p-10 flex flex-col gap-8 relative overflow-hidden group">
+            <div className="glass-card p-6 sm:p-8 md:p-10 flex flex-col gap-6 md:gap-8 relative overflow-hidden group">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                   <h3 className="text-2xl font-black text-white tracking-tight">Task Explorer</h3>

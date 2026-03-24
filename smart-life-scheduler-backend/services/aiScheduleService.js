@@ -1,5 +1,3 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
 const generateSchedule = async ({ tasks, completedToday, context }) => {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -8,6 +6,7 @@ const generateSchedule = async ({ tasks, completedToday, context }) => {
     }
 
     try {
+        const { GoogleGenerativeAI } = require("@google/generative-ai");
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 

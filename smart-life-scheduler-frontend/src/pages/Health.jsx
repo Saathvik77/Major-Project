@@ -243,7 +243,7 @@ function Health() {
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-32 page-transition">
       {/* Dynamic Animated background orbs */}
       <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-lime-600/10 rounded-full blur-[120px] -z-10 animate-pulse" />
       <div className="fixed bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-600/5 rounded-full blur-[150px] -z-10" />
@@ -259,11 +259,11 @@ function Health() {
         <h1 className="text-4xl font-bold tracking-tight">Health & Fitness</h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-20 max-w-5xl mx-auto mb-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 max-w-5xl mx-auto mb-12 md:mb-20">
 
         {/* ── AI Weekly Challenge ── */}
         <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable glareMaxOpacity={0.1} className="w-full h-full flex justify-center items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
+          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 rounded-full blur-3xl group-hover:bg-lime-500/20 transition-colors" />
 
             {/* Badge */}
@@ -348,7 +348,7 @@ function Health() {
             </GlassCard>
           ) : weatherSuggestion ? (
             <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable glareMaxOpacity={0.1} className="w-full h-full flex justify-center items-center">
-              <GlassCard className={`relative z-10 w-full max-w-sm p-8 flex flex-col items-center text-center border shadow-2xl overflow-hidden group bg-gradient-to-b ${weatherSuggestion.bg} ${weatherSuggestion.border}`}>
+              <GlassCard className={`relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border shadow-2xl overflow-hidden group bg-gradient-to-b ${weatherSuggestion.bg} ${weatherSuggestion.border}`}>
                 <div className="flex items-center gap-2 mb-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
                   <span className="text-sm font-bold tracking-widest uppercase text-white">Weather Suggestion</span>
                 </div>
@@ -393,11 +393,11 @@ function Health() {
       </div>
 
       {/* ── Focus Tracker + Heat Map ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-20 max-w-5xl mx-auto pb-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 max-w-5xl mx-auto mb-12 md:mb-20">
 
         {/* Focus Tracker */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
+          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
             <div className="absolute top-0 left-0 w-32 h-32 bg-lime-500/10 rounded-full blur-3xl group-hover:bg-lime-500/20 transition-colors" />
 
             <div className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
@@ -440,7 +440,7 @@ function Health() {
 
         {/* Activity Heat Map */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-start border border-white/20 shadow-2xl h-full group bg-slate-900/20">
+          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl h-full group bg-slate-900/20">
             <div className="flex items-center gap-2 mb-6">
               <CalendarDays size={24} className="text-lime-400 drop-shadow-[0_0_10px_rgba(132,204,22,0.5)]" />
               <h3 className="text-xl font-bold tracking-tight text-white">Activity Heat Map</h3>

@@ -1,7 +1,6 @@
 const IntelligenceReport = require("../models/IntelligenceReport");
 const IntelligenceHistory = require("../models/IntelligenceHistory");
 const Task = require("../models/Task");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const { runIntelligencePipeline } = require("../intelligence/intelligenceEngine");
 const calculateAdvancedAnalytics = require("../services/advancedAnalyticsService");
@@ -337,6 +336,7 @@ Respond ONLY with valid JSON, no markdown, no explanation. Use this exact format
 }
 Note: "type" can be ONE of these exact string values: "health", "productivity", "focus", or "fitness".`;
 
+    const { GoogleGenerativeAI } = require("@google/generative-ai");
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 

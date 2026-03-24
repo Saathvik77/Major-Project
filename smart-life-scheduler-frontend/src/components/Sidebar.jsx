@@ -92,7 +92,7 @@ const Sidebar = () => {
       </aside>
 
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-6 left-6 right-6 h-20 glass-morphism border border-white/10 rounded-[2.5rem] flex items-center justify-around px-4 z-[100] shadow-2xl backdrop-blur-2xl">
+      <nav className="md:hidden fixed bottom-6 left-6 right-6 h-20 glass-morphism border border-white/10 rounded-[2.5rem] flex items-center justify-around px-2 z-[100] shadow-2xl backdrop-blur-2xl">
         {navItems.map((item) => (
           <NavItem 
             key={item.path}

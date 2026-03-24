@@ -347,7 +347,7 @@ export default function Tasks() {
   }
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-24 page-transition">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-32 page-transition">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </AnimatePresence>
@@ -369,7 +369,7 @@ export default function Tasks() {
         )}
       </AnimatePresence>
 
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 md:gap-12 relative z-10 mb-12 md:mb-20">
+      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 md:gap-12 relative z-10 mb-8 md:mb-16">
         <div className="flex items-center gap-4 md:gap-6">
           <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/20 shrink-0">
             <Layout size={24} md:size={32} strokeWidth={2} />
@@ -401,10 +401,10 @@ export default function Tasks() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 lg:gap-20 relative z-10">
           
-          <div className="col-span-1 lg:col-span-8 flex flex-col gap-20">
-            <div className="glass-card p-4 md:p-8 overflow-hidden">
+          <div className="col-span-1 lg:col-span-8 flex flex-col gap-8 md:gap-16 lg:gap-20">
+            <div className="glass-card p-4 sm:p-6 md:p-8 overflow-hidden">
               <div className="flex items-center justify-between gap-4 md:gap-8 overflow-x-auto scrollbar-hide pb-2">
                 {weekDates.map((d, i) => {
                   const isActive = d.getDate() === selectedDate.getDate() && d.getMonth() === selectedDate.getMonth();
@@ -429,7 +429,7 @@ export default function Tasks() {
               </div>
             </div>
 
-            <div className="glass-card p-10 flex flex-col gap-8">
+            <div className="glass-card p-5 sm:p-8 md:p-10 flex flex-col gap-6 md:gap-8">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <h3 className="text-lg font-bold">Planned Schedule</h3>
@@ -440,7 +440,7 @@ export default function Tasks() {
                 </div>
               </div>
 
-              <div className="space-y-10 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="space-y-6 md:space-y-10 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
                 
                 {tasks.length === 0 ? (
                   <div className="flex flex-col items-center justify-center text-center py-20 glass-card border-dashed bg-white/[0.01]">
@@ -532,7 +532,7 @@ export default function Tasks() {
                     </div>
 
                     {tasks.filter(t => t.completed).length > 0 && (
-                      <div className="space-y-4 mt-8 pt-8 border-t border-white/5">
+                      <div className="space-y-4 mt-6 md:mt-8 pt-6 md:pt-8 border-t border-white/5">
                         <div className="flex items-center gap-2 px-1">
                           <CheckCircle size={14} className="text-emerald-500" />
                           <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500/80">Completed Performance</h4>
@@ -563,7 +563,7 @@ export default function Tasks() {
                   </>
                 )}
 
-                <div className="glass-card p-6 md:p-8 flex flex-col gap-6 md:gap-8 border border-white/10 shadow-2xl relative overflow-hidden">
+                <div className="glass-card p-5 sm:p-6 md:p-8 flex flex-col gap-6 md:gap-8 border border-white/10 shadow-2xl relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[40px] -z-10" />
                   
                   <div className="space-y-4 md:space-y-6">
@@ -712,8 +712,8 @@ export default function Tasks() {
             </div>
           </div>
 
-          <div className="col-span-12 lg:col-span-4 flex flex-col gap-20">
-            <div className="glass-card p-8 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative overflow-hidden group">
+          <div className="col-span-1 lg:col-span-4 flex flex-col gap-8 md:gap-16 lg:gap-20">
+            <div className="glass-card p-5 sm:p-8 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 blur-[40px] -z-10 group-hover:bg-lime-500/20 transition-all" />
                <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-3">
@@ -754,7 +754,7 @@ export default function Tasks() {
                </motion.button>
             </div>
 
-            <div className="glass-card p-8 flex flex-col items-center justify-center relative overflow-hidden group">
+            <div className="glass-card p-6 sm:p-8 flex flex-col items-center justify-center relative overflow-hidden group">
                <div className="absolute top-0 left-0 w-full h-full bg-lime-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-8 self-start flex items-center gap-2">
                   <TrendingUp size={14} className="text-lime-500" />
