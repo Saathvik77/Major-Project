@@ -56,7 +56,7 @@ function Login() {
       if (err.code === 'ECONNABORTED') {
         setError("Request timed out. The backend server on Render is likely sleeping. It usually takes 60 seconds to wake up. Please wait a minute and try again.");
       } else if (!err.response) {
-        setError("Network error: The backend server might be starting up or is unreachable. If you're developing locally, please ensure the server is running on port 5000.");
+        setError("Network error: The backend server is unreachable. If you deployed this app, ensure VITE_API_URL is set in your frontend host (like Render/Vercel).");
       } else if (err.response?.data?.errors) {
         setError(err.response.data.errors.join(", "));
       } else {
