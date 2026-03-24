@@ -272,7 +272,7 @@ const AIAssistant = () => {
           window.location.href = "/login";
         }, 2500);
       } else if (error.code === 'ERR_NETWORK') {
-        errorMsg = "Network error: I cannot reach the backend server. Is it running on port 5000?";
+        errorMsg = "Network error: I cannot reach the backend server. Please check your connection.";
       }
 
       setMessages((prev) => [
