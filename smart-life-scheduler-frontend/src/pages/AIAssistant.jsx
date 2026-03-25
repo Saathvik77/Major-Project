@@ -244,16 +244,16 @@ const AIAssistant = () => {
         setMessages((prev) => [...prev, assistantMessage]);
         setIsTyping(false);
 
-        if (response.data.actions?.length > 0 || response.data.reply.toLowerCase().includes("rescheduled") || response.data.reply.toLowerCase().includes("marked as complete")) {
+        if (response.data.actions?.length > 0) {
           console.log("Triggering tasksUpdated due to AI actions...");
           window.dispatchEvent(new Event("tasksUpdated"));
           
           // Handle navigation actions
-          const navAction = response.data.actions?.find(a => a.type === "navigation" || a.type === "NAVIGATION");
+          const navAction = response.data.actions?.find(a => a.type === "navigation");
           if (navAction) {
             setTimeout(() => {
-              navigate(navAction.path || navAction.data?.path);
-            }, 1200);
+              navigate(navAction.path);
+            }, 1500); // Slightly longer delay for "processing" feel
           }
         }
       }, 1000);

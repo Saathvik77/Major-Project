@@ -59,12 +59,18 @@ app.listen(PORT, () => {
 });
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of default 30s
+  })
   .then(() => {
-    console.log("✅ MongoDB Connected Successfully");
+    console.log("✅ MongoDB Connected Successfully to: " + process.env.MONGO_URI.split('@')[1].split('/')[0]);
     startAutoRescheduler(); // 👈 START CRON JOB
   })
   .catch((err) => {
     console.error("❌ MongoDB Connection Failed");
-    console.error(err.message);
+    console.error("Error Name:", err.name);
+    console.error("Error Message:", err.message);
+    if (err.message.includes("ETIMEDOUT") || err.message.includes("ENOTFOUND")) {
+      console.error("👉 SUGGESTION: Check your MONGO_URI in .env. If using Atlas, ensure your IP is whitelisted.");
+    }
   });

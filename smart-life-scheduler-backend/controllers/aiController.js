@@ -9,117 +9,138 @@ const chatWithAI = async (req, res) => {
       return res.status(400).json({ message: "Message is required" });
     }
 
-    const msg = message.toLowerCase();
+    const msg = message.toLowerCase().trim();
     const executedActions = [];
-    let reply = "I didn't quite catch that. Try 'create a task to [action]', 'delete [task]', or 'navigate to [page]'.";
+    let reply = "";
+
+    // helper to extract time from string (e.g., "at 6pm", "for 3:30", "by 10 am")
+    const extractTime = (str) => {
+      const timeMatch = str.match(/(?:at|for|by|to)\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i);
+      if (!timeMatch) return { time: "09:00", text: str };
+      
+      let timeStr = timeMatch[1].toLowerCase();
+      let [rawHrs, mins] = timeStr.replace(/am|pm/g, '').split(':');
+      let hours = parseInt(rawHrs);
+      mins = mins || "00";
+      if (timeStr.includes("pm") && hours < 12) hours += 12;
+      if (timeStr.includes("am") && hours === 12) hours = 0;
+      
+      const formattedTime = `${String(hours).padStart(2, '0')}:${mins.padStart(2, '0')}`;
+      const remainingText = str.replace(timeMatch[0], "").trim();
+      return { time: formattedTime, text: remainingText };
+    };
 
     // ─── 1. NAVIGATION INTENT ──────────────────────────────────────────────
-    if (msg.includes("go to") || msg.includes("open") || msg.includes("show") || msg.includes("navigate") || msg.includes("take me to")) {
-      if (msg.includes("dashboard") || msg.includes("home")) {
+    const navKeywords = ["go to", "open", "show", "navigate", "take me to", "switch to"];
+    const isNav = navKeywords.some(k => msg.includes(k));
+    
+    if (isNav) {
+      if (msg.includes("dashboard") || msg.includes("home") || msg.includes("main")) {
         executedActions.push({ type: "navigation", path: "/dashboard" });
-        reply = "Navigating to your Dashboard.";
-      } else if (msg.includes("analytics") || msg.includes("performance") || msg.includes("stats")) {
+        reply = "Synchronizing interface with your Dashboard.";
+      } else if (msg.includes("analytics") || msg.includes("performance") || msg.includes("stats") || msg.includes("report")) {
         executedActions.push({ type: "navigation", path: "/analytics" });
-        reply = "Opening your Performance Analytics.";
-      } else if (msg.includes("task") || msg.includes("list")) {
+        reply = "Accessing your Performance Analytics node.";
+      } else if (msg.includes("task") || msg.includes("list") || msg.includes("schedule") || msg.includes("todo")) {
         executedActions.push({ type: "navigation", path: "/tasks" });
-        reply = "Opening your Task Log.";
+        reply = "Displaying your active Operational Tasks.";
+      } else if (msg.includes("profile") || msg.includes("account") || msg.includes("user")) {
+        executedActions.push({ type: "navigation", path: "/profile" });
+        reply = "Opening User Profile configuration.";
+      } else if (msg.includes("setting") || msg.includes("config")) {
+        executedActions.push({ type: "navigation", path: "/settings" });
+        reply = "Navigating to System Settings.";
+      } else if (msg.includes("health") || msg.includes("fitness") || msg.includes("vitals")) {
+        executedActions.push({ type: "navigation", path: "/health" });
+        reply = "Opening Health & Vitality synchronization.";
+      } else if (msg.includes("ai") || msg.includes("assistant") || msg.includes("control")) {
+        executedActions.push({ type: "navigation", path: "/ai-assistant" });
+        reply = "You are currently in the AI Control Center.";
       } else {
-        reply = "I couldn't find that destination. Available locations: Dashboard, Analytics, or Tasks.";
+        reply = "Destination unrecognized. Core locations: Dashboard, Analytics, Tasks, Profile, Health, Settings.";
       }
     }
 
     // ─── 2. DELETE TASK INTENT ──────────────────────────────────────────────
-    else if (msg.includes("delete") || msg.includes("remove") || msg.includes("cancel") || msg.includes("clear")) {
-       let titleToFind = msg.replace(/delete|remove|cancel|the task|task|a task/g, "").trim();
+    else if (msg.includes("delete") || msg.includes("remove") || msg.includes("cancel") || msg.includes("clear task")) {
+       let titleToFind = msg.replace(/delete|remove|cancel|the task|task|a task|clear task/g, "").trim();
        
-       const allPending = await Task.find({ user: userId, completed: false });
-       const targetTask = allPending.find(t => t.title.toLowerCase().includes(titleToFind));
-       
-       if (targetTask) {
-          await Task.findByIdAndDelete(targetTask._id);
-          executedActions.push({ type: "task_deleted", title: targetTask.title });
-          reply = `Action Executed: Successfully deleted "${targetTask.title}".`;
+       if (!titleToFind) {
+         reply = "Please specify which task you want to delete.";
        } else {
-          reply = `Target Not Found: Could not locate a pending task matching "${titleToFind}".`;
+         const allPending = await Task.find({ user: userId, completed: false });
+         // Fuzzy match: check if task title contains the search term or vice versa
+         const targetTask = allPending.find(t => 
+           t.title.toLowerCase().includes(titleToFind) || 
+           titleToFind.includes(t.title.toLowerCase())
+         );
+         
+         if (targetTask) {
+            await Task.findByIdAndDelete(targetTask._id);
+            executedActions.push({ type: "task_deleted", title: targetTask.title });
+            reply = `Action Confirmed: Successfully decommissioned "${targetTask.title}" from your schedule.`;
+         } else {
+            reply = `Error: Could not locate any pending task matching "${titleToFind}".`;
+         }
        }
     }
 
     // ─── 3. RESCHEDULE TASK INTENT ──────────────────────────────────────────
-    else if (msg.includes("reschedule") || msg.includes("move") || msg.includes("change")) {
-       let context = msg.replace(/reschedule|move|change|the task|task|a task/g, "").trim();
-       const timeMatch = context.match(/to\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i);
+    else if (msg.includes("reschedule") || msg.includes("move") || msg.includes("change time") || msg.includes("shift")) {
+       const { time, text } = extractTime(msg);
+       let titleToFind = text.replace(/reschedule|move|change time|the task|task|a task|shift|to/g, "").trim();
        
-       if (timeMatch) {
-         let timeStr = timeMatch[1].toLowerCase();
-         let titleToFind = context.replace(timeMatch[0], "").replace(/to/g, "").trim();
-         
-         let formattedTime = "09:00";
-         let [rawHrs, mins] = timeStr.replace(/am|pm/g, '').split(':');
-         let hours = parseInt(rawHrs) || 9;
-         mins = mins || "00";
-         if (timeStr.includes("pm") && hours < 12) hours += 12;
-         if (timeStr.includes("am") && hours === 12) hours = 0;
-         formattedTime = `${String(hours).padStart(2, '0')}:${mins.padStart(2, '0')}`;
-         
+       if (time === "09:00" && !msg.match(/9\s*am/i)) { // If no time was actually found
+          reply = "Please specify the new time (e.g., 'Move meeting to 3pm').";
+       } else if (!titleToFind) {
+          reply = "Please specify which task you'd like to reschedule.";
+       } else {
          const allPending = await Task.find({ user: userId, completed: false });
-         const targetTask = allPending.find(t => t.title.toLowerCase().includes(titleToFind));
+         const targetTask = allPending.find(t => 
+           t.title.toLowerCase().includes(titleToFind) || 
+           titleToFind.includes(t.title.toLowerCase())
+         );
          
          if (targetTask) {
-            targetTask.startTime = formattedTime;
+            targetTask.startTime = time;
             await targetTask.save();
-            executedActions.push({ type: "task_updated", title: targetTask.title });
-            reply = `Action Executed: Rescheduled "${targetTask.title}" to ${formattedTime}.`;
+            executedActions.push({ type: "task_updated", title: targetTask.title, time: time });
+            reply = `Re-optimization Complete: "${targetTask.title}" has been shifted to ${time}.`;
          } else {
-            reply = `Target Not Found: Could not locate a pending task matching "${titleToFind}".`;
+            reply = `Search Failure: No task matching "${titleToFind}" was found in your active schedule.`;
          }
-       } else {
-         reply = "Incomplete Command: Please specify the new time (e.g., 'to 3pm').";
        }
     }
 
     // ─── 4. CREATE TASK INTENT ──────────────────────────────────────────────
-    else if (msg.includes("create") || msg.includes("add") || msg.includes("schedule") || msg.includes("remind me")) {
-      let title = msg.replace(/create a task to|create task to|add a task to|add task to|schedule a task to|create a task for|create task for|add task for|remind me to|create|add|schedule/g, "").trim();
-      let timeStr = "";
+    else if (msg.includes("create") || msg.includes("add") || msg.includes("schedule") || msg.includes("remind me") || msg.includes("put")) {
+      const { time, text } = extractTime(msg);
+      let title = text.replace(/create a task to|create task to|add a task to|add task to|schedule a task to|create a task for|create task for|add task for|remind me to|create|add|schedule|put|the task|a task|on my list/g, "").trim();
       
-      const timeMatch = title.match(/(?:at|for|by)\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i);
-      if (timeMatch) {
-        timeStr = timeMatch[1].toLowerCase();
-        title = title.replace(timeMatch[0], "").trim();
-      }
-      
-      let formattedTime = "09:00"; 
-      if (timeStr) {
-         let [rawHrs, mins] = timeStr.replace(/am|pm/g, '').split(':');
-         let hours = parseInt(rawHrs) || 9;
-         mins = mins || "00";
-         if (timeStr.includes("pm") && hours < 12) hours += 12;
-         if (timeStr.includes("am") && hours === 12) hours = 0;
-         formattedTime = `${String(hours).padStart(2, '0')}:${mins.padStart(2, '0')}`;
-      }
+      if (!title) {
+        reply = "Please specify the task description (e.g., 'Add gym at 5pm').";
+      } else {
+        title = title.charAt(0).toUpperCase() + title.slice(1);
 
-      if (!title) title = "New Routine Task";
-      title = title.charAt(0).toUpperCase() + title.slice(1);
-
-      const newTask = await Task.create({
-        user: userId,
-        title: title,
-        priority: "High",
-        category: "Personal",
-        startTime: formattedTime,
-        endTime: "23:59",
-        date: new Date(),
-        completed: false
-      });
-      
-      executedActions.push({ type: "task_created", title: newTask.title });
-      reply = `Action Executed: Successfully scheduled "${newTask.title}" at ${formattedTime}.`;
+        const newTask = await Task.create({
+          user: userId,
+          title: title,
+          priority: "High",
+          category: "Personal",
+          startTime: time,
+          endTime: "23:59",
+          date: new Date(),
+          completed: false
+        });
+        
+        executedActions.push({ type: "task_created", title: newTask.title, time: time });
+        reply = `Network Updated: Successfully scheduled "${newTask.title}" for ${time}.`;
+      }
     }
     
     // ─── 5. FALLBACK ────────────────────────────────────────────────────────
     else {
-       reply = "Local Operator Mode Active. State your action: 'create', 'delete', 'reschedule', or 'navigate'.";
+       reply = "Local Core Active. I can create, delete, or reschedule tasks, and navigate through sections. Try: 'Navigate to Analytics' or 'Add Gym at 6pm'.";
     }
 
     // Trigger local events
