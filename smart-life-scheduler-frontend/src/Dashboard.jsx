@@ -21,8 +21,8 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from './api';
-import maleAvatar from "./assets/avatars/male_avatar.png";
-import femaleAvatar from "./assets/avatars/female_avatar.png";
+import maleAvatar from "./assets/avatars/male_avatar.svg";
+import femaleAvatar from "./assets/avatars/female_avatar.svg";
 
 const StatBadge = ({ dotColor, label, value, isVisible }) => (
   <div className="flex items-center gap-3">

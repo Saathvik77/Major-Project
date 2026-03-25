@@ -22,8 +22,8 @@ import { useNavigate } from "react-router-dom";
 import API from "../api";
 import { motion, AnimatePresence } from "framer-motion";
 import Toast from "../components/Toast";
-import maleAvatar from "../assets/avatars/male_avatar.png";
-import femaleAvatar from "../assets/avatars/female_avatar.png";
+import maleAvatar from "../assets/avatars/male_avatar.svg";
+import femaleAvatar from "../assets/avatars/female_avatar.svg";
 
 function Profile() {
   const navigate = useNavigate();

@@ -14,8 +14,8 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import API from "../api";
-import maleAvatar from "../assets/avatars/male_avatar.png";
-import femaleAvatar from "../assets/avatars/female_avatar.png";
+import maleAvatar from "../assets/avatars/male_avatar.svg";
+import femaleAvatar from "../assets/avatars/female_avatar.svg";
 
 const NavItem = ({ icon: Icon, label, path, active, isBottom = false }) => (
   <Link to={path} className="relative group w-full flex justify-center py-3">

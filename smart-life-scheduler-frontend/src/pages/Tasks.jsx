@@ -13,8 +13,8 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { motion } from "framer-motion";
 import TaskItem from "../components/TaskItem";
 import Toast from "../components/Toast";
-import maleAvatar from "../assets/avatars/male_avatar.png";
-import femaleAvatar from "../assets/avatars/female_avatar.png";
+import maleAvatar from "../assets/avatars/male_avatar.svg";
+import femaleAvatar from "../assets/avatars/female_avatar.svg";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 const formatTime12Hour = (time24) => {
