@@ -175,6 +175,24 @@ const chatWithAI = async (req, res) => {
        });
        reply = "Initiating travel log optimization. Exploration of diverse geolocations enhances operational perspective.";
     }
+    else if (msg.includes("recommend") || msg.includes("tell me about") || msg.includes("search for") || msg.includes("resources for") || msg.includes("suggest")) {
+       const topic = msg.replace(/recommend|tell me about|search for|resources for|suggest|something about|about|a|some/g, "").trim();
+       if (topic) {
+         const capitalizedTopic = topic.charAt(0).toUpperCase() + topic.slice(1);
+         executedActions.push({ 
+           type: "recommendations", 
+           category: capitalizedTopic,
+           links: [
+             { title: `YouTube: ${capitalizedTopic}`, url: `https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}`, type: "video" },
+             { title: `Google Search: ${capitalizedTopic}`, url: `https://www.google.com/search?q=${encodeURIComponent(topic)}`, type: "website" },
+             { title: `Wikipedia: ${capitalizedTopic}`, url: `https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(topic)}`, type: "article" }
+           ]
+         });
+         reply = `I have indexed the data nodes for "${capitalizedTopic}". Here are the most relevant external resources for your review.`;
+       } else {
+         reply = "Please specify a topic you'd like me to recommend or search for (e.g., 'Recommend machine learning' or 'Tell me about space').";
+       }
+    }
 
     // ─── 6. FALLBACK ────────────────────────────────────────────────────────
     else {
