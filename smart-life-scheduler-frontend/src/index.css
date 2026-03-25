@@ -341,3 +341,69 @@ input[type="date"]:focus, input[type="time"]:focus {
   background: rgba(255, 140, 60, 0.2);
   border-radius: 16px;
 }
+
+/* Liquid Glass Utility */
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transition: all 0.8s ease;
+  z-index: -1;
+}
+
+.liquid-glass:hover::before {
+  left: 150%;
+}
+
+.liquid-glass:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 40px rgba(132, 204, 22, 0.15);
+}
+
+/* specific variants */
+.liquid-glass-lime {
+  background: rgba(132, 204, 22, 0.15) !important;
+  border: 1px solid rgba(132, 204, 22, 0.4) !important;
+  box-shadow: 0 4px 20px rgba(132, 204, 22, 0.2) !important;
+}
+
+.liquid-glass-lime:hover {
+  background: rgba(132, 204, 22, 0.25) !important;
+  box-shadow: 0 8px 32px rgba(132, 204, 22, 0.4) !important;
+  border-color: rgba(132, 204, 22, 0.6) !important;
+}
+
+.liquid-glass-emerald {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2) !important;
+}
+
+.liquid-glass-emerald:hover {
+  background: rgba(16, 185, 129, 0.25) !important;
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4) !important;
+  border-color: rgba(16, 185, 129, 0.6) !important;
+}

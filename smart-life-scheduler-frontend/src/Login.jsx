@@ -143,8 +143,8 @@ function Login() {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-3.5 rounded-2xl font-bold text-white shadow-[0_0_20px_rgba(132,204,22,0.4)] transition-all duration-300 tracking-wide text-[16px] ${
-              loading ? "bg-gray-500/50 cursor-not-allowed opacity-70" : "bg-gradient-to-r from-lime-600 to-emerald-500 hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(132,204,22,0.6)] active:scale-[0.98]"}`}
+              className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest text-[13px] transition-all duration-300 ${
+              loading ? "bg-gray-500/50 cursor-not-allowed opacity-70" : "liquid-glass liquid-glass-lime"}`}
             >
               {loading ? "Authenticating..." : "Sign In with Phone"}
             </button>
@@ -182,8 +182,8 @@ function Login() {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-3.5 rounded-2xl font-bold text-white shadow-[0_0_20px_rgba(132,204,22,0.4)] transition-all duration-300 tracking-wide text-[16px] ${
-              loading ? "bg-gray-500/50 cursor-not-allowed opacity-70" : "bg-gradient-to-r from-lime-600 to-emerald-500 hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(132,204,22,0.6)] active:scale-[0.98]"}`}
+              className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest text-[13px] transition-all duration-300 ${
+              loading ? "bg-gray-500/50 cursor-not-allowed opacity-70" : "liquid-glass liquid-glass-lime"}`}
             >
               {loading ? "Authenticating..." : "Sign In"}
             </button>
@@ -199,13 +199,13 @@ function Login() {
 
           {/* Social Logins */}
           <div className="mt-6 grid grid-cols-2 gap-4 relative z-10">
-            <button onClick={() => setIsPhoneLogin(!isPhoneLogin)} type="button" className={`flex items-center justify-center space-x-2 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all hover:scale-105 active:scale-95 ${isPhoneLogin ? "ring-2 ring-lime-500/50 bg-white/10" : ""}`}>
-              {isPhoneLogin ? <Mail className="w-5 h-5 text-lime-400" /> : <Phone className="w-5 h-5 text-lime-400" />}
-              <span className="text-white text-sm font-semibold tracking-wide">{isPhoneLogin ? "Email Login" : "Phone Login"}</span>
+            <button onClick={() => setIsPhoneLogin(!isPhoneLogin)} type="button" className={`flex items-center justify-center space-x-2 py-3 rounded-2xl liquid-glass ${isPhoneLogin ? "ring-2 ring-lime-500/50 border-lime-500/50 bg-lime-500/10" : ""}`}>
+              {isPhoneLogin ? <Mail className="w-4 h-4 text-lime-400" /> : <Phone className="w-4 h-4 text-lime-400" />}
+              <span className="text-white text-[11px] font-black uppercase tracking-widest">{isPhoneLogin ? "Email" : "Phone"}</span>
             </button>
-            <button onClick={() => handleSocialLogin("GitHub")} type="button" className="flex items-center justify-center space-x-2 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all hover:scale-105 active:scale-95">
-              <Github className="w-5 h-5 text-white" />
-              <span className="text-white text-sm font-semibold tracking-wide">GitHub</span>
+            <button onClick={() => handleSocialLogin("GitHub")} type="button" className="flex items-center justify-center space-x-2 py-3 rounded-2xl liquid-glass">
+              <Github className="w-4 h-4 text-white" />
+              <span className="text-white text-[11px] font-black uppercase tracking-widest">GitHub</span>
             </button>
           </div>
 

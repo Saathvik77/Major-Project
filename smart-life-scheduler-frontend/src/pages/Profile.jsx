@@ -116,7 +116,7 @@ function Profile() {
   );
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col gap-12 md:gap-20 max-w-7xl mx-auto page-transition overflow-x-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col gap-8 md:gap-20 max-w-7xl mx-auto page-transition overflow-x-hidden">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
         
@@ -170,8 +170,8 @@ function Profile() {
 
       {/* Header */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-20">
-        <div className="flex items-center gap-6">
-          <div className="w-24 h-24 rounded-[2.5rem] bg-gradient-to-br from-lime-500/10 to-lime-600/10 flex items-center justify-center text-white shadow-2xl shadow-lime-500/10 border border-white/10 relative group overflow-hidden">
+        <div className="flex items-center gap-4 sm:gap-6">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-[1.8rem] sm:rounded-[2.5rem] bg-gradient-to-br from-lime-500/10 to-lime-600/10 flex items-center justify-center text-white shadow-2xl shadow-lime-500/10 border border-white/10 relative group overflow-hidden">
               {user?.gender?.toLowerCase() === 'male' ? (
                 <img 
                   src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user?.name || 'Felix'}&backgroundColor=b6e3f4,c0aede,d1d4f9`} 
@@ -188,13 +188,13 @@ function Profile() {
                 />
               ) : null}
               <div className="w-full h-full flex items-center justify-center bg-lime-500/5" style={{display: user?.gender?.toLowerCase() === 'male' || user?.gender?.toLowerCase() === 'female' ? 'none' : 'flex'}}>
-                <User size={36} strokeWidth={2.5} className="text-lime-500" />
+                <User size={window.innerWidth < 640 ? 28 : 36} strokeWidth={2.5} className="text-lime-500" />
               </div>
-             <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-emerald-500 rounded-2xl border-4 border-[#0a0c10] shadow-xl z-10" />
+             <div className="absolute -bottom-1 -right-1 w-6 h-6 sm:w-8 sm:h-8 bg-emerald-500 rounded-2xl border-4 border-[#0a0c10] shadow-xl z-10" />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tighter">{user?.name || "User"}</h1>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60">Node Integrity: Fully Operational</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tighter">{user?.name || "User"}</h1>
+            <p className="text-[8px] sm:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60">Node Integrity: Fully Operational</p>
           </div>
         </div>
 
@@ -214,52 +214,52 @@ function Profile() {
         <div className="col-span-12 lg:col-span-8 space-y-12">
           
           {/* Performance Matrix */}
-          <div className="glass-card p-6 sm:p-10 relative overflow-hidden group">
+          <div className="glass-card p-5 sm:p-10 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10" />
-            <div className="flex items-center gap-4 mb-10">
-              <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500">
-                <Activity size={24} />
+            <div className="flex items-center gap-4 mb-8 sm:mb-10">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500">
+                <Activity size={20} className="sm:w-6 sm:h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-black text-white tracking-tight">System Performance Matrix</h3>
-                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Real-time Node Metrics</p>
+                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight">System Performance Matrix</h3>
+                <p className="text-[9px] sm:text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Real-time Node Metrics</p>
               </div>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-               <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all flex flex-col gap-4">
+ 
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8">
+               <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all flex flex-col gap-3 sm:gap-4">
                    <div className="flex items-center justify-between">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Completed</p>
-                    <CheckCircle2 size={16} className="text-lime-500" />
+                    <p className="text-[9px] sm:text-[10px] font-black text-gray-500 uppercase tracking-widest">Completed</p>
+                    <CheckCircle2 size={14} className="text-lime-500" />
                   </div>
-                  <p className="text-4xl font-black text-white tracking-tighter">{summary?.completed || 0}</p>
+                  <p className="text-3xl sm:text-4xl font-black text-white tracking-tighter">{summary?.completed || 0}</p>
                </div>
-               <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all flex flex-col gap-4">
+               <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all flex flex-col gap-3 sm:gap-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Active Streak</p>
-                    <Flame size={16} className="text-lime-500" />
+                    <p className="text-[9px] sm:text-[10px] font-black text-gray-500 uppercase tracking-widest">Active Streak</p>
+                    <Flame size={14} className="text-lime-500" />
                   </div>
-                  <p className="text-4xl font-black text-lime-500 tracking-tighter">{summary?.activeStreak || "0 Days"}</p>
+                  <p className="text-3xl sm:text-4xl font-black text-lime-500 tracking-tighter">{summary?.activeStreak || "0 Days"}</p>
                </div>
-               <div className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all flex flex-col gap-4">
+               <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all flex flex-col gap-3 sm:gap-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Efficiency</p>
-                    <Target size={16} className="text-lime-500" />
+                    <p className="text-[9px] sm:text-[10px] font-black text-gray-500 uppercase tracking-widest">Efficiency</p>
+                    <Target size={14} className="text-lime-500" />
                   </div>
-                  <p className="text-4xl font-black text-white tracking-tighter">{summary?.productivityScore || "0%"}</p>
+                  <p className="text-3xl sm:text-4xl font-black text-white tracking-tighter">{summary?.productivityScore || "0%"}</p>
                </div>
             </div>
           </div>
 
           {/* Completed Task Log */}
-          <div className="glass-card p-6 sm:p-10 relative overflow-hidden group">
-            <div className="flex items-center gap-4 mb-10">
-              <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500">
-                <Clock size={24} />
+          <div className="glass-card p-5 sm:p-10 relative overflow-hidden group">
+            <div className="flex items-center gap-4 mb-8 sm:mb-10">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500">
+                <Clock size={20} className="sm:w-6 sm:h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-black text-white tracking-tight">Completed Operational Log</h3>
-                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Verification of finalized tasks</p>
+                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight">Completed Operational Log</h3>
+                <p className="text-[9px] sm:text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Verification of finalized tasks</p>
               </div>
             </div>
             
@@ -289,7 +289,7 @@ function Profile() {
         <div className="col-span-12 lg:col-span-4 space-y-8">
            
            {/* Pro Synchronization */}
-           <div className="glass-card p-6 sm:p-10 bg-gradient-to-br from-lime-500 to-lime-600 border-none shadow-2xl shadow-lime-500/20 relative overflow-hidden group">
+           <div className="glass-card p-5 sm:p-10 bg-gradient-to-br from-lime-500 to-lime-600 border-none shadow-2xl shadow-lime-500/20 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-[40px] -z-10 group-hover:bg-white/20 transition-all" />
               {isSyncing && (
                 <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-20">
@@ -299,11 +299,11 @@ function Profile() {
                    </div>
                 </div>
               )}
-
-              <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white mb-6">
-                 <Zap size={24} strokeWidth={2.5} />
+ 
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white mb-6">
+                 <Zap size={20} strokeWidth={2.5} className="sm:w-6 sm:h-6" />
               </div>
-              <h3 className="text-xl font-black text-white tracking-tight mb-3 uppercase">Pro Dynamic Sync</h3>
+              <h3 className="text-lg sm:text-xl font-black text-white tracking-tight mb-3 uppercase">Pro Dynamic Sync</h3>
               
               {!syncResults ? (
                 <p className="text-xs text-white/70 font-bold leading-relaxed mb-8 uppercase tracking-widest">
@@ -336,7 +336,7 @@ function Profile() {
            </div>
 
            {/* Achievements */}
-           <div className="glass-card p-6 sm:p-10 relative overflow-hidden group">
+           <div className="glass-card p-5 sm:p-10 relative overflow-hidden group">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
                    <Trophy size={14} className="text-lime-500" />
@@ -362,7 +362,7 @@ function Profile() {
            </div>
 
            {/* Danger Zone */}
-           <div className="glass-card p-6 sm:p-10 border-rose-500/10 bg-rose-500/[0.02]">
+           <div className="glass-card p-5 sm:p-10 border-rose-500/10 bg-rose-500/[0.02]">
               <h3 className="text-xs font-black text-rose-500/60 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
                  <Shield size={14} />
                  Terminal Protocol

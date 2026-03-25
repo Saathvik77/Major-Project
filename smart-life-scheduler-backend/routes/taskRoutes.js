@@ -91,54 +91,32 @@ router.get(
   "/",
   protect,
   asyncHandler(async (req, res) => {
-    const {
-      completed,
-      date,
-      from,
-      to,
-      page = 1,
-      limit = 5,
-    } = req.query;
+    const { date, limit = 100 } = req.query;
+    const userId = req.user._id;
 
-    let filter = { user: req.user._id };
-
-    if (completed !== undefined) {
-      filter.completed = completed === "true";
-    }
+    let filter = { user: userId };
 
     if (date) {
-      const start = new Date(date);
-      const end = new Date(date);
-      end.setHours(23, 59, 59, 999);
-      const dayOfWeek = start.getDay();
+      // Create a range for the target date in local time
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+      
+      const dayOfWeek = startOfDay.getDay();
 
       filter.$or = [
-        { date: { $gte: start, $lte: end }, repeatFrequency: 'once' },
-        { repeatDays: dayOfWeek }
+        { date: { $gte: startOfDay, $lte: endOfDay } },
+        { repeatFrequency: { $in: ['daily', 'workdays', 'custom'] }, repeatDays: dayOfWeek }
       ];
     }
 
-    if (from && to) {
-      filter.date = {
-        $gte: new Date(from),
-        $lte: new Date(to),
-      };
-    }
-
-    const pageNumber = parseInt(page);
-    const limitNumber = parseInt(limit);
-
     const tasks = await Task.find(filter)
-      .sort({ createdAt: -1 })
-      .skip((pageNumber - 1) * limitNumber)
-      .limit(limitNumber);
-
-    const total = await Task.countDocuments(filter);
+      .sort({ startTime: 1, createdAt: -1 })
+      .limit(parseInt(limit));
 
     res.status(200).json({
-      totalTasks: total,
-      currentPage: pageNumber,
-      totalPages: Math.ceil(total / limitNumber),
+      success: true,
       tasks,
     });
   })

@@ -168,7 +168,8 @@ function Register() {
                   <button
                      type="submit"
                      disabled={loading}
-                     className={`w-full mt-2 py-3.5 rounded-2xl font-bold text-white shadow-[0_0_20px_rgba(132,204,22,0.4)] transition-all duration-300 tracking-wide text-[16px] ${loading ? "bg-gray-500/50 cursor-not-allowed opacity-70" : "bg-gradient-to-r from-lime-600 to-emerald-500 hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(132,204,22,0.6)] active:scale-[0.98]"}`}
+                     className={`w-full mt-2 py-4 rounded-2xl font-black uppercase tracking-widest text-[13px] transition-all duration-300 ${
+                     loading ? "bg-gray-500/50 cursor-not-allowed opacity-70" : "liquid-glass liquid-glass-lime"}`}
                   >
                      {loading ? "Registering..." : "Create Account"}
                   </button>
@@ -183,9 +184,9 @@ function Register() {
 
                {/* Social Logins */}
                <div className="mt-6 flex justify-center relative z-10">
-                  <button onClick={() => handleSocialRegister("GitHub")} type="button" className="flex items-center justify-center space-x-2 w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]">
-                     <Github className="w-5 h-5 text-white" />
-                     <span className="text-white text-sm font-semibold tracking-wide">Continue with GitHub</span>
+                  <button onClick={() => handleSocialRegister("GitHub")} type="button" className="flex items-center justify-center space-x-3 w-full py-4 rounded-2xl liquid-glass">
+                     <Github className="w-4 h-4 text-white" />
+                     <span className="text-white text-[11px] font-black uppercase tracking-widest">Continue with GitHub</span>
                   </button>
                </div>
 

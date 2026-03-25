@@ -24,14 +24,14 @@ function Landing() {
         {token ? (
           <button
             onClick={() => navigate("/dashboard")}
-            className="bg-lime-600 hover:bg-lime-500 px-4 py-2 rounded-lg text-sm shrink-0"
+            className="liquid-glass liquid-glass-lime px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest shrink-0"
           >
             Dashboard
           </button>
         ) : (
           <button
             onClick={() => navigate("/login")}
-            className="bg-lime-600 hover:bg-lime-500 px-4 py-2 rounded-lg text-sm shrink-0"
+            className="liquid-glass liquid-glass-lime px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest shrink-0"
           >
             Login
           </button>
@@ -57,7 +57,7 @@ function Landing() {
 
           <button 
             onClick={() => navigate(token ? "/dashboard" : "/login")}
-            className="relative bg-gradient-to-r from-lime-500 via-emerald-500 to-lime-400 hover:-translate-y-1 hover:scale-105 transform transition duration-300 shadow-2xl hover:shadow-emerald-500/50 px-8 py-3 rounded-xl text-lg font-semibold">
+            className="liquid-glass liquid-glass-emerald px-10 py-4 rounded-2xl text-lg font-black uppercase tracking-tighter shadow-[0_0_40px_rgba(16,185,129,0.2)]">
             Get Started
           </button>
         </div>

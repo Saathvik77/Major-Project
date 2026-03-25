@@ -62,17 +62,17 @@ const StatCard = ({ icon: Icon, label, value, trend, color = "orange" }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    className="glass-card p-5 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8 relative overflow-visible group hover:bg-white/[0.04] min-h-[140px] md:min-h-[160px] text-center sm:text-left"
+    className="glass-card p-4 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-8 relative overflow-visible group hover:bg-white/[0.04] min-h-[130px] md:min-h-[160px] text-center sm:text-left"
   >
     <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[50px] -z-10 group-hover:bg-lime-500/10 transition-all" />
-    <div className="w-16 h-16 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 transition-all group-hover:scale-110 shrink-0 mb-4 sm:mb-0">
-      <Icon size={32} />
+    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 transition-all group-hover:scale-110 shrink-0 mb-2 sm:mb-0">
+      <Icon className="w-6 h-6 sm:w-8 sm:h-8" />
     </div>
     <div className="flex-1 min-w-0 sm:pr-4 w-full">
-      <p className="text-[11px] font-black text-gray-500 uppercase tracking-widest mb-3">{label}</p>
-      <div className="flex flex-wrap items-baseline justify-center sm:justify-start gap-x-4 gap-y-2">
-        <p className="text-3xl md:text-4xl font-black text-white tracking-tighter">{value}</p>
-        <div className="flex items-center gap-1 text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/5 px-2.5 py-1 rounded-full border border-emerald-500/10 shrink-0 shadow-sm">
+      <p className="text-[9px] sm:text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2 sm:mb-3">{label}</p>
+      <div className="flex flex-col sm:flex-row items-center sm:items-baseline justify-center sm:justify-start gap-x-4 gap-y-2">
+        <p className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tighter">{value}</p>
+        <div className="flex items-center gap-1 text-[8px] sm:text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-emerald-500/10 shrink-0 shadow-sm">
           <ArrowUpRight size={10} />
           {trend}
         </div>
@@ -198,8 +198,8 @@ function Analytics() {
           <div className="w-32 h-4 skeleton" />
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[1, 2, 3, 4].map(i => <div key={i} className="glass-card p-8 h-40 skeleton border-none" />)}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        {[1, 2, 3, 4].map(i => <div key={i} className="glass-card p-4 sm:p-8 h-40 skeleton border-none" />)}
       </div>
       <div className="grid grid-cols-12 gap-8 h-[400px]">
         <div className="col-span-12 lg:col-span-8 skeleton rounded-3xl" />
@@ -238,7 +238,7 @@ function Analytics() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl sm:p-1.5 sm:rounded-2xl border border-white/10 backdrop-blur-xl overflow-x-auto scrollbar-hide shrink-0 max-w-[150px] xs:max-w-none">
+        <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl sm:p-1.5 sm:rounded-2xl border border-white/10 backdrop-blur-xl shrink-0">
           <FilterButton label="Today" active={filter === "Today"} onClick={() => setFilter("Today")} />
           <FilterButton label="Week" active={filter === "Week"} onClick={() => setFilter("Week")} />
           <FilterButton label="Month" active={filter === "Month"} onClick={() => setFilter("Month")} />
@@ -246,7 +246,7 @@ function Analytics() {
       </header>
 
       {/* Top Summary Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-12 md:mb-20 px-2 lg:px-0">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mb-12 md:mb-20 px-2 lg:px-0">
         <StatCard 
           icon={CheckCircle2} 
           label="Completed Tasks" 
@@ -296,8 +296,8 @@ function Analytics() {
           
           {/* Productivity Velocity (Bar Chart) */}
            <div className="col-span-12 lg:col-span-8">
-            <div className="glass-card p-6 sm:p-8 md:p-12 h-full chart-container overflow-hidden">
-              <div className="flex items-center justify-between mb-6 md:mb-12">
+            <div className="glass-card p-4 sm:p-8 md:p-12 h-full chart-container overflow-hidden">
+              <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-12">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shrink-0">
                     <BarChart3 size={24} />
@@ -330,11 +330,11 @@ function Analytics() {
 
           {/* Smart Score Ring (Circular Progress) */}
           <div className="col-span-12 lg:col-span-4">
-            <div className="glass-card p-8 sm:p-10 md:p-12 h-full chart-container flex flex-col items-center justify-center text-center relative overflow-hidden group">
+            <div className="glass-card p-6 sm:p-10 md:p-12 h-full chart-container flex flex-col items-center justify-center text-center relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
                
                <h3 className="text-lg md:text-xl font-black text-white tracking-tight mb-2 self-start">Smart Sync</h3>
-               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-8 md:mb-12 self-start">Cognitive Efficiency</p>
+               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6 sm:mb-8 md:mb-12 self-start">Cognitive Efficiency</p>
                
                <div className="relative w-48 h-48 md:w-64 md:h-64 mb-8 md:mb-12">
                   <svg className="w-full h-full transform -rotate-90">
@@ -398,7 +398,7 @@ function Analytics() {
 
           {/* AI Insights Summary */}
           <div className="col-span-12 lg:col-span-5">
-            <div className="glass-card p-6 sm:p-8 md:p-10 h-full flex flex-col gap-6 md:gap-8 relative overflow-hidden group">
+            <div className="glass-card p-4 sm:p-8 md:p-10 h-full flex flex-col gap-6 md:gap-8 relative overflow-hidden group">
                <div className="absolute bottom-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
                
                <div className="flex items-center gap-4">
@@ -431,7 +431,7 @@ function Analytics() {
 
           {/* ── Task Explorer Section ─────────────────────────────── */}
           <div className="col-span-12">
-            <div className="glass-card p-6 sm:p-8 md:p-10 flex flex-col gap-6 md:gap-8 relative overflow-hidden group">
+            <div className="glass-card p-4 sm:p-8 md:p-10 flex flex-col gap-6 md:gap-8 relative overflow-hidden group">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                   <h3 className="text-2xl font-black text-white tracking-tight">Task Explorer</h3>

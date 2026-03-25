@@ -115,7 +115,7 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
   };
 
   return (
-    <div className="fixed bottom-32 md:bottom-10 right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-36 md:bottom-10 right-6 z-50 flex flex-col items-end">
       {/* ── Chat Window Popup ──────────────────────────────────────── */}
       <AnimatePresence>
         {isOpen && (
