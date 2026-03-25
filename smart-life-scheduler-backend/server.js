@@ -36,10 +36,18 @@ app.use("/api/intelligence/history", intelligenceHistoryRoutes);
 app.use("/api/ai", aiRoutes);
 
 /* =========================================
-   TEST ROUTE
-========================================= */
+   TEST & HEALTH ROUTES
+ ========================================= */
 app.get("/", (req, res) => {
   res.send("Smart Life Scheduler Backend is Running 🚀");
+});
+
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    dbState: mongoose.connection.readyState === 1 ? "connected" : "disconnected"
+  });
 });
 
 /* =========================================
@@ -60,17 +68,21 @@ app.listen(PORT, () => {
 
 mongoose
   .connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of default 30s
+    serverSelectionTimeoutMS: 8000, 
+    connectTimeoutMS: 10000,
   })
   .then(() => {
-    console.log("✅ MongoDB Connected Successfully to: " + process.env.MONGO_URI.split('@')[1].split('/')[0]);
-    startAutoRescheduler(); // 👈 START CRON JOB
+    const dbHost = process.env.MONGO_URI.includes('@') 
+      ? process.env.MONGO_URI.split('@')[1].split('/')[0] 
+      : "Local/Other";
+    console.log("✅ MongoDB Connected Successfully to: " + dbHost);
+    startAutoRescheduler(); 
   })
   .catch((err) => {
-    console.error("❌ MongoDB Connection Failed");
+    console.error("❌ MongoDB Connection STALLED/FAILED");
     console.error("Error Name:", err.name);
     console.error("Error Message:", err.message);
-    if (err.message.includes("ETIMEDOUT") || err.message.includes("ENOTFOUND")) {
-      console.error("👉 SUGGESTION: Check your MONGO_URI in .env. If using Atlas, ensure your IP is whitelisted.");
-    }
+    
+    // IMPORTANT: Don't let DB failure crash the whole process in dev
+    console.warn("⚠️ Continuing in 'Offline Mode' (Database-dependent features may fail)");
   });

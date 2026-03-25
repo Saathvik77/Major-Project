@@ -54,13 +54,13 @@ function Login() {
       navigate("/dashboard");
     } catch (err) {
       if (err.code === 'ECONNABORTED') {
-        setError("Request timed out. The backend server on Render is likely sleeping. It usually takes 60 seconds to wake up. Please wait a minute and try again.");
+        setError("Request timed out. The backend server is not responding within 15 seconds. Please check if your backend process is running and connected to the database.");
       } else if (!err.response) {
-        setError("Network error: The backend server is unreachable. If you deployed this app, ensure VITE_API_URL is set in your frontend host (like Render/Vercel).");
+        setError(`Network error (${err.code || 'UNKNOWN'}): The backend server is unreachable. Ensure your backend is running at ${api.defaults.baseURL} and CORS is allowed.`);
       } else if (err.response?.data?.errors) {
         setError(err.response.data.errors.join(", "));
       } else {
-        setError(err.response?.data?.message || "Login failed. Please try again.");
+        setError(err.response?.data?.message || `Login failed (Status: ${err.response?.status}). Please try again.`);
       }
     } finally {
       setLoading(false);
