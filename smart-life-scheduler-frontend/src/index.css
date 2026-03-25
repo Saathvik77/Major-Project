@@ -407,3 +407,29 @@ input[type="date"]:focus, input[type="time"]:focus {
   box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4) !important;
   border-color: rgba(16, 185, 129, 0.6) !important;
 }
+
+/* Mobile Density Optimizations */
+@media (max-width: 640px) {
+  .glass-card {
+    padding: 1.25rem !important;
+    border-radius: 16px !important;
+  }
+  
+  .glass-card-dense {
+    padding: 0.75rem !important;
+    gap: 0.5rem !important;
+  }
+
+  h1 { font-size: 1.5rem !important; }
+  h3 { font-size: 1rem !important; }
+  h4 { font-size: 0.75rem !important; }
+  
+  .mobile-hide { display: none !important; }
+}
+
+.glass-card-dense {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}

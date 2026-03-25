@@ -6,7 +6,7 @@ import {
   Dumbbell, Briefcase, BookOpen, Trash2, Plus, SlidersHorizontal,
   ChevronDown, CheckCircle, Sparkles, Bot, CalendarClock, Bell, X,
   AlertCircle, Layout, Eye, Lightbulb, BarChart3 as BarChartIcon,
-  Timer, TrendingUp, BrainCircuit, Zap, Calendar as CalendarIcon
+  Timer, TrendingUp, BrainCircuit, Zap, Calendar as CalendarIcon, User
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
@@ -72,6 +72,7 @@ function RescheduleNotification({ task, onReschedule, onDismiss }) {
 }
 
 export default function Tasks() {
+  console.log("DEBUG: Tasks component rendering...");
   const [tasks, setTasks]               = useState([]);
   const [title, setTitle]               = useState("");
   const [startTime, setStartTime]       = useState("");
@@ -420,64 +421,65 @@ export default function Tasks() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 lg:gap-20 relative z-10">
           
-          <div className="col-span-1 lg:col-span-8 flex flex-col gap-8 md:gap-16 lg:gap-20">
-            <div className="glass-card p-4 sm:p-6 md:p-8 overflow-hidden">
-              <div className="flex items-center justify-between gap-4 md:gap-8 overflow-x-auto scrollbar-hide pb-2">
+          <div className="col-span-1 lg:col-span-8 flex flex-col gap-6 sm:gap-12">
+            {/* Horizontal Date Selector */}
+            <div className="glass-card p-3 sm:p-6 overflow-hidden">
+              <div className="flex gap-2 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
                 {weekDates.map((d, i) => {
-                  const isActive = d.getDate() === selectedDate.getDate() && d.getMonth() === selectedDate.getMonth();
-                  const dStr = d.toLocaleString('default', { weekday: 'short' });
+                  const isActive = d.toDateString() === selectedDate.toDateString();
+                  const dStr = d.toLocaleDateString(undefined, { weekday: 'short' });
                   return (
                     <div 
                       key={i} 
                       onClick={() => setSelectedDate(new Date(d))} 
                       className={`
-                        flex flex-col items-center justify-center min-w-[70px] md:min-w-[80px] h-[90px] md:h-[100px] rounded-2xl transition-all cursor-pointer border shrink-0
+                        flex flex-col items-center justify-center min-w-[60px] sm:min-w-[80px] h-[80px] sm:h-[100px] rounded-xl sm:rounded-2xl transition-all cursor-pointer border shrink-0 snap-center
                         ${isActive 
-                          ? 'bg-yellow-500/10 border-yellow-500/30 shadow-[0_0_20px_rgba(132,204,22,0.1)]' 
+                          ? 'bg-lime-500/10 border-lime-500/30 ring-1 ring-lime-500/20' 
                           : 'bg-white/5 border-white/5 hover:bg-white/10'}
                       `}
                     >
-                      <span className={`text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-1 ${isActive ? 'text-yellow-500' : 'text-gray-500'}`}>{dStr}</span>
-                      <span className={`text-lg md:text-xl font-bold ${isActive ? 'text-white' : 'text-gray-300'}`}>{d.getDate()}</span>
-                      {isActive && <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 mt-2" />}
+                      <span className={`text-[8px] sm:text-[10px] font-black uppercase tracking-widest mb-1 ${isActive ? 'text-lime-500' : 'text-gray-500'}`}>{dStr}</span>
+                      <span className={`text-md sm:text-lg md:text-xl font-bold ${isActive ? 'text-white' : 'text-gray-400'}`}>{d.getDate()}</span>
+                      {isActive && <div className="w-1 h-1 rounded-full bg-lime-500 mt-1.5" />}
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            <div className="glass-card p-5 sm:p-8 md:p-10 flex flex-col gap-6 md:gap-8">
+            <div className="glass-card p-4 sm:p-10 flex flex-col gap-5 sm:gap-8">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold">Planned Schedule</h3>
-                  <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse shadow-[0_0_8px_rgba(132,204,22,0.6)]" />
+                  <h3 className="text-base sm:text-lg font-bold">Planned Schedule</h3>
+                  <div className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse shadow-[0_0_8px_rgba(132,204,22,0.6)]" />
                 </div>
-                <div onClick={fetchTasks} className="text-[10px] font-bold text-gray-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/10 transition-all cursor-pointer">
-                   SYNC CALENDAR
+                <div onClick={fetchTasks} className="text-[8px] sm:text-[10px] font-bold text-gray-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/10 transition-all cursor-pointer uppercase tracking-widest">
+                   Sync Calendar
                 </div>
               </div>
 
-              <div className="space-y-6 md:space-y-10 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="space-y-4 sm:space-y-8 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
                 
                 {tasks.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center text-center py-20 glass-card border-dashed bg-white/[0.01]">
-                    <div className="w-20 h-20 rounded-full bg-lime-500/10 flex items-center justify-center text-lime-500/40 mb-6 border border-lime-500/20">
-                      <CalendarIcon size={32} strokeWidth={1} />
+                  <div className="flex flex-col items-center justify-center text-center py-16 sm:py-24 glass-card border-dashed bg-white/[0.01]">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-lime-500/10 flex items-center justify-center text-lime-500/40 mb-4 sm:mb-8 border border-lime-500/20">
+                      <CalendarIcon size={28} strokeWidth={1} />
                     </div>
-                    <h4 className="text-white font-black text-lg mb-2">Operational void detected</h4>
-                    <p className="text-xs text-gray-500 max-w-[240px] leading-relaxed">
-                      No tasks scheduled for this cycle. Use the quick add bar above or click "AI Plan My Day" on the dashboard.
+                    <h4 className="text-white font-black text-base sm:text-lg mb-2 uppercase tracking-tight">System Idle</h4>
+                    <p className="text-[10px] sm:text-xs text-gray-500 max-w-[200px] sm:max-w-[280px] leading-relaxed font-bold">
+                       Initial operational node detected. No tasks scheduled for this cycle.
                     </p>
                   </div>
                 ) : (
                   <>
                     {tasks.filter(t => !t.completed && expiredIds.has(t._id || t.id)).length > 0 && (
-                      <div className="space-y-4">
+                      <div className="space-y-3 sm:space-y-4">
                         <div className="flex items-center gap-2 px-1">
-                          <AlertCircle size={14} className="text-rose-500" />
-                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-500/80">Missed Tasks</h4>
+                          <AlertCircle size={12} className="text-rose-500" />
+                          <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-rose-500/80">Missed Objectives</h4>
                         </div>
-                        <div className="space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                           {tasks.filter(t => !t.completed && expiredIds.has(t._id || t.id)).map((task) => (
                             <TaskItem 
                               key={task._id || task.id}
@@ -496,29 +498,29 @@ export default function Tasks() {
                       </div>
                     )}
 
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       <div className="flex items-center gap-2 px-1">
                         <div className="w-1.5 h-1.5 rounded-full bg-lime-500" />
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Today's Schedule</h4>
+                        <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500">Today's Protocol</h4>
                       </div>
                       
                       {tasks.filter(t => !t.completed && !expiredIds.has(t._id || t.id)).length === 0 ? (
                         <motion.div 
                           initial={{ opacity: 0 }} 
                           animate={{ opacity: 1 }}
-                          className="py-12 flex flex-col items-center justify-center text-center glass-card border-dashed bg-white/[0.01]"
+                          className="py-10 sm:py-16 flex flex-col items-center justify-center text-center glass-card border-dashed bg-white/[0.01]"
                         >
-                          <div className="w-16 h-16 rounded-full bg-lime-500/10 flex items-center justify-center text-lime-500 mb-4">
-                            <CheckCircle size={32} strokeWidth={1.5} />
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-lime-500/10 flex items-center justify-center text-lime-500 mb-4">
+                            <CheckCircle size={24} strokeWidth={1.5} />
                           </div>
-                          <h4 className="text-white font-bold">No pending tasks today 🎉</h4>
-                          <p className="text-xs text-gray-500 mt-1 max-w-[200px]">You're all caught up! Take some time to recharge.</p>
+                          <h4 className="text-white font-bold text-sm sm:text-base">Nodes Synchronized 🎉</h4>
+                          <p className="text-[10px] sm:text-xs text-gray-500 mt-1 max-w-[180px] sm:max-w-[240px] font-bold uppercase tracking-widest">Efficiency 100%</p>
                         </motion.div>
                       ) : (
                         <DragDropContext onDragEnd={onDragEnd}>
                           <Droppable droppableId="tasks-list">
                             {(provided) => (
-                              <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+                              <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-3 sm:space-y-4">
                                 {tasks.filter(t => !t.completed && !expiredIds.has(t._id || t.id)).map((task, index) => {
                                   const id = task._id || task.id;
                                   return (
@@ -549,12 +551,12 @@ export default function Tasks() {
                     </div>
 
                     {tasks.filter(t => t.completed).length > 0 && (
-                      <div className="space-y-4 mt-6 md:mt-8 pt-6 md:pt-8 border-t border-white/5">
+                      <div className="space-y-3 sm:space-y-4 mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-white/5">
                         <div className="flex items-center gap-2 px-1">
-                          <CheckCircle size={14} className="text-emerald-500" />
-                          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500/80">Completed Performance</h4>
+                          <CheckCircle size={12} className="text-emerald-500" />
+                          <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500/80">Archived Nodes</h4>
                         </div>
-                        <div className="space-y-3 opacity-60 grayscale-[0.5]">
+                        <div className="space-y-3 opacity-50 grayscale-[0.6]">
                           {tasks.filter(t => t.completed).map((task) => (
                             <TaskItem 
                               key={task._id || task.id}
@@ -579,31 +581,30 @@ export default function Tasks() {
                     )}
                   </>
                 )}
+              </div>
+            </div>
 
-                <div className="glass-card p-5 sm:p-6 md:p-8 flex flex-col gap-6 md:gap-8 border border-white/10 shadow-2xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[40px] -z-10" />
-                  
-                  <div className="space-y-4 md:space-y-6">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">Task Configuration</h4>
-                      <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10">
-                        <div className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse" />
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Alarm Mode</span>
-                      </div>
-                    </div>
+            <div className="glass-card p-4 sm:p-10 flex flex-col gap-6 md:gap-8 border border-white/10 shadow-2xl relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[40px] -z-10" />
 
-                    <div className="flex items-center bg-white/5 rounded-[2rem] px-6 md:px-8 py-4 md:py-6 border border-white/5 focus-within:border-lime-500/30 transition-all shadow-inner">
-                      <input 
-                        type="text" 
-                        placeholder="What's the next objective?" 
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && addTask()}
-                        className="flex-1 bg-transparent border-none outline-none text-lg md:text-xl font-bold text-white placeholder:text-gray-700 tracking-tight"
-                      />
-                    </div>
+               <div className="space-y-4 md:space-y-6">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">Objective Input</h4>
+                  <div className="flex items-center gap-2 px-2 py-0.5 sm:px-3 sm:py-1 bg-white/5 rounded-full border border-white/10">
+                    <div className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse" />
+                    <span className="text-[8px] sm:text-[9px] font-black text-gray-400 uppercase tracking-widest">Active Link</span>
+                  </div>
+                </div>
+                <div className="flex items-center bg-white/5 rounded-xl sm:rounded-[2rem] px-4 sm:px-8 py-3 sm:py-6 border border-white/5 focus-within:border-lime-500/30 transition-all shadow-inner">
+                  <input
+                    type="text"
+                    placeholder="New Objective..."
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="flex-1 bg-transparent border-none outline-none text-white text-sm sm:text-lg font-bold w-full placeholder:text-gray-700 placeholder:font-black placeholder:uppercase placeholder:tracking-widest"
+                  />
+                </div>
 
-                    {/* Alarm Time Picker Mock/UI */}
                     <div className="flex flex-col items-center gap-8 py-8 bg-white/[0.02] rounded-[2.5rem] border border-white/5">
                         <div className="flex items-center gap-12">
                            <div className="flex flex-col items-center gap-2">
@@ -726,8 +727,6 @@ export default function Tasks() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
           <div className="col-span-1 lg:col-span-4 flex flex-col gap-8 md:gap-16 lg:gap-20">
             <div className="glass-card p-5 sm:p-8 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative overflow-hidden group">

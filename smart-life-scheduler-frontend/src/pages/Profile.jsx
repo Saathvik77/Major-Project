@@ -214,8 +214,39 @@ function Profile() {
         <div className="col-span-12 lg:col-span-8 space-y-12">
           
           {/* Performance Matrix */}
-          <div className="glass-card p-5 sm:p-10 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10" />
+          <div className="glass-card mb-6 sm:mb-8 md:mb-12 overflow-hidden relative border-none">
+        <div className="h-24 sm:h-32 md:h-48 bg-gradient-to-r from-lime-600/20 via-emerald-600/20 to-lime-600/20 relative">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+        </div>
+        <div className="px-4 sm:px-8 pb-4 sm:pb-8 -mt-8 sm:-mt-12 md:-mt-16 flex flex-col sm:flex-row items-center sm:items-end gap-3 sm:gap-6 relative">
+          <div className="relative group/avatar">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-3xl border-4 border-black bg-gray-900 overflow-hidden shadow-2xl relative">
+              {user?.gender?.toLowerCase() === 'male' ? (
+                <img 
+                  src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user?.name || 'Felix'}&backgroundColor=b6e3f4,c0aede,d1d4f9`} 
+                  alt="Male Avatar" 
+                  className="w-full h-full object-cover scale-110"
+                  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                />
+              ) : user?.gender?.toLowerCase() === 'female' ? (
+                <img 
+                  src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user?.name || 'Anya'}&backgroundColor=ffdfbf,ffd5dc,ffeb33`} 
+                  alt="Female Avatar" 
+                  className="w-full h-full object-cover scale-110"
+                  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                />
+              ) : null}
+              <div className="w-full h-full flex items-center justify-center bg-lime-500/5" style={{display: user?.gender?.toLowerCase() === 'male' || user?.gender?.toLowerCase() === 'female' ? 'none' : 'flex'}}>
+                <User size={window.innerWidth < 640 ? 28 : 36} strokeWidth={2.5} className="text-lime-500" />
+              </div>
+            </div>
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 sm:w-8 sm:h-8 bg-emerald-500 rounded-2xl border-4 border-black shadow-xl z-10" />
+          </div>
+          <div className="flex-1">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tighter">{user?.name || "User"}</h1>
+            <p className="text-[8px] sm:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60">Node Integrity: Fully Operational</p>
+          </div>
+        </div>
             <div className="flex items-center gap-4 mb-8 sm:mb-10">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500">
                 <Activity size={20} className="sm:w-6 sm:h-6" />
@@ -252,7 +283,13 @@ function Profile() {
           </div>
 
           {/* Completed Task Log */}
-          <div className="glass-card p-5 sm:p-10 relative overflow-hidden group">
+          <div className="glass-card p-4 sm:p-8 flex flex-col gap-4 sm:gap-8">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg sm:text-xl font-black text-white tracking-tight">Personal Profile</h3>
+              <div className="p-2 sm:p-3 rounded-xl bg-lime-500/10 text-lime-500 border border-lime-500/20">
+                <User size={18} className="sm:w-5 sm:h-5" />
+              </div>
+            </div>
             <div className="flex items-center gap-4 mb-8 sm:mb-10">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500">
                 <Clock size={20} className="sm:w-6 sm:h-6" />

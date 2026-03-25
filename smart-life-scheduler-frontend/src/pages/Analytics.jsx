@@ -57,26 +57,23 @@ const formatTime12Hour = (time24) => {
   const h12 = h % 12 || 12;
   return `${h12}:${minutes} ${ampm}`;
 };
-
-const StatCard = ({ icon: Icon, label, value, trend, color = "orange" }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="glass-card p-4 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-8 relative overflow-visible group hover:bg-white/[0.04] min-h-[130px] md:min-h-[160px] text-center sm:text-left"
+const StatCard = ({ icon: Icon, title, value, trend, trendUp, color }) => (
+  <motion.div
+    whileHover={{ y: -2 }}
+    className="glass-card p-3 sm:p-5 flex flex-col justify-between min-h-[110px] sm:min-h-[160px] relative overflow-hidden group"
   >
-    <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[50px] -z-10 group-hover:bg-lime-500/10 transition-all" />
-    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-500 border border-lime-500/20 transition-all group-hover:scale-110 shrink-0 mb-2 sm:mb-0">
-      <Icon className="w-6 h-6 sm:w-8 sm:h-8" />
-    </div>
-    <div className="flex-1 min-w-0 sm:pr-4 w-full">
-      <p className="text-[9px] sm:text-[11px] font-black text-gray-500 uppercase tracking-widest mb-2 sm:mb-3">{label}</p>
-      <div className="flex flex-col sm:flex-row items-center sm:items-baseline justify-center sm:justify-start gap-x-4 gap-y-2">
-        <p className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tighter">{value}</p>
-        <div className="flex items-center gap-1 text-[8px] sm:text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full border border-emerald-500/10 shrink-0 shadow-sm">
-          <ArrowUpRight size={10} />
-          {trend}
-        </div>
+    <div className={`absolute top-0 right-0 w-24 h-24 bg-${color}-500/5 rounded-full blur-[25px] -z-10`} />
+    <div className="flex items-center justify-between mb-1.5">
+      <div className={`p-1.5 rounded-lg bg-${color}-500/10 border border-${color}-500/20 text-${color}-500`}>
+        <Icon size={16} className="sm:w-6 sm:h-6" />
       </div>
+      <div className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[7px] sm:text-[9px] font-black uppercase tracking-tighter ${trendUp ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
+        {trendUp ? '↑' : '↓'} {trend}
+      </div>
+    </div>
+    <div>
+      <p className="text-[7px] sm:text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none truncate">{title}</p>
+      <h3 className="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tighter mt-1">{value}</h3>
     </div>
   </motion.div>
 );
@@ -246,30 +243,38 @@ function Analytics() {
       </header>
 
       {/* Top Summary Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mb-12 md:mb-20 px-2 lg:px-0">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 md:mb-20 px-1 sm:px-2 lg:px-0">
         <StatCard 
           icon={CheckCircle2} 
-          label="Completed Tasks" 
+          title="Completed Tasks" 
           value={filteredSummary.completed} 
-          trend="+12%" 
+          trend="12%" 
+          trendUp={true}
+          color="emerald"
         />
         <StatCard 
           icon={AlertCircle} 
-          label="Missed Syncs" 
+          title="Missed Syncs" 
           value={filteredSummary.overdue} 
-          trend="-2%" 
+          trend="2%" 
+          trendUp={false}
+          color="rose"
         />
         <StatCard 
           icon={Clock} 
-          label="Focus Time" 
+          title="Focus Time" 
           value={summary?.focusTime || "0h"} 
-          trend="+5.4%" 
+          trend="5.4%" 
+          trendUp={true}
+          color="blue"
         />
         <StatCard 
           icon={Zap} 
-          label="Smart Score" 
+          title="Smart Score" 
           value={`${Math.round((filteredSummary.completed / Math.max(1, filteredSummary.completed + filteredSummary.pending + filteredSummary.overdue)) * 100)}%`} 
-          trend="+8.2%" 
+          trend="8.2%" 
+          trendUp={true}
+          color="lime"
         />
       </div>
 
@@ -296,7 +301,7 @@ function Analytics() {
           
           {/* Productivity Velocity (Bar Chart) */}
            <div className="col-span-12 lg:col-span-8">
-            <div className="glass-card p-4 sm:p-8 md:p-12 h-full chart-container overflow-hidden">
+            <div className="glass-card p-4 sm:p-8 md:p-12 h-full chart-container overflow-hidden min-h-[300px] sm:min-h-0">
               <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-12">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shrink-0">
@@ -310,7 +315,7 @@ function Analytics() {
                 <MoreHorizontal size={20} className="text-gray-700 cursor-pointer hover:text-white transition-colors shrink-0" />
               </div>
 
-              <div className="w-full h-[350px] md:h-[400px]">
+               <div className="w-full h-[220px] sm:h-[350px] md:h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={last7DaysData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.03)" vertical={false} />
@@ -336,7 +341,7 @@ function Analytics() {
                <h3 className="text-lg md:text-xl font-black text-white tracking-tight mb-2 self-start">Smart Sync</h3>
                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6 sm:mb-8 md:mb-12 self-start">Cognitive Efficiency</p>
                
-               <div className="relative w-48 h-48 md:w-64 md:h-64 mb-8 md:mb-12">
+                <div className="relative w-32 h-32 xs:w-40 xs:h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 mb-6 sm:mb-8 md:mb-12">
                   <svg className="w-full h-full transform -rotate-90">
                     <circle cx="50%" cy="50%" r="42%" className="stroke-white/5 fill-none" strokeWidth="10" />
                     <motion.circle 
@@ -374,7 +379,7 @@ function Analytics() {
               <h3 className="text-xl font-black text-white tracking-tight mb-2">Activity Momentum</h3>
               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-12">Cognitive Score Trend</p>
               
-              <div className="w-full h-[350px]">
+               <div className="w-full h-[200px] sm:h-[350px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={trendData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                     <defs>
@@ -430,13 +435,14 @@ function Analytics() {
           </div>
 
           {/* ── Task Explorer Section ─────────────────────────────── */}
-          <div className="col-span-12">
-            <div className="glass-card p-4 sm:p-8 md:p-10 flex flex-col gap-6 md:gap-8 relative overflow-hidden group">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                  <h3 className="text-2xl font-black text-white tracking-tight">Task Explorer</h3>
-                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Detailed Operational Log</p>
-                </div>
+          <div className="lg:col-span-8 flex flex-col gap-6 md:gap-12">
+          {/* Activity Momentum */}
+          <div className="glass-card p-4 sm:p-8 relative overflow-hidden group">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-10">
+              <div>
+                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight">Activity Momentum</h3>
+                <p className="text-[9px] sm:text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">7-Day Node Throughput</p>
+              </div>
                 <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl overflow-x-auto scrollbar-hide">
                   {["All", "Completed", "Pending", "Missed"].map(cat => (
                     <button
@@ -490,8 +496,8 @@ function Analytics() {
                     const expired = !task.completed && taskDate < now;
                     
                     return (
-                      <div key={task._id || task.id} className="p-5 md:p-6 rounded-[2rem] bg-white/[0.03] border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group/item hover:bg-white/[0.06] transition-all">
-                        <div className="flex items-center gap-4 md:gap-5">
+                     <div key={task._id || task.id} className="p-3 sm:p-5 md:p-6 rounded-[1.5rem] sm:rounded-[2rem] bg-white/[0.03] border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 group/item hover:bg-white/[0.06] transition-all">
+                        <div className="flex items-center gap-3 md:gap-5">
                           <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 ${
                             task.completed ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' :
                             expired ? 'bg-rose-500/10 border-rose-500/20 text-rose-500' :
