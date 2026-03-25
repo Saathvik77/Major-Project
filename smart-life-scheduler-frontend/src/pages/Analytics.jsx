@@ -227,18 +227,18 @@ function Analytics() {
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
 
       {/* Header */}
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 md:gap-12 mb-8 md:mb-16">
-        <div className="flex items-center gap-4 md:gap-6">
-          <button onClick={() => navigate(-1)} className="p-3 md:p-3.5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white shadow-xl">
-            <ChevronLeft size={20} md:size={24} />
+      <header className="flex items-center justify-between gap-4 mb-8 md:mb-16">
+        <div className="flex items-center gap-3 md:gap-6 min-w-0">
+          <button onClick={() => navigate(-1)} className="p-2 sm:p-3.5 bg-white/5 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white shadow-xl shrink-0">
+            <ChevronLeft size={20} className="sm:w-6 sm:h-6" />
           </button>
-          <div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter">Intelligence Overview</h1>
-            <p className="text-[9px] md:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60 font-black">Operational Data Feed</p>
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter truncate">Intelligence Overview</h1>
+            <p className="text-[8px] sm:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60 font-black truncate">Operational Data Feed</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl overflow-x-auto scrollbar-hide w-fit">
+        <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl sm:p-1.5 sm:rounded-2xl border border-white/10 backdrop-blur-xl overflow-x-auto scrollbar-hide shrink-0 max-w-[150px] xs:max-w-none">
           <FilterButton label="Today" active={filter === "Today"} onClick={() => setFilter("Today")} />
           <FilterButton label="Week" active={filter === "Week"} onClick={() => setFilter("Week")} />
           <FilterButton label="Month" active={filter === "Month"} onClick={() => setFilter("Month")} />

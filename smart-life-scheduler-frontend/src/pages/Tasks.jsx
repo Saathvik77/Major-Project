@@ -369,35 +369,52 @@ export default function Tasks() {
         )}
       </AnimatePresence>
 
-      <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 md:gap-12 relative z-10 mb-8 md:mb-16">
-        <div className="flex items-center gap-4 md:gap-6">
-          <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/20 shrink-0">
-            <Layout size={24} md:size={32} strokeWidth={2} />
+      <header className="flex items-center justify-between gap-4 relative z-10 mb-8 md:mb-16">
+        <div className="flex items-center gap-3 md:gap-6 min-w-0">
+          <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-[2rem] bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-500/20 shrink-0">
+            <Layout size={20} className="md:w-8 md:h-8" strokeWidth={2} />
           </div>
           <div className="min-w-0">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter truncate">Operational Flow</h1>
-            <p className="text-[9px] md:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60 font-black">Manage Tasks & Performance</p>
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter truncate">Operational Flow</h1>
+            <p className="text-[8px] sm:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60 font-black truncate">Manage Tasks & Performance</p>
           </div>
         </div>
 
-        <div className="flex items-center justify-between lg:justify-end gap-3 md:gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 backdrop-blur-xl w-full lg:w-auto">
-          <button onClick={() => {
-            const prev = new Date(selectedDate);
-            prev.setDate(prev.getDate() - 1);
-            setSelectedDate(prev);
-          }} className="p-2 md:p-2.5 hover:bg-white/10 rounded-xl transition-all text-gray-400 hover:text-white">
-            <ChevronLeft size={18} md:size={20} />
-          </button>
-          <div className="flex-1 lg:flex-none text-center px-4 md:px-6 py-2 bg-lime-500 text-white rounded-xl shadow-lg shadow-lime-500/20">
-            <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">{selectedDate.toLocaleDateString('default', { month: 'short', day: 'numeric' })}</span>
-          </div>
-          <button onClick={() => {
-            const next = new Date(selectedDate);
-            next.setDate(next.getDate() + 1);
-            setSelectedDate(next);
-          }} className="p-2 md:p-2.5 hover:bg-white/10 rounded-xl transition-all text-gray-400 hover:text-white">
-            <ChevronRight size={18} md:size={20} />
-          </button>
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+           {/* Mobile Date Switcher (Simplified) */}
+           <div className="hidden sm:flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl">
+              <button onClick={() => {
+                const prev = new Date(selectedDate);
+                prev.setDate(prev.getDate() - 1);
+                setSelectedDate(prev);
+              }} className="p-2 hover:bg-white/10 rounded-xl transition-all text-gray-400">
+                <ChevronLeft size={16} />
+              </button>
+              <div className="px-4 py-1.5 bg-lime-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest">
+                {selectedDate.toLocaleDateString('default', { month: 'short', day: 'numeric' })}
+              </div>
+              <button onClick={() => {
+                const next = new Date(selectedDate);
+                next.setDate(next.getDate() + 1);
+                setSelectedDate(next);
+              }} className="p-2 hover:bg-white/10 rounded-xl transition-all text-gray-400">
+                <ChevronRight size={16} />
+              </button>
+           </div>
+
+           <div 
+             onClick={() => navigate('/ai-assistant')}
+             className="bg-lime-500 text-white p-2 sm:p-2.5 rounded-lg sm:rounded-xl hover:bg-lime-600 transition-all cursor-pointer shadow-lg shadow-lime-500/20 group"
+           >
+             <Bot size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
+           </div>
+
+           <div 
+             onClick={() => navigate('/profile')}
+             className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 cursor-pointer hover:bg-lime-500/20 transition-all shadow-lg shadow-lime-500/5 sm:flex"
+           >
+             <User size={18} strokeWidth={2} />
+           </div>
         </div>
       </header>
 

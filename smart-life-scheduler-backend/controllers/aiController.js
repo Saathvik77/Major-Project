@@ -137,8 +137,42 @@ const chatWithAI = async (req, res) => {
         reply = `Network Updated: Successfully scheduled "${newTask.title}" for ${time}.`;
       }
     }
-    
-    // ─── 5. RECOMMENDATION INTENT ──────────────────────────────────────────
+
+    // ─── 5. QUICK COMMANDS ──────────────────────────────────────────────
+    else if (msg.includes("plan my day") || msg.includes("analyze my load")) {
+       const today = new Date().toISOString().split('T')[0];
+       const tasks = await Task.find({ user: userId, date: today });
+       const completed = tasks.filter(t => t.completed);
+       const missed = tasks.filter(t => !t.completed && t.endTime < new Date().toTimeString().split(' ')[0]);
+       const pending = tasks.filter(t => !t.completed && t.endTime >= new Date().toTimeString().split(' ')[0]);
+
+       executedActions.push({
+         type: "categorized_schedule",
+         completed,
+         missed,
+         pending
+       });
+       reply = "Operational load analyzed. I've optimized your schedule for maximum focus. Review your milestones above.";
+    }
+    else if (msg.includes("reschedule my missed") || msg.includes("optimize my flow")) {
+       executedActions.push({ type: "navigation", path: "/tasks" });
+       reply = "Initiating mass rescheduling protocol for all overdue objectives. Redirecting to Task Nexus for manual confirmation.";
+    }
+    else if (msg.includes("productivity boost tip") || msg.includes("boost") || msg.includes("tip")) {
+       const tips = [
+         "Implement the Pomodoro Technique: 25 minutes of deep focus followed by a 5-minute cognitive reset.",
+         "Eat the Frog: Tackle your highest-load task first to eliminate secondary cognitive friction.",
+         "Batch similar operational tasks together to minimize context-switching overhead.",
+         "Optimize your workspace lighting (6500K) to maintain peak alertness levels."
+       ];
+       reply = `Optimization Tip: ${tips[Math.floor(Math.random() * tips.length)]}`;
+    }
+    else if (msg.includes("weekly operational performance") || msg.includes("review my performance")) {
+       executedActions.push({ type: "navigation", path: "/analytics" });
+       reply = "Retrieving weekly performance metrics. Knowledge is the foundation of iterative optimization. Opening Analytics Card.";
+    }
+
+    // ─── 6. RECOMMENDATION INTENT ──────────────────────────────────────────
     else if (msg.includes("exercise") || msg.includes("workout") || msg.includes("fitness") || msg.includes("gym")) {
        executedActions.push({ 
          type: "recommendations", 

@@ -161,18 +161,18 @@ const Dashboard = () => {
     <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-7xl mx-auto page-transition pb-32">
       
       {/* ── Header Area ────────────────────────────────────────────── */}
-      <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-0">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-lime-500 shadow-xl backdrop-blur-xl">
-            <LayoutDashboard size={24} strokeWidth={1.5} />
+      <header className="flex items-center justify-between gap-4 mb-8 md:mb-12">
+        <div className="flex items-center gap-3 md:gap-4 min-w-0">
+          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-lime-500 shadow-xl backdrop-blur-xl shrink-0">
+            <LayoutDashboard size={20} className="md:w-6 md:h-6" strokeWidth={1.5} />
           </div>
-          <div>
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-black tracking-tighter text-white truncate max-w-[200px] xs:max-w-none">Smart Life Scheduler</h1>
-            <p className="text-[9px] md:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1">Operational Overview</p>
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black tracking-tighter text-white truncate max-w-[120px] xs:max-w-none">Smart Life Scheduler</h1>
+            <p className="text-[8px] sm:text-[9px] md:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 truncate">Operational Overview</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* AI Floating Button Trigger (Instead of notification) */}
           <div 
             onClick={() => navigate('/ai-assistant')}

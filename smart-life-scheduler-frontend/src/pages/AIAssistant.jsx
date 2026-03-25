@@ -318,22 +318,22 @@ const AIAssistant = () => {
       
       {/* Header */}
       <div className="flex items-center justify-between mb-8 md:mb-16">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 sm:gap-6 min-w-0">
           <button
             onClick={() => navigate(-1)}
-            className="p-3.5 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white shadow-xl"
+            className="p-2 sm:p-3.5 bg-white/5 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white shadow-xl shrink-0"
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft size={20} className="sm:w-6 sm:h-6" />
           </button>
-          <div>
-            <h1 className="text-4xl font-black tracking-tighter flex items-center gap-4 text-white">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tighter text-white truncate">
               Smart Control Center
             </h1>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60">Advanced Intelligence Node</p>
+            <p className="text-[8px] sm:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60 truncate">Advanced Intelligence Node</p>
           </div>
         </div>
         
-        <div className="hidden md:flex items-center gap-3 px-5 py-3 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-xl">
+        <div className="hidden sm:flex items-center gap-3 px-5 py-3 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-xl shrink-0">
            <div className="w-2 h-2 rounded-full bg-lime-500 animate-pulse" />
            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Core Synchronized</span>
         </div>
