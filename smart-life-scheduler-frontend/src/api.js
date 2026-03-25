@@ -1,7 +1,18 @@
 import axios from "axios";
 
+const getBaseURL = () => {
+  let url = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
+  
+  // Ensure the URL ends with /api
+  if (!url.endsWith('/api') && !url.endsWith('/api/')) {
+    url = url.endsWith('/') ? `${url}api` : `${url}/api`;
+  }
+  
+  return url;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://127.0.0.1:5000/api",
+  baseURL: getBaseURL(),
   timeout: 15000, 
   headers: {
     "Content-Type": "application/json"
