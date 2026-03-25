@@ -68,8 +68,8 @@ app.listen(PORT, () => {
 
 mongoose
   .connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 8000, 
-    connectTimeoutMS: 10000,
+    serverSelectionTimeoutMS: 15000, 
+    connectTimeoutMS: 15000,
   })
   .then(() => {
     const dbHost = process.env.MONGO_URI.includes('@') 

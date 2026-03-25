@@ -70,6 +70,35 @@ const Badge = ({ icon: Icon, label, description, unlocked, color = "lime" }) => 
   </motion.div>
 );
 
+const RecommendationCard = ({ link }) => {
+  const getIcon = (type) => {
+    switch(type) {
+      case 'video': return <TrendingUp size={14} className="text-red-400" />;
+      case 'article': return <Activity size={14} className="text-blue-400" />;
+      default: return <PieChart size={14} className="text-lime-400" />;
+    }
+  };
+
+  return (
+    <motion.a
+      href={link.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      whileHover={{ x: 4, backgroundColor: "rgba(255,255,255,0.08)" }}
+      className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-all group/link"
+    >
+      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover/link:bg-white/10 transition-all">
+        {getIcon(link.type)}
+      </div>
+      <div className="flex-1 min-w-0">
+        <h5 className="text-xs font-bold text-white truncate">{link.title}</h5>
+        <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mt-0.5">{link.type}</p>
+      </div>
+      <MoreHorizontal size={14} className="text-gray-600 group-hover/link:text-white transition-colors" />
+    </motion.a>
+  );
+};
+
 const AchievementVault = ({ ratio, tasks }) => {
   const getRank = (r) => {
     if (r >= 1) return { title: "Nexus Grandmaster", color: "text-lime-500", glow: "shadow-lime-500/30" };
@@ -397,6 +426,23 @@ const AIAssistant = () => {
                                   <div className="p-3 text-[10px] text-gray-600 italic">No pending tasks for the remainder of the day.</div>
                                 )}
                               </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
+
+                      {/* AI Recommendations UI */}
+                      {msg.actions?.find(a => a.type === "recommendations") && (() => {
+                        const action = msg.actions.find(a => a.type === "recommendations");
+                        return (
+                          <div className="mt-6 space-y-4 pt-6 border-t border-white/10">
+                            <p className="text-[10px] font-black text-lime-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                              <Sparkles size={12} /> {action.category} Recommendations
+                            </p>
+                            <div className="grid grid-cols-1 gap-3">
+                              {action.links.map((link, idx) => (
+                                <RecommendationCard key={idx} link={link} />
+                              ))}
                             </div>
                           </div>
                         );

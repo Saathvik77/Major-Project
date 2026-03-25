@@ -65,7 +65,7 @@ const loginUser = async (req, res) => {
     const token = jwt.sign(
       { id: user._id },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "30d" }
     );
 
     res.json({
@@ -74,9 +74,10 @@ const loginUser = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("🔥 LOGIN CRITICAL FAILURE:", error);
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: `Login error: ${error.message}. Please check server logs.`,
     });
   }
 };
@@ -146,7 +147,7 @@ const phoneLogin = async (req, res) => {
     const appToken = jwt.sign(
       { id: user._id },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "30d" }
     );
 
     res.json({
@@ -234,7 +235,7 @@ const githubLogin = async (req, res) => {
     const appToken = jwt.sign(
       { id: user._id },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "30d" }
     );
 
     res.json({

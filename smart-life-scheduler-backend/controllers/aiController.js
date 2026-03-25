@@ -138,9 +138,47 @@ const chatWithAI = async (req, res) => {
       }
     }
     
-    // ─── 5. FALLBACK ────────────────────────────────────────────────────────
+    // ─── 5. RECOMMENDATION INTENT ──────────────────────────────────────────
+    else if (msg.includes("exercise") || msg.includes("workout") || msg.includes("fitness") || msg.includes("gym")) {
+       executedActions.push({ 
+         type: "recommendations", 
+         category: "Exercise",
+         links: [
+           { title: "20 Min Full Body HIIT", url: "https://www.youtube.com/watch?v=ml6cT4AZdqI", type: "video" },
+           { title: "Morning Yoga for Beginners", url: "https://www.youtube.com/watch?v=v7AYKMP6rOE", type: "video" },
+           { title: "HealthLine: Best Exercises", url: "https://www.healthline.com/health/fitness-exercise", type: "article" }
+         ]
+       });
+       reply = "I've gathered some high-performance physical optimization resources for you. Maintenance of the biological vessel is critical.";
+    }
+    else if (msg.includes("study") || msg.includes("learn") || msg.includes("education") || msg.includes("course")) {
+       executedActions.push({ 
+         type: "recommendations", 
+         category: "Studies",
+         links: [
+           { title: "MDN Web Docs", url: "https://developer.mozilla.org/", type: "website" },
+           { title: "Khan Academy", url: "https://www.khanacademy.org/", type: "website" },
+           { title: "Coursera: Free Courses", url: "https://www.coursera.org/courses?query=free", type: "website" }
+         ]
+       });
+       reply = "Accessing educational data nodes. Knowledge acquisition is the primary driver of system evolution.";
+    }
+    else if (msg.includes("trip") || msg.includes("travel") || msg.includes("vacation") || msg.includes("plan a trip")) {
+       executedActions.push({ 
+         type: "recommendations", 
+         category: "Trip Planning",
+         links: [
+           { title: "Google Flights", url: "https://www.google.com/travel/flights", type: "website" },
+           { title: "Airbnb: Unique Stays", url: "https://www.airbnb.com/", type: "website" },
+           { title: "TripAdvisor: Top Places", url: "https://www.tripadvisor.com/", type: "website" }
+         ]
+       });
+       reply = "Initiating travel log optimization. Exploration of diverse geolocations enhances operational perspective.";
+    }
+
+    // ─── 6. FALLBACK ────────────────────────────────────────────────────────
     else {
-       reply = "Local Core Active. I can create, delete, or reschedule tasks, and navigate through sections. Try: 'Navigate to Analytics' or 'Add Gym at 6pm'.";
+       reply = "Local Core Active. I can manage tasks, navigate sections, and provide recommendations (Try: 'Recommend some exercises' or 'Help me plan a trip').";
     }
 
     // Trigger local events

@@ -26,7 +26,10 @@ const testPhrases = [
   "Navigate to analytics",
   "Take me to the dashboard",
   "Go to settings",
-  "Show my tasks"
+  "Show my tasks",
+  "Recommend some exercise",
+  "I want to study something",
+  "Plan a trip to Paris"
 ];
 
 console.log("--- NLP TEST RESULTS ---");
