@@ -97,13 +97,12 @@ router.get(
     let filter = { user: userId };
 
     if (date) {
-      // Create a range for the target date in local time
-      const startOfDay = new Date(date);
-      startOfDay.setHours(0, 0, 0, 0);
-      const endOfDay = new Date(date);
-      endOfDay.setHours(23, 59, 59, 999);
+      // Create a range for the target date using UTC to avoid timezone shifts
+      const [year, month, day] = date.split('-').map(Number);
+      const startOfDay = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+      const endOfDay = new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
       
-      const dayOfWeek = startOfDay.getDay();
+      const dayOfWeek = startOfDay.getUTCDay();
 
       filter.$or = [
         { date: { $gte: startOfDay, $lte: endOfDay } },

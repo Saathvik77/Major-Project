@@ -1,7 +1,11 @@
 import axios from "axios";
 
 const getBaseURL = () => {
-  let url = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
+  // Use VITE_API_URL if provided, otherwise detect current host (ideal for mobile testing)
+  const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  const defaultHost = isLocal ? "127.0.0.1" : window.location.hostname;
+  
+  let url = import.meta.env.VITE_API_URL || `http://${defaultHost}:5000`;
   
   // Ensure the URL ends with /api
   if (!url.endsWith('/api') && !url.endsWith('/api/')) {
