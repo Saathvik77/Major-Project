@@ -13,6 +13,9 @@ import {
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import API from "../api";
+import maleAvatar from "../assets/avatars/male_avatar.png";
+import femaleAvatar from "../assets/avatars/female_avatar.png";
 
 const NavItem = ({ icon: Icon, label, path, active, isBottom = false }) => (
   <Link to={path} className="relative group w-full flex justify-center py-3">
@@ -43,7 +46,20 @@ const NavItem = ({ icon: Icon, label, path, active, isBottom = false }) => (
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [user, setUser] = React.useState(null);
   const path = location.pathname;
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await API.get("/auth/profile");
+        setUser(res.data.user || res.data);
+      } catch (err) {
+        console.error("Sidebar User Error:", err);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -79,8 +95,12 @@ const Sidebar = () => {
         </nav>
 
         <div className="mt-auto flex flex-col items-center gap-6">
-          <Link to="/profile" className={`p-3.5 rounded-2xl transition-all ${path === '/profile' ? 'bg-lime-500/10 text-lime-500 border border-lime-500/20' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}>
-            <User size={22} />
+          <Link to="/profile" className={`w-10 h-10 rounded-xl transition-all overflow-hidden border ${path === '/profile' ? 'border-lime-500 shadow-lg shadow-lime-500/20' : 'border-white/5 hover:border-white/10'}`}>
+            <img 
+              src={user?.gender?.toLowerCase() === 'female' ? femaleAvatar : maleAvatar} 
+              alt="Avatar" 
+              className="w-full h-full object-cover scale-110"
+            />
           </Link>
           <button 
             onClick={handleLogout}

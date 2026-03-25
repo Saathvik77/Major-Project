@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from './api';
+import maleAvatar from "./assets/avatars/male_avatar.png";
+import femaleAvatar from "./assets/avatars/female_avatar.png";
 
 const StatBadge = ({ dotColor, label, value, isVisible }) => (
   <div className="flex items-center gap-3">
@@ -184,9 +186,13 @@ const Dashboard = () => {
           <div className="relative">
             <div 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="w-10 h-10 rounded-xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 cursor-pointer hover:bg-lime-500/20 transition-all shadow-lg shadow-lime-500/5"
+              className="w-10 h-10 rounded-xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 cursor-pointer hover:bg-lime-500/20 transition-all shadow-lg shadow-lime-500/5 overflow-hidden"
             >
-              <User size={20} strokeWidth={2} />
+              <img 
+                src={user?.gender?.toLowerCase() === 'female' ? femaleAvatar : maleAvatar} 
+                alt="3D Avatar" 
+                className="w-full h-full object-cover scale-110"
+              />
             </div>
             
             <AnimatePresence>

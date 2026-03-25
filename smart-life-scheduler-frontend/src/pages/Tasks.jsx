@@ -13,6 +13,8 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { motion } from "framer-motion";
 import TaskItem from "../components/TaskItem";
 import Toast from "../components/Toast";
+import maleAvatar from "../assets/avatars/male_avatar.png";
+import femaleAvatar from "../assets/avatars/female_avatar.png";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 const formatTime12Hour = (time24) => {
@@ -96,6 +98,7 @@ export default function Tasks() {
   const informedRef  = useRef(new Set());
   const autoRescheduledRef = useRef(new Set());
   const [notes, setNotes] = useState(() => localStorage.getItem("task_notes") || "");
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   // Save notes to localStorage
@@ -137,6 +140,16 @@ export default function Tasks() {
       }
     };
     fetchW();
+
+    const fetchUser = async () => {
+      try {
+        const res = await api.get("/auth/profile");
+        setUser(res.data.user || res.data);
+      } catch (err) {
+        console.error("Tasks User Error:", err);
+      }
+    };
+    fetchUser();
   }, []);
 
   const handleAiAsk = async () => {
@@ -412,9 +425,13 @@ export default function Tasks() {
 
            <div 
              onClick={() => navigate('/profile')}
-             className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 cursor-pointer hover:bg-lime-500/20 transition-all shadow-lg shadow-lime-500/5 sm:flex"
+             className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 cursor-pointer hover:bg-lime-500/20 transition-all shadow-lg shadow-lime-500/5 sm:flex overflow-hidden"
            >
-             <User size={18} strokeWidth={2} />
+             <img 
+               src={user?.gender?.toLowerCase() === 'female' ? femaleAvatar : maleAvatar} 
+               alt="Avatar" 
+               className="w-full h-full object-cover scale-110"
+             />
            </div>
         </div>
       </header>
