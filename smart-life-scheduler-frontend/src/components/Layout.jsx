@@ -49,9 +49,9 @@ export default function Layout({ children }) {
   }, [fetchData]);
 
   return (
-    <div className="flex bg-transparent min-h-screen overflow-hidden relative">
+    <div className="flex bg-transparent min-h-screen relative">
       <Sidebar />
-      <main className="flex-1">
+      <main className="flex-1 overflow-y-auto p-3 sm:p-6 pb-20 md:pb-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
@@ -59,6 +59,7 @@ export default function Layout({ children }) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="min-h-screen"
           >
             {children}
           </motion.div>

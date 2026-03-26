@@ -39,7 +39,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const FilterButton = ({ label, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+    className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-wide transition-all ${
       active 
         ? 'bg-lime-500 text-white shadow-lg shadow-lime-500/20' 
         : 'bg-white/5 text-gray-500 hover:text-white border border-white/5 hover:border-white/10'
@@ -60,19 +60,19 @@ const formatTime12Hour = (time24) => {
 const StatCard = ({ icon: Icon, title, value, trend, trendUp, color }) => (
   <motion.div
     whileHover={{ y: -2 }}
-    className="glass-card p-3 sm:p-5 flex flex-col justify-between min-h-[110px] sm:min-h-[160px] relative overflow-hidden group"
+    className="glass-card p-3 sm:p-5 flex flex-col justify-between min-h-[120px] md:min-h-[180px] relative overflow-hidden group"
   >
     <div className={`absolute top-0 right-0 w-24 h-24 bg-${color}-500/5 rounded-full blur-[25px] -z-10`} />
     <div className="flex items-center justify-between mb-1.5">
       <div className={`p-1.5 rounded-lg bg-${color}-500/10 border border-${color}-500/20 text-${color}-500`}>
         <Icon size={16} className="sm:w-6 sm:h-6" />
       </div>
-      <div className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[7px] sm:text-[9px] font-black uppercase tracking-tighter ${trendUp ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
+      <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wide ${trendUp ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
         {trendUp ? '↑' : '↓'} {trend}
       </div>
     </div>
     <div>
-      <p className="text-[7px] sm:text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none truncate">{title}</p>
+      <p className="text-xs font-black text-gray-500 uppercase tracking-wide leading-none truncate">{title}</p>
       <h3 className="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tighter mt-1">{value}</h3>
     </div>
   </motion.div>
@@ -187,7 +187,7 @@ function Analytics() {
   });
 
   if (loading) return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white flex flex-col gap-12 max-w-7xl mx-auto">
+    <div className="min-h-screen pl-0 md:pl-20 p-4 md:p-8 lg:p-12 text-white flex flex-col gap-12 max-w-7xl mx-auto">
       <div className="flex items-center gap-6">
         <div className="w-12 h-12 rounded-2xl skeleton" />
         <div className="space-y-2">
@@ -219,7 +219,7 @@ function Analytics() {
   ];
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-32 page-transition">
+    <div className="min-h-screen pl-0 md:pl-20 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-28 md:pb-10 page-transition">
       {/* Lighting FX */}
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
 
@@ -231,7 +231,7 @@ function Analytics() {
           </button>
           <div className="min-w-0">
             <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter truncate">Intelligence Overview</h1>
-            <p className="text-[8px] sm:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60 font-black truncate">Operational Data Feed</p>
+            <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1 text-lime-500/60 font-black truncate">Operational Data Feed</p>
           </div>
         </div>
 
@@ -291,7 +291,7 @@ function Analytics() {
           </p>
           <button 
             onClick={() => navigate('/tasks')}
-            className="px-10 py-4 rounded-2xl bg-lime-500 text-white font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl shadow-lime-500/20 hover:bg-lime-600 transition-all active:scale-95"
+            className="px-10 py-4 rounded-2xl bg-lime-500 text-white font-black text-sm uppercase tracking-wide shadow-2xl shadow-lime-500/20 hover:bg-lime-600 transition-all active:scale-95"
           >
             Access Task Interface
           </button>
@@ -309,7 +309,7 @@ function Analytics() {
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-lg md:text-xl font-black text-white tracking-tight truncate">Performance Velocity</h3>
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">7-Day Completion Cycle</p>
+                    <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1">7-Day Completion Cycle</p>
                   </div>
                 </div>
                 <MoreHorizontal size={20} className="text-gray-700 cursor-pointer hover:text-white transition-colors shrink-0" />
@@ -339,7 +339,7 @@ function Analytics() {
                <div className="absolute top-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
                
                <h3 className="text-lg md:text-xl font-black text-white tracking-tight mb-2 self-start">Smart Sync</h3>
-               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6 sm:mb-8 md:mb-12 self-start">Cognitive Efficiency</p>
+               <p className="text-xs font-black text-gray-500 uppercase tracking-wide mb-6 sm:mb-8 md:mb-12 self-start">Cognitive Efficiency</p>
                
                 <div className="relative w-32 h-32 xs:w-40 xs:h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 mb-6 sm:mb-8 md:mb-12">
                   <svg className="w-full h-full transform -rotate-90">
@@ -356,18 +356,18 @@ function Analytics() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="text-4xl md:text-6xl font-black text-white tracking-tighter">{summary?.productivityScore || "78%"}</span>
-                    <span className="text-[10px] font-black uppercase text-gray-500 tracking-widest mt-2">Efficiency</span>
+                    <span className="text-xs font-black uppercase text-gray-500 tracking-wide mt-2">Efficiency</span>
                   </div>
                </div>
 
                <div className="grid grid-cols-2 gap-4 w-full">
                   <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-                     <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Status</p>
-                     <p className="text-[11px] md:text-sm font-black text-emerald-500 uppercase tracking-widest">Optimized</p>
+                     <p className="text-xs font-black text-gray-500 uppercase tracking-wide mb-1">Status</p>
+                     <p className="text-sm font-black text-emerald-500 uppercase tracking-wide">Optimized</p>
                   </div>
                   <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-                     <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Target</p>
-                     <p className="text-[11px] md:text-sm font-black text-white tracking-widest">95%</p>
+                     <p className="text-xs font-black text-gray-500 uppercase tracking-wide mb-1">Target</p>
+                     <p className="text-sm font-black text-white tracking-wide">95%</p>
                   </div>
                </div>
             </div>
@@ -412,7 +412,7 @@ function Analytics() {
                   </div>
                   <div>
                      <h3 className="text-xl font-black text-white tracking-tight">AI Smart Insights</h3>
-                     <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Deep Pattern Analysis</p>
+                     <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1">Deep Pattern Analysis</p>
                   </div>
                </div>
 
@@ -427,7 +427,7 @@ function Analytics() {
 
                <button 
                  onClick={() => navigate('/ai-assistant')}
-                 className="mt-auto w-full py-4 rounded-[1.25rem] bg-lime-500/10 border border-lime-500/20 text-lime-500 font-black text-[10px] uppercase tracking-widest hover:bg-lime-500 hover:text-white transition-all ripple"
+                 className="mt-auto w-full py-4 rounded-[1.25rem] bg-lime-500/10 border border-lime-500/20 text-lime-500 font-black text-sm uppercase tracking-wide hover:bg-lime-500 hover:text-white transition-all ripple"
                >
                   Detailed Operational Report
                </button>
@@ -441,14 +441,14 @@ function Analytics() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-10">
               <div>
                 <h3 className="text-lg sm:text-xl font-black text-white tracking-tight">Activity Momentum</h3>
-                <p className="text-[9px] sm:text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">7-Day Node Throughput</p>
+                <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1">7-Day Node Throughput</p>
               </div>
                 <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl overflow-x-auto scrollbar-hide">
                   {["All", "Completed", "Pending", "Missed"].map(cat => (
                     <button
                       key={cat}
                       onClick={() => setFilter(cat)}
-                      className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
+                      className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wide transition-all ${
                         (filter === cat || (filter === "Week" && cat === "All"))
                           ? 'bg-lime-500 text-white shadow-lg shadow-lime-500/20' 
                           : 'bg-white/5 text-gray-500 hover:text-white'
@@ -474,7 +474,7 @@ function Analytics() {
                   return true;
                 }).length === 0 ? (
                   <div className="text-center py-20 bg-white/[0.02] rounded-3xl border border-dashed border-white/10">
-                    <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">No tasks matches this classification</p>
+                    <p className="text-gray-500 font-bold uppercase tracking-wide text-xs">No tasks matches this classification</p>
                   </div>
                 ) : (
                   allTasks.filter(task => {
@@ -508,9 +508,9 @@ function Analytics() {
                           <div className="min-w-0">
                             <h4 className="font-bold text-white tracking-tight truncate">{task.title}</h4>
                             <div className="flex items-center gap-3 mt-1">
-                              <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">{task.category || "General"}</span>
+                              <span className="text-xs font-black text-gray-500 uppercase tracking-wide">{task.category || "General"}</span>
                               <div className="w-1 h-1 rounded-full bg-gray-700" />
-                              <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                              <span className={`text-xs font-black uppercase px-2 py-0.5 rounded-full border ${
                                 task.priority === "High" ? "text-rose-400 border-rose-500/20 bg-rose-500/5" :
                                 task.priority === "Medium" ? "text-yellow-400 border-yellow-500/20 bg-yellow-500/5" :
                                 "text-emerald-400 border-emerald-500/20 bg-emerald-500/5"
@@ -522,7 +522,7 @@ function Analytics() {
                         </div>
                         <div className="text-right flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-1 mt-2 sm:mt-0 border-t sm:border-t-0 border-white/5 pt-3 sm:pt-0">
                           <p className="text-xs font-black text-white">{formatTime12Hour(task.startTime)}</p>
-                          <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest">
+                          <p className="text-xs font-black text-gray-500 uppercase tracking-wide">
                             {new Date(task.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                           </p>
                         </div>

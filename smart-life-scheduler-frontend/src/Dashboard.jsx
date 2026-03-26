@@ -28,7 +28,7 @@ const StatBadge = ({ dotColor, label, value, isVisible }) => (
   <div className="flex items-center gap-3">
     <div className={`w-2 h-2 rounded-full ${dotColor}`} />
     <div>
-      <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1">{label}</p>
+      <p className="text-xs font-black text-gray-500 uppercase tracking-wide leading-none mb-1">{label}</p>
       <p className="text-xl font-black text-white leading-none">
         {isVisible ? value : "—"}
       </p>
@@ -58,7 +58,7 @@ const QuickLaunchHero = ({ onNavigate }) => {
 
   return (
     <div className="relative w-full mb-10 md:mb-16 px-4 md:px-0">
-      <div className="relative aspect-[14/10] sm:aspect-[16/10] md:aspect-[2.35/1] w-full rounded-3xl md:rounded-[3.5rem] overflow-hidden border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] group bg-[#0a0c10]">
+      <div className="relative aspect-auto md:aspect-[2.2/1] w-full rounded-3xl md:rounded-[3.5rem] overflow-hidden border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] group bg-[#0a0c10] min-h-[300px] md:min-h-[450px]">
         
         {/* Deep Glow Layer */}
         <div className="absolute inset-0 bg-gradient-to-br from-lime-500/10 via-transparent to-blue-500/5 opacity-50" />
@@ -160,7 +160,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-7xl mx-auto page-transition pb-32">
+    <div className="min-h-screen pl-0 md:pl-20 p-4 sm:p-6 md:p-8 lg:p-12 relative z-10 font-sans text-white max-w-7xl mx-auto page-transition pb-28 md:pb-10">
       
       {/* ── Header Area ────────────────────────────────────────────── */}
       <header className="flex items-center justify-between gap-4 mb-8 md:mb-12">
@@ -169,8 +169,8 @@ const Dashboard = () => {
             <LayoutDashboard size={20} className="md:w-6 md:h-6" strokeWidth={1.5} />
           </div>
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black tracking-tighter text-white truncate max-w-[120px] xs:max-w-none">Smart Life Scheduler</h1>
-            <p className="text-[8px] sm:text-[9px] md:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 truncate">Operational Overview</p>
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black tracking-tighter text-white truncate max-w-[140px] xs:max-w-none">Smart Life Scheduler</h1>
+            <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1 truncate">Operational Overview</p>
           </div>
         </div>
 
@@ -204,8 +204,8 @@ const Dashboard = () => {
                   className="absolute right-0 mt-3 w-56 glass-morphism rounded-2xl p-2 z-[110] border border-white/10 shadow-2xl"
                 >
                   <div className="px-3 py-3 border-b border-white/5 mb-2">
-                    <p className="text-xs font-black text-white uppercase tracking-widest">{user?.name || "Smart User"}</p>
-                    <p className="text-[9px] text-gray-500 font-bold truncate">Synchronized Session</p>
+                    <p className="text-sm font-black text-white uppercase tracking-wide">{user?.name || "Smart User"}</p>
+                    <p className="text-xs text-gray-500 font-bold truncate">Synchronized Session</p>
                   </div>
                   <div className="space-y-1">
                     <div onClick={() => navigate('/profile')} className="px-3 py-2.5 hover:bg-white/5 rounded-xl transition-colors cursor-pointer flex items-center gap-3 text-sm text-gray-400 hover:text-white">
@@ -227,13 +227,13 @@ const Dashboard = () => {
 
       {/* ── Main Hero Card ────────────────────────────────────────── */}
       <div className="relative mb-8 md:mb-12 lg:mb-20">
-         <div className="hero-card p-6 sm:p-8 md:p-16 flex flex-col lg:flex-row items-center gap-8 md:gap-16 min-h-[400px] md:min-h-[500px]">
+         <div className="hero-card p-6 sm:p-8 md:p-16 flex flex-col lg:flex-row items-center gap-8 md:gap-16 min-h-[300px] md:min-h-[450px]">
             
             {/* Data Visualization Column */}
             <div className="flex-1 w-full relative z-20 text-center lg:text-left">
                <div className="flex items-center justify-center lg:justify-start gap-2 mb-6">
                   <div className="w-2 h-2 rounded-full bg-lime-500 animate-pulse" />
-                  <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-lime-500/60">System Intelligence Active</span>
+                  <span className="text-xs font-black uppercase tracking-wide text-lime-500/60">System Intelligence Active</span>
                </div>
                
                <h2 className="text-3xl md:text-5xl lg:text-6xl font-black leading-[1.1] mb-8 text-white tracking-tighter">
@@ -248,7 +248,6 @@ const Dashboard = () => {
                     disabled={isAnalyzing}
                     className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-lime-500 to-lime-600 text-white font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl shadow-lime-500/20 flex items-center justify-center gap-3 relative overflow-hidden group"
                   >
-                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                      <Sparkles size={16} className="relative z-10" />
                      <span className="relative z-10">{isAnalyzing ? "Optimizing..." : "AI Plan My Day"}</span>
                   </motion.button>
@@ -257,14 +256,14 @@ const Dashboard = () => {
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate('/tasks')}
-                    className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-white/10 transition-all flex items-center justify-center gap-3"
+                    className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-sm uppercase tracking-wide hover:bg-white/10 transition-all flex items-center justify-center gap-3"
                   >
                      <Plus size={16} className="text-lime-500" />
                      Quick Task
                   </motion.button>
                </div>
 
-               <div className="grid grid-cols-1 xs:grid-cols-2 lg:flex lg:gap-12 pt-8 border-t border-white/5 place-items-center lg:place-items-start gap-6 md:gap-8">
+               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-white/5 place-items-center lg:place-items-start">
                   <StatBadge dotColor="bg-lime-500" label="Focus Score" value={stats.efficiency} isVisible={showStats} />
                   <StatBadge dotColor="bg-lime-400" label="Completed" value={stats.totalTasks} isVisible={showStats} />
                   <StatBadge dotColor="bg-lime-300" label="Active Momentum" value={stats.growth} isVisible={showStats} />
@@ -313,14 +312,14 @@ const Dashboard = () => {
 
 
       {/* ── Bottom Content Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 lg:gap-20">
+       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 lg:gap-20">
         
         {/* Quick Access Card */}
-        <div className="lg:col-span-8 glass-card p-5 sm:p-6 md:p-8 lg:p-10 flex flex-col gap-6 md:gap-10 relative overflow-hidden group min-h-[350px] md:min-h-[500px]">
+        <div className="lg:col-span-8 glass-card p-5 sm:p-6 md:p-8 lg:p-10 flex flex-col gap-6 md:gap-10 relative overflow-hidden group min-h-[300px] md:min-h-[450px]">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xl font-black text-white tracking-tight">Active Operational Flow</h3>
-              <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Pending prioritized tasks</p>
+              <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1">Pending prioritized tasks</p>
             </div>
             <button 
               onClick={() => navigate('/tasks')}
@@ -340,27 +339,27 @@ const Dashboard = () => {
                  <p className="text-[11px] md:text-xs text-gray-500 max-w-[260px] leading-relaxed mb-8">
                    Your operational flow is currently empty. Start by adding a task or let AI plan your day.
                  </p>
-                 <button 
-                   onClick={() => navigate('/tasks')}
-                   className="px-8 py-3 rounded-xl bg-lime-500/10 border border-lime-500/20 text-lime-500 font-black text-[10px] uppercase tracking-widest hover:bg-lime-500 hover:text-white transition-all active:scale-95"
-                 >
-                   Add your first task
-                 </button>
+                  <button 
+                    onClick={() => navigate('/tasks')}
+                    className="px-8 py-3 rounded-xl bg-lime-500/10 border border-lime-500/20 text-lime-500 font-black text-xs uppercase tracking-wide hover:bg-lime-500 hover:text-white transition-all active:scale-95"
+                  >
+                    Add your first task
+                  </button>
                </div>
              ) : (
                 activeTasks.map((task, i) => (
                   <div key={task._id || i} className="p-4 md:p-5 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-between group/item hover:bg-white/[0.06] transition-all hover:border-white/10">
                     <div className="flex items-center gap-4 md:gap-5">
                        <div className="w-1.5 h-1.5 rounded-full bg-lime-500 shadow-[0_0_10px_rgba(132,204,22,0.5)]" />
-                       <div>
-                          <p className="text-sm font-black text-white group-hover/item:text-lime-400 transition-colors tracking-tight">{task.title}</p>
-                          <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1">{task.category || "General"}</p>
-                       </div>
-                    </div>
-                    <div className="text-right">
-                       <p className="text-xs font-black text-white">{formatTime12Hour(task.startTime)}</p>
-                       <p className="text-[9px] font-black text-gray-600 uppercase tracking-widest mt-1 shrink-0">Scheduled</p>
-                    </div>
+                        <div>
+                           <p className="text-sm font-black text-white group-hover/item:text-lime-400 transition-colors tracking-tight">{task.title}</p>
+                           <p className="text-xs font-black text-gray-600 uppercase tracking-wide mt-1">{task.category || "General"}</p>
+                        </div>
+                     </div>
+                     <div className="text-right">
+                        <p className="text-xs font-black text-white">{formatTime12Hour(task.startTime)}</p>
+                        <p className="text-xs font-black text-gray-600 uppercase tracking-wide mt-1 shrink-0">Scheduled</p>
+                     </div>
                   </div>
                 ))
              )}
@@ -374,22 +373,21 @@ const Dashboard = () => {
               <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shadow-lg shadow-lime-500/5">
                  <Bot size={24} />
               </div>
-              <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
-                 <div className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse" />
-                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Smart Coach</span>
-              </div>
+               <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
+                  <div className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse" />
+                  <span className="text-xs font-black text-gray-400 uppercase tracking-wide">Smart Coach</span>
+               </div>
            </div>
            
            <h4 className="text-base md:text-lg font-black text-white tracking-tight mb-3">Optimize Peak Performance</h4>
            <p className="text-xs md:text-sm text-gray-400 leading-relaxed mb-8 md:mb-10">
               Based on your operational data, you are operating at <span className="text-lime-400 font-bold">88% efficiency</span>. Consider rescheduling high-load tasks to your peak focus window at 4:00 PM.
            </p>
-           
-           <button 
-             onClick={() => navigate('/ai-assistant')}
-             className="w-full py-4 rounded-[1.25rem] bg-lime-500 text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-lime-600 transition-all shadow-xl shadow-lime-500/20 flex items-center justify-center gap-2 ripple"
-           >
-              Command Sync
+                      <button 
+              onClick={() => navigate('/ai-assistant')}
+              className="w-full py-4 rounded-[1.25rem] bg-lime-500 text-white font-black text-sm uppercase tracking-wide hover:bg-lime-600 transition-all shadow-xl shadow-lime-500/20 flex items-center justify-center gap-2 ripple"
+            >
+               Command Sync
               <ChevronRight size={14} />
            </button>
         </div>

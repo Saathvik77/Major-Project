@@ -339,7 +339,7 @@ export default function Tasks() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pl-0 md:pl-[84px] p-4 md:p-8 lg:p-12 text-white flex flex-col gap-10 max-w-7xl mx-auto">
+      <div className="min-h-screen pl-0 md:pl-20 p-4 md:p-8 lg:p-12 text-white flex flex-col gap-10 max-w-7xl mx-auto">
         <div className="flex items-center gap-6">
           <div className="w-12 h-12 rounded-2xl skeleton" />
           <div className="space-y-2">
@@ -361,7 +361,7 @@ export default function Tasks() {
   }
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-32 page-transition">
+    <div className="min-h-screen pl-0 md:pl-20 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-28 md:pb-10 page-transition">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </AnimatePresence>
@@ -390,7 +390,7 @@ export default function Tasks() {
           </div>
           <div className="min-w-0">
             <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter truncate">Operational Flow</h1>
-            <p className="text-[8px] sm:text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1 text-lime-500/60 font-black truncate">Manage Tasks & Performance</p>
+            <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1 text-lime-500/60 font-black truncate">Manage Tasks & Performance</p>
           </div>
         </div>
 
@@ -404,7 +404,7 @@ export default function Tasks() {
               }} className="p-2 hover:bg-white/10 rounded-xl transition-all text-gray-400">
                 <ChevronLeft size={16} />
               </button>
-              <div className="px-4 py-1.5 bg-lime-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest">
+              <div className="px-4 py-1.5 bg-lime-500 text-white rounded-xl text-xs font-black uppercase tracking-wide">
                 {selectedDate.toLocaleDateString('default', { month: 'short', day: 'numeric' })}
               </div>
               <button onClick={() => {
@@ -456,7 +456,7 @@ export default function Tasks() {
                           : 'bg-white/5 border-white/5 hover:bg-white/10'}
                       `}
                     >
-                      <span className={`text-[8px] sm:text-[10px] font-black uppercase tracking-widest mb-1 ${isActive ? 'text-lime-500' : 'text-gray-500'}`}>{dStr}</span>
+                      <span className={`text-xs font-black uppercase tracking-wide mb-1 ${isActive ? 'text-lime-500' : 'text-gray-500'}`}>{dStr}</span>
                       <span className={`text-md sm:text-lg md:text-xl font-bold ${isActive ? 'text-white' : 'text-gray-400'}`}>{d.getDate()}</span>
                       {isActive && <div className="w-1 h-1 rounded-full bg-lime-500 mt-1.5" />}
                     </div>
@@ -471,7 +471,7 @@ export default function Tasks() {
                   <h3 className="text-base sm:text-lg font-bold">Planned Schedule</h3>
                   <div className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse shadow-[0_0_8px_rgba(132,204,22,0.6)]" />
                 </div>
-                <div onClick={fetchTasks} className="text-[8px] sm:text-[10px] font-bold text-gray-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/10 transition-all cursor-pointer uppercase tracking-widest">
+                <div onClick={fetchTasks} className="text-xs font-bold text-gray-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/10 transition-all cursor-pointer uppercase tracking-wide">
                    Sync Calendar
                 </div>
               </div>
@@ -484,7 +484,7 @@ export default function Tasks() {
                       <CalendarIcon size={28} strokeWidth={1} />
                     </div>
                     <h4 className="text-white font-black text-base sm:text-lg mb-2 uppercase tracking-tight">System Idle</h4>
-                    <p className="text-[10px] sm:text-xs text-gray-500 max-w-[200px] sm:max-w-[280px] leading-relaxed font-bold">
+                    <p className="text-sm text-gray-500 max-w-[200px] sm:max-w-[280px] leading-relaxed font-bold">
                        Initial operational node detected. No tasks scheduled for this cycle.
                     </p>
                   </div>
@@ -494,7 +494,7 @@ export default function Tasks() {
                       <div className="space-y-3 sm:space-y-4">
                         <div className="flex items-center gap-2 px-1">
                           <AlertCircle size={12} className="text-rose-500" />
-                          <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-rose-500/80">Missed Objectives</h4>
+                          <h4 className="text-xs font-black uppercase tracking-wide text-rose-500/80">Missed Objectives</h4>
                         </div>
                         <div className="space-y-3 sm:space-y-4">
                           {tasks.filter(t => !t.completed && expiredIds.has(t._id || t.id)).map((task) => (
@@ -518,7 +518,7 @@ export default function Tasks() {
                     <div className="space-y-3 sm:space-y-4">
                       <div className="flex items-center gap-2 px-1">
                         <div className="w-1.5 h-1.5 rounded-full bg-lime-500" />
-                        <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500">Today's Protocol</h4>
+                        <h4 className="text-xs font-black uppercase tracking-wide text-gray-500">Today's Protocol</h4>
                       </div>
                       
                       {tasks.filter(t => !t.completed && !expiredIds.has(t._id || t.id)).length === 0 ? (
@@ -531,7 +531,7 @@ export default function Tasks() {
                             <CheckCircle size={24} strokeWidth={1.5} />
                           </div>
                           <h4 className="text-white font-bold text-sm sm:text-base">Nodes Synchronized 🎉</h4>
-                          <p className="text-[10px] sm:text-xs text-gray-500 mt-1 max-w-[180px] sm:max-w-[240px] font-bold uppercase tracking-widest">Efficiency 100%</p>
+                           <p className="text-xs sm:text-sm text-gray-500 mt-1 max-w-[180px] sm:max-w-[240px] font-black uppercase tracking-wide">Efficiency 100%</p>
                         </motion.div>
                       ) : (
                         <DragDropContext onDragEnd={onDragEnd}>
@@ -571,7 +571,7 @@ export default function Tasks() {
                       <div className="space-y-3 sm:space-y-4 mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-white/5">
                         <div className="flex items-center gap-2 px-1">
                           <CheckCircle size={12} className="text-emerald-500" />
-                          <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500/80">Archived Nodes</h4>
+                          <h4 className="text-xs font-black uppercase tracking-wide text-emerald-500/80">Archived Nodes</h4>
                         </div>
                         <div className="space-y-3 opacity-50 grayscale-[0.6]">
                           {tasks.filter(t => t.completed).map((task) => (
@@ -606,10 +606,10 @@ export default function Tasks() {
 
                <div className="space-y-4 md:space-y-6">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">Objective Input</h4>
+                  <h4 className="text-sm font-black uppercase tracking-wide text-gray-500">Objective Input</h4>
                   <div className="flex items-center gap-2 px-2 py-0.5 sm:px-3 sm:py-1 bg-white/5 rounded-full border border-white/10">
                     <div className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse" />
-                    <span className="text-[8px] sm:text-[9px] font-black text-gray-400 uppercase tracking-widest">Active Link</span>
+                    <span className="text-xs font-black text-gray-400 uppercase tracking-wide">Active Link</span>
                   </div>
                 </div>
                 <div className="flex items-center bg-white/5 rounded-xl sm:rounded-[2rem] px-4 sm:px-8 py-3 sm:py-6 border border-white/5 focus-within:border-lime-500/30 transition-all shadow-inner">
@@ -625,7 +625,7 @@ export default function Tasks() {
                     <div className="flex flex-col items-center gap-8 py-8 bg-white/[0.02] rounded-[2.5rem] border border-white/5">
                         <div className="flex items-center gap-12">
                            <div className="flex flex-col items-center gap-2">
-                             <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Hour</span>
+                             <span className="text-xs font-black text-gray-600 uppercase tracking-wide">Hour</span>
                              <div className="text-5xl font-black text-white tracking-tighter flex items-end gap-1">
                                 {startTime?.includes(':') ? (() => {
                                   const h24 = parseInt(startTime.split(':')[0]);
@@ -636,14 +636,14 @@ export default function Tasks() {
                              </div>
                            </div>
                            <div className="flex flex-col items-center gap-2">
-                             <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Minute</span>
+                             <span className="text-xs font-black text-gray-600 uppercase tracking-wide">Minute</span>
                              <div className="text-5xl font-black text-white tracking-tighter flex items-end gap-1">
                                 {startTime?.includes(':') ? startTime.split(':')[1] : "00"}
                                 <span className="text-sm text-gray-500 mb-2 font-bold">min</span>
                              </div>
                            </div>
                            <div className="flex flex-col items-center gap-2">
-                             <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Period</span>
+                             <span className="text-xs font-black text-gray-600 uppercase tracking-wide">Period</span>
                              <div className="text-3xl font-black text-lime-500 tracking-tighter mt-2">
                                 {startTime?.includes(':') ? (parseInt(startTime.split(':')[0]) >= 12 ? "PM" : "AM") : "AM"}
                              </div>
@@ -659,7 +659,7 @@ export default function Tasks() {
                         />
                         <button 
                           onClick={() => document.getElementById('hidden-time-input')?.showPicker?.()}
-                          className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+                          className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-black uppercase tracking-wide text-gray-400 hover:text-white hover:bg-white/10 transition-all"
                         >
                           Adjust Time
                         </button>
@@ -671,7 +671,7 @@ export default function Tasks() {
                           <button
                             key={mode}
                             onClick={() => setRepeatFrequency(mode)}
-                            className={`flex-1 py-3 rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest transition-all ${
+                            className={`flex-1 py-3 rounded-[1.25rem] text-xs font-black uppercase tracking-wide transition-all ${
                               repeatFrequency === mode 
                                 ? 'bg-lime-500 text-white shadow-lg shadow-lime-500/20' 
                                 : 'text-gray-500 hover:text-gray-300'
@@ -686,8 +686,8 @@ export default function Tasks() {
                     {(repeatFrequency === 'custom' || repeatFrequency === 'workdays' || repeatFrequency === 'daily') && (
                       <div className="space-y-4 animate-fadeIn">
                         <div className="flex items-center justify-between px-2">
-                           <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Repeat Schedule</span>
-                           <span className="text-[10px] font-bold text-lime-500">
+                           <span className="text-xs font-black text-gray-500 uppercase tracking-wide">Repeat Schedule</span>
+                           <span className="text-xs font-bold text-lime-500">
                              {repeatFrequency === 'workdays' ? 'Mon - Fri' : 'Every day'}
                            </span>
                         </div>
@@ -706,7 +706,7 @@ export default function Tasks() {
                                      : [...repeatDays, idx];
                                    setRepeatDays(next);
                                  }}
-                                 className={`w-10 h-10 rounded-full flex items-center justify-center text-[10px] font-black transition-all ${
+                                 className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-black transition-all ${
                                    isSelected 
                                      ? 'bg-lime-500 text-white shadow-lg shadow-lime-500/20 scale-110' 
                                      : 'bg-white/5 text-gray-500 border border-white/5'
@@ -726,7 +726,7 @@ export default function Tasks() {
                         <select 
                           value={priority}
                           onChange={(e) => setPriority(e.target.value)}
-                          className="flex-1 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-400 outline-none cursor-pointer"
+                          className="flex-1 bg-transparent text-xs font-black uppercase tracking-wide text-gray-400 outline-none cursor-pointer"
                         >
                           <option value="High">High Priority</option>
                           <option value="Medium">Medium Priority</option>
@@ -737,7 +737,7 @@ export default function Tasks() {
                         onClick={addTask}
                         className="h-14 px-8 rounded-2xl bg-lime-500 text-white flex items-center justify-center gap-3 hover:bg-lime-600 transition-all shadow-xl shadow-lime-500/20 group"
                       >
-                        <span className="text-[11px] font-black uppercase tracking-[0.2em]">Deploy Task</span>
+                        <span className="text-sm font-black uppercase tracking-wide">Deploy Task</span>
                         <Plus size={20} strokeWidth={3} className="group-hover:rotate-90 transition-transform" />
                       </button>
                     </div>
@@ -755,12 +755,12 @@ export default function Tasks() {
                      </div>
                      <div>
                         <h3 className="text-lg font-black text-white tracking-tight">Smart Sync</h3>
-                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Smart Auto-Reschedule</p>
+                        <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1">Smart Auto-Reschedule</p>
                      </div>
                   </div>
                   <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
                      <div className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse" />
-                     <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">AI Engine Active</span>
+                     <span className="text-xs font-black text-gray-400 uppercase tracking-wide">AI Engine Active</span>
                   </div>
                </div>
                <p className="text-sm text-gray-400 leading-relaxed mb-8">
@@ -771,7 +771,7 @@ export default function Tasks() {
                  whileTap={{ scale: 0.98 }}
                  onClick={applyOptimization}
                  disabled={isOptimizing || expiredIds.size === 0}
-                 className="w-full py-4 rounded-[1.25rem] bg-lime-500 text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-lime-600 transition-all shadow-xl shadow-lime-500/20 disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-3 ripple"
+                  className="w-full py-4 rounded-[1.25rem] bg-lime-500 text-white font-black text-sm uppercase tracking-wide hover:bg-lime-600 transition-all shadow-xl shadow-lime-500/20 disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-3 ripple"
                >
                   {isOptimizing ? (
                     <>
@@ -809,13 +809,13 @@ export default function Tasks() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="text-4xl font-black text-white tracking-tighter">{percentStat}%</span>
-                    <span className="text-[8px] font-black uppercase text-gray-500 tracking-widest mt-1">Focus Flow</span>
+                    <span className="text-xs font-black uppercase text-gray-500 tracking-wide mt-1">Focus Flow</span>
                   </div>
                </div>
 
                <div className="grid grid-cols-2 gap-4 w-full">
                   <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
-                     <p className="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Completed</p>
+                     <p className="text-xs font-black text-gray-500 uppercase tracking-wide mb-1">Completed</p>
                      <p className="text-lg font-black text-lime-500">{completedStat}</p>
                   </div>
                   <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
@@ -832,7 +832,7 @@ export default function Tasks() {
                       <div className="w-10 h-10 rounded-xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500">
                          <BookOpen size={20} />
                       </div>
-                      <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Personal Notes</h4>
+                      <h4 className="text-xs font-black uppercase tracking-wide text-gray-400">Personal Notes</h4>
                    </div>
                    <div className="w-1.5 h-1.5 rounded-full bg-lime-500/40 animate-pulse" />
                 </div>
@@ -845,7 +845,7 @@ export default function Tasks() {
                 />
                 
                 <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-                   <span className="text-[9px] font-black text-gray-600 uppercase tracking-widest leading-none">Auto-saving to node</span>
+                   <span className="text-xs font-black text-gray-600 uppercase tracking-wide leading-none">Auto-saving to node</span>
                    <div className="flex gap-1">
                       <div className="w-1 h-1 rounded-full bg-lime-500/30" />
                       <div className="w-1 h-1 rounded-full bg-lime-500/20" />
@@ -944,7 +944,7 @@ export default function Tasks() {
                   </div>
                   <div>
                     <h3 className="text-2xl font-black text-white tracking-tight">Smart Reschedule</h3>
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Operational Sync Protocol</p>
+                    <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1">Operational Sync Protocol</p>
                   </div>
                 </div>
                 <button 
@@ -964,12 +964,12 @@ export default function Tasks() {
                   <div key={task._id || idx} className="p-5 rounded-2xl bg-white/5 border border-white/5 space-y-4">
                     <div className="flex items-center justify-between">
                       <h4 className="font-bold text-white text-sm">{task.title}</h4>
-                      <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-2 py-1 rounded-md">Missed</span>
+                      <span className="text-xs font-black text-indigo-400 uppercase tracking-wide bg-indigo-500/10 px-2 py-1 rounded-md">Missed</span>
                     </div>
                     
                     <div className="flex items-center gap-4">
                        <div className="flex-1">
-                          <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-2 px-1">Original Time</label>
+                          <label className="text-xs font-black text-gray-500 uppercase tracking-wide block mb-2 px-1">Original Time</label>
                           <div className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-xs text-gray-400">
                              {formatTime12Hour(task.startTime)}
                           </div>
@@ -996,7 +996,7 @@ export default function Tasks() {
                 <button 
                   onClick={handleApplyReschedule}
                   disabled={isLoading || reschedulingTasks.some(t => !t.newTime)}
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-black text-[11px] uppercase tracking-[0.2em] shadow-xl shadow-indigo-500/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-black text-sm uppercase tracking-wide shadow-xl shadow-indigo-500/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
                 >
                   {isLoading ? "Resynchronizing..." : "Apply Operational Sync"}
                 </button>

@@ -1,11 +1,11 @@
 import React from "react";
-import { 
-  LayoutDashboard, 
-  ClipboardList, 
-  PieChart, 
-  Bot, 
-  Settings, 
-  User, 
+import {
+  LayoutDashboard,
+  ClipboardList,
+  PieChart,
+  Bot,
+  Settings,
+  User,
   LogOut,
   Target,
   Brain,
@@ -21,22 +21,27 @@ const NavItem = ({ icon: Icon, label, path, active, isBottom = false }) => (
   <Link to={path} className="relative group w-full flex justify-center py-3">
     <div className={`
       relative z-10 p-3.5 rounded-2xl transition-all duration-300 flex items-center justify-center
-      ${active 
-        ? "bg-lime-500 text-white shadow-xl shadow-lime-500/20 scale-110" 
+      ${active
+        ? "bg-lime-500 text-white shadow-xl shadow-lime-500/20 scale-110"
         : "text-gray-500 hover:text-white hover:bg-white/5"}
     `}>
       <Icon size={22} strokeWidth={active ? 2.5 : 2} />
+      {isBottom && active && (
+        <span className="text-[10px] text-lime-400 absolute -bottom-5 font-black uppercase tracking-widest whitespace-nowrap">
+          {label}
+        </span>
+      )}
     </div>
 
     {active && (
-      <motion.div 
+      <motion.div
         layoutId="activeNav"
-        className={`absolute ${isBottom ? "top-0 left-1/4 right-1/4 h-1 rounded-b-full" : "left-0 top-1/4 bottom-1/4 w-1 rounded-r-full"} bg-lime-500 shadow-[0_0_15px_rgba(132,204,22,0.8)]`} 
+        className={`absolute ${isBottom ? "top-0 left-1/4 right-1/4 h-1 rounded-b-full" : "left-0 top-1/4 bottom-1/4 w-1 rounded-r-full"} bg-lime-500 shadow-[0_0_15px_rgba(132,204,22,0.8)]`}
       />
     )}
-    
+
     {!isBottom && (
-      <div className="absolute left-20 px-3 py-2 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all pointer-events-none whitespace-nowrap border border-white/10 shadow-2xl z-50">
+      <div className="absolute left-20 px-3 py-2 bg-gray-900 text-white text-xs font-black uppercase tracking-widest rounded-xl opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all pointer-events-none whitespace-nowrap border border-white/10 shadow-2xl z-50">
         {label}
       </div>
     )}
@@ -76,7 +81,7 @@ const Sidebar = () => {
 
   return (
     <>
-      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-[84px] glass-morphism border-r border-white/5 flex-col items-center py-10 z-[100] shadow-2xl overflow-visible">
+      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-20 lg:w-24 glass-morphism border-r border-white/5 flex-col items-center py-10 z-[100] shadow-2xl overflow-visible">
         <Link to="/dashboard" className="mb-12 group relative">
           <div className="w-12 h-12 rounded-[1.5rem] bg-gradient-to-br from-lime-400 to-lime-600 flex items-center justify-center text-white shadow-2xl shadow-lime-500/20 transform group-hover:rotate-12 transition-all duration-500 border border-white/10">
             <Brain size={26} strokeWidth={2.5} />
@@ -86,7 +91,7 @@ const Sidebar = () => {
 
         <nav className="flex-1 w-full flex flex-col items-center gap-4">
           {navItems.map((item) => (
-            <NavItem 
+            <NavItem
               key={item.path}
               {...item}
               active={path === item.path}
@@ -96,13 +101,13 @@ const Sidebar = () => {
 
         <div className="mt-auto flex flex-col items-center gap-6">
           <Link to="/profile" className={`w-10 h-10 rounded-xl transition-all overflow-hidden border ${path === '/profile' ? 'border-lime-500 shadow-lg shadow-lime-500/20' : 'border-white/5 hover:border-white/10'}`}>
-            <img 
-              src={user?.gender?.toLowerCase() === 'female' ? femaleAvatar : maleAvatar} 
-              alt="Avatar" 
+            <img
+              src={user?.gender?.toLowerCase() === 'female' ? femaleAvatar : maleAvatar}
+              alt="Avatar"
               className="w-full h-full object-cover scale-110"
             />
           </Link>
-          <button 
+          <button
             onClick={handleLogout}
             className="p-3.5 text-gray-600 hover:text-rose-500 hover:bg-rose-500/5 transition-all rounded-2xl group"
           >
@@ -112,9 +117,9 @@ const Sidebar = () => {
       </aside>
 
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-6 left-6 right-6 h-20 glass-morphism border border-white/10 rounded-[2.5rem] flex items-center justify-around px-2 z-[100] shadow-2xl backdrop-blur-2xl">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-black/60 backdrop-blur-xl border-t border-white/10 flex items-center justify-around px-2 z-[100] shadow-2xl">
         {navItems.map((item) => (
-          <NavItem 
+          <NavItem
             key={item.path}
             {...item}
             active={path === item.path}
