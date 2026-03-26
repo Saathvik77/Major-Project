@@ -440,7 +440,7 @@ export default function Tasks() {
           
           <div className="col-span-1 lg:col-span-8 flex flex-col gap-6 sm:gap-12">
             {/* Horizontal Date Selector */}
-            <div className="glass-card p-3 sm:p-6 overflow-hidden">
+            <div className="glass-card w-full max-w-full overflow-hidden p-3 sm:p-6">
               <div className="flex gap-2 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
                 {weekDates.map((d, i) => {
                   const isActive = d.toDateString() === selectedDate.toDateString();
@@ -465,7 +465,7 @@ export default function Tasks() {
               </div>
             </div>
 
-            <div className="glass-card p-4 sm:p-10 flex flex-col gap-5 sm:gap-8">
+            <div className="glass-card w-full max-w-full overflow-hidden p-4 sm:p-10 flex flex-col gap-5 sm:gap-8">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <h3 className="text-base sm:text-lg font-bold">Planned Schedule</h3>
@@ -479,7 +479,7 @@ export default function Tasks() {
               <div className="space-y-4 sm:space-y-8 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
                 
                 {tasks.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center text-center py-16 sm:py-24 glass-card border-dashed bg-white/[0.01]">
+                  <div className="flex flex-col items-center justify-center text-center py-16 sm:py-24 glass-card w-full max-w-full overflow-hidden border-dashed bg-white/[0.01]">
                     <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-lime-500/10 flex items-center justify-center text-lime-500/40 mb-4 sm:mb-8 border border-lime-500/20">
                       <CalendarIcon size={28} strokeWidth={1} />
                     </div>
@@ -525,7 +525,7 @@ export default function Tasks() {
                         <motion.div 
                           initial={{ opacity: 0 }} 
                           animate={{ opacity: 1 }}
-                          className="py-10 sm:py-16 flex flex-col items-center justify-center text-center glass-card border-dashed bg-white/[0.01]"
+                          className="py-10 sm:py-16 flex flex-col items-center justify-center text-center glass-card w-full max-w-full overflow-hidden border-dashed bg-white/[0.01]"
                         >
                           <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-lime-500/10 flex items-center justify-center text-lime-500 mb-4">
                             <CheckCircle size={24} strokeWidth={1.5} />
@@ -601,7 +601,7 @@ export default function Tasks() {
               </div>
             </div>
 
-            <div className="glass-card p-4 sm:p-10 flex flex-col gap-6 md:gap-8 border border-white/10 shadow-2xl relative overflow-hidden">
+            <div className="glass-card w-full max-w-full overflow-hidden p-4 sm:p-10 flex flex-col gap-6 md:gap-8 border border-white/10 shadow-2xl relative">
                <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[40px] -z-10" />
 
                <div className="space-y-4 md:space-y-6">
@@ -746,7 +746,7 @@ export default function Tasks() {
               </div>
 
           <div className="col-span-1 lg:col-span-4 flex flex-col gap-8 md:gap-16 lg:gap-20">
-            <div className="glass-card p-5 sm:p-8 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative overflow-hidden group">
+            <div className="glass-card w-full max-w-full overflow-hidden p-5 sm:p-8 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative group">
                <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 blur-[40px] -z-10 group-hover:bg-lime-500/20 transition-all" />
                <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-3">
@@ -787,7 +787,7 @@ export default function Tasks() {
                </motion.button>
             </div>
 
-            <div className="glass-card p-6 sm:p-8 flex flex-col items-center justify-center relative overflow-hidden group">
+            <div className="glass-card w-full max-w-full overflow-hidden p-6 sm:p-8 flex flex-col items-center justify-center relative group">
                <div className="absolute top-0 left-0 w-full h-full bg-lime-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-8 self-start flex items-center gap-2">
                   <TrendingUp size={14} className="text-lime-500" />

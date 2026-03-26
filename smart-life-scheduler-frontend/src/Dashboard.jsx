@@ -315,7 +315,7 @@ const Dashboard = () => {
        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 lg:gap-20">
         
         {/* Quick Access Card */}
-        <div className="lg:col-span-8 glass-card p-5 sm:p-6 md:p-8 lg:p-10 flex flex-col gap-6 md:gap-10 relative overflow-hidden group min-h-[300px] md:min-h-[450px]">
+        <div className="lg:col-span-8 glass-card w-full max-w-full overflow-hidden p-5 sm:p-6 md:p-8 lg:p-10 flex flex-col gap-6 md:gap-10 relative group min-h-[300px] md:min-h-[450px]">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xl font-black text-white tracking-tight">Active Operational Flow</h3>
@@ -367,7 +367,7 @@ const Dashboard = () => {
         </div>
 
         {/* AI Insight Card */}
-        <div className="lg:col-span-4 glass-card p-6 sm:p-8 md:p-10 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative overflow-hidden group">
+        <div className="lg:col-span-4 glass-card w-full max-w-full overflow-hidden p-6 sm:p-8 md:p-10 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative group">
            <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 blur-[40px] -z-10 group-hover:bg-lime-500/20 transition-all" />
            <div className="flex items-start justify-between mb-6 md:mb-8">
               <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shadow-lg shadow-lime-500/5">

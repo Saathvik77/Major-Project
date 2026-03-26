@@ -57,10 +57,11 @@ const formatTime12Hour = (time24) => {
   const h12 = h % 12 || 12;
   return `${h12}:${minutes} ${ampm}`;
 };
+
 const StatCard = ({ icon: Icon, title, value, trend, trendUp, color }) => (
   <motion.div
     whileHover={{ y: -2 }}
-    className="glass-card p-3 sm:p-5 flex flex-col justify-between min-h-[120px] md:min-h-[180px] relative overflow-hidden group"
+    className="glass-card w-full max-w-full overflow-hidden p-3 sm:p-5 flex flex-col justify-between min-h-[120px] md:min-h-[180px] relative overflow-hidden group"
   >
     <div className={`absolute top-0 right-0 w-24 h-24 bg-${color}-500/5 rounded-full blur-[25px] -z-10`} />
     <div className="flex items-center justify-between mb-1.5">
@@ -80,9 +81,9 @@ const StatCard = ({ icon: Icon, title, value, trend, trendUp, color }) => (
 
 function Analytics() {
   const navigate = useNavigate();
-   const [summary, setSummary] = useState(null);
-   const [allTasks, setAllTasks] = useState([]);
-   const [loading, setLoading] = useState(true);
+  const [summary, setSummary] = useState(null);
+  const [allTasks, setAllTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("Week");
 
   const PRIMARY_ACCENT = "#84cc16";
@@ -196,7 +197,7 @@ function Analytics() {
         </div>
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-        {[1, 2, 3, 4].map(i => <div key={i} className="glass-card p-4 sm:p-8 h-40 skeleton border-none" />)}
+        {[1, 2, 3, 4].map(i => <div key={i} className="glass-card w-full max-w-full overflow-hidden p-4 sm:p-8 h-40 skeleton border-none" />)}
       </div>
       <div className="grid grid-cols-12 gap-8 h-[400px]">
         <div className="col-span-12 lg:col-span-8 skeleton rounded-3xl" />
@@ -206,7 +207,6 @@ function Analytics() {
   );
 
   const hasNoData = !summary || (summary.completed === 0 && summary.pending === 0 && summary.overdue === 0);
-
 
   const trendData = [
     { name: "Mon", score: 65 },
@@ -280,7 +280,7 @@ function Analytics() {
 
       {/* Main Charts Grid */}
       {hasNoData ? (
-        <div className="flex flex-col items-center justify-center text-center py-32 glass-card border-dashed">
+        <div className="flex flex-col items-center justify-center text-center py-32 glass-card w-full max-w-full overflow-hidden border-dashed">
           <div className="w-24 h-24 rounded-full bg-lime-500/10 flex items-center justify-center text-lime-500/40 mb-8 border border-lime-500/20 shadow-inner">
             <BarChart3 size={48} strokeWidth={1} />
           </div>
@@ -297,11 +297,11 @@ function Analytics() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-12 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
           
           {/* Productivity Velocity (Bar Chart) */}
-           <div className="col-span-12 lg:col-span-8">
-            <div className="glass-card p-4 sm:p-8 md:p-12 h-full chart-container overflow-hidden min-h-[300px] sm:min-h-0">
+          <div className="col-span-12 lg:col-span-8">
+            <div className="glass-card w-full max-w-full overflow-hidden p-4 sm:p-8 md:p-12 h-full chart-container min-h-[300px] sm:min-h-0">
               <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-12">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shrink-0">
@@ -315,134 +315,141 @@ function Analytics() {
                 <MoreHorizontal size={20} className="text-gray-700 cursor-pointer hover:text-white transition-colors shrink-0" />
               </div>
 
-               <div className="w-full h-[220px] sm:h-[350px] md:h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={last7DaysData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.03)" vertical={false} />
-                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 10, fontWeight: 900 }} dy={15} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 10, fontWeight: 900 }} />
-                    <Tooltip 
-                      cursor={{ fill: 'rgba(255,255,255,0.02)' }}
-                      contentStyle={{ backgroundColor: '#0f1115', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '12px' }}
-                      itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: '900' }}
-                    />
-                    <Bar dataKey="completed" fill="#84cc16" radius={[6, 6, 6, 6]} barSize={30} animationDuration={2000} />
-                  </BarChart>
-                </ResponsiveContainer>
+              <div className="w-full h-[220px] sm:h-[300px] md:h-[400px]">
+                <div className="w-full h-full overflow-x-auto">
+                  <div className="h-full min-w-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={last7DaysData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                        <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 10, fontWeight: 900 }} dy={15} />
+                        <YAxis axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 10, fontWeight: 900 }} />
+                        <Tooltip 
+                          cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                          contentStyle={{ backgroundColor: '#0f1115', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '12px' }}
+                          itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: '900' }}
+                        />
+                        <Bar dataKey="completed" fill="#84cc16" radius={[6, 6, 6, 6]} barSize={30} animationDuration={2000} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Smart Score Ring (Circular Progress) */}
           <div className="col-span-12 lg:col-span-4">
-            <div className="glass-card p-6 sm:p-10 md:p-12 h-full chart-container flex flex-col items-center justify-center text-center relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
-               
-               <h3 className="text-lg md:text-xl font-black text-white tracking-tight mb-2 self-start">Smart Sync</h3>
-               <p className="text-xs font-black text-gray-500 uppercase tracking-wide mb-6 sm:mb-8 md:mb-12 self-start">Cognitive Efficiency</p>
-               
-                <div className="relative w-32 h-32 xs:w-40 xs:h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 mb-6 sm:mb-8 md:mb-12">
-                  <svg className="w-full h-full transform -rotate-90">
-                    <circle cx="50%" cy="50%" r="42%" className="stroke-white/5 fill-none" strokeWidth="10" />
-                    <motion.circle 
-                      cx="50%" cy="50%" r="42%" 
-                      className="stroke-lime-500 fill-none" 
-                      strokeWidth="10" 
-                      strokeLinecap="round"
-                      initial={{ strokeDasharray: "0 691" }}
-                      animate={{ strokeDasharray: `${(parseInt(summary?.productivityScore || 78) / 100) * 691} 691` }}
-                      transition={{ duration: 2, ease: "easeOut" }}
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-4xl md:text-6xl font-black text-white tracking-tighter">{summary?.productivityScore || "78%"}</span>
-                    <span className="text-xs font-black uppercase text-gray-500 tracking-wide mt-2">Efficiency</span>
-                  </div>
-               </div>
+            <div className="glass-card w-full max-w-full overflow-hidden p-6 sm:p-10 md:p-12 h-full chart-container flex flex-col items-center justify-center text-center relative group">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
+              
+              <h3 className="text-lg md:text-xl font-black text-white tracking-tight mb-2 self-start">Smart Sync</h3>
+              <p className="text-xs font-black text-gray-500 uppercase tracking-wide mb-6 sm:mb-8 md:mb-12 self-start">Cognitive Efficiency</p>
+              
+              <div className="relative w-32 h-32 xs:w-40 xs:h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 mb-6 sm:mb-8 md:mb-12">
+                <svg className="w-full h-full transform -rotate-90">
+                  <circle cx="50%" cy="50%" r="42%" className="stroke-white/5 fill-none" strokeWidth="10" />
+                  <motion.circle 
+                    cx="50%" cy="50%" r="42%" 
+                    className="stroke-lime-500 fill-none" 
+                    strokeWidth="10" 
+                    strokeLinecap="round"
+                    initial={{ strokeDasharray: "0 691" }}
+                    animate={{ strokeDasharray: `${(parseInt(summary?.productivityScore || 78) / 100) * 691} 691` }}
+                    transition={{ duration: 2, ease: "easeOut" }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-4xl md:text-6xl font-black text-white tracking-tighter">{summary?.productivityScore || "78%"}</span>
+                  <span className="text-xs font-black uppercase text-gray-500 tracking-wide mt-2">Efficiency</span>
+                </div>
+              </div>
 
-               <div className="grid grid-cols-2 gap-4 w-full">
-                  <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-                     <p className="text-xs font-black text-gray-500 uppercase tracking-wide mb-1">Status</p>
-                     <p className="text-sm font-black text-emerald-500 uppercase tracking-wide">Optimized</p>
-                  </div>
-                  <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-                     <p className="text-xs font-black text-gray-500 uppercase tracking-wide mb-1">Target</p>
-                     <p className="text-sm font-black text-white tracking-wide">95%</p>
-                  </div>
-               </div>
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+                  <p className="text-xs font-black text-gray-500 uppercase tracking-wide mb-1">Status</p>
+                  <p className="text-sm font-black text-emerald-500 uppercase tracking-wide">Optimized</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+                  <p className="text-xs font-black text-gray-500 uppercase tracking-wide mb-1">Target</p>
+                  <p className="text-sm font-black text-white tracking-wide">95%</p>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Productivity Trend (Line/Area Chart) */}
           <div className="col-span-12 lg:col-span-7">
-            <div className="glass-card p-6 sm:p-8 md:p-10 lg:p-12 h-full chart-container">
+            <div className="glass-card w-full max-w-full overflow-hidden p-6 sm:p-8 md:p-10 lg:p-12 h-full chart-container">
               <h3 className="text-xl font-black text-white tracking-tight mb-2">Activity Momentum</h3>
               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-12">Cognitive Score Trend</p>
               
-               <div className="w-full h-[200px] sm:h-[350px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={trendData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#84cc16" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#84cc16" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.03)" vertical={false} />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 11, fontWeight: 900 }} dy={15} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 11, fontWeight: 900 }} />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: '#0f1115', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px' }}
-                    />
-                    <Area type="monotone" dataKey="score" stroke="#84cc16" strokeWidth={4} fillOpacity={1} fill="url(#colorScore)" animationDuration={2000} />
-                  </AreaChart>
-                </ResponsiveContainer>
+              <div className="w-full h-[200px] sm:h-[300px]">
+                <div className="w-full h-full overflow-x-auto">
+                  <div className="h-full min-w-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={trendData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                        <defs>
+                          <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#84cc16" stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor="#84cc16" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 11, fontWeight: 900 }} dy={15} />
+                        <YAxis axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 11, fontWeight: 900 }} />
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: '#0f1115', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px' }}
+                        />
+                        <Area type="monotone" dataKey="score" stroke="#84cc16" strokeWidth={4} fillOpacity={1} fill="url(#colorScore)" animationDuration={2000} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* AI Insights Summary */}
           <div className="col-span-12 lg:col-span-5">
-            <div className="glass-card p-4 sm:p-8 md:p-10 h-full flex flex-col gap-6 md:gap-8 relative overflow-hidden group">
-               <div className="absolute bottom-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
-               
-               <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shadow-lg shadow-lime-500/5">
-                     <Brain size={24} />
-                  </div>
-                  <div>
-                     <h3 className="text-xl font-black text-white tracking-tight">AI Smart Insights</h3>
-                     <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1">Deep Pattern Analysis</p>
-                  </div>
-               </div>
+            <div className="glass-card w-full max-w-full overflow-hidden p-4 sm:p-8 md:p-10 h-full flex flex-col gap-6 md:gap-8 relative group">
+              <div className="absolute bottom-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
+              
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shadow-lg shadow-lime-500/5">
+                  <Brain size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white tracking-tight">AI Smart Insights</h3>
+                  <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1">Deep Pattern Analysis</p>
+                </div>
+              </div>
 
-               <div className="space-y-4">
-                  {currentInsights.map((insight, i) => (
-                    <div key={i} className="flex items-center gap-4 p-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/[0.06] transition-all group/item">
-                       <div className="shrink-0">{insight.icon}</div>
-                       <p className="text-sm font-bold text-gray-400 group-hover/item:text-white transition-colors">{insight.text}</p>
-                    </div>
-                  ))}
-               </div>
+              <div className="space-y-4">
+                {currentInsights.map((insight, i) => (
+                  <div key={i} className="flex items-center gap-4 p-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/[0.06] transition-all group/item">
+                    <div className="shrink-0">{insight.icon}</div>
+                    <p className="text-sm font-bold text-gray-400 group-hover/item:text-white transition-colors">{insight.text}</p>
+                  </div>
+                ))}
+              </div>
 
-               <button 
-                 onClick={() => navigate('/ai-assistant')}
-                 className="mt-auto w-full py-4 rounded-[1.25rem] bg-lime-500/10 border border-lime-500/20 text-lime-500 font-black text-sm uppercase tracking-wide hover:bg-lime-500 hover:text-white transition-all ripple"
-               >
-                  Detailed Operational Report
-               </button>
+              <button 
+                onClick={() => navigate('/ai-assistant')}
+                className="mt-auto w-full py-4 rounded-[1.25rem] bg-lime-500/10 border border-lime-500/20 text-lime-500 font-black text-sm uppercase tracking-wide hover:bg-lime-500 hover:text-white transition-all ripple"
+              >
+                Detailed Operational Report
+              </button>
             </div>
           </div>
 
           {/* ── Task Explorer Section ─────────────────────────────── */}
           <div className="lg:col-span-8 flex flex-col gap-6 md:gap-12">
-          {/* Activity Momentum */}
-          <div className="glass-card p-4 sm:p-8 relative overflow-hidden group">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-10">
-              <div>
-                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight">Activity Momentum</h3>
-                <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1">7-Day Node Throughput</p>
-              </div>
+            <div className="glass-card w-full max-w-full overflow-hidden p-4 sm:p-8 relative group">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-10">
+                <div>
+                  <h3 className="text-lg sm:text-xl font-black text-white tracking-tight">Activity Momentum</h3>
+                  <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1">7-Day Node Throughput</p>
+                </div>
                 <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl overflow-x-auto scrollbar-hide">
                   {["All", "Completed", "Pending", "Missed"].map(cat => (
                     <button
@@ -460,7 +467,7 @@ function Analytics() {
                 </div>
               </div>
 
-              <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="space-y-4 max-h-[500px] overflow-y-auto w-full pr-2 custom-scrollbar">
                 {allTasks.filter(task => {
                   const now = new Date();
                   const [h, m] = (task.startTime || "00:00").split(':').map(Number);
@@ -496,7 +503,7 @@ function Analytics() {
                     const expired = !task.completed && taskDate < now;
                     
                     return (
-                     <div key={task._id || task.id} className="p-3 sm:p-5 md:p-6 rounded-[1.5rem] sm:rounded-[2rem] bg-white/[0.03] border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 group/item hover:bg-white/[0.06] transition-all">
+                      <div key={task._id || task.id} className="p-3 sm:p-5 md:p-6 rounded-[1.5rem] sm:rounded-[2rem] bg-white/[0.03] border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 group/item hover:bg-white/[0.06] transition-all">
                         <div className="flex items-center gap-3 md:gap-5">
                           <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 ${
                             task.completed ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' :

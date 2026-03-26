@@ -49,7 +49,7 @@ export default function Layout({ children }) {
   }, [fetchData]);
 
   return (
-    <div className="flex bg-transparent min-h-screen relative">
+    <div className="flex bg-transparent min-h-screen relative overflow-x-hidden">
       <Sidebar />
       <main className="flex-1 overflow-y-auto p-3 sm:p-6 pb-20 md:pb-6">
         <AnimatePresence mode="wait">
