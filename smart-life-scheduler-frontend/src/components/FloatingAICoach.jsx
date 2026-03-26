@@ -9,8 +9,8 @@ import { ThemeContext } from "../ThemeContext";
 const QUICK_CHIPS = [
   { label: "Plan my day", icon: <Calendar size={12} /> },
   { label: "My tasks", icon: <ListChecks size={12} /> },
-  { label: "Suggest workout", icon: <Dumbbell size={12} /> },
-  { label: "Productivity?", icon: <Zap size={12} /> },
+  { label: "Review", icon: <Zap size={12} /> },
+  { label: "Productivity?", icon: <TrendingUp size={12} /> },
 ];
 
 function FloatingAICoach({ weatherData, tasks, stats, userName }) {
@@ -271,6 +271,80 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                           </div>
                         );
                       })()}
+
+                      {/* Categorized Schedule UI (Compact) */}
+                      {msg.actions?.find(a => a.type === "categorized_schedule") && (() => {
+                        const action = msg.actions.find(a => a.type === "categorized_schedule");
+                        return (
+                          <div className="mt-4 space-y-4 pt-4 border-t border-white/10">
+                             {action.pending?.length > 0 && (
+                               <div>
+                                 <p className="text-[9px] font-black text-lime-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                   <Clock size={10} /> Optimized Flow
+                                 </p>
+                                 <div className="space-y-1.5">
+                                    {action.pending.slice(0, 3).map((t, idx) => (
+                                      <div key={idx} className="flex items-center gap-3 p-2.5 rounded-xl bg-white/5 border border-white/10">
+                                         <div className="text-[9px] font-black text-gray-400">{t.timeRange?.split(' - ')[0] || "??:??"}</div>
+                                         <div className="flex-1 text-[11px] font-bold text-white truncate">{t.title}</div>
+                                      </div>
+                                    ))}
+                                 </div>
+                               </div>
+                             )}
+                          </div>
+                        );
+                      })()}
+
+                      {/* Recommendations UI (Compact) */}
+                      {msg.actions?.find(a => a.type === "recommendations") && (() => {
+                        const action = msg.actions.find(a => a.type === "recommendations");
+                        return (
+                          <div className="mt-4 space-y-3 pt-4 border-t border-white/10">
+                            <p className="text-[9px] font-black text-lime-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                              <Sparkles size={10} /> Suggestions
+                            </p>
+                            <div className="grid grid-cols-1 gap-2">
+                              {action.links.slice(0, 2).map((link, idx) => (
+                                <a 
+                                  key={idx} 
+                                  href={link.url} 
+                                  target="_blank" 
+                                  rel="noreferrer"
+                                  className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group/link"
+                                >
+                                  <span className="text-[11px] font-bold text-white/90 truncate">{link.title}</span>
+                                  <TrendingUp size={12} className="text-lime-500 transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })()}
+
+                      {/* Action Feedback (Compact) */}
+                      {msg.actions && msg.actions.length > 0 && msg.actions.some(a => ['task_created', 'task_updated', 'task_deleted'].includes(a.type)) && (
+                        <div className="mt-4 space-y-1.5 pt-3 border-t border-white/10">
+                          {msg.actions.map((action, idx) => {
+                             if (action.type === 'task_created') return (
+                               <div key={idx} className="flex items-center gap-2 p-2 rounded-lg bg-lime-500/10 border border-lime-500/20 text-[9px] font-bold text-lime-400">
+                                 <CheckCircle size={12} /> {action.title} Logged
+                               </div>
+                             );
+                             if (action.type === 'task_updated') return (
+                               <div key={idx} className="flex items-center gap-2 p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-[9px] font-bold text-yellow-400">
+                                 <TrendingUp size={12} /> {action.title} Synchronized
+                               </div>
+                             );
+                             if (action.type === 'task_deleted') return (
+                               <div key={idx} className="flex items-center gap-2 p-2 rounded-lg bg-rose-500/10 border border-rose-500/20 text-[9px] font-bold text-rose-400">
+                                 <AlertCircle size={12} /> {action.title} Terminated
+                               </div>
+                             );
+                             return null;
+                          })}
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 ))}
