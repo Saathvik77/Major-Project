@@ -160,11 +160,19 @@ function Landing() {
              </div>
              <h1 className="text-lg font-black tracking-tight text-[#84cc16]">Smart Life Scheduler</h1>
           </div>
-          <div className="flex items-center gap-2">
-             <div className="px-4 py-1.5 rounded-lg bg-black/40 border border-white/10 flex items-center gap-2 text-[10px] font-black uppercase tracking-wider">
-                <Target size={14} className="text-[#84cc16]" />
-                SESSION
-             </div>
+          <div className="flex items-center gap-3">
+             <button 
+              onClick={() => navigate("/login")}
+              className="px-6 py-2 rounded-xl bg-black/40 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white/5 transition-all"
+             >
+                Login
+             </button>
+             <button 
+              onClick={() => navigate("/register")}
+              className="px-6 py-2 rounded-xl bg-[#84cc16] text-black text-[10px] font-black uppercase tracking-widest hover:bg-lime-400 transition-all shadow-lg shadow-lime-500/20"
+             >
+                Register
+             </button>
           </div>
         </header>
 
@@ -172,7 +180,13 @@ function Landing() {
         <div className="col-span-12 lg:col-span-5 flex flex-col gap-6">
           
           {/* HERO CARD - LIQUID GLASS */}
-          <section className="liquid-glass liquid-glass-emerald rounded-[40px] p-10 flex flex-col gap-8 relative overflow-hidden group">
+          <motion.section 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="liquid-glass liquid-glass-emerald rounded-[40px] p-10 flex flex-col gap-8 relative overflow-hidden group"
+          >
             <div className="absolute top-0 right-0 w-64 h-64 bg-lime-500/10 blur-[100px] pointer-events-none" />
             
             <div className="flex flex-col gap-4">
@@ -230,10 +244,16 @@ function Landing() {
                   </div>
                </div>
             </div>
-          </section>
+          </motion.section>
 
           {/* STRATEGIC PERFORMANCE CARD */}
-          <section className="glass-card p-10 flex flex-col gap-8">
+          <motion.section 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="glass-card p-10 flex flex-col gap-8"
+          >
              <div className="flex flex-col gap-1">
                 <span className="text-[10px] font-black text-white/30 uppercase tracking-widest flex items-center gap-2">
                    <div className="w-2 h-2 rounded-full bg-[#84cc16] animate-pulse" />
@@ -278,24 +298,10 @@ function Landing() {
                    <CircularProgress value={82} label="EFFICIENCY" size={200} strokeWidth={16} />
                 </div>
              </div>
-          </section>
+          </motion.section>
 
-          {/* USER MINI PROFILE BOTTOM */}
-          <section className="glass-card p-6 flex items-center justify-between">
-             <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#84cc16] flex items-center justify-center text-black">
-                   <User size={24} />
-                </div>
-                <div>
-                   <h4 className="text-lg font-black tracking-tight leading-none">GS ROHITH</h4>
-                   <p className="text-[10px] font-black text-[#84cc16] uppercase mt-1 tracking-widest">SYSTEM ARCHITECT</p>
-                </div>
-             </div>
-             <button onClick={() => navigate('/login')} className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-rose-500/10 hover:border-rose-500/20 hover:text-rose-500 transition-all flex items-center gap-2 group">
-                <LogOut size={14} className="group-hover:translate-x-1 transition-transform" />
-                Terminate Session
-             </button>
-          </section>
+          {/* BOTTOM COLUMN SPACER */}
+          <div className="h-4" />
 
         </div>
 
@@ -303,7 +309,13 @@ function Landing() {
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">
           
           {/* OPERATIONAL FLOW CARD */}
-          <section className="glass-card p-8 flex flex-col gap-8">
+          <motion.section 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="glass-card p-8 flex flex-col gap-8"
+          >
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                    <div className="w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center text-[#84cc16]">
@@ -362,10 +374,16 @@ function Landing() {
                    </div>
                 </div>
              </div>
-          </section>
+          </motion.section>
 
           {/* INTELLIGENCE OVERVIEW */}
-          <section className="glass-card p-8 flex flex-col gap-8">
+          <motion.section 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="glass-card p-8 flex flex-col gap-8"
+          >
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                    <div className="w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center text-[#84cc16]">
@@ -421,10 +439,16 @@ function Landing() {
                    ))}
                 </div>
              </div>
-          </section>
+          </motion.section>
 
           {/* PERSONAL LOGS */}
-          <section className="glass-card p-8 flex flex-col gap-6">
+          <motion.section 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="glass-card p-8 flex flex-col gap-6"
+          >
              <h3 className="text-xl font-black tracking-tight leading-none">Personal Profile</h3>
              <div className="flex flex-col gap-4">
                 {[
@@ -446,7 +470,7 @@ function Landing() {
                   </div>
                 ))}
              </div>
-          </section>
+          </motion.section>
 
         </div>
 
@@ -454,7 +478,13 @@ function Landing() {
         <div className="col-span-12 lg:col-span-3 flex flex-col gap-6">
           
           {/* SMART SYNC RADIUS */}
-          <section className="glass-card p-8 flex flex-col items-center gap-6 relative overflow-hidden">
+          <motion.section 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="glass-card p-8 flex flex-col items-center gap-6 relative overflow-hidden"
+          >
              <div className="absolute top-0 right-0 p-2">
                 <div className="px-2 py-0.5 rounded bg-[#84cc16]/10 border border-[#84cc16]/20 text-[7px] font-black text-[#84cc16]">ACTIVE</div>
              </div>
@@ -484,10 +514,16 @@ function Landing() {
                    <p className="text-xs font-black">98.5 %</p>
                 </div>
              </div>
-          </section>
+          </motion.section>
 
           {/* CHART STOCK STYLE */}
-          <section className="glass-card p-8 flex flex-col gap-8">
+          <motion.section 
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="glass-card p-8 flex flex-col gap-8"
+          >
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                    <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[#84cc16]">
@@ -515,10 +551,16 @@ function Landing() {
              <button className="w-full py-4 rounded-2xl border border-white/10 text-white/40 text-[10px] font-black uppercase tracking-widest hover:bg-white/5 transition-all">
                 Detailed Operation Report
              </button>
-          </section>
+          </motion.section>
 
           {/* ACHIEVEMENTS */}
-          <section className="glass-card p-6 flex flex-col gap-6">
+          <motion.section 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="glass-card p-6 flex flex-col gap-6"
+          >
              <h4 className="text-sm font-black uppercase tracking-widest text-white/40">Achievements</h4>
              <div className="flex gap-4">
                 <div className="flex-1 bg-white/[0.03] border border-white/5 rounded-2xl p-4 flex items-center gap-3">
@@ -530,7 +572,7 @@ function Landing() {
                    <span className="text-[9px] font-black uppercase tracking-widest">Focus Optimized</span>
                 </div>
              </div>
-          </section>
+          </motion.section>
 
           {/* AI COACH BUBBLE BOTTOM RIGHT */}
           <div className="self-end mt-auto flex items-center gap-4 bg-[#84cc16] text-black px-6 py-4 rounded-[30px] shadow-2xl shadow-lime-500/40 cursor-pointer hover:scale-105 transition-all group">
@@ -540,6 +582,61 @@ function Landing() {
           </div>
 
         </div>
+
+        {/* --- FULL WIDTH FEATURES SECTION (Added) --- */}
+        <section className="col-span-12 mt-20 mb-12">
+            <motion.div 
+               initial={{ opacity: 0, y: 30 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="flex flex-col items-center text-center gap-4 mb-16"
+            >
+               <h3 className="text-4xl font-black tracking-tighter uppercase">Core <span className="text-[#84cc16]">Capabilities</span></h3>
+               <p className="text-white/40 text-sm max-w-lg">Unlock your full potential with our suite of intelligent life optimization tools.</p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+               {[
+                  { 
+                    title: "AI-Driven Scheduling", 
+                    desc: "Our neural engine learns your habits to create the perfect daily flow.", 
+                    icon: <Sparkles size={32} className="text-[#84cc16]" />,
+                    variant: "liquid-glass-emerald"
+                  },
+                  { 
+                    title: "Real-time Analytics", 
+                    desc: "Visualize your efficiency, momentum, and focus with stunning precision.", 
+                    icon: <BarChart3 size={32} className="text-[#84cc16]" />,
+                    variant: "glass-card"
+                  },
+                  { 
+                    title: "Dynamic Life Sync", 
+                    desc: "Stay synchronized across all your devices and life environments.", 
+                    icon: <Layers size={32} className="text-[#84cc16]" />,
+                    variant: "glass-card shadow-xl shadow-lime-500/5"
+                  }
+               ].map((feature, idx) => (
+                  <motion.div 
+                    key={idx}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: idx * 0.1 }}
+                    whileHover={{ y: -10 }}
+                    className={`${feature.variant} p-10 rounded-[40px] flex flex-col items-center text-center gap-6 border border-white/10`}
+                  >
+                     <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center mb-2">
+                        {feature.icon}
+                     </div>
+                     <h4 className="text-2xl font-black tracking-tight">{feature.title}</h4>
+                     <p className="text-sm text-white/30 leading-relaxed">{feature.desc}</p>
+                     <button className="mt-6 px-10 py-3 rounded-2xl text-xs font-black uppercase tracking-widest border border-white/10 hover:border-[#84cc16] hover:text-[#84cc16] transition-all">
+                        EXPLORE MORE
+                     </button>
+                  </motion.div>
+               ))}
+            </div>
+        </section>
 
       </main>
 
