@@ -7,7 +7,8 @@ import {
 } from "lucide-react";
 import GlassCard from "../components/GlassCard";
 import API from "../api";
-import Tilt from "react-parallax-tilt";
+import Toast from "../components/Toast";
+import { AnimatePresence } from "framer-motion";
 
 // ─── AI Weekly Challenge Generator ──────────────────────────────────────────────
 async function generateChallengeFromTasks() {
@@ -56,9 +57,25 @@ const CHALLENGE_STYLES = {
   fitness: { Icon: Dumbbell, color: "from-cyan-300 to-blue-600", iconClass: "text-cyan-400", glow: "rgba(6,182,212,0.8)" },
 };
 
+const SPORTS_LIST = [
+  { sport: "Swimming", intensity: "High", icon: Droplets, color: "text-blue-400" },
+  { sport: "Cycling", intensity: "Moderate", icon: Activity, color: "text-lime-400" },
+  { sport: "Running", intensity: "High", icon: Flame, color: "text-rose-400" },
+  { sport: "Yoga", intensity: "Low", icon: Sparkles, color: "text-purple-400" },
+  { sport: "HIIT", intensity: "Extreme", icon: Flame, color: "text-orange-500" },
+  { sport: "Tennis", intensity: "Moderate", icon: Target, color: "text-yellow-400" },
+  { sport: "Basketball", intensity: "High", icon: Trophy, color: "text-orange-400" },
+  { sport: "Gym Workout", intensity: "High", icon: Dumbbell, color: "text-gray-300" },
+  { sport: "Meditation", intensity: "Low", icon: Brain, color: "text-indigo-400" },
+];
+
 function Health() {
   const navigate = useNavigate();
-  const [userWeight, setUserWeight] = useState(70); // Default 70kg
+  const [userWeight, setUserWeight] = useState(70);
+  const [showAllSports, setShowAllSports] = useState(false);
+  const [schedulingSport, setSchedulingSport] = useState(null);
+  const [scheduleTime, setScheduleTime] = useState("08:00");
+  const [toast, setToast] = useState(null);
 
   // ── Weather state ──
   const [weatherData, setWeatherData] = useState(null);
@@ -253,9 +270,28 @@ function Health() {
     : CHALLENGE_STYLES.productivity;
   const ChallengeIcon = challengeStyle.Icon;
 
+  const handleScheduleSport = async (sport) => {
+    try {
+      await API.post("/tasks", {
+        title: sport.sport,
+        date: new Date(),
+        startTime: scheduleTime,
+        priority: "High",
+        duration: 60
+      });
+      setToast(`${sport.sport} scheduled for ${scheduleTime}! 🚀`);
+      setSchedulingSport(null);
+    } catch (err) {
+      setToast("Failed to schedule task. Try again.");
+    }
+  };
+
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-32 page-transition">
+      <AnimatePresence>
+        {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+      </AnimatePresence>
       {/* Dynamic Animated background orbs */}
       <div className="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-lime-600/10 rounded-full blur-[120px] -z-10 animate-pulse" />
       <div className="fixed bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-600/5 rounded-full blur-[150px] -z-10" />
@@ -274,8 +310,8 @@ function Health() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 max-w-5xl mx-auto mb-12 md:mb-20">
 
         {/* ── AI Weekly Challenge ── */}
-        <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable glareMaxOpacity={0.1} className="w-full h-full flex justify-center items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
+        <div className="w-full h-full flex justify-center items-center">
+          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
             <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 rounded-full blur-3xl group-hover:bg-lime-500/20 transition-colors" />
 
             {/* Badge */}
@@ -349,7 +385,7 @@ function Health() {
               </>
             ) : null}
           </GlassCard>
-        </Tilt>
+        </div>
 
         {/* ── Weather Suggestion ── */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
@@ -359,8 +395,8 @@ function Health() {
               <p className="text-gray-300 font-medium tracking-wide">Detecting your location...</p>
             </GlassCard>
           ) : weatherSuggestion ? (
-            <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable glareMaxOpacity={0.1} className="w-full h-full flex justify-center items-center">
-              <GlassCard className={`relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border shadow-2xl overflow-hidden group bg-gradient-to-b ${weatherSuggestion.bg} ${weatherSuggestion.border}`}>
+            <div className="w-full h-full flex justify-center items-center">
+              <GlassCard className={`relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border shadow-2xl overflow-hidden group bg-gradient-to-b min-h-[480px] ${weatherSuggestion.bg} ${weatherSuggestion.border}`}>
                 <div className="flex items-center gap-2 mb-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
                   <span className="text-sm font-bold tracking-widest uppercase text-white">Weather Suggestion</span>
                 </div>
@@ -395,9 +431,9 @@ function Health() {
                   </p>
                 )}
               </GlassCard>
-            </Tilt>
+            </div>
           ) : (
-            <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-center justify-center text-center border border-white/20 shadow-2xl h-full">
+            <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-center justify-center text-center border border-white/20 shadow-2xl h-full min-h-[480px]">
               <p className="text-red-300 font-medium">Unable to load weather data.</p>
             </GlassCard>
           )}
@@ -409,7 +445,7 @@ function Health() {
 
         {/* Focus Tracker */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
+          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
             <div className="absolute top-0 left-0 w-32 h-32 bg-lime-500/10 rounded-full blur-3xl group-hover:bg-lime-500/20 transition-colors" />
 
             <div className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
@@ -452,7 +488,7 @@ function Health() {
 
         {/* Activity Heat Map */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl h-full group bg-slate-900/20">
+          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl h-full group bg-slate-900/20 min-h-[480px]">
             <div className="flex items-center gap-2 mb-6">
               <CalendarDays size={24} className="text-lime-400 drop-shadow-[0_0_10px_rgba(132,204,22,0.5)]" />
               <h3 className="text-xl font-bold tracking-tight text-white">Activity Heat Map</h3>
@@ -503,7 +539,7 @@ function Health() {
         
         {/* Water Intake Tracker */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
+          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-colors" />
             
             <div className="flex items-center gap-2 mb-6 bg-blue-500/10 border border-blue-500/20 px-4 py-1.5 rounded-full shadow-inner">
@@ -536,7 +572,7 @@ function Health() {
 
         {/* Sports Recommendation */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl overflow-hidden group">
+          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
             <div className="absolute -top-10 -left-10 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl group-hover:bg-orange-500/20 transition-colors" />
             
             <div className="flex items-center gap-2 mb-6 bg-orange-500/10 border border-orange-500/20 px-4 py-1.5 rounded-full shadow-inner">
@@ -544,27 +580,72 @@ function Health() {
               <span className="text-sm font-bold tracking-widest uppercase text-orange-300">Recommended Sports</span>
             </div>
 
-            <div className="space-y-4 w-full">
-              {[
-                { sport: "Swimming", intensity: "High", icon: Droplets, color: "text-blue-400" },
-                { sport: "Cycling", intensity: "Moderate", icon: Activity, color: "text-lime-400" },
-                { sport: "Running", intensity: "High", icon: Flame, color: "text-rose-400" }
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-center gap-4 p-3 bg-white/5 rounded-2xl border border-white/5 hover:border-white/20 transition-all group/item">
+            <div className="space-y-3 w-full overflow-y-auto max-h-[280px] pr-1 custom-scrollbar">
+              {(showAllSports ? SPORTS_LIST : SPORTS_LIST.slice(0, 3)).map((item, idx) => (
+                <div key={idx} className="flex items-center gap-3 p-3 bg-white/5 rounded-2xl border border-white/5 hover:border-white/10 transition-all group/item">
                   <div className={`w-10 h-10 rounded-xl bg-black/40 flex items-center justify-center ${item.color} group-hover/item:scale-110 transition-transform`}>
                     <item.icon size={20} />
                   </div>
                   <div className="flex-1 text-left">
-                    <p className="font-bold text-white text-sm">{item.sport}</p>
-                    <p className="text-[10px] text-gray-500 uppercase tracking-widest font-black">{item.intensity} Intensity</p>
+                    <p className="font-bold text-white text-xs">{item.sport}</p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-widest font-black leading-tight">{item.intensity}</p>
                   </div>
+                  <button 
+                    onClick={() => setSchedulingSport(item)}
+                    className="px-3 py-1.5 rounded-lg bg-lime-500/10 border border-lime-500/20 text-lime-400 text-[10px] font-black uppercase tracking-wider hover:bg-lime-500 hover:text-white transition-all"
+                  >
+                    Schedule
+                  </button>
                 </div>
               ))}
             </div>
 
-            <button className="w-full mt-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-lg shadow-orange-500/20 active:scale-95">
-              Explore More Sports
+            <button 
+              onClick={() => setShowAllSports(!showAllSports)}
+              className="w-full mt-auto py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black text-[10px] uppercase tracking-[0.2em] transition-all"
+            >
+              {showAllSports ? "Show Less" : "Explore More Sports"}
             </button>
+
+            {/* Quick Scheduling Overlay */}
+            <AnimatePresence>
+              {schedulingSport && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="absolute inset-0 z-20 bg-slate-900/90 backdrop-blur-md p-8 flex flex-col items-center justify-center text-center"
+                >
+                  <div className={`w-16 h-16 rounded-2xl bg-black/40 flex items-center justify-center ${schedulingSport.color} mb-4`}>
+                    <schedulingSport.icon size={32} />
+                  </div>
+                  <h4 className="text-xl font-black text-white mb-1">Schedule {schedulingSport.sport}</h4>
+                  <p className="text-xs text-gray-400 mb-6 font-medium uppercase tracking-widest">Select your preferred time</p>
+                  
+                  <input 
+                    type="time" 
+                    value={scheduleTime}
+                    onChange={(e) => setScheduleTime(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-2xl font-black text-white focus:outline-none focus:border-lime-500/50 transition-all mb-6 text-center"
+                  />
+
+                  <div className="flex gap-3 w-full">
+                    <button 
+                      onClick={() => setSchedulingSport(null)}
+                      className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-400 font-bold text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={() => handleScheduleSport(schedulingSport)}
+                      className="flex-1 py-3 rounded-xl bg-lime-500 text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-lime-500/20 hover:bg-lime-600 transition-all"
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </GlassCard>
         </div>
 
