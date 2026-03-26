@@ -8,7 +8,7 @@ import {
   AlertCircle, Layout, Eye, Lightbulb, BarChart3 as BarChartIcon,
   Timer, TrendingUp, BrainCircuit, Zap, Calendar as CalendarIcon, User
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { motion } from "framer-motion";
 import TaskItem from "../components/TaskItem";
@@ -100,6 +100,7 @@ export default function Tasks() {
   const [notes, setNotes] = useState(() => localStorage.getItem("task_notes") || "");
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Save notes to localStorage
   useEffect(() => {
@@ -151,6 +152,14 @@ export default function Tasks() {
     };
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (location.state?.presetTask) {
+      setTitle(location.state.presetTask);
+      // Optional: replace state to avoid re-population on reload
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, navigate, location.pathname]);
 
   const handleAiAsk = async () => {
     if (!aiMessage.trim()) return;

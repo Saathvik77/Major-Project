@@ -9,7 +9,16 @@ import {
 import GlassCard from "../components/GlassCard";
 import API from "../api";
 import Toast from "../components/Toast";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  Tooltip, 
+  ResponsiveContainer,
+  CartesianGrid
+} from "recharts";
 
 // ─── AI Weekly Challenge Generator ──────────────────────────────────────────────
 async function generateChallengeFromTasks() {
@@ -85,15 +94,23 @@ const MEAL_SUGGESTIONS = {
   dinner: { title: "Dinner", idea: "Baked Salmon with Steamed Broccoli", icon: Apple, color: "text-rose-400" },
 };
 
+const WEIGHT_HISTORY = [
+  { name: "Mon", weight: 72.4 },
+  { name: "Tue", weight: 72.1 },
+  { name: "Wed", weight: 71.8 },
+  { name: "Thu", weight: 71.5 },
+  { name: "Fri", weight: 71.2 },
+  { name: "Sat", weight: 70.6 },
+  { name: "Sun", weight: 70.0 },
+];
+
 function Health() {
   const navigate = useNavigate();
   const [userWeight, setUserWeight] = useState(70);
-  const [showAllSports, setShowAllSports] = useState(false);
-  const [schedulingSport, setSchedulingSport] = useState(null);
-  const [scheduleTime, setScheduleTime] = useState("08:00");
+  const [goalWeight] = useState(68.5);
+  const [allTasks, setAllTasks] = useState([]);
   const [toast, setToast] = useState(null);
-
-  // ── Weather state ──
+  const [showAllSports, setShowAllSports] = useState(false);
   const [weatherData, setWeatherData] = useState(null);
   const [loadingWeather, setLoadingWeather] = useState(true);
   const [locationError, setLocationError] = useState(null);
@@ -103,7 +120,6 @@ function Health() {
   const [challenge, setChallenge] = useState(null);
   const [challengeLoading, setChallengeLoading] = useState(true);
   const [challengeError, setChallengeError] = useState(null);
-  const [allTasks, setAllTasks] = useState([]);
 
   // ── Focus timer state ──
   const [completedTasks, setCompletedTasks] = useState([]);
@@ -325,11 +341,11 @@ function Health() {
         <h1 className="text-4xl font-bold tracking-tight">Health & Fitness</h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 max-w-5xl mx-auto mb-12 md:mb-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-20 auto-rows-max">
 
-        {/* ── AI Weekly Challenge ── */}
-        <div className="w-full h-full flex justify-center items-center">
-          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
+        {/* ── AI Weekly Challenge (Large) ── */}
+        <div className="lg:col-span-2 flex justify-center items-center w-full h-full">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-10 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[440px]">
             <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 rounded-full blur-3xl group-hover:bg-lime-500/20 transition-colors" />
 
             {/* Badge */}
@@ -406,17 +422,17 @@ function Health() {
         </div>
 
         {/* ── Weather Suggestion ── */}
-        <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
+        <div className="lg:col-span-1 flex justify-center relative w-full h-full items-center">
           {loadingWeather ? (
-            <GlassCard className="relative z-10 w-full p-8 flex flex-col items-center justify-center text-center border border-white/20 shadow-2xl h-full min-h-[480px]">
+            <GlassCard className="relative z-10 w-full p-8 flex flex-col items-center justify-center text-center border border-white/20 shadow-2xl h-full min-h-[440px]">
               <Loader2 size={40} className="text-white animate-spin mb-4" />
-              <p className="text-gray-300 font-medium tracking-wide">Detecting your location...</p>
+              <p className="text-gray-300 font-medium tracking-wide text-sm">Detecting location...</p>
             </GlassCard>
           ) : weatherSuggestion ? (
             <div className="w-full h-full flex justify-center items-center">
-              <GlassCard className={`relative z-10 w-full p-6 sm:p-8 flex flex-col items-center text-center border shadow-2xl overflow-hidden group bg-gradient-to-b min-h-[480px] ${weatherSuggestion.bg} ${weatherSuggestion.border}`}>
-                <div className="flex items-center gap-2 mb-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
-                  <span className="text-sm font-bold tracking-widest uppercase text-white">Weather Suggestion</span>
+              <GlassCard className={`relative z-10 w-full p-6 sm:p-8 flex flex-col items-center text-center border shadow-2xl overflow-hidden group bg-gradient-to-b min-h-[440px] ${weatherSuggestion.bg} ${weatherSuggestion.border}`}>
+                <div className="flex items-center gap-2 mb-3 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
+                  <span className="text-[10px] font-black tracking-widest uppercase text-white">Weather Insight</span>
                 </div>
 
                 {/* City name */}
@@ -451,19 +467,15 @@ function Health() {
               </GlassCard>
             </div>
           ) : (
-            <GlassCard className="relative z-10 w-full p-8 flex flex-col items-center justify-center text-center border border-white/20 shadow-2xl h-full min-h-[480px]">
-              <p className="text-red-300 font-medium">Unable to load weather data.</p>
+            <GlassCard className="relative z-10 w-full p-8 flex flex-col items-center justify-center text-center border border-white/20 shadow-2xl h-full min-h-[440px]">
+              <p className="text-red-300 font-medium">Weather unavailabe.</p>
             </GlassCard>
           )}
         </div>
-      </div>
 
-      {/* ── Focus Tracker + Heat Map ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 max-w-5xl mx-auto mb-12 md:mb-20">
-
-        {/* Focus Tracker */}
-        <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
+        {/* ── Focus Tracker ── */}
+        <div className="lg:col-span-1 flex justify-center relative w-full h-full items-center">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[440px]">
             <div className="absolute top-0 left-0 w-32 h-32 bg-lime-500/10 rounded-full blur-3xl group-hover:bg-lime-500/20 transition-colors" />
 
             <div className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
@@ -504,60 +516,9 @@ function Health() {
           </GlassCard>
         </div>
 
-        {/* Activity Heat Map */}
-        <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl h-full group bg-slate-900/20 min-h-[480px]">
-            <div className="flex items-center gap-2 mb-6">
-              <CalendarDays size={24} className="text-lime-400 drop-shadow-[0_0_10px_rgba(132,204,22,0.5)]" />
-              <h3 className="text-xl font-bold tracking-tight text-white">Activity Heat Map</h3>
-            </div>
-
-            <p className="text-sm text-gray-400 mb-6 font-medium">Your task completion consistency over the last 4 weeks.</p>
-
-            <div className="w-full">
-              <div className="grid grid-cols-7 gap-y-3 gap-x-2 w-full justify-items-center mb-2">
-                {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
-                  <span key={i} className="text-xs font-bold text-gray-500">{d}</span>
-                ))}
-                {Array.from({ length: heatMapData[0].date.getDay() }).map((_, i) => (
-                  <div key={`pad-${i}`} className="w-6 h-6 rounded-md bg-transparent" />
-                ))}
-                {heatMapData.map((data, i) => {
-                  let colorClass = "bg-white/5 border border-white/5";
-                  if (data.count === 1) colorClass = "bg-lime-900/40 border border-lime-800/20 shadow-[0_0_8px_rgba(132,204,22,0.3)]";
-                  else if (data.count === 2) colorClass = "bg-lime-700/60 border border-lime-600 shadow-[0_0_10px_rgba(132,204,22,0.5)]";
-                  else if (data.count >= 3) colorClass = "bg-lime-400 border border-lime-300 shadow-[0_0_12px_rgba(132,204,22,0.7)]";
-                  return (
-                    <div key={i} className={`w-6 h-6 rounded-md transition-all duration-300 hover:scale-125 hover:z-10 relative group/tile ${colorClass}`}>
-                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#0b0b12] text-white text-[10px] py-1 px-2 rounded-md opacity-0 group-hover/tile:opacity-100 pointer-events-none whitespace-nowrap z-20 shadow-xl border border-white/20">
-                        {data.count} tasks on {data.date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="mt-auto w-full pt-4 flex items-center justify-between text-xs font-medium text-gray-400">
-              <span>Less</span>
-              <div className="flex gap-1">
-                <div className="w-3 h-3 rounded-sm bg-white/5 border border-white/5" />
-                <div className="w-3 h-3 rounded-sm bg-lime-900/40 border border-lime-800/20" />
-                <div className="w-3 h-3 rounded-sm bg-lime-700/60 border border-lime-600" />
-                <div className="w-3 h-3 rounded-sm bg-lime-400 border border-lime-300" />
-              </div>
-              <span>More</span>
-            </div>
-          </GlassCard>
-        </div>
-      </div>
-
-      {/* ── Water Intake + Sports Recommendation ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 max-w-5xl mx-auto mb-12 md:mb-20">
-        
-        {/* Water Intake Tracker */}
-        <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
+        {/* ── Hydration Tracker ── */}
+        <div className="lg:col-span-1 flex justify-center relative w-full h-full items-center">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[440px]">
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-colors" />
             
             <div className="flex items-center gap-2 mb-6 bg-blue-500/10 border border-blue-500/20 px-4 py-1.5 rounded-full shadow-inner">
@@ -572,13 +533,13 @@ function Health() {
             </div>
 
             <h3 className="text-3xl font-black text-white mb-2">
-              {(userWeight * 0.033).toFixed(2)} <span className="text-lg text-gray-400 font-medium">Liters</span>
+              {(userWeight * 0.033).toFixed(2)} <span className="text-lg text-gray-400 font-medium">L</span>
             </h3>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6">Daily suggested intake (based on {userWeight}kg)</p>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6 leading-tight">Daily suggested ({userWeight}kg)</p>
 
-            <div className="w-full space-y-3">
+            <div className="w-full space-y-3 mt-auto">
               <div className="flex justify-between text-xs font-bold text-gray-400 px-1">
-                <span>Current Progress</span>
+                <span>Progress</span>
                 <span>~ {Math.ceil((userWeight * 0.033) / 0.25)} Glasses</span>
               </div>
               <div className="w-full bg-slate-800/80 rounded-full h-3 border border-slate-700/50 overflow-hidden">
@@ -587,10 +548,87 @@ function Health() {
             </div>
           </GlassCard>
         </div>
+        {/* ── Diet Suggestions ── */}
+        <div className="lg:col-span-1 flex justify-center relative w-full h-full items-center">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl overflow-hidden group min-h-[440px]">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-3xl group-hover:bg-rose-500/20 transition-colors" />
+            
+            <div className="flex items-center gap-2 mb-6 bg-rose-500/10 border border-rose-500/20 px-4 py-1.5 rounded-full shadow-inner">
+              <UtensilsCrossed size={18} className="text-rose-400" />
+              <span className="text-sm font-bold tracking-widest uppercase text-rose-300">Diet Suggestions</span>
+            </div>
 
-        {/* Sports Recommendation */}
-        <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
+            <div className="bg-white/5 border border-white/10 p-5 rounded-2xl mb-6 w-full group-hover:bg-white/10 transition-colors">
+              <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.2em] mb-1.5">Nutrition Tip</p>
+              <p className="text-md font-bold text-white leading-tight italic">"{dietTip}"</p>
+            </div>
+
+            <div className="space-y-3 w-full">
+              {Object.values(MEAL_SUGGESTIONS).map((meal, idx) => (
+                <div key={idx} className="flex items-center gap-3 p-3 bg-white/5 rounded-2xl border border-white/5 hover:border-white/10 transition-all hover:translate-x-1">
+                  <div className={`w-10 h-10 rounded-xl bg-black/40 flex items-center justify-center ${meal.color}`}>
+                    <meal.icon size={20} />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">{meal.title}</p>
+                    <p className="font-bold text-white text-xs">{meal.idea}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        </div>
+
+        {/* ── Activity Heat Map (Large) ── */}
+        <div className="lg:col-span-2 flex justify-center relative w-full h-full items-center">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-10 flex flex-col items-start border border-white/20 shadow-2xl h-full group bg-slate-900/20 min-h-[440px]">
+            <div className="flex items-center gap-2 mb-6">
+              <CalendarDays size={24} className="text-lime-400 drop-shadow-[0_0_10px_rgba(132,204,22,0.5)]" />
+              <h3 className="text-xl font-bold tracking-tight text-white">Activity Heat Map</h3>
+            </div>
+
+            <p className="text-sm text-gray-400 mb-8 font-medium">Your task completion consistency over the last 4 weeks.</p>
+
+            <div className="w-full flex justify-center">
+              <div className="grid grid-cols-7 gap-y-4 gap-x-3 w-full max-w-md justify-items-center mb-4">
+                {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
+                  <span key={i} className="text-xs font-bold text-gray-500">{d}</span>
+                ))}
+                {Array.from({ length: heatMapData[0].date.getDay() }).map((_, i) => (
+                  <div key={`pad-${i}`} className="w-8 h-8 rounded-md bg-transparent" />
+                ))}
+                {heatMapData.map((data, i) => {
+                  let colorClass = "bg-white/5 border border-white/5";
+                  if (data.count === 1) colorClass = "bg-lime-900/40 border border-lime-800/20 shadow-[0_0_8px_rgba(132,204,22,0.3)]";
+                  else if (data.count === 2) colorClass = "bg-lime-700/60 border border-lime-600 shadow-[0_0_10px_rgba(132,204,22,0.5)]";
+                  else if (data.count >= 3) colorClass = "bg-lime-400 border border-lime-300 shadow-[0_0_12px_rgba(132,204,22,0.7)]";
+                  return (
+                    <div key={i} className={`w-8 h-8 rounded-md transition-all duration-300 hover:scale-125 hover:z-10 relative group/tile ${colorClass}`}>
+                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#0b0b12] text-white text-[10px] py-1 px-2 rounded-md opacity-0 group-hover/tile:opacity-100 pointer-events-none whitespace-nowrap z-20 shadow-xl border border-white/20">
+                        {data.count} tasks on {data.date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="mt-auto w-full pt-4 flex items-center justify-between text-xs font-medium text-gray-400">
+              <span>Less</span>
+              <div className="flex gap-2">
+                <div className="w-4 h-4 rounded-sm bg-white/5 border border-white/5" />
+                <div className="w-4 h-4 rounded-sm bg-lime-900/40 border border-lime-800/20" />
+                <div className="w-4 h-4 rounded-sm bg-lime-700/60 border border-lime-600" />
+                <div className="w-4 h-4 rounded-sm bg-lime-400 border border-lime-300" />
+              </div>
+              <span>More</span>
+            </div>
+          </GlassCard>
+        </div>
+
+        {/* ── Sports Recommendation ── */}
+        <div className="lg:col-span-1 flex justify-center relative w-full h-full items-center">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl overflow-hidden group min-h-[440px]">
             <div className="absolute -top-10 -left-10 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl group-hover:bg-orange-500/20 transition-colors" />
             
             <div className="flex items-center gap-2 mb-6 bg-orange-500/10 border border-orange-500/20 px-4 py-1.5 rounded-full shadow-inner">
@@ -609,7 +647,7 @@ function Health() {
                     <p className="text-[10px] text-gray-500 uppercase tracking-widest font-black leading-tight">{item.intensity}</p>
                   </div>
                   <button 
-                    onClick={() => setSchedulingSport(item)}
+                    onClick={() => navigate('/tasks', { state: { presetTask: `Workout: ${item.sport}` } })}
                     className="px-3 py-1.5 rounded-lg bg-lime-500/10 border border-lime-500/20 text-lime-400 text-[10px] font-black uppercase tracking-wider hover:bg-lime-500 hover:text-white transition-all"
                   >
                     Schedule
@@ -625,89 +663,99 @@ function Health() {
               {showAllSports ? "Show Less" : "Explore More Sports"}
             </button>
 
-            {/* Quick Scheduling Overlay */}
-            <AnimatePresence>
-              {schedulingSport && (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="absolute inset-0 z-20 bg-slate-900/90 backdrop-blur-md p-8 flex flex-col items-center justify-center text-center"
-                >
-                  <div className={`w-16 h-16 rounded-2xl bg-black/40 flex items-center justify-center ${schedulingSport.color} mb-4`}>
-                    <schedulingSport.icon size={32} />
-                  </div>
-                  <h4 className="text-xl font-black text-white mb-1">Schedule {schedulingSport.sport}</h4>
-                  <p className="text-xs text-gray-400 mb-6 font-medium uppercase tracking-widest">Select your preferred time</p>
-                  
-                  <input 
-                    type="time" 
-                    value={scheduleTime}
-                    onChange={(e) => setScheduleTime(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-2xl font-black text-white focus:outline-none focus:border-lime-500/50 transition-all mb-6 text-center"
-                  />
-
-                  <div className="flex gap-3 w-full">
-                    <button 
-                      onClick={() => setSchedulingSport(null)}
-                      className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-400 font-bold text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      onClick={() => handleScheduleSport(schedulingSport)}
-                      className="flex-1 py-3 rounded-xl bg-lime-500 text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-lime-500/20 hover:bg-lime-600 transition-all"
-                    >
-                      Confirm
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </GlassCard>
         </div>
 
-      </div>
-
-      {/* ── Diet Suggestions ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 max-w-5xl mx-auto mb-12 md:mb-20">
-        <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-3xl group-hover:bg-rose-500/20 transition-colors" />
+        {/* ── Weight Tracking System (Full Width) ── */}
+        <div className="lg:col-span-3 flex justify-center relative w-full h-full items-center">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-10 flex flex-col md:flex-row items-center border border-white/20 shadow-2xl h-full group bg-slate-900/40 min-h-[440px] overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px] -z-10 group-hover:bg-emerald-500/10 transition-all" />
             
-            <div className="flex items-center gap-2 mb-6 bg-rose-500/10 border border-rose-500/20 px-4 py-1.5 rounded-full shadow-inner">
-              <UtensilsCrossed size={18} className="text-rose-400" />
-              <span className="text-sm font-bold tracking-widest uppercase text-rose-300">Diet Suggestions</span>
-            </div>
+            <div className="w-full md:w-1/3 flex flex-col items-start gap-8 z-10">
+              <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full shadow-inner">
+                <TrendingUp size={18} className="text-emerald-400" />
+                <span className="text-sm font-bold tracking-widest uppercase text-emerald-300">Weight Tracker</span>
+              </div>
 
-            <div className="bg-white/5 border border-white/10 p-6 rounded-2xl mb-8 w-full group-hover:bg-white/10 transition-colors">
-              <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.2em] mb-2">Daily Nutrition Tip</p>
-              <p className="text-lg font-bold text-white leading-tight italic">"{dietTip}"</p>
-            </div>
+              <div className="space-y-6">
+                <div>
+                  <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1">Current Weight</p>
+                  <h3 className="text-5xl font-black text-white tracking-tighter flex items-end gap-2">
+                    {userWeight} <span className="text-xl text-emerald-400 font-bold mb-2">kg</span>
+                  </h3>
+                </div>
 
-            <div className="space-y-4 w-full">
-              {Object.values(MEAL_SUGGESTIONS).map((meal, idx) => (
-                <div key={idx} className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-white/10 transition-all hover:translate-x-1">
-                  <div className={`w-12 h-12 rounded-xl bg-black/40 flex items-center justify-center ${meal.color}`}>
-                    <meal.icon size={24} />
+                <div className="flex gap-10">
+                  <div>
+                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Weekly Change</p>
+                    <p className="text-xl font-black text-emerald-400 tracking-tight flex items-center gap-1">
+                      <ArrowUpRight size={16} className="rotate-90 scale-y-[-1]" /> -2.4 kg
+                    </p>
                   </div>
-                  <div className="text-left">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">{meal.title}</p>
-                    <p className="font-bold text-white text-sm">{meal.idea}</p>
+                  <div>
+                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Goal Weight</p>
+                    <p className="text-xl font-black text-gray-300 tracking-tight">{goalWeight} kg</p>
                   </div>
                 </div>
-              ))}
+              </div>
+
+              <div className="w-full pt-4 mt-auto">
+                <div className="flex justify-between text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">
+                  <span>Progress to Goal</span>
+                  <span>{Math.round(((72.4 - userWeight) / (72.4 - goalWeight)) * 100)}%</span>
+                </div>
+                <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                  <div 
+                    className="h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] transition-all duration-1000" 
+                    style={{ width: `${Math.round(((72.4 - userWeight) / (72.4 - goalWeight)) * 100)}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full md:w-2/3 h-full min-h-[280px] md:min-h-0 pl-0 md:pl-12 mt-10 md:mt-0 items-center justify-center flex">
+              <ResponsiveContainer width="100%" height={260}>
+                <AreaChart data={WEIGHT_HISTORY} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                  <XAxis 
+                    dataKey="name" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#4b5563', fontSize: 10, fontWeight: 900 }} 
+                    dy={10}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    domain={['dataMin - 1', 'dataMax + 1']}
+                    tick={{ fill: '#4b5563', fontSize: 10, fontWeight: 900 }} 
+                  />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
+                    itemStyle={{ color: '#10b981', fontWeight: 'bold' }}
+                    cursor={{ stroke: 'rgba(16,185,129,0.2)', strokeWidth: 2 }}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="weight" 
+                    stroke="#10b981" 
+                    strokeWidth={4} 
+                    fillOpacity={1} 
+                    fill="url(#colorWeight)" 
+                    animationDuration={2000}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </GlassCard>
         </div>
-        
-        {/* Placeholder to balance the row or for future feature */}
-        <div className="hidden md:flex justify-center items-center opacity-20 hover:opacity-40 transition-opacity">
-          <div className="text-center p-8 border-2 border-dashed border-white/10 rounded-[2rem]">
-            <Plus size={48} className="mx-auto mb-4 text-gray-400" />
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">More metrics coming soon</p>
-          </div>
-        </div>
+
       </div>
     </div>
   );
