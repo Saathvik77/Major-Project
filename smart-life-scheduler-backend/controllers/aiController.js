@@ -30,7 +30,7 @@ const chatWithAI = async (req, res) => {
       return { time: formattedTime, text: remainingText };
     };
 
-    // ─── 0. QUICK COMMANDS (High Priority) ────────────────────────────────
+    // ─── 0. INTENT DETECTION CHAIN ──────────────────────────────────────────
     if (msg.includes("plan my day") || msg.includes("analyze my load") || (msg.includes("plan") && msg.includes("day"))) {
        const today = new Date().toISOString().split('T')[0];
        const tasks = await Task.find({ user: userId, date: today });
@@ -79,12 +79,8 @@ const chatWithAI = async (req, res) => {
        executedActions.push({ type: "navigation", path: "/analytics" });
        reply = "Retrieving weekly performance metrics. Knowledge is the foundation of iterative optimization. Opening Analytics Card.";
     }
-
     // ─── 1. NAVIGATION INTENT ──────────────────────────────────────────────
-    const navKeywords = ["go to", "open", "show", "navigate", "take me to", "switch to"];
-    const isNav = navKeywords.some(k => msg.includes(k));
-    
-    if (isNav) {
+    else if (["go to", "open", "show", "navigate", "take me to", "switch to"].some(k => msg.includes(k))) {
       if (msg.includes("dashboard") || msg.includes("home") || msg.includes("main")) {
         executedActions.push({ type: "navigation", path: "/dashboard" });
         reply = "Synchronizing interface with your Dashboard.";
