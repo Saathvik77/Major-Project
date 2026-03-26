@@ -5,7 +5,6 @@ import {
   PieChart,
   Bot,
   Settings,
-  User,
   LogOut,
   Target,
   Brain,
@@ -13,9 +12,6 @@ import {
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import API from "../api";
-import maleAvatar from "../assets/avatars/male_avatar.svg";
-import femaleAvatar from "../assets/avatars/female_avatar.svg";
 
 const NavItem = ({ icon: Icon, label, path, active, isBottom = false }) => (
   <Link to={path} className="relative group w-full flex justify-center py-3">
@@ -51,20 +47,7 @@ const NavItem = ({ icon: Icon, label, path, active, isBottom = false }) => (
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [user, setUser] = React.useState(null);
   const path = location.pathname;
-
-  React.useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await API.get("/auth/profile");
-        setUser(res.data.user || res.data);
-      } catch (err) {
-        console.error("Sidebar User Error:", err);
-      }
-    };
-    fetchUser();
-  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -76,6 +59,7 @@ const Sidebar = () => {
     { icon: ClipboardList, label: "Tasks", path: "/tasks" },
     { icon: PieChart, label: "Analytics", path: "/analytics" },
     { icon: Bot, label: "AI Assistant", path: "/ai-assistant" },
+    { icon: Activity, label: "Health", path: "/health" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];
 
@@ -100,13 +84,6 @@ const Sidebar = () => {
         </nav>
 
         <div className="mt-auto flex flex-col items-center gap-6">
-          <Link to="/profile" className={`w-10 h-10 rounded-xl transition-all overflow-hidden border ${path === '/profile' ? 'border-lime-500 shadow-lg shadow-lime-500/20' : 'border-white/5 hover:border-white/10'}`}>
-            <img
-              src={user?.gender?.toLowerCase() === 'female' ? femaleAvatar : maleAvatar}
-              alt="Avatar"
-              className="w-full h-full object-cover scale-110"
-            />
-          </Link>
           <button
             onClick={handleLogout}
             className="p-3.5 text-gray-600 hover:text-rose-500 hover:bg-rose-500/5 transition-all rounded-2xl group"
