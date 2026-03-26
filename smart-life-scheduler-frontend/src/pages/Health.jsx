@@ -658,7 +658,7 @@ function Health() {
 
             <button 
               onClick={() => setShowAllSports(!showAllSports)}
-              className="w-full mt-auto py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black text-[10px] uppercase tracking-[0.2em] transition-all"
+              className="w-full mt-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black text-[10px] uppercase tracking-[0.2em] transition-all"
             >
               {showAllSports ? "Show Less" : "Explore More Sports"}
             </button>
@@ -671,7 +671,7 @@ function Health() {
           <GlassCard className="relative z-10 w-full p-6 sm:p-10 flex flex-col md:flex-row items-center border border-white/20 shadow-2xl h-full group bg-slate-900/40 min-h-[440px] overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px] -z-10 group-hover:bg-emerald-500/10 transition-all" />
             
-            <div className="w-full md:w-1/3 flex flex-col items-start gap-8 z-10">
+            <div className="w-full md:w-[38%] flex flex-col items-start gap-8 z-10">
               <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full shadow-inner">
                 <TrendingUp size={18} className="text-emerald-400" />
                 <span className="text-sm font-bold tracking-widest uppercase text-emerald-300">Weight Tracker</span>
@@ -685,14 +685,14 @@ function Health() {
                   </h3>
                 </div>
 
-                <div className="flex gap-10">
-                  <div>
+                <div className="flex gap-8">
+                  <div className="shrink-0">
                     <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Weekly Change</p>
                     <p className="text-xl font-black text-emerald-400 tracking-tight flex items-center gap-1">
                       <ArrowUpRight size={16} className="rotate-90 scale-y-[-1]" /> -2.4 kg
                     </p>
                   </div>
-                  <div>
+                  <div className="shrink-0">
                     <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Goal Weight</p>
                     <p className="text-xl font-black text-gray-300 tracking-tight">{goalWeight} kg</p>
                   </div>
@@ -700,20 +700,22 @@ function Health() {
               </div>
 
               <div className="w-full pt-4 mt-auto">
-                <div className="flex justify-between text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">
+                <div className="flex justify-between items-center text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest border-b border-white/5 pb-1">
                   <span>Progress to Goal</span>
-                  <span>{Math.round(((72.4 - userWeight) / (72.4 - goalWeight)) * 100)}%</span>
+                  <span className="text-emerald-400">
+                    {Math.min(100, Math.max(0, Math.round(((72.4 - userWeight) / (72.4 - goalWeight)) * 100)))}%
+                  </span>
                 </div>
                 <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
                   <div 
                     className="h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] transition-all duration-1000" 
-                    style={{ width: `${Math.round(((72.4 - userWeight) / (72.4 - goalWeight)) * 100)}%` }}
+                    style={{ width: `${Math.min(100, Math.max(0, Math.round(((72.4 - userWeight) / (72.4 - goalWeight)) * 100)))}%` }}
                   />
                 </div>
               </div>
             </div>
 
-            <div className="w-full md:w-2/3 h-full min-h-[280px] md:min-h-0 pl-0 md:pl-12 mt-10 md:mt-0 items-center justify-center flex">
+            <div className="w-full md:w-[62%] h-full min-h-[300px] md:min-h-0 pl-0 md:pl-12 mt-10 md:mt-2 bg-white/[0.02] rounded-3xl border border-white/5 p-4 flex items-center justify-center">
               <ResponsiveContainer width="100%" height={260}>
                 <AreaChart data={WEIGHT_HISTORY} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
