@@ -436,6 +436,27 @@ const AIAssistant = () => {
                         const action = msg.actions.find(a => a.type === "comprehensive_report");
                         return (
                           <div className="mt-6 space-y-6 pt-6 border-t border-white/10">
+                            {/* Performance Header */}
+                            <div className="flex items-center justify-between p-4 rounded-2xl bg-lime-500/10 border border-lime-500/20 shadow-lg shadow-lime-500/5">
+                               <div>
+                                  <p className="text-[10px] font-black text-lime-500/60 uppercase tracking-widest mb-1">Neural Performance Score</p>
+                                  <h4 className="text-3xl font-black text-white tracking-tighter">{action.efficiency}%</h4>
+                               </div>
+                               <div className="w-12 h-12 rounded-xl bg-lime-500/20 flex items-center justify-center text-lime-500">
+                                  <TrendingUp size={24} />
+                               </div>
+                            </div>
+
+                            {/* Smart Suggestion */}
+                            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 relative overflow-hidden group">
+                               <div className="absolute top-0 right-0 w-24 h-24 bg-lime-500/5 blur-2xl -z-10" />
+                               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                  <Brain size={12} className="text-lime-500" /> AI Optimization Insight
+                                </p>
+                               <p className="text-sm font-medium text-white/90 leading-relaxed italic">
+                                  "{action.suggestion}"
+                               </p>
+                            </div>
                             {/* COMPLETED ALL-TIME */}
                             <div>
                               <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-3 flex items-center gap-2">

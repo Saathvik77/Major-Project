@@ -37,7 +37,7 @@ function Profile() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({ name: "", gender: "" });
+  const [editData, setEditData] = useState({ name: "", gender: "", email: "", phno: "", weight: "" });
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
@@ -124,7 +124,13 @@ function Profile() {
   };
 
   const openEditModal = () => {
-    setEditData({ name: user.name, gender: user.gender || "male" });
+    setEditData({ 
+      name: user.name, 
+      gender: user.gender || "male",
+      email: user.email || "",
+      phno: user.phno || "",
+      weight: user.weight || ""
+    });
     setIsEditing(true);
   };
 
@@ -238,6 +244,40 @@ function Profile() {
                         Female
                       </button>
                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Communication / Email</label>
+                    <input 
+                      type="email" 
+                      value={editData.email}
+                      onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-xs font-bold text-white outline-none focus:border-lime-500/50 transition-all"
+                      placeholder="Email"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Contact / Ph. No</label>
+                    <input 
+                      type="text" 
+                      value={editData.phno}
+                      onChange={(e) => setEditData({ ...editData, phno: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-xs font-bold text-white outline-none focus:border-lime-500/50 transition-all"
+                      placeholder="Phone"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Physical Metric / Weight (kg)</label>
+                  <input 
+                    type="number" 
+                    value={editData.weight}
+                    onChange={(e) => setEditData({ ...editData, weight: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-white outline-none focus:border-lime-500/50 transition-all"
+                    placeholder="70"
+                  />
                 </div>
                 <div className="flex flex-col gap-4 pt-4">
                   <button 

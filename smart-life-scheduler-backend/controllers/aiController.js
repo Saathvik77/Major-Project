@@ -52,18 +52,29 @@ const chatWithAI = async (req, res) => {
        const missed = allTasks.filter(t => !t.completed && (t.isOverdue || (t.endTime && t.endTime < new Date().toTimeString().split(' ')[0])));
        const rescheduled = allTasks.filter(t => t.rescheduledCount > 0);
 
-       executedActions.push({
-         type: "comprehensive_report",
-         completed: completed.map(t => ({ title: t.title, date: t.date })),
-         missed: missed.map(t => ({ title: t.title, date: t.date })),
-         rescheduled: rescheduled.map(t => ({ title: t.title, date: t.date, count: t.rescheduledCount }))
-       });
-
         const total = completed.length + missed.length;
         const efficiency = total > 0 ? Math.round((completed.length / total) * 100) : 100;
-        const category = msg.includes("health") ? "Health & Vitality" : "Productivity & Performance";
         
-        reply = `Generating your ${category} report. Analysis complete: Your current Operational Efficiency is ${efficiency}%. I've aggregated ${completed.length} milestones, ${missed.length} overdue nodes, and ${rescheduled.length} re-optimized tasks for this full system audit.`;
+        // Dynamic suggestions based on data
+        const suggestions = [];
+        if (missed.length > 0) suggestions.push("Prioritize rescheduling your overdue objectives to early morning slots to recapture momentum.");
+        if (efficiency < 70) suggestions.push("I detect a dip in operational efficiency. Try the Pomodoro Technique (25/5) to rebuild focus.");
+        if (rescheduled.length >= 2) suggestions.push("Multiple re-optimizations detected. Consider padding your time estimates by 15% for complex tasks.");
+        if (completed.length > 3 && efficiency > 80) suggestions.push("Exceptional flow detected! This is the ideal window for your highest-priority objective.");
+        
+        const recommendation = suggestions.length > 0 ? suggestions[Math.floor(Math.random() * suggestions.length)] : "System status stable. Maintain current operational protocols for peak performance.";
+
+        executedActions.push({
+          type: "comprehensive_report",
+          completed: completed.map(t => ({ title: t.title, date: t.date })),
+          missed: missed.map(t => ({ title: t.title, date: t.date })),
+          rescheduled: rescheduled.map(t => ({ title: t.title, date: t.date, count: t.rescheduledCount })),
+          suggestion: recommendation,
+          efficiency: efficiency
+        });
+
+        const category = msg.includes("health") ? "Health & Vitality" : "Productivity & Performance";
+        reply = `Generating your ${category} report. Analysis complete: Your Operational Efficiency is at ${efficiency}%. ${recommendation}`;
     }
     else if (msg.includes("reschedule my missed") || msg.includes("optimize my flow")) {
        executedActions.push({ type: "navigation", path: "/tasks" });

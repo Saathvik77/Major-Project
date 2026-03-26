@@ -198,11 +198,28 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                     >
                       <p className="text-[13.5px] leading-relaxed whitespace-pre-line font-medium mb-4">{msg.text}</p>
                       
-                      {/* Compact Report UI */}
                       {msg.actions?.find(a => a.type === "comprehensive_report") && (() => {
                         const action = msg.actions.find(a => a.type === "comprehensive_report");
                         return (
                           <div className="space-y-4 pt-3 border-t border-white/10 mt-3">
+                             {/* Performance Score & Suggestion */}
+                             <div className="flex items-center justify-between p-3 rounded-xl bg-lime-500/10 border border-lime-500/20">
+                                <div>
+                                   <p className="text-[8px] font-black text-lime-500/60 uppercase tracking-widest">Efficiency Index</p>
+                                   <h4 className="text-xl font-black text-white">{action.efficiency}%</h4>
+                                </div>
+                                <TrendingUp size={16} className="text-lime-500" />
+                             </div>
+
+                             <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                                <p className="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-1">
+                                   <Brain size={10} className="text-lime-500" /> Recommendation
+                                </p>
+                                <p className="text-[11px] font-medium text-white/80 italic leading-snug">
+                                   "{action.suggestion}"
+                                </p>
+                             </div>
+
                              {/* COMPLETED */}
                              {action.completed?.length > 0 && (
                                <div>

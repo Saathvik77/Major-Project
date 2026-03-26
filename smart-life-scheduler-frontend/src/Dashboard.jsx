@@ -169,7 +169,7 @@ const Dashboard = () => {
             <LayoutDashboard size={20} className="md:w-6 md:h-6" strokeWidth={1.5} />
           </div>
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black tracking-tighter text-white truncate max-w-[140px] xs:max-w-none">Smart Life Scheduler</h1>
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black tracking-tighter text-white truncate">Smart Life Scheduler</h1>
             <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1 truncate">Operational Overview</p>
           </div>
         </div>

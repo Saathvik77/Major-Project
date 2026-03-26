@@ -85,7 +85,7 @@ const loginUser = async (req, res) => {
 // UPDATE PROFILE
 const updateProfile = async (req, res) => {
   try {
-    const { name, age, weight, phno, gender } = req.body;
+    const { name, age, weight, phno, gender, email } = req.body;
     
     // Find the current logged in user
     const user = await User.findById(req.user.id);
@@ -95,6 +95,18 @@ const updateProfile = async (req, res) => {
         success: false,
         message: "User not found",
       });
+    }
+
+    // Check if email is being updated and if it's already taken
+    if (email && email !== user.email) {
+      const emailExists = await User.findOne({ email });
+      if (emailExists) {
+        return res.status(400).json({
+          success: false,
+          message: "Email address already in use by another operative.",
+        });
+      }
+      user.email = email;
     }
 
     // Update allowable fields
