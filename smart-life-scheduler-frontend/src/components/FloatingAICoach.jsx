@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { Send, Bot, User, Sparkles, X, MessageSquareHeart, Zap, Calendar, Dumbbell, ListChecks } from "lucide-react";
+import { Send, Bot, User, Sparkles, X, MessageSquareHeart, Zap, Calendar, Dumbbell, ListChecks, Award, CheckCircle, AlertCircle, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../api";
@@ -64,8 +64,8 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
     }
   }, [isOpen, hasOpened, weatherData, tasks]);
 
-  const addBotMessage = (text) => {
-    setMessages((prev) => [...prev, { id: Date.now() + Math.random(), type: "bot", text }]);
+  const addBotMessage = (text, actions = []) => {
+    setMessages((prev) => [...prev, { id: Date.now() + Math.random(), type: "bot", text, actions }]);
   };
 
   const handleCommand = async (userInput) => {
@@ -83,7 +83,7 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
         weatherData: weatherData
       });
 
-      addBotMessage(response.data.reply);
+      addBotMessage(response.data.reply, response.data.actions || []);
       
       if (response.data.actions?.length > 0) {
         window.dispatchEvent(new Event("tasksUpdated"));
@@ -196,7 +196,64 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
                         : "bg-gradient-to-br from-lime-600 to-emerald-600 text-white rounded-br-none shadow-md shadow-lime-500/20"
                         }`}
                     >
-                      <p className="text-[13.5px] leading-relaxed whitespace-pre-line font-medium">{msg.text}</p>
+                      <p className="text-[13.5px] leading-relaxed whitespace-pre-line font-medium mb-4">{msg.text}</p>
+                      
+                      {/* Compact Report UI */}
+                      {msg.actions?.find(a => a.type === "comprehensive_report") && (() => {
+                        const action = msg.actions.find(a => a.type === "comprehensive_report");
+                        return (
+                          <div className="space-y-4 pt-3 border-t border-white/10 mt-3">
+                             {/* COMPLETED */}
+                             {action.completed?.length > 0 && (
+                               <div>
+                                 <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                   <Award size={10} /> Milestones
+                                 </p>
+                                 <div className="space-y-1.5">
+                                    {action.completed.slice(0, 3).map((t, idx) => (
+                                      <div key={idx} className="px-3 py-2 rounded-xl bg-emerald-500/5 border border-emerald-500/10 text-[11px] font-bold text-emerald-100/80 flex justify-between">
+                                         <span>{t.title}</span>
+                                      </div>
+                                    ))}
+                                 </div>
+                               </div>
+                             )}
+
+                             {/* MISSED */}
+                             {action.missed?.length > 0 && (
+                               <div>
+                                 <p className="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                   <AlertCircle size={10} /> Overdue
+                                 </p>
+                                 <div className="space-y-1.5">
+                                    {action.missed.slice(0, 3).map((t, idx) => (
+                                      <div key={idx} className="px-3 py-2 rounded-xl bg-rose-500/5 border border-rose-500/10 text-[11px] font-bold text-rose-100/80">
+                                         {t.title}
+                                      </div>
+                                    ))}
+                                 </div>
+                               </div>
+                             )}
+
+                             {/* RESCHEDULED */}
+                             {action.rescheduled?.length > 0 && (
+                               <div>
+                                 <p className="text-[9px] font-black text-yellow-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                   <Zap size={10} /> Re-optimized
+                                 </p>
+                                 <div className="space-y-1.5">
+                                    {action.rescheduled.slice(0, 3).map((t, idx) => (
+                                      <div key={idx} className="px-3 py-2 rounded-xl bg-yellow-500/5 border border-yellow-500/10 text-[11px] font-bold text-yellow-100/80 flex justify-between">
+                                         <span>{t.title}</span>
+                                         <span className="text-[8px] opacity-60 uppercase">{t.count}x</span>
+                                      </div>
+                                    ))}
+                                 </div>
+                               </div>
+                             )}
+                          </div>
+                        );
+                      })()}
                     </div>
                   </motion.div>
                 ))}

@@ -59,8 +59,11 @@ const chatWithAI = async (req, res) => {
          rescheduled: rescheduled.map(t => ({ title: t.title, date: t.date, count: t.rescheduledCount }))
        });
 
-       const category = msg.includes("health") ? "Health & Vitality" : "Productivity & Performance";
-       reply = `Generating your ${category} report. I've aggregated all operational data, including completed milestones, missed objectives, and rescheduled nodes for a full system audit.`;
+        const total = completed.length + missed.length;
+        const efficiency = total > 0 ? Math.round((completed.length / total) * 100) : 100;
+        const category = msg.includes("health") ? "Health & Vitality" : "Productivity & Performance";
+        
+        reply = `Generating your ${category} report. Analysis complete: Your current Operational Efficiency is ${efficiency}%. I've aggregated ${completed.length} milestones, ${missed.length} overdue nodes, and ${rescheduled.length} re-optimized tasks for this full system audit.`;
     }
     else if (msg.includes("reschedule my missed") || msg.includes("optimize my flow")) {
        executedActions.push({ type: "navigation", path: "/tasks" });
