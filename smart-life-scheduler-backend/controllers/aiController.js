@@ -49,8 +49,7 @@ const chatWithAI = async (req, res) => {
 
       // STEP 1: CAPTURE SUBJECTS
       if (context.step === 1) {
-        // Assume user provided a list of subjects
-        const subjects = message.split(/[,;|]/).map(s => s.trim()).filter(s => s.length > 0);
+        const subjects = message.split(/[,;|]|\band\b/).map(s => s.trim()).filter(s => s.length > 0);
         if (subjects.length === 0) {
           reply = "I couldn't identify any subjects. Please list the topics you want to cover (e.g., Algebra, Geometry, Physics).";
         } else {
@@ -61,27 +60,30 @@ const chatWithAI = async (req, res) => {
           reply = `Acknowledged. I've noted: ${subjects.join(", ")}.\n\nFinal step: What are your preferred daily timings for this ${context.data.days}-day roadmap? (e.g., 9am to 5pm)`;
         }
       } 
-      // STEP 2: CAPTURE TIMINGS & FINALIZE
+      // STEP 2: CAPTURE TIMINGS & FINALIZE (With Smart Distribution)
       else if (context.step === 2) {
         const { startTime, endTime } = extractTime(msg);
         const { subjects, days, topic } = context.data;
+        const totalDays = parseInt(days);
         
-        // Finalize Scheduling Logic
+        // Distribution Logic: Split subjects over days
+        const subjectsPerDay = Math.ceil(subjects.length / totalDays);
         const startDate = new Date();
         const createdTasks = [];
 
-        for (let i = 0; i < parseInt(days); i++) {
+        for (let i = 0; i < totalDays; i++) {
           const currentDate = new Date(startDate);
-          currentDate.setDate(startDate.getDate() + i + 1); // Start from tomorrow
+          currentDate.setDate(startDate.getDate() + i + 1); 
           const dateStr = currentDate.toISOString().split('T')[0];
 
-          // Distribute subjects over the course of the day
-          subjects.forEach((subject, idx) => {
-            // Very simple distribution: Each subject gets a slot
+          // Get subjects for THIS specific day
+          const daySubjects = subjects.slice(i * subjectsPerDay, (i + 1) * subjectsPerDay);
+
+          daySubjects.forEach((subject, idx) => {
             const task = new Task({
               user: userId,
-              title: `${topic}: ${subject} (Session ${i+1})`,
-              description: `Automated study block for ${topic}. Integrated via AI Coach.`,
+              title: `${topic}: ${subject}`,
+              description: `Automated study block for day ${i+1}. Part of your ${totalDays}-day ${topic} protocol.`,
               date: dateStr,
               startTime: startTime,
               endTime: endTime,
@@ -95,17 +97,16 @@ const chatWithAI = async (req, res) => {
 
         await Task.insertMany(createdTasks);
         
-        // Reset Context
         user.aiContext = { flow: null, step: 0, data: {} };
         await user.save();
 
-        reply = `Success! I've orchestrated your ${days}-day ${topic} roadmap. ${createdTasks.length} optimized sessions have been synchronized to your dashboard. \n\nStarting tomorrow: ${startTime} to ${endTime}. Godspeed! 🚀`;
+        reply = `Success! I've orchestrated your ${totalDays}-day ${topic} roadmap by dividing ${subjects.length} topics across ${totalDays} days. ${createdTasks.length} sessions synchronized. \n\nDaily window: ${startTime} to ${endTime}. Godspeed! 🚀`;
       }
 
       return res.json({ reply, actions: executedActions });
     }
 
-    // ─── 1. NEW FLOW INITIATION ──────────────────────────────────────────────
+    // ─── 1. NEW FLOW INITIATION (TOP PRIORITY) ────────────────────────────────
     if (msg.includes("prepare") && (msg.includes("schedule") || msg.includes("roadmap") || msg.includes("plan"))) {
       const dayMatch = msg.match(/(\d+)\s*day/i);
       const days = dayMatch ? dayMatch[1] : "5";
@@ -122,6 +123,8 @@ const chatWithAI = async (req, res) => {
       reply = `I've initiated the **Architect Protocol** for your ${days}-day "${topic}" roadmap. 🏗️\n\nTo optimize your nodes, please provide the subjects or modules you wish to cover (e.g., Math, Science, History).`;
       return res.json({ reply, actions: [] });
     }
+
+    // ─── 2. EXISTING INTENTS (LOWER PRIORITY) ──────────────────────────────────
     if (msg.includes("plan my day") || msg.includes("analyze my load") || (msg.includes("plan") && msg.includes("day"))) {
        const today = new Date().toISOString().split('T')[0];
        const tasks = await Task.find({ user: userId, date: today });
