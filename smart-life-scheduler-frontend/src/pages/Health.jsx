@@ -668,92 +668,102 @@ function Health() {
 
         {/* ── Weight Tracking System (Full Width) ── */}
         <div className="lg:col-span-3 flex justify-center relative w-full h-full items-center">
-          <GlassCard className="relative z-10 w-full p-6 sm:p-10 flex flex-col md:flex-row items-center border border-white/20 shadow-2xl h-full group bg-slate-900/40 min-h-[440px] overflow-hidden">
+          <GlassCard className="relative z-10 w-full p-8 sm:p-12 border border-white/20 shadow-2xl h-full group min-h-[440px] overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px] -z-10 group-hover:bg-emerald-500/10 transition-all" />
             
-            <div className="w-full md:w-[38%] flex flex-col items-start gap-8 z-10">
-              <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full shadow-inner">
-                <TrendingUp size={18} className="text-emerald-400" />
-                <span className="text-sm font-bold tracking-widest uppercase text-emerald-300">Weight Tracker</span>
-              </div>
-
-              <div className="space-y-6">
-                <div>
-                  <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1">Current Weight</p>
-                  <h3 className="text-5xl font-black text-white tracking-tighter flex items-end gap-2">
-                    {userWeight} <span className="text-xl text-emerald-400 font-bold mb-2">kg</span>
-                  </h3>
-                </div>
-
-                <div className="flex gap-8">
-                  <div className="shrink-0">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Weekly Change</p>
-                    <p className="text-xl font-black text-emerald-400 tracking-tight flex items-center gap-1">
-                      <ArrowUpRight size={16} className="rotate-90 scale-y-[-1]" /> -2.4 kg
-                    </p>
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-12 w-full h-full relative z-10">
+              {/* Stats Section */}
+              <div className="md:col-span-4 flex flex-col justify-between items-start h-full">
+                <div className="w-full">
+                  <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full shadow-inner inline-flex mb-8">
+                    <TrendingUp size={18} className="text-emerald-400" />
+                    <span className="text-sm font-bold tracking-widest uppercase text-emerald-300">Weight Tracker</span>
                   </div>
-                  <div className="shrink-0">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Goal Weight</p>
-                    <p className="text-xl font-black text-gray-300 tracking-tight">{goalWeight} kg</p>
+
+                  <div className="space-y-8">
+                    <div>
+                      <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Current Weight</p>
+                      <h3 className="text-6xl font-black text-white tracking-tighter flex items-end gap-2">
+                        {userWeight} <span className="text-2xl text-emerald-400 font-bold mb-2">kg</span>
+                      </h3>
+                    </div>
+
+                    <div className="flex flex-wrap gap-12">
+                      <div className="shrink-0">
+                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5">Weekly Change</p>
+                        <p className="text-2xl font-black text-emerald-400 tracking-tight flex items-center gap-1.5">
+                          <ArrowUpRight size={20} className="rotate-90 scale-y-[-1]" /> -2.4 kg
+                        </p>
+                      </div>
+                      <div className="shrink-0">
+                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5">Goal Weight</p>
+                        <p className="text-2xl font-black text-gray-300 tracking-tight">{goalWeight} kg</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full mt-12 md:mt-0">
+                  <div className="flex justify-between items-end mb-3">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Goal Progress</span>
+                      <span className="text-2xl font-black text-emerald-400">
+                        {Math.min(100, Math.max(0, Math.round(((72.4 - userWeight) / (72.4 - goalWeight)) * 100)))}%
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden border border-white/5 shadow-inner">
+                    <div 
+                      className="h-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] transition-all duration-1000" 
+                      style={{ width: `${Math.min(100, Math.max(0, Math.round(((72.4 - userWeight) / (72.4 - goalWeight)) * 100)))}%` }}
+                    />
                   </div>
                 </div>
               </div>
 
-              <div className="w-full pt-4 mt-auto">
-                <div className="flex justify-between items-center text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest border-b border-white/5 pb-1">
-                  <span>Progress to Goal</span>
-                  <span className="text-emerald-400">
-                    {Math.min(100, Math.max(0, Math.round(((72.4 - userWeight) / (72.4 - goalWeight)) * 100)))}%
-                  </span>
-                </div>
-                <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
-                  <div 
-                    className="h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] transition-all duration-1000" 
-                    style={{ width: `${Math.min(100, Math.max(0, Math.round(((72.4 - userWeight) / (72.4 - goalWeight)) * 100)))}%` }}
-                  />
+              {/* Chart Section */}
+              <div className="md:col-span-8 h-full min-h-[300px] md:min-h-0 flex items-center justify-center">
+                <div className="w-full h-full relative">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={WEIGHT_HISTORY} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                      <XAxis 
+                        dataKey="name" 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tick={{ fill: '#4b5563', fontSize: 11, fontWeight: 900 }} 
+                        dy={10}
+                      />
+                      <YAxis 
+                        axisLine={false} 
+                        tickLine={false} 
+                        domain={['dataMin - 1', 'dataMax + 1']}
+                        tick={{ fill: '#4b5563', fontSize: 11, fontWeight: 900 }} 
+                      />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
+                        itemStyle={{ color: '#10b981', fontWeight: 'bold' }}
+                        cursor={{ stroke: 'rgba(16,185,129,0.2)', strokeWidth: 2 }}
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="weight" 
+                        stroke="#10b981" 
+                        strokeWidth={5} 
+                        fillOpacity={1} 
+                        fill="url(#colorWeight)" 
+                        animationDuration={2500}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
-            </div>
-
-            <div className="w-full md:w-[62%] h-full min-h-[300px] md:min-h-0 pl-0 md:pl-12 mt-10 md:mt-2 bg-white/[0.02] rounded-3xl border border-white/5 p-4 flex items-center justify-center">
-              <ResponsiveContainer width="100%" height={260}>
-                <AreaChart data={WEIGHT_HISTORY} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
-                  <XAxis 
-                    dataKey="name" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fill: '#4b5563', fontSize: 10, fontWeight: 900 }} 
-                    dy={10}
-                  />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false} 
-                    domain={['dataMin - 1', 'dataMax + 1']}
-                    tick={{ fill: '#4b5563', fontSize: 10, fontWeight: 900 }} 
-                  />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
-                    itemStyle={{ color: '#10b981', fontWeight: 'bold' }}
-                    cursor={{ stroke: 'rgba(16,185,129,0.2)', strokeWidth: 2 }}
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="weight" 
-                    stroke="#10b981" 
-                    strokeWidth={4} 
-                    fillOpacity={1} 
-                    fill="url(#colorWeight)" 
-                    animationDuration={2000}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
             </div>
           </GlassCard>
         </div>
