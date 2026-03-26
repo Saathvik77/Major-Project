@@ -46,7 +46,7 @@ const chatWithAI = async (req, res) => {
        });
        reply = "Operational load analyzed. I've optimized your schedule for maximum focus. Review your milestones above.";
     }
-    else if (msg.includes("productivity") || msg.includes("health") || msg.includes("report")) {
+    else if (msg.includes("productivity") || msg.includes("health") || msg.includes("report") || msg.includes("performance") || msg.includes("review")) {
        const allTasks = await Task.find({ user: userId });
        const completed = allTasks.filter(t => t.completed);
        const missed = allTasks.filter(t => !t.completed && (t.isOverdue || (t.endTime && t.endTime < new Date().toTimeString().split(' ')[0])));
@@ -89,16 +89,12 @@ const chatWithAI = async (req, res) => {
        ];
        reply = `Optimization Tip: ${tips[Math.floor(Math.random() * tips.length)]}`;
     }
-    else if (msg.includes("weekly operational performance") || msg.includes("review my performance")) {
-       executedActions.push({ type: "navigation", path: "/analytics" });
-       reply = "Retrieving weekly performance metrics. Knowledge is the foundation of iterative optimization. Opening Analytics Card.";
-    }
     // ─── 1. NAVIGATION INTENT ──────────────────────────────────────────────
     else if (["go to", "open", "show", "navigate", "take me to", "switch to"].some(k => msg.includes(k))) {
       if (msg.includes("dashboard") || msg.includes("home") || msg.includes("main")) {
         executedActions.push({ type: "navigation", path: "/dashboard" });
         reply = "Synchronizing interface with your Dashboard.";
-      } else if (msg.includes("analytics") || msg.includes("performance") || msg.includes("stats") || msg.includes("report")) {
+      } else if (msg.includes("analytics") || msg.includes("stats")) {
         executedActions.push({ type: "navigation", path: "/analytics" });
         reply = "Accessing your Performance Analytics node.";
       } else if (msg.includes("task") || msg.includes("list") || msg.includes("schedule") || msg.includes("todo")) {
