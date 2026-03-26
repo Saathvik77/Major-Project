@@ -58,6 +58,7 @@ const CHALLENGE_STYLES = {
 
 function Health() {
   const navigate = useNavigate();
+  const [userWeight, setUserWeight] = useState(70); // Default 70kg
 
   // ── Weather state ──
   const [weatherData, setWeatherData] = useState(null);
@@ -164,6 +165,17 @@ function Health() {
         fetchWeather(lat, lon);
       });
     }
+    // Fetch user weight
+    const fetchUser = async () => {
+      try {
+        const res = await API.get("/auth/profile");
+        const userData = res.data.user || res.data;
+        if (userData?.weight) setUserWeight(userData.weight);
+      } catch (err) {
+        console.error("Health Profile Error:", err);
+      }
+    };
+    fetchUser();
   }, [fetchWeather, fetchTasks, loadChallenge]);
 
   // ─── Focus timer ──────────────────────────────────────────────────────────
@@ -484,6 +496,78 @@ function Health() {
             </div>
           </GlassCard>
         </div>
+      </div>
+
+      {/* ── Water Intake + Sports Recommendation ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 max-w-5xl mx-auto mb-12 md:mb-20">
+        
+        {/* Water Intake Tracker */}
+        <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
+          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group">
+            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-colors" />
+            
+            <div className="flex items-center gap-2 mb-6 bg-blue-500/10 border border-blue-500/20 px-4 py-1.5 rounded-full shadow-inner">
+              <Droplets size={18} className="text-blue-400" />
+              <span className="text-sm font-bold tracking-widest uppercase text-blue-300">Hydration Target</span>
+            </div>
+
+            <div className="relative mb-6">
+              <div className="w-24 h-24 rounded-full bg-blue-500/20 flex items-center justify-center border-4 border-blue-500/30 group-hover:scale-110 transition-transform duration-500">
+                <Droplets size={40} className="text-blue-400 animate-bounce" />
+              </div>
+            </div>
+
+            <h3 className="text-3xl font-black text-white mb-2">
+              {(userWeight * 0.033).toFixed(2)} <span className="text-lg text-gray-400 font-medium">Liters</span>
+            </h3>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6">Daily suggested intake (based on {userWeight}kg)</p>
+
+            <div className="w-full space-y-3">
+              <div className="flex justify-between text-xs font-bold text-gray-400 px-1">
+                <span>Current Progress</span>
+                <span>~ {Math.ceil((userWeight * 0.033) / 0.25)} Glasses</span>
+              </div>
+              <div className="w-full bg-slate-800/80 rounded-full h-3 border border-slate-700/50 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-400 to-blue-600 h-full rounded-full w-1/3 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+              </div>
+            </div>
+          </GlassCard>
+        </div>
+
+        {/* Sports Recommendation */}
+        <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
+          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl overflow-hidden group">
+            <div className="absolute -top-10 -left-10 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl group-hover:bg-orange-500/20 transition-colors" />
+            
+            <div className="flex items-center gap-2 mb-6 bg-orange-500/10 border border-orange-500/20 px-4 py-1.5 rounded-full shadow-inner">
+              <Trophy size={18} className="text-orange-400" />
+              <span className="text-sm font-bold tracking-widest uppercase text-orange-300">Recommended Sports</span>
+            </div>
+
+            <div className="space-y-4 w-full">
+              {[
+                { sport: "Swimming", intensity: "High", icon: Droplets, color: "text-blue-400" },
+                { sport: "Cycling", intensity: "Moderate", icon: Activity, color: "text-lime-400" },
+                { sport: "Running", intensity: "High", icon: Flame, color: "text-rose-400" }
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-4 p-3 bg-white/5 rounded-2xl border border-white/5 hover:border-white/20 transition-all group/item">
+                  <div className={`w-10 h-10 rounded-xl bg-black/40 flex items-center justify-center ${item.color} group-hover/item:scale-110 transition-transform`}>
+                    <item.icon size={20} />
+                  </div>
+                  <div className="flex-1 text-left">
+                    <p className="font-bold text-white text-sm">{item.sport}</p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-widest font-black">{item.intensity} Intensity</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button className="w-full mt-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-lg shadow-orange-500/20 active:scale-95">
+              Explore More Sports
+            </button>
+          </GlassCard>
+        </div>
+
       </div>
     </div>
   );
