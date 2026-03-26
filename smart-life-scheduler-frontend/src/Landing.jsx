@@ -241,19 +241,15 @@ function Landing() {
                </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-12 pt-10 border-t border-white/5">
+            <div className="grid grid-cols-1 gap-12 pt-10 border-t border-white/5">
                <div className="flex flex-col gap-2">
                   <span className="text-3xl font-black text-[#84cc16]">98%+</span>
                   <span className="text-[10px] font-black text-white/20 uppercase tracking-[4px]">Performance Boost</span>
                </div>
-               <div className="flex flex-col gap-2">
-                  <span className="text-3xl font-black text-[#84cc16]">800k</span>
-                  <span className="text-[10px] font-black text-white/20 uppercase tracking-[4px]">Active Users</span>
-               </div>
             </div>
 
-            {/* Premium Glass Floating Labels (High Blur 20px) */}
-            <div className="absolute top-12 right-12 flex flex-col gap-5">
+            {/* Premium Glass Floating Labels (Repositioned to avoid overlap) */}
+            <div className="absolute top-6 right-6 flex flex-col gap-4 scale-90 origin-top-right">
                <motion.div 
                  initial={{ x: 50, opacity: 0 }}
                  whileInView={{ x: 0, opacity: 1 }}
@@ -271,7 +267,7 @@ function Landing() {
                  initial={{ x: 50, opacity: 0 }}
                  whileInView={{ x: 0, opacity: 1 }}
                  transition={{ delay: 0.2 }}
-                 className="glass-floating rounded-2xl p-4 flex items-center gap-4 border border-white/20 shadow-2xl ml-[-20px]"
+                 className="glass-floating rounded-2xl p-4 flex items-center gap-4 border border-white/20 shadow-2xl"
                >
                   <div className="w-10 h-10 rounded-full bg-lime-500/20 flex items-center justify-center text-lime-500 shadow-inner">
                     <Sparkles size={18} />
