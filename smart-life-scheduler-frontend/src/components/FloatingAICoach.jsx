@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { Send, Bot, User, Sparkles, X, MessageSquareHeart, Zap, Calendar, Dumbbell, ListChecks, Award, CheckCircle, AlertCircle, Clock } from "lucide-react";
+import { Send, Bot, User, Sparkles, X, MessageSquareHeart, Zap, Calendar, Dumbbell, ListChecks, Award, CheckCircle, AlertCircle, Clock, TrendingUp, Brain } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../api";
@@ -88,9 +88,11 @@ function FloatingAICoach({ weatherData, tasks, stats, userName }) {
       if (response.data.actions?.length > 0) {
         window.dispatchEvent(new Event("tasksUpdated"));
         
-        // Handle navigation actions if any
+        // Handle navigation actions (with safety guard for productivity queries)
         const navAction = response.data.actions.find(a => a.type === "navigation" || a.type === "NAVIGATION");
-        if (navAction) {
+        const isProductivityQuery = ["productivity", "report", "review", "performance"].some(k => userInput.toLowerCase().includes(k));
+        
+        if (navAction && !isProductivityQuery) {
           setTimeout(() => navigate(navAction.path || navAction.data?.path), 1200);
         }
       }

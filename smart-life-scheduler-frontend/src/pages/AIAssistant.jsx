@@ -277,12 +277,14 @@ const AIAssistant = () => {
           console.log("Triggering tasksUpdated due to AI actions...");
           window.dispatchEvent(new Event("tasksUpdated"));
           
-          // Handle navigation actions
+          // Handle navigation actions (with safety guard for productivity queries)
           const navAction = response.data.actions?.find(a => a.type === "navigation");
-          if (navAction) {
+          const isProductivityQuery = ["productivity", "report", "review", "performance"].some(k => messageText.toLowerCase().includes(k));
+          
+          if (navAction && !isProductivityQuery) {
             setTimeout(() => {
               navigate(navAction.path);
-            }, 1500); // Slightly longer delay for "processing" feel
+            }, 1500); 
           }
         }
       }, 1000);
