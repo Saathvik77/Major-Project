@@ -36,6 +36,9 @@ function Profile() {
   const [allTasks, setAllTasks] = useState([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({ name: "", gender: "" });
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -102,6 +105,29 @@ function Profile() {
     }
   };
 
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    setIsUpdating(true);
+    try {
+      const res = await API.put("/auth/profile", editData);
+      if (res.data.success) {
+        setUser(res.data.user);
+        setToast("Identity synchronization successful. Profile updated.");
+        setIsEditing(false);
+      }
+    } catch (err) {
+      console.error("Update Profile Error:", err);
+      setToast("Update failed. Technical interference detected.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const openEditModal = () => {
+    setEditData({ name: user.name, gender: user.gender || "male" });
+    setIsEditing(true);
+  };
+
   const getMilestoneIcon = (iconName) => {
     switch(iconName) {
       case 'Flame': return <Flame className="text-lime-500" size={20} />;
@@ -118,7 +144,7 @@ function Profile() {
   );
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col gap-8 md:gap-20 max-w-7xl mx-auto page-transition overflow-x-hidden">
+    <div className="min-h-screen pl-0 md:pl-[84px] pb-32 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col gap-8 md:gap-20 w-full xl:max-w-7xl xl:mx-auto page-transition overflow-x-hidden">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
         
@@ -164,6 +190,75 @@ function Profile() {
             </motion.div>
           </motion.div>
         )}
+
+        {isEditing && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[200] flex items-center justify-center p-6"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="glass-card w-full max-w-full overflow-hidden p-8 sm:p-12 max-w-md w-full border-lime-500/30 shadow-[0_0_50px_rgba(132,204,22,0.1)]"
+            >
+              <h2 className="text-2xl font-black text-white text-center mb-8 uppercase tracking-tight">Modify Identity</h2>
+              <form onSubmit={handleUpdateProfile} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Codename / Name</label>
+                  <input 
+                    type="text" 
+                    value={editData.name}
+                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-white outline-none focus:border-lime-500/50 transition-all"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Biological Identity / Gender</label>
+                   <div className="grid grid-cols-2 gap-4">
+                      <button 
+                        type="button"
+                        onClick={() => setEditData({ ...editData, gender: "male" })}
+                        className={`py-3 rounded-2xl text-xs font-black uppercase tracking-wide border transition-all ${
+                          editData.gender === "male" ? "bg-lime-500 border-lime-500 text-white shadow-lg shadow-lime-500/20" : "bg-white/5 border-white/10 text-gray-500"
+                        }`}
+                      >
+                        Male
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => setEditData({ ...editData, gender: "female" })}
+                        className={`py-3 rounded-2xl text-xs font-black uppercase tracking-wide border transition-all ${
+                          editData.gender === "female" ? "bg-lime-500 border-lime-500 text-white shadow-lg shadow-lime-500/20" : "bg-white/5 border-white/10 text-gray-500"
+                        }`}
+                      >
+                        Female
+                      </button>
+                   </div>
+                </div>
+                <div className="flex flex-col gap-4 pt-4">
+                  <button 
+                    type="submit"
+                    disabled={isUpdating}
+                    className="w-full py-4 bg-lime-500 text-white font-black text-xs uppercase tracking-wide rounded-2xl shadow-xl shadow-lime-500/20 hover:bg-lime-600 transition-all disabled:opacity-50"
+                  >
+                    {isUpdating ? "Synchronizing..." : "Update Protocol"}
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    className="w-full py-4 bg-white/5 border border-white/10 text-gray-400 font-black text-xs uppercase tracking-wide rounded-2xl hover:bg-white/10 transition-all"
+                  >
+                    Abort
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* Background Glows */}
@@ -183,7 +278,16 @@ function Profile() {
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tighter">{user?.name || "User"}</h1>
-             <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1 text-lime-500/60">Node Integrity: Fully Operational</p>
+             <div className="flex items-center gap-3 mt-1">
+                <p className="text-xs font-black text-gray-500 uppercase tracking-wide text-lime-500/60">Node Integrity: Fully Operational</p>
+                <button 
+                  onClick={openEditModal}
+                  className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[9px] font-black uppercase text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+                >
+                  <Settings size={10} />
+                  Edit Identity
+                </button>
+             </div>
           </div>
         </div>
 

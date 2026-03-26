@@ -46,6 +46,22 @@ const chatWithAI = async (req, res) => {
        });
        reply = "Operational load analyzed. I've optimized your schedule for maximum focus. Review your milestones above.";
     }
+    else if (msg.includes("productivity") || msg.includes("health") || msg.includes("report")) {
+       const allTasks = await Task.find({ user: userId });
+       const completed = allTasks.filter(t => t.completed);
+       const missed = allTasks.filter(t => !t.completed && (t.isOverdue || (t.endTime && t.endTime < new Date().toTimeString().split(' ')[0])));
+       const rescheduled = allTasks.filter(t => t.rescheduledCount > 0);
+
+       executedActions.push({
+         type: "comprehensive_report",
+         completed: completed.map(t => ({ title: t.title, date: t.date })),
+         missed: missed.map(t => ({ title: t.title, date: t.date })),
+         rescheduled: rescheduled.map(t => ({ title: t.title, date: t.date, count: t.rescheduledCount }))
+       });
+
+       const category = msg.includes("health") ? "Health & Vitality" : "Productivity & Performance";
+       reply = `Generating your ${category} report. I've aggregated all operational data, including completed milestones, missed objectives, and rescheduled nodes for a full system audit.`;
+    }
     else if (msg.includes("reschedule my missed") || msg.includes("optimize my flow")) {
        executedActions.push({ type: "navigation", path: "/tasks" });
        reply = "Initiating mass rescheduling protocol for all overdue objectives. Redirecting to Task Nexus for manual confirmation.";

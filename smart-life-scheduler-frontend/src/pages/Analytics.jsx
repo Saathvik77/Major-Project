@@ -219,7 +219,7 @@ function Analytics() {
   ];
 
   return (
-    <div className="min-h-screen pl-0 md:pl-20 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-28 md:pb-10 page-transition">
+    <div className="min-h-screen pl-0 md:pl-20 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col w-full xl:max-w-7xl xl:mx-auto pb-28 md:pb-10 page-transition">
       {/* Lighting FX */}
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
 
@@ -243,7 +243,7 @@ function Analytics() {
       </header>
 
       {/* Top Summary Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 md:mb-20 px-1 sm:px-2 lg:px-0">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 md:mb-20 px-0 sm:px-2">
         <StatCard 
           icon={CheckCircle2} 
           title="Completed Tasks" 

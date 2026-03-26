@@ -312,7 +312,7 @@ const AIAssistant = () => {
   };
 
   return (
-    <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-32 page-transition">
+    <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col w-full xl:max-w-7xl xl:mx-auto pb-32 page-transition overflow-x-hidden">
       {/* Lighting FX */}
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
       
@@ -424,6 +424,74 @@ const AIAssistant = () => {
                                   ))
                                 ) : (
                                   <div className="p-3 text-[10px] text-gray-600 italic">No pending tasks for the remainder of the day.</div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
+
+                      {/* Comprehensive System Report UI */}
+                      {msg.actions?.find(a => a.type === "comprehensive_report") && (() => {
+                        const action = msg.actions.find(a => a.type === "comprehensive_report");
+                        return (
+                          <div className="mt-6 space-y-6 pt-6 border-t border-white/10">
+                            {/* COMPLETED ALL-TIME */}
+                            <div>
+                              <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <Award size={12} /> Historical Milestones
+                              </p>
+                              <div className="max-h-[150px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                                {action.completed?.length > 0 ? (
+                                  action.completed.map((t, idx) => (
+                                    <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
+                                       <span className="text-xs font-bold text-emerald-100/90">{t.title}</span>
+                                       <span className="text-[8px] font-black text-emerald-500/60 uppercase">{new Date(t.date).toLocaleDateString()}</span>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div className="p-3 text-[10px] text-gray-600 italic">No historical milestones recorded.</div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* MISSED ALL-TIME */}
+                            <div>
+                              <p className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <AlertCircle size={12} /> System Overdue Nodes
+                              </p>
+                              <div className="max-h-[150px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                                {action.missed?.length > 0 ? (
+                                  action.missed.map((t, idx) => (
+                                    <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-rose-500/5 border border-rose-500/20">
+                                      <span className="text-xs font-bold text-rose-100/90">{t.title}</span>
+                                      <span className="text-[8px] font-black text-rose-500/60 uppercase">{new Date(t.date).toLocaleDateString()}</span>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div className="p-3 text-[10px] text-gray-600 italic">System integrity maintained. No missed objectives.</div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* RESCHEDULED ALL-TIME */}
+                            <div>
+                              <p className="text-[10px] font-black text-yellow-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <Zap size={12} /> Re-optimized Nodes (Rescheduled)
+                              </p>
+                              <div className="max-h-[150px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                                {action.rescheduled?.length > 0 ? (
+                                  action.rescheduled.map((t, idx) => (
+                                    <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-yellow-500/5 border border-yellow-500/20">
+                                      <div className="flex-1">
+                                        <p className="text-xs font-bold text-yellow-100/90">{t.title}</p>
+                                        <p className="text-[8px] font-black text-yellow-500/60 uppercase">Resynchronized {t.count}x</p>
+                                      </div>
+                                      <span className="text-[8px] font-black text-yellow-500/60 uppercase">{new Date(t.date).toLocaleDateString()}</span>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div className="p-3 text-[10px] text-gray-600 italic">No rescheduled tasks in history.</div>
                                 )}
                               </div>
                             </div>
