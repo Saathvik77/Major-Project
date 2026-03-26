@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import {
   ChevronLeft, CloudFog, CloudRain, Droplets, Flame, Target,
   Sun, Snowflake, Loader2, Play, Pause, Activity, CalendarDays,
-  Maximize, RefreshCcw, Sparkles, Trophy, Dumbbell, Brain, Heart
+  Maximize, RefreshCcw, Sparkles, Trophy, Dumbbell, Brain, Heart,
+  UtensilsCrossed, Coffee, Apple, Plus
 } from "lucide-react";
 import GlassCard from "../components/GlassCard";
 import API from "../api";
@@ -68,6 +69,21 @@ const SPORTS_LIST = [
   { sport: "Gym Workout", intensity: "High", icon: Dumbbell, color: "text-gray-300" },
   { sport: "Meditation", intensity: "Low", icon: Brain, color: "text-indigo-400" },
 ];
+
+const DIET_TIPS = [
+  "Prioritize high protein for muscle recovery today.",
+  "Stay hydrated: Drink at least 500ml of water before each meal.",
+  "Avoid heavy dinners near bedtime for better sleep quality.",
+  "Incorporate healthy fats like avocado or walnuts in your lunch.",
+  "Limit refined sugars to maintain steady energy levels.",
+  "Eat mindfully—take at least 20 minutes for your main meals."
+];
+
+const MEAL_SUGGESTIONS = {
+  breakfast: { title: "Breakfast", idea: "Oatmeal with berries & chia seeds", icon: Coffee, color: "text-amber-400" },
+  lunch: { title: "Lunch", idea: "Grilled Chicken Salad with Quinoa", icon: UtensilsCrossed, color: "text-emerald-400" },
+  dinner: { title: "Dinner", idea: "Baked Salmon with Steamed Broccoli", icon: Apple, color: "text-rose-400" },
+};
 
 function Health() {
   const navigate = useNavigate();
@@ -286,6 +302,8 @@ function Health() {
     }
   };
 
+  const [dietTip] = useState(DIET_TIPS[Math.floor(Math.random() * DIET_TIPS.length)]);
+
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen pl-0 md:pl-[84px] p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col max-w-7xl mx-auto pb-32 page-transition">
@@ -311,7 +329,7 @@ function Health() {
 
         {/* ── AI Weekly Challenge ── */}
         <div className="w-full h-full flex justify-center items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
             <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 rounded-full blur-3xl group-hover:bg-lime-500/20 transition-colors" />
 
             {/* Badge */}
@@ -390,13 +408,13 @@ function Health() {
         {/* ── Weather Suggestion ── */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
           {loadingWeather ? (
-            <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-center justify-center text-center border border-white/20 shadow-2xl h-full">
+            <GlassCard className="relative z-10 w-full p-8 flex flex-col items-center justify-center text-center border border-white/20 shadow-2xl h-full min-h-[480px]">
               <Loader2 size={40} className="text-white animate-spin mb-4" />
               <p className="text-gray-300 font-medium tracking-wide">Detecting your location...</p>
             </GlassCard>
           ) : weatherSuggestion ? (
             <div className="w-full h-full flex justify-center items-center">
-              <GlassCard className={`relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border shadow-2xl overflow-hidden group bg-gradient-to-b min-h-[480px] ${weatherSuggestion.bg} ${weatherSuggestion.border}`}>
+              <GlassCard className={`relative z-10 w-full p-6 sm:p-8 flex flex-col items-center text-center border shadow-2xl overflow-hidden group bg-gradient-to-b min-h-[480px] ${weatherSuggestion.bg} ${weatherSuggestion.border}`}>
                 <div className="flex items-center gap-2 mb-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
                   <span className="text-sm font-bold tracking-widest uppercase text-white">Weather Suggestion</span>
                 </div>
@@ -433,7 +451,7 @@ function Health() {
               </GlassCard>
             </div>
           ) : (
-            <GlassCard className="relative z-10 w-full max-w-sm p-8 flex flex-col items-center justify-center text-center border border-white/20 shadow-2xl h-full min-h-[480px]">
+            <GlassCard className="relative z-10 w-full p-8 flex flex-col items-center justify-center text-center border border-white/20 shadow-2xl h-full min-h-[480px]">
               <p className="text-red-300 font-medium">Unable to load weather data.</p>
             </GlassCard>
           )}
@@ -445,7 +463,7 @@ function Health() {
 
         {/* Focus Tracker */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
             <div className="absolute top-0 left-0 w-32 h-32 bg-lime-500/10 rounded-full blur-3xl group-hover:bg-lime-500/20 transition-colors" />
 
             <div className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full shadow-inner">
@@ -488,7 +506,7 @@ function Health() {
 
         {/* Activity Heat Map */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl h-full group bg-slate-900/20 min-h-[480px]">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl h-full group bg-slate-900/20 min-h-[480px]">
             <div className="flex items-center gap-2 mb-6">
               <CalendarDays size={24} className="text-lime-400 drop-shadow-[0_0_10px_rgba(132,204,22,0.5)]" />
               <h3 className="text-xl font-bold tracking-tight text-white">Activity Heat Map</h3>
@@ -539,7 +557,7 @@ function Health() {
         
         {/* Water Intake Tracker */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-center text-center border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-colors" />
             
             <div className="flex items-center gap-2 mb-6 bg-blue-500/10 border border-blue-500/20 px-4 py-1.5 rounded-full shadow-inner">
@@ -572,7 +590,7 @@ function Health() {
 
         {/* Sports Recommendation */}
         <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
-          <GlassCard className="relative z-10 w-full max-w-sm p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
             <div className="absolute -top-10 -left-10 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl group-hover:bg-orange-500/20 transition-colors" />
             
             <div className="flex items-center gap-2 mb-6 bg-orange-500/10 border border-orange-500/20 px-4 py-1.5 rounded-full shadow-inner">
@@ -649,6 +667,47 @@ function Health() {
           </GlassCard>
         </div>
 
+      </div>
+
+      {/* ── Diet Suggestions ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 max-w-5xl mx-auto mb-12 md:mb-20">
+        <div className="flex justify-center relative w-full h-full min-h-[300px] items-center">
+          <GlassCard className="relative z-10 w-full p-6 sm:p-8 flex flex-col items-start border border-white/20 shadow-2xl overflow-hidden group min-h-[480px]">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-3xl group-hover:bg-rose-500/20 transition-colors" />
+            
+            <div className="flex items-center gap-2 mb-6 bg-rose-500/10 border border-rose-500/20 px-4 py-1.5 rounded-full shadow-inner">
+              <UtensilsCrossed size={18} className="text-rose-400" />
+              <span className="text-sm font-bold tracking-widest uppercase text-rose-300">Diet Suggestions</span>
+            </div>
+
+            <div className="bg-white/5 border border-white/10 p-6 rounded-2xl mb-8 w-full group-hover:bg-white/10 transition-colors">
+              <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.2em] mb-2">Daily Nutrition Tip</p>
+              <p className="text-lg font-bold text-white leading-tight italic">"{dietTip}"</p>
+            </div>
+
+            <div className="space-y-4 w-full">
+              {Object.values(MEAL_SUGGESTIONS).map((meal, idx) => (
+                <div key={idx} className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-white/10 transition-all hover:translate-x-1">
+                  <div className={`w-12 h-12 rounded-xl bg-black/40 flex items-center justify-center ${meal.color}`}>
+                    <meal.icon size={24} />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">{meal.title}</p>
+                    <p className="font-bold text-white text-sm">{meal.idea}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        </div>
+        
+        {/* Placeholder to balance the row or for future feature */}
+        <div className="hidden md:flex justify-center items-center opacity-20 hover:opacity-40 transition-opacity">
+          <div className="text-center p-8 border-2 border-dashed border-white/10 rounded-[2rem]">
+            <Plus size={48} className="mx-auto mb-4 text-gray-400" />
+            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">More metrics coming soon</p>
+          </div>
+        </div>
       </div>
     </div>
   );
