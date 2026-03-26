@@ -74,7 +74,7 @@ const Sidebar = () => {
   const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
     { icon: ClipboardList, label: "Tasks", path: "/tasks" },
-    { icon: PieChart, label: "Analytics", path: "/analytics" },
+    { icon: Activity, label: "Productivity", path: "/ai-assistant?trigger=productivity" },
     { icon: Bot, label: "AI Assistant", path: "/ai-assistant" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];

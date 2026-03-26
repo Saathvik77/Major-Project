@@ -26,7 +26,7 @@ import {
   Moon,
   Sun as SunIcon
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../api";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -238,6 +238,10 @@ const AIAssistant = () => {
     }
   };
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const trigger = searchParams.get('trigger');
+
   useEffect(() => {
     fetchAIAssistantData();
     
@@ -246,6 +250,14 @@ const AIAssistant = () => {
     window.addEventListener("tasksUpdated", handleUpdate);
     return () => window.removeEventListener("tasksUpdated", handleUpdate);
   }, []);
+
+  useEffect(() => {
+    if (trigger === 'productivity' && !loading && messages.length <= 1) {
+       handleSend("Productivity?");
+       // Clean up the URL to prevent re-triggering on refresh/nav
+       navigate('/ai-assistant', { replace: true });
+    }
+  }, [trigger, loading, messages.length]);
 
   const handleSend = async (overrideInput) => {
     const messageText = overrideInput || input;
