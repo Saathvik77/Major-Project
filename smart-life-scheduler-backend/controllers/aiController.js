@@ -1,4 +1,5 @@
 const Task = require("../models/Task");
+const User = require("../models/User");
 
 const chatWithAI = async (req, res) => {
   try {
@@ -9,28 +10,118 @@ const chatWithAI = async (req, res) => {
       return res.status(400).json({ message: "Message is required" });
     }
 
+    const user = await User.findById(userId);
     const msg = message.toLowerCase().trim();
     const executedActions = [];
     let reply = "";
 
-    // helper to extract time from string (e.g., "at 6pm", "for 3:30", "by 10 am")
+    // ─── HELPER: EXTRACT TIME ──────────────────────────────────────────
     const extractTime = (str) => {
-      const timeMatch = str.match(/(?:at|for|by|to)\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i);
-      if (!timeMatch) return { time: "09:00", text: str };
+      const timeMatch = str.match(/(?:at|for|by|to|from)\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/gi);
+      if (!timeMatch || timeMatch.length < 1) return { time: "09:00", text: str };
       
-      let timeStr = timeMatch[1].toLowerCase();
-      let [rawHrs, mins] = timeStr.replace(/am|pm/g, '').split(':');
-      let hours = parseInt(rawHrs);
-      mins = mins || "00";
-      if (timeStr.includes("pm") && hours < 12) hours += 12;
-      if (timeStr.includes("am") && hours === 12) hours = 0;
+      const parseSingle = (tMatch) => {
+        let tStr = tMatch.replace(/at|for|by|to|from|\s/gi, '').toLowerCase();
+        let [rawHrs, mins] = tStr.replace(/am|pm/g, '').split(':');
+        let hours = parseInt(rawHrs);
+        mins = mins || "00";
+        if (tStr.includes("pm") && hours < 12) hours += 12;
+        if (tStr.includes("am") && hours === 12) hours = 0;
+        return `${String(hours).padStart(2, '0')}:${mins.padStart(2, '0')}`;
+      };
+
+      const startTime = parseSingle(timeMatch[0]);
+      const endTime = timeMatch[1] ? parseSingle(timeMatch[1]) : "17:00";
       
-      const formattedTime = `${String(hours).padStart(2, '0')}:${mins.padStart(2, '0')}`;
-      const remainingText = str.replace(timeMatch[0], "").trim();
-      return { time: formattedTime, text: remainingText };
+      const remainingText = str.replace(timeMatch[0], "").replace(timeMatch[1] || "", "").trim();
+      return { startTime, endTime, text: remainingText };
     };
 
-    // ─── 0. INTENT DETECTION CHAIN ──────────────────────────────────────────
+    // ─── 0. CONTEXTUAL FLOW HANDLING ─────────────────────────────────────────
+    if (user.aiContext?.flow) {
+      if (msg === "cancel" || msg === "exit" || msg === "stop") {
+        user.aiContext = { flow: null, step: 0, data: {} };
+        await user.save();
+        return res.json({ reply: "Flow terminated. System returning to standby mode.", actions: [] });
+      }
+
+      let context = user.aiContext;
+
+      // STEP 1: CAPTURE SUBJECTS
+      if (context.step === 1) {
+        // Assume user provided a list of subjects
+        const subjects = message.split(/[,;|]/).map(s => s.trim()).filter(s => s.length > 0);
+        if (subjects.length === 0) {
+          reply = "I couldn't identify any subjects. Please list the topics you want to cover (e.g., Algebra, Geometry, Physics).";
+        } else {
+          context.data.subjects = subjects;
+          context.step = 2;
+          user.markModified('aiContext');
+          await user.save();
+          reply = `Acknowledged. I've noted: ${subjects.join(", ")}.\n\nFinal step: What are your preferred daily timings for this ${context.data.days}-day roadmap? (e.g., 9am to 5pm)`;
+        }
+      } 
+      // STEP 2: CAPTURE TIMINGS & FINALIZE
+      else if (context.step === 2) {
+        const { startTime, endTime } = extractTime(msg);
+        const { subjects, days, topic } = context.data;
+        
+        // Finalize Scheduling Logic
+        const startDate = new Date();
+        const createdTasks = [];
+
+        for (let i = 0; i < parseInt(days); i++) {
+          const currentDate = new Date(startDate);
+          currentDate.setDate(startDate.getDate() + i + 1); // Start from tomorrow
+          const dateStr = currentDate.toISOString().split('T')[0];
+
+          // Distribute subjects over the course of the day
+          subjects.forEach((subject, idx) => {
+            // Very simple distribution: Each subject gets a slot
+            const task = new Task({
+              user: userId,
+              title: `${topic}: ${subject} (Session ${i+1})`,
+              description: `Automated study block for ${topic}. Integrated via AI Coach.`,
+              date: dateStr,
+              startTime: startTime,
+              endTime: endTime,
+              category: "Learning",
+              priority: "High"
+            });
+            createdTasks.push(task);
+            executedActions.push({ type: "task_created", title: task.title });
+          });
+        }
+
+        await Task.insertMany(createdTasks);
+        
+        // Reset Context
+        user.aiContext = { flow: null, step: 0, data: {} };
+        await user.save();
+
+        reply = `Success! I've orchestrated your ${days}-day ${topic} roadmap. ${createdTasks.length} optimized sessions have been synchronized to your dashboard. \n\nStarting tomorrow: ${startTime} to ${endTime}. Godspeed! 🚀`;
+      }
+
+      return res.json({ reply, actions: executedActions });
+    }
+
+    // ─── 1. NEW FLOW INITIATION ──────────────────────────────────────────────
+    if (msg.includes("prepare") && (msg.includes("schedule") || msg.includes("roadmap") || msg.includes("plan"))) {
+      const dayMatch = msg.match(/(\d+)\s*day/i);
+      const days = dayMatch ? dayMatch[1] : "5";
+      const topic = msg.replace(/prepare|schedule|roadmap|plan|\d+\s*day|for/gi, "").trim() || "Deep Learning";
+
+      user.aiContext = {
+        flow: "scheduling",
+        step: 1,
+        data: { topic, days }
+      };
+      user.markModified('aiContext');
+      await user.save();
+
+      reply = `I've initiated the **Architect Protocol** for your ${days}-day "${topic}" roadmap. 🏗️\n\nTo optimize your nodes, please provide the subjects or modules you wish to cover (e.g., Math, Science, History).`;
+      return res.json({ reply, actions: [] });
+    }
     if (msg.includes("plan my day") || msg.includes("analyze my load") || (msg.includes("plan") && msg.includes("day"))) {
        const today = new Date().toISOString().split('T')[0];
        const tasks = await Task.find({ user: userId, date: today });

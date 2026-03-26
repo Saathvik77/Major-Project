@@ -30,6 +30,11 @@ const userSchema = new mongoose.Schema(
     gender: {
       type: String,
       default: "",
+    },
+    aiContext: {
+      flow: { type: String, default: null },
+      step: { type: Number, default: 0 },
+      data: { type: mongoose.Schema.Types.Mixed, default: {} }
     }
   },
   { timestamps: true }
