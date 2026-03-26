@@ -4,7 +4,7 @@ import {
   ChevronLeft, CloudFog, CloudRain, Droplets, Flame, Target,
   Sun, Snowflake, Loader2, Play, Pause, Activity, CalendarDays,
   Maximize, RefreshCcw, Sparkles, Trophy, Dumbbell, Brain, Heart,
-  UtensilsCrossed, Coffee, Apple, Plus
+  UtensilsCrossed, Coffee, Apple, Plus, ArrowUpRight, TrendingUp
 } from "lucide-react";
 import GlassCard from "../components/GlassCard";
 import API from "../api";
