@@ -21,21 +21,20 @@ function Landing() {
           Smart Life Scheduler
         </h1>
 
-        {token ? (
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="liquid-glass liquid-glass-lime px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest shrink-0"
-          >
-            Dashboard
-          </button>
-        ) : (
+        <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/login")}
             className="liquid-glass liquid-glass-lime px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest shrink-0"
           >
             Login
           </button>
-        )}
+          <button
+            onClick={() => navigate("/register")}
+            className="px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest shrink-0 border border-white/10 hover:bg-white/5 transition-all"
+          >
+            Register
+          </button>
+        </div>
       </nav>
 
       {/* Hero Section */}
