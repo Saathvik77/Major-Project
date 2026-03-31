@@ -323,44 +323,54 @@ function Health() {
 
   const getDietPlan = () => {
     const diff = userWeight - goalWeight;
-    if (diff > 5) {
+    if (diff > 8) {
       return {
-        title: "Caloric Deficit Protocol",
-        desc: "Focus on high-volume, low-calorie foods. Increase protein to preserve muscle matrix.",
+        title: "Aggressive Caloric Protocol",
+        desc: `Target: ${goalWeight}kg. Significant gap detected. Focus on lean proteins and high-fiber greens. Zero refined sugars.`,
         meals: [
-          { title: "Breakfast", idea: "Egg white omelette with spinach & 1 whole grain toast", icon: Coffee, color: "text-amber-400" },
-          { title: "Lunch", idea: "Large green salad with 150g grilled chicken & lemon vinaigrette", icon: UtensilsCrossed, color: "text-emerald-400" },
-          { title: "Dinner", idea: "Cod or Tilapia with huge portion of steamed green beans", icon: Apple, color: "text-rose-400" },
+          { title: "Breakfast", idea: "3 Egg whites + 1 whole egg scrambled with spinach", icon: Coffee, color: "text-rose-400" },
+          { title: "Lunch", idea: "200g Grilled Chicken breast with lemon and steamed broccoli", icon: UtensilsCrossed, color: "text-rose-400" },
+          { title: "Dinner", idea: "Baked White Fish with large asparagus portion", icon: Apple, color: "text-rose-400" },
+        ]
+      };
+    } else if (diff > 3) {
+      return {
+        title: "Caloric Deficit Mode",
+        desc: `Target: ${goalWeight}kg. Moderate gap. Focus on portion control and removing liquid calories.`,
+        meals: [
+          { title: "Breakfast", idea: "Greek yogurt with a handful of berries and flax seeds", icon: Coffee, color: "text-amber-400" },
+          { title: "Lunch", idea: "Tuna salad (lite mayo) on a bed of mixed greens", icon: UtensilsCrossed, color: "text-amber-400" },
+          { title: "Dinner", idea: "Grilled Turkey burger patties with sautéed zucchini", icon: Apple, color: "text-amber-400" },
         ]
       };
     } else if (diff > 0) {
       return {
-        title: "Weight Optimization Mode",
-        desc: "Moderate caloric deficit. Balance macros with emphasis on complex carbs for training.",
+        title: "Weight Optimization",
+        desc: `Target: ${goalWeight}kg. Final stretch. Maintenance-level calories with increased cardio intensity.`,
         meals: [
-          { title: "Breakfast", idea: "Oatmeal with berries, chia seeds & half scoop protein", icon: Coffee, color: "text-amber-400" },
-          { title: "Lunch", idea: "Turkey wrap with plenty of veggies and a side of fruit", icon: UtensilsCrossed, color: "text-emerald-400" },
-          { title: "Dinner", idea: "Grilled Salmon with 1/2 cup brown rice and asparagus", icon: Apple, color: "text-rose-400" },
+          { title: "Breakfast", idea: "1/2 cup Oats with cinnamon and 5 crushed walnuts", icon: Coffee, color: "text-emerald-400" },
+          { title: "Lunch", idea: "Quinoa bowl with chickpeas, peppers, and cucumbers", icon: UtensilsCrossed, color: "text-emerald-400" },
+          { title: "Dinner", idea: "Lean Steak (150g) with a small sweet potato", icon: Apple, color: "text-emerald-400" },
         ]
       };
     } else if (diff < -2) {
       return {
-        title: "Muscular Rebuild Protocol",
-        desc: "Caloric surplus detected. Focus on nutrient-dense foods to support metabolic growth.",
+        title: "Hyper-Caloric Protocol",
+        desc: `Target: ${goalWeight}kg. Surplus required. Focus on healthy fats and dense carbohydrate nodes.`,
         meals: [
-          { title: "Breakfast", idea: "3 whole eggs, avocado toast & large glass of milk", icon: Coffee, color: "text-amber-400" },
-          { title: "Lunch", idea: "Beef bowl with quinoa, black beans and sweet potato", icon: UtensilsCrossed, color: "text-emerald-400" },
-          { title: "Dinner", idea: "Chicken breast with 1 cup pasta and pesto sauce", icon: Apple, color: "text-rose-400" },
+          { title: "Breakfast", idea: "3 whole eggs, avocado toast & large glass of milk", icon: Coffee, color: "text-blue-400" },
+          { title: "Lunch", idea: "Beef bowl with quinoa, black beans and sweet potato", icon: UtensilsCrossed, color: "text-blue-400" },
+          { title: "Dinner", idea: "Chicken breast with 1 cup pasta and pesto sauce", icon: Apple, color: "text-blue-400" },
         ]
       };
     } else {
       return {
-        title: "Maintenance Calibration",
-        desc: "Equilibrium achieved. Maintain current intake while focus on micronutrient density.",
+        title: "System Equilibrium",
+        desc: `Target: ${goalWeight}kg achieved. Maintain caloric balance with 80/20 nutrient density.`,
         meals: [
-          { title: "Breakfast", idea: "Greek yogurt with granola and mixed nuts", icon: Coffee, color: "text-amber-400" },
-          { title: "Lunch", idea: "Mediterranean bowl with chickpeas, feta and olives", icon: UtensilsCrossed, color: "text-emerald-400" },
-          { title: "Dinner", idea: "Stir-fry with tofu and mixed vegetables over rice", icon: Apple, color: "text-rose-400" },
+          { title: "Breakfast", idea: "Overnight oats with protein powder and mixed fruit", icon: Coffee, color: "text-lime-400" },
+          { title: "Lunch", idea: "Mediterranean wrap with hummus and grilled veggies", icon: UtensilsCrossed, color: "text-lime-400" },
+          { title: "Dinner", idea: "Stir-fry with tofu and colorful veggies over brown rice", icon: Apple, color: "text-lime-400" },
         ]
       };
     }

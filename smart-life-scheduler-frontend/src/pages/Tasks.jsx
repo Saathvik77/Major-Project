@@ -834,34 +834,6 @@ export default function Tasks() {
                </div>
             </div>
 
-            <div className="glass-card p-8 flex flex-col gap-6 bg-white/[0.02] border border-white/5 shadow-2xl relative overflow-hidden group min-h-[320px]">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[40px] -z-10" />
-                <div className="flex items-center justify-between">
-                   <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500">
-                         <BookOpen size={20} />
-                      </div>
-                      <h4 className="text-xs font-black uppercase tracking-wide text-gray-400">Personal Notes</h4>
-                   </div>
-                   <div className="w-1.5 h-1.5 rounded-full bg-lime-500/40 animate-pulse" />
-                </div>
-                
-                <textarea 
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Capture your thoughts, goals, or important details here..."
-                  className="flex-1 bg-transparent border-none outline-none text-sm text-gray-300 placeholder:text-gray-700 leading-relaxed resize-none scrollbar-hide"
-                />
-                
-                <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-                   <span className="text-xs font-black text-gray-600 uppercase tracking-wide leading-none">Auto-saving to node</span>
-                   <div className="flex gap-1">
-                      <div className="w-1 h-1 rounded-full bg-lime-500/30" />
-                      <div className="w-1 h-1 rounded-full bg-lime-500/20" />
-                      <div className="w-1 h-1 rounded-full bg-lime-500/10" />
-                   </div>
-                </div>
-             </div>
           </div>
         </div>
 

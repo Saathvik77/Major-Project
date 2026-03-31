@@ -6,7 +6,7 @@ const {
   updateNote, 
   deleteNote 
 } = require("../controllers/noteController");
-const { protect } = require("../middleware/authMiddleware");
+const protect = require("../middleware/authMiddleware");
 
 // All routes are protected
 router.use(protect);
