@@ -61,7 +61,7 @@ const Sidebar = () => {
     { icon: PieChart, label: "Analytics", path: "/analytics" },
     { icon: Bot, label: "AI Assistant", path: "/ai-assistant" },
     { icon: Activity, label: "Health", path: "/health" },
-    { icon: BookOpen, label: "Notes", path: "/notes" },
+    { icon: BookOpen, label: "Short Notes", path: "/notes" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];
 

@@ -11,7 +11,7 @@ import Profile from "./pages/Profile";
 import Health from "./pages/Health";
 import AIAssistant from "./pages/AIAssistant";
 import Settings from "./pages/Settings";
-import Notes from "./pages/Notes";
+import ShortNotes from "./pages/ShortNotes";
 import { ThemeProvider } from "./ThemeContext";
 import AnimatedBackground from "./components/AnimatedBackground";
 import Layout from "./components/Layout";
@@ -109,7 +109,7 @@ function App() {
             element={
               <PrivateRoute>
                 <Layout>
-                  <Notes />
+                  <ShortNotes />
                 </Layout>
               </PrivateRoute>
             }

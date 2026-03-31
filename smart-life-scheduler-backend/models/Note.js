@@ -23,6 +23,10 @@ const noteSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    color: {
+      type: String,
+      default: "#d9e87b",
+    },
   },
   { timestamps: true }
 );

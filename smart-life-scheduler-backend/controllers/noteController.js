@@ -3,12 +3,13 @@ const Note = require("../models/Note");
 // CREATE NOTE
 const createNote = async (req, res) => {
   try {
-    const { content, date, tags } = req.body;
+    const { content, date, tags, color } = req.body;
     const note = await Note.create({
       user: req.user.id,
       content,
       date: date || new Date(),
       tags: tags || [],
+      color: color || "#d9e87b",
     });
     res.status(201).json({ success: true, note });
   } catch (error) {
@@ -37,10 +38,10 @@ const getNotesByDate = async (req, res) => {
 // UPDATE NOTE
 const updateNote = async (req, res) => {
   try {
-    const { content, tags, convertedToTask } = req.body;
+    const { content, tags, convertedToTask, color } = req.body;
     const note = await Note.findOneAndUpdate(
       { _id: req.params.id, user: req.user.id },
-      { content, tags, convertedToTask },
+      { content, tags, convertedToTask, color },
       { new: true }
     );
     if (!note) {

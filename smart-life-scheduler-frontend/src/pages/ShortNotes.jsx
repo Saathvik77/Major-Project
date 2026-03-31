@@ -4,9 +4,7 @@ import {
   ChevronRight, 
   Plus, 
   Pin, 
-  Tag as TagIcon, 
   Sparkles, 
-  RefreshCcw, 
   BookOpen, 
   Trash2,
   CheckCircle,
@@ -17,14 +15,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import api from "../api";
 import Toast from "../components/Toast";
 
-export default function Notes() {
+export default function ShortNotes() {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
   const [toast, setToast] = useState(null);
   const [activeTags, setActiveTags] = useState([]);
-  const [isAiSuggesting, setIsAiSuggesting] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#d9e87b");
 
   const fetchNotes = useCallback(async () => {
@@ -150,7 +147,7 @@ export default function Notes() {
 
            <div className="relative z-10 flex flex-col h-full">
               <h4 className="text-[10px] font-black text-black/50 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                 Personal Notes
+                 Short Note
               </h4>
               
               <p className="text-black/80 font-medium leading-[28px] flex-1 mb-6 text-sm">
@@ -227,8 +224,8 @@ export default function Notes() {
             <BookOpen size={20} className="md:w-8 md:h-8" strokeWidth={2} />
           </div>
           <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter truncate">Thought Matrix</h1>
-            <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1 text-lime-500/60 font-black truncate">Cognitive Storage & Archiving</p>
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter truncate">Short Notes</h1>
+            <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1 text-lime-500/60 font-black truncate">Quick Thoughts & Snippets</p>
           </div>
         </div>
 
