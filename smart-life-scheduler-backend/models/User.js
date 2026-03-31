@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: null,
     },
+    targetWeight: {
+      type: Number,
+      default: null,
+    },
     phno: {
       type: String,
       default: "",

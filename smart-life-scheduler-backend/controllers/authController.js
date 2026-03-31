@@ -85,7 +85,7 @@ const loginUser = async (req, res) => {
 // UPDATE PROFILE
 const updateProfile = async (req, res) => {
   try {
-    const { name, age, weight, phno, gender, email } = req.body;
+    const { name, age, weight, targetWeight, phno, gender, email } = req.body;
     
     // Find the current logged in user
     const user = await User.findById(req.user.id);
@@ -115,6 +115,7 @@ const updateProfile = async (req, res) => {
     if (weight !== undefined) user.weight = weight;
     if (phno !== undefined) user.phno = phno;
     if (gender !== undefined) user.gender = gender;
+    if (targetWeight !== undefined) user.targetWeight = targetWeight;
 
     await user.save();
 
@@ -128,7 +129,8 @@ const updateProfile = async (req, res) => {
         age: user.age,
         weight: user.weight,
         phno: user.phno,
-        gender: user.gender
+        gender: user.gender,
+        targetWeight: user.targetWeight
       }
     });
 

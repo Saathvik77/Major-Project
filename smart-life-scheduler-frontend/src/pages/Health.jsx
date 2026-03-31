@@ -107,7 +107,7 @@ const WEIGHT_HISTORY = [
 function Health() {
   const navigate = useNavigate();
   const [userWeight, setUserWeight] = useState(70);
-  const [goalWeight] = useState(68.5);
+  const [goalWeight, setGoalWeight] = useState(68.5);
   const [allTasks, setAllTasks] = useState([]);
   const [toast, setToast] = useState(null);
   const [showAllSports, setShowAllSports] = useState(false);
@@ -220,6 +220,7 @@ function Health() {
         const res = await API.get("/auth/profile");
         const userData = res.data.user || res.data;
         if (userData?.weight) setUserWeight(userData.weight);
+        if (userData?.targetWeight) setGoalWeight(userData.targetWeight);
       } catch (err) {
         console.error("Health Profile Error:", err);
       }
@@ -319,6 +320,53 @@ function Health() {
   };
 
   const [dietTip] = useState(DIET_TIPS[Math.floor(Math.random() * DIET_TIPS.length)]);
+
+  const getDietPlan = () => {
+    const diff = userWeight - goalWeight;
+    if (diff > 5) {
+      return {
+        title: "Caloric Deficit Protocol",
+        desc: "Focus on high-volume, low-calorie foods. Increase protein to preserve muscle matrix.",
+        meals: [
+          { title: "Breakfast", idea: "Egg white omelette with spinach & 1 whole grain toast", icon: Coffee, color: "text-amber-400" },
+          { title: "Lunch", idea: "Large green salad with 150g grilled chicken & lemon vinaigrette", icon: UtensilsCrossed, color: "text-emerald-400" },
+          { title: "Dinner", idea: "Cod or Tilapia with huge portion of steamed green beans", icon: Apple, color: "text-rose-400" },
+        ]
+      };
+    } else if (diff > 0) {
+      return {
+        title: "Weight Optimization Mode",
+        desc: "Moderate caloric deficit. Balance macros with emphasis on complex carbs for training.",
+        meals: [
+          { title: "Breakfast", idea: "Oatmeal with berries, chia seeds & half scoop protein", icon: Coffee, color: "text-amber-400" },
+          { title: "Lunch", idea: "Turkey wrap with plenty of veggies and a side of fruit", icon: UtensilsCrossed, color: "text-emerald-400" },
+          { title: "Dinner", idea: "Grilled Salmon with 1/2 cup brown rice and asparagus", icon: Apple, color: "text-rose-400" },
+        ]
+      };
+    } else if (diff < -2) {
+      return {
+        title: "Muscular Rebuild Protocol",
+        desc: "Caloric surplus detected. Focus on nutrient-dense foods to support metabolic growth.",
+        meals: [
+          { title: "Breakfast", idea: "3 whole eggs, avocado toast & large glass of milk", icon: Coffee, color: "text-amber-400" },
+          { title: "Lunch", idea: "Beef bowl with quinoa, black beans and sweet potato", icon: UtensilsCrossed, color: "text-emerald-400" },
+          { title: "Dinner", idea: "Chicken breast with 1 cup pasta and pesto sauce", icon: Apple, color: "text-rose-400" },
+        ]
+      };
+    } else {
+      return {
+        title: "Maintenance Calibration",
+        desc: "Equilibrium achieved. Maintain current intake while focus on micronutrient density.",
+        meals: [
+          { title: "Breakfast", idea: "Greek yogurt with granola and mixed nuts", icon: Coffee, color: "text-amber-400" },
+          { title: "Lunch", idea: "Mediterranean bowl with chickpeas, feta and olives", icon: UtensilsCrossed, color: "text-emerald-400" },
+          { title: "Dinner", idea: "Stir-fry with tofu and mixed vegetables over rice", icon: Apple, color: "text-rose-400" },
+        ]
+      };
+    }
+  };
+
+  const dietPlan = getDietPlan();
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
@@ -559,12 +607,12 @@ function Health() {
             </div>
 
             <div className="bg-white/5 border border-white/10 p-5 rounded-2xl mb-6 w-full group-hover:bg-white/10 transition-colors">
-              <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.2em] mb-1.5">Nutrition Tip</p>
-              <p className="text-md font-bold text-white leading-tight italic">"{dietTip}"</p>
+              <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.2em] mb-1.5">{dietPlan.title}</p>
+              <p className="text-xs font-bold text-white leading-tight italic">"{dietPlan.desc}"</p>
             </div>
 
             <div className="space-y-3 w-full">
-              {Object.values(MEAL_SUGGESTIONS).map((meal, idx) => (
+              {dietPlan.meals.map((meal, idx) => (
                 <div key={idx} className="flex items-center gap-3 p-3 bg-white/5 rounded-2xl border border-white/5 hover:border-white/10 transition-all hover:translate-x-1">
                   <div className={`w-10 h-10 rounded-xl bg-black/40 flex items-center justify-center ${meal.color}`}>
                     <meal.icon size={20} />

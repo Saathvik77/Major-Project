@@ -37,7 +37,7 @@ function Profile() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({ name: "", gender: "", email: "", phno: "", weight: "" });
+  const [editData, setEditData] = useState({ name: "", gender: "", email: "", phno: "", weight: "", targetWeight: "" });
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
@@ -129,7 +129,8 @@ function Profile() {
       gender: user.gender || "male",
       email: user.email || "",
       phno: user.phno || "",
-      weight: user.weight || ""
+      weight: user.weight || "",
+      targetWeight: user.targetWeight || ""
     });
     setIsEditing(true);
   };
@@ -269,15 +270,27 @@ function Profile() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Physical Metric / Weight (kg)</label>
-                  <input 
-                    type="number" 
-                    value={editData.weight}
-                    onChange={(e) => setEditData({ ...editData, weight: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-white outline-none focus:border-lime-500/50 transition-all"
-                    placeholder="70"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Current Weight (kg)</label>
+                    <input 
+                      type="number" 
+                      value={editData.weight}
+                      onChange={(e) => setEditData({ ...editData, weight: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-white outline-none focus:border-lime-500/50 transition-all"
+                      placeholder="70"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Target Weight (kg)</label>
+                    <input 
+                      type="number" 
+                      value={editData.targetWeight}
+                      onChange={(e) => setEditData({ ...editData, targetWeight: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-white outline-none focus:border-lime-500/50 transition-all"
+                      placeholder="65"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-4 pt-4">
                   <button 
@@ -380,6 +393,13 @@ function Profile() {
                     <Target size={14} className="text-lime-500" />
                   </div>
                   <p className="text-3xl sm:text-4xl font-black text-white tracking-tighter">{summary?.productivityScore || "0%"}</p>
+               </div>
+               <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all flex flex-col gap-3 sm:gap-4">
+                  <div className="flex items-center justify-between">
+                     <p className="text-xs font-black text-gray-500 uppercase tracking-wide">Target Weight</p>
+                    <Target size={14} className="text-lime-500" />
+                  </div>
+                  <p className="text-3xl sm:text-4xl font-black text-white tracking-tighter">{user?.targetWeight || "—"} <span className="text-lg text-gray-500">kg</span></p>
                </div>
             </div>
           </div>
