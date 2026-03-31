@@ -72,6 +72,10 @@ export default function Notes() {
   };
 
   const convertToTask = async (note) => {
+    if (note.content.length < 3) {
+      setToast("Note too short for task matrix expansion (min 3 chars).");
+      return;
+    }
     try {
       await api.post("/tasks", {
         title: note.content,
@@ -79,6 +83,7 @@ export default function Notes() {
         priority: "Medium",
         category: note.tags[0] || "General",
         startTime: "09:00",
+        duration: 30,
       });
       await api.put(`/notes/${note._id}`, { convertedToTask: true });
       setNotes(notes.map(n => n._id === note._id ? { ...n, convertedToTask: true } : n));
