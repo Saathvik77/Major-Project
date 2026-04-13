@@ -126,19 +126,44 @@ const chatWithAI = async (req, res) => {
 
     // ─── 2. EXISTING INTENTS (LOWER PRIORITY) ──────────────────────────────────
     if (msg.includes("plan my day") || msg.includes("analyze my load") || (msg.includes("plan") && msg.includes("day"))) {
-       const today = new Date().toISOString().split('T')[0];
-       const tasks = await Task.find({ user: userId, date: today });
+       const todayDate = new Date();
+       todayDate.setHours(0, 0, 0, 0);
+       const todayStr = todayDate.toISOString().split('T')[0];
+
+       // 1. Recover Overdue Tasks: Find incomplete tasks from the past and move them to Today
+       const overdueTasks = await Task.find({ 
+         user: userId, 
+         completed: false, 
+         date: { $lt: todayStr } 
+       });
+
+       if (overdueTasks.length > 0) {
+         await Task.updateMany(
+           { _id: { $in: overdueTasks.map(t => t._id) } },
+           { $set: { date: todayStr } }
+         );
+       }
+
+       // 2. Fetch today's consolidated plan
+       const tasks = await Task.find({ user: userId, date: todayStr });
        const completed = tasks.filter(t => t.completed);
-       const missed = tasks.filter(t => !t.completed && t.endTime < new Date().toTimeString().split(' ')[0]);
-       const pending = tasks.filter(t => !t.completed && t.endTime >= new Date().toTimeString().split(' ')[0]);
+       const currentTimeStr = new Date().toTimeString().split(' ')[0];
+       const missed = tasks.filter(t => !t.completed && t.endTime < currentTimeStr);
+       const pending = tasks.filter(t => !t.completed && t.endTime >= currentTimeStr);
 
        executedActions.push({
          type: "categorized_schedule",
+         recoveredCount: overdueTasks.length,
          completed,
          missed,
          pending
        });
-       reply = "Operational load analyzed. I've optimized your schedule for maximum focus. Review your milestones above.";
+
+       if (overdueTasks.length > 0) {
+         reply = `System analysis complete. I've recovered **${overdueTasks.length} missed objectives** from your past cycles and integrated them into today's operational flow. Total targets today: ${tasks.length}. Optimize your focus accordingly.`;
+       } else {
+         reply = `Operational load analyzed. Your current schedule is synchronized. Total targets today: ${tasks.length}. Review your milestones above.`;
+       }
     }
     else if ((msg.includes("report") || msg.includes("analyze") || msg.includes("review")) && (msg.includes("productivity") || msg.includes("health") || msg.includes("performance"))) {
        const allTasks = await Task.find({ user: userId });

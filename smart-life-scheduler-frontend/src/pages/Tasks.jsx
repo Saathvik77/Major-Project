@@ -13,6 +13,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { motion } from "framer-motion";
 import TaskItem from "../components/TaskItem";
 import Toast from "../components/Toast";
+import CustomTimePicker from "../components/CustomTimePicker";
 import maleAvatar from "../assets/avatars/male_avatar.svg";
 import femaleAvatar from "../assets/avatars/female_avatar.svg";
 
@@ -99,6 +100,7 @@ export default function Tasks() {
   const autoRescheduledRef = useRef(new Set());
   const [notes, setNotes] = useState(() => localStorage.getItem("task_notes") || "");
   const [user, setUser] = useState(null);
+  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -659,15 +661,14 @@ export default function Tasks() {
                            </div>
                         </div>
 
-                        <input 
-                          type="time"
-                          value={startTime}
-                          onChange={(e) => setStartTime(e.target.value)}
-                          className="absolute opacity-0 w-px h-px pointer-events-none"
-                          id="hidden-time-input"
+                        <CustomTimePicker 
+                          isOpen={isTimePickerOpen}
+                          onClose={() => setIsTimePickerOpen(false)}
+                          initialTime={startTime || "09:00"}
+                          onSelect={(newTime) => setStartTime(newTime)}
                         />
                         <button 
-                          onClick={() => document.getElementById('hidden-time-input')?.showPicker?.()}
+                          onClick={() => setIsTimePickerOpen(true)}
                           className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-black uppercase tracking-wide text-gray-400 hover:text-white hover:bg-white/10 transition-all"
                         >
                           Adjust Time
