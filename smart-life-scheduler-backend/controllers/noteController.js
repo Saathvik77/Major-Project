@@ -21,9 +21,13 @@ const createNote = async (req, res) => {
 const getNotesByDate = async (req, res) => {
   try {
     const { date } = req.query;
-    const searchDate = date ? new Date(date) : new Date();
-    const startOfDay = new Date(searchDate.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(searchDate.setHours(23, 59, 59, 999));
+    const baseDate = date ? new Date(date) : new Date();
+    
+    const startOfDay = new Date(baseDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    
+    const endOfDay = new Date(baseDate);
+    endOfDay.setHours(23, 59, 59, 999);
 
     const notes = await Note.find({
       user: req.user.id,

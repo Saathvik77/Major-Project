@@ -183,8 +183,9 @@ const chatWithAI = async (req, res) => {
        ];
        reply = `Optimization Tip: ${tips[Math.floor(Math.random() * tips.length)]}`;
     }
-    // ─── 1. NAVIGATION INTENT ──────────────────────────────────────────────
-    else if (["go to", "open", "show", "navigate", "take me to", "switch to"].some(k => msg.includes(k))) {
+    // ─── 1. NAVIGATION INTENT (Strict matching to avoid collision) ───────────
+    else if (["go to", "open", "navigate", "take me to", "switch to"].some(k => msg.includes(k)) || 
+             (msg.includes("show") && (msg.includes("dashboard") || msg.includes("analytics") || msg.includes("task") || msg.includes("profile") || msg.includes("setting") || msg.includes("health") || msg.includes("ai") || msg.includes("report") || msg.includes("note")))) {
       if (msg.includes("dashboard") || msg.includes("home") || msg.includes("main")) {
         executedActions.push({ type: "navigation", path: "/dashboard" });
         reply = "Synchronizing interface with your Dashboard.";
@@ -203,11 +204,17 @@ const chatWithAI = async (req, res) => {
       } else if (msg.includes("health") || msg.includes("fitness") || msg.includes("vitals")) {
         executedActions.push({ type: "navigation", path: "/health" });
         reply = "Opening Health & Vitality synchronization.";
+      } else if (msg.includes("report") || msg.includes("insight")) {
+        executedActions.push({ type: "navigation", path: "/reports" });
+        reply = "Generating system reports. Accessing historical performance data.";
+      } else if (msg.includes("note") || msg.includes("short note")) {
+        executedActions.push({ type: "navigation", path: "/notes" });
+        reply = "Opening your personal Knowledge Base (Short Notes).";
       } else if (msg.includes("ai") || msg.includes("assistant") || msg.includes("control")) {
         executedActions.push({ type: "navigation", path: "/ai-assistant" });
         reply = "You are currently in the AI Control Center.";
       } else {
-        reply = "Destination unrecognized. Core locations: Dashboard, Analytics, Tasks, Profile, Health, Settings.";
+        reply = "Destination unrecognized. Core locations: Dashboard, Analytics, Tasks, Profile, Health, Settings, Reports, Notes.";
       }
     }
 
@@ -288,60 +295,96 @@ const chatWithAI = async (req, res) => {
       }
     }
 
-    // ─── 6. RECOMMENDATION INTENT ──────────────────────────────────────────
-    else if (msg.includes("exercise") || msg.includes("workout") || msg.includes("fitness") || msg.includes("gym")) {
-       executedActions.push({ 
-         type: "recommendations", 
-         category: "Exercise",
-         links: [
-           { title: "20 Min Full Body HIIT", url: "https://www.youtube.com/watch?v=ml6cT4AZdqI", type: "video" },
-           { title: "Morning Yoga for Beginners", url: "https://www.youtube.com/watch?v=v7AYKMP6rOE", type: "video" },
-           { title: "HealthLine: Best Exercises", url: "https://www.healthline.com/health/fitness-exercise", type: "article" }
-         ]
-       });
-       reply = "I've gathered some high-performance physical optimization resources for you. Maintenance of the biological vessel is critical.";
-    }
-    else if (msg.includes("study") || msg.includes("learn") || msg.includes("education") || msg.includes("course")) {
-       executedActions.push({ 
-         type: "recommendations", 
-         category: "Studies",
-         links: [
-           { title: "MDN Web Docs", url: "https://developer.mozilla.org/", type: "website" },
-           { title: "Khan Academy", url: "https://www.khanacademy.org/", type: "website" },
-           { title: "Coursera: Free Courses", url: "https://www.coursera.org/courses?query=free", type: "website" }
-         ]
-       });
-       reply = "Accessing educational data nodes. Knowledge acquisition is the primary driver of system evolution.";
-    }
-    else if (msg.includes("trip") || msg.includes("travel") || msg.includes("vacation") || msg.includes("plan a trip")) {
-       executedActions.push({ 
-         type: "recommendations", 
-         category: "Trip Planning",
-         links: [
-           { title: "Google Flights", url: "https://www.google.com/travel/flights", type: "website" },
-           { title: "Airbnb: Unique Stays", url: "https://www.airbnb.com/", type: "website" },
-           { title: "TripAdvisor: Top Places", url: "https://www.tripadvisor.com/", type: "website" }
-         ]
-       });
-       reply = "Initiating travel log optimization. Exploration of diverse geolocations enhances operational perspective.";
-    }
-    else if (msg.includes("recommend") || msg.includes("tell me about") || msg.includes("search for") || msg.includes("resources for") || msg.includes("suggest")) {
-       const topic = msg.replace(/recommend|tell me about|search for|resources for|suggest|something about|about|a|some/g, "").trim();
-       if (topic) {
-         const capitalizedTopic = topic.charAt(0).toUpperCase() + topic.slice(1);
-         executedActions.push({ 
-           type: "recommendations", 
-           category: capitalizedTopic,
-           links: [
-             { title: `YouTube: ${capitalizedTopic}`, url: `https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}`, type: "video" },
-             { title: `Google Search: ${capitalizedTopic}`, url: `https://www.google.com/search?q=${encodeURIComponent(topic)}`, type: "website" },
-             { title: `Wikipedia: ${capitalizedTopic}`, url: `https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(topic)}`, type: "article" }
-           ]
-         });
-         reply = `I have indexed the data nodes for "${capitalizedTopic}". Here are the most relevant external resources for your review.`;
-       } else {
-         reply = "Please specify a topic you'd like me to recommend or search for (e.g., 'Recommend machine learning' or 'Tell me about space').";
-       }
+    // ─── 6. RECOMMENDATION INTENT (Enhanced) ──────────────────────────────
+    else if (
+      msg.includes("recommend") || 
+      msg.includes("reccomond") || // Handling common typo
+      msg.includes("suggest") || 
+      msg.includes("give me") || 
+      msg.includes("show me") || 
+      msg.includes("tell me") ||
+      msg.includes("find me") ||
+      msg.includes("search for")
+    ) {
+      if (msg.includes("movie") || msg.includes("film") || msg.includes("series") || msg.includes("show")) {
+        executedActions.push({ 
+          type: "recommendations", 
+          category: "Movies & Series",
+          links: [
+            { title: "Inception (Sci-Fi / Action)", url: "https://www.imdb.com/title/tt1375666/", type: "movie" },
+            { title: "Interstellar (Sci-Fi / Drama)", url: "https://www.imdb.com/title/tt0816692/", type: "movie" },
+            { title: "Dark (Mystery / Sci-Fi Series)", url: "https://www.netflix.com/title/80100172", type: "series" },
+            { title: "The Dark Knight (Action / Crime)", url: "https://www.imdb.com/title/tt0468569/", type: "movie" }
+          ]
+        });
+        reply = "I've retrieved some high-rated cinematic experiences for your off-duty hours. Entertainment is vital for cognitive decompression.";
+      } 
+      else if (msg.includes("music") || msg.includes("song") || msg.includes("playlist")) {
+        executedActions.push({ 
+          type: "recommendations", 
+          category: "Music & Audio",
+          links: [
+            { title: "Lo-Fi Beats for Focus", url: "https://www.youtube.com/watch?v=jfKfPfyJRdk", type: "video" },
+            { title: "Hans Zimmer: Interstellar Suite", url: "https://open.spotify.com/album/43Yv9mIsO6W85veH3pP6N4", type: "music" },
+            { title: "Deep Focus Playlist", url: "https://open.spotify.com/playlist/37i9dQZF1DWZeKzbUnY3Yz", type: "playlist" }
+          ]
+        });
+        reply = "Accessing auditory performance-enhancing nodes. Current recommendation: High-fidelity lo-fi or orchestral arrangements for peak focus.";
+      }
+      else if (msg.includes("book") || msg.includes("read")) {
+        executedActions.push({ 
+          type: "recommendations", 
+          category: "Literary Resources",
+          links: [
+            { title: "Atomic Habits - James Clear", url: "https://jamesclear.com/atomic-habits", type: "book" },
+            { title: "Deep Work - Cal Newport", url: "https://www.calnewport.com/books/deep-work/", type: "book" },
+            { title: "The Martian - Andy Weir", url: "https://www.goodreads.com/book/show/18007564-the-martian", type: "book" }
+          ]
+        });
+        reply = "Literary data synthesized. These selections are optimized for habit formation and cognitive resilience.";
+      }
+      else if (msg.includes("exercise") || msg.includes("workout") || msg.includes("fitness") || msg.includes("gym")) {
+        executedActions.push({ 
+          type: "recommendations", 
+          category: "Physical Optimization",
+          links: [
+            { title: "20 Min Full Body HIIT", url: "https://www.youtube.com/watch?v=ml6cT4AZdqI", type: "video" },
+            { title: "Morning Yoga for Beginners", url: "https://www.youtube.com/watch?v=v7AYKMP6rOE", type: "video" },
+            { title: "HealthLine: Best Exercises", url: "https://www.healthline.com/health/fitness-exercise", type: "article" }
+          ]
+        });
+        reply = "I've gathered some high-performance physical optimization resources for you. Maintenance of the biological vessel is critical.";
+      }
+      else if (msg.includes("study") || msg.includes("learn") || msg.includes("education") || msg.includes("course")) {
+        executedActions.push({ 
+          type: "recommendations", 
+          category: "Studies & Knowledge",
+          links: [
+            { title: "MDN Web Docs", url: "https://developer.mozilla.org/", type: "website" },
+            { title: "Khan Academy", url: "https://www.khanacademy.org/", type: "website" },
+            { title: "Coursera: Free Courses", url: "https://www.coursera.org/courses?query=free", type: "website" }
+          ]
+        });
+        reply = "Accessing educational data nodes. Knowledge acquisition is the primary driver of system evolution.";
+      }
+      else {
+        const topic = msg.replace(/recommend|reccomond|suggest|give me|show me|tell me|find me|search for|about|some|a|something/g, "").trim();
+        if (topic) {
+          const capitalizedTopic = topic.charAt(0).toUpperCase() + topic.slice(1);
+          executedActions.push({ 
+            type: "recommendations", 
+            category: capitalizedTopic,
+            links: [
+              { title: `YouTube: ${capitalizedTopic}`, url: `https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}`, type: "video" },
+              { title: `Google Search: ${capitalizedTopic}`, url: `https://www.google.com/search?q=${encodeURIComponent(topic)}`, type: "website" },
+              { title: `Wikipedia: ${capitalizedTopic}`, url: `https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(topic)}`, type: "article" }
+            ]
+          });
+          reply = `I have indexed the data nodes for "${capitalizedTopic}". Here are the most relevant external resources for your review.`;
+        } else {
+          reply = "Please specify a topic you'd like me to recommend or search for (e.g., 'Recommend some movies' or 'Tell me about space').";
+        }
+      }
     }
 
     // ─── 6. FALLBACK ────────────────────────────────────────────────────────

@@ -15,6 +15,100 @@ import { motion, AnimatePresence } from "framer-motion";
 import api from "../api";
 import Toast from "../components/Toast";
 
+
+const StickyNote = ({ note, convertToTask, updateNoteColor, deleteNote }) => {
+  const timeAgo = (date) => {
+    const now = new Date();
+    const diff = Math.floor((now - new Date(date)) / 60000);
+    if (diff < 1) return "Just now";
+    if (diff < 60) return `${diff} mins ago`;
+    return `${Math.floor(diff / 60)} hours ago`;
+  };
+
+  return (
+    <motion.div 
+      layout
+      initial={{ opacity: 0, scale: 0.9, rotate: Math.random() * 4 - 2 }}
+      animate={{ opacity: 1, scale: 1, rotate: 0 }}
+      className="relative w-full max-w-sm group"
+    >
+      <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 text-lime-500 drop-shadow-xl">
+         <Pin size={28} fill="currentColor" className="rotate-45" />
+      </div>
+      
+      <div className={`p-6 pt-8 rounded-sm shadow-2xl relative overflow-hidden flex flex-col min-h-[300px] border-b-4 border-r-4 border-black/10 transition-colors duration-200`}
+           style={{ backgroundColor: note.color || '#d9e87b' }}>
+         {/* Line pattern */}
+         <div className="absolute inset-0 bg-[linear-gradient(transparent_27px,rgba(0,0,0,0.1)_28px)] bg-[length:100%_28px] opacity-20 pointer-events-none" />
+         <div className="absolute left-10 top-0 bottom-0 w-px bg-rose-400 opacity-30 pointer-events-none" />
+
+         <div className="relative z-10 flex flex-col h-full">
+            <h4 className="text-[10px] font-black text-black/50 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+               Short Note
+            </h4>
+            
+            <p className="text-black/80 font-medium leading-[28px] flex-1 mb-6 text-sm">
+              {note.content}
+            </p>
+
+            <div className="flex flex-wrap gap-2 mb-6">
+               {note.tags.map(tag => (
+                 <span key={tag} className="px-3 py-1 rounded-full bg-black/10 text-black/60 text-[10px] font-black uppercase tracking-wide">
+                   # {tag}
+                 </span>
+               ))}
+            </div>
+
+            <div className="border-t border-[#5a6b1d]/20 pt-4 flex flex-col gap-3">
+               <button 
+                 onClick={() => convertToTask(note)}
+                 disabled={note.convertedToTask}
+                 className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ${note.convertedToTask ? 'opacity-40' : 'text-black/60 hover:text-black hover:translate-x-1 transition-all'}`}
+               >
+                 {note.convertedToTask ? <CheckCircle size={14} /> : <ArrowRight size={14} />}
+                 {note.convertedToTask ? "Converted to Task" : "Convert to Task"}
+               </button>
+               
+               <div className="flex items-center justify-between mt-2">
+                  <span className="text-[9px] font-bold text-black/40 flex items-center gap-1">
+                     <Clock size={10} /> Saved {timeAgo(note.createdAt)}
+                  </span>
+                  <div className="flex gap-2">
+                     <div className="flex gap-1 items-center bg-black/5 p-1 rounded-lg">
+                       {[
+                         '#d9e87b', // Lime
+                         '#ff7eb9', // Pink
+                         '#7afcff', // Blue-green
+                         '#feff9c', // Yellow
+                         '#ffcc80', // Orange
+                       ].map(c => (
+                         <button
+                           key={c}
+                           onClick={() => updateNoteColor(note._id, c)}
+                           className={`w-4 h-4 rounded-full border border-black/10 transition-transform hover:scale-125 ${note.color === c ? 'scale-110 ring-2 ring-black/20' : ''}`}
+                           style={{ backgroundColor: c }}
+                         />
+                       ))}
+                     </div>
+                     <button 
+                       onClick={() => deleteNote(note._id)}
+                       className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-700 hover:bg-rose-500/20 transition-all"
+                     >
+                        <Trash2 size={14} />
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+          {/* Corner fold effect */}
+          <div className="absolute bottom-0 right-0 w-12 h-12 opacity-30 rounded-tl-sm shadow-[-5px_-5px_15px_rgba(0,0,0,0.05)]" 
+               style={{ backgroundColor: 'rgba(0,0,0,0.1)' }} />
+      </div>
+    </motion.div>
+  );
+};
+
 export default function ShortNotes() {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
@@ -119,98 +213,6 @@ export default function ShortNotes() {
 
   const weekDates = generateWeek(selectedDate);
 
-  const StickyNote = ({ note }) => {
-    const timeAgo = (date) => {
-      const now = new Date();
-      const diff = Math.floor((now - new Date(date)) / 60000);
-      if (diff < 1) return "Just now";
-      if (diff < 60) return `${diff} mins ago`;
-      return `${Math.floor(diff / 60)} hours ago`;
-    };
-
-    return (
-      <motion.div 
-        layout
-        initial={{ opacity: 0, scale: 0.9, rotate: Math.random() * 4 - 2 }}
-        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-        className="relative w-full max-w-sm group"
-      >
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 text-lime-500 drop-shadow-xl">
-           <Pin size={28} fill="currentColor" className="rotate-45" />
-        </div>
-        
-        <div className={`p-6 pt-8 rounded-sm shadow-2xl relative overflow-hidden flex flex-col min-h-[300px] border-b-4 border-r-4 border-black/10 transition-colors duration-200`}
-             style={{ backgroundColor: note.color || '#d9e87b' }}>
-           {/* Line pattern */}
-           <div className="absolute inset-0 bg-[linear-gradient(transparent_27px,rgba(0,0,0,0.1)_28px)] bg-[length:100%_28px] opacity-20 pointer-events-none" />
-           <div className="absolute left-10 top-0 bottom-0 w-px bg-rose-400 opacity-30 pointer-events-none" />
-
-           <div className="relative z-10 flex flex-col h-full">
-              <h4 className="text-[10px] font-black text-black/50 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                 Short Note
-              </h4>
-              
-              <p className="text-black/80 font-medium leading-[28px] flex-1 mb-6 text-sm">
-                {note.content}
-              </p>
-
-              <div className="flex flex-wrap gap-2 mb-6">
-                 {note.tags.map(tag => (
-                   <span key={tag} className="px-3 py-1 rounded-full bg-black/10 text-black/60 text-[10px] font-black uppercase tracking-wide">
-                     # {tag}
-                   </span>
-                 ))}
-              </div>
-
-              <div className="border-t border-[#5a6b1d]/20 pt-4 flex flex-col gap-3">
-                 <button 
-                   onClick={() => convertToTask(note)}
-                   disabled={note.convertedToTask}
-                   className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ${note.convertedToTask ? 'opacity-40' : 'text-black/60 hover:text-black hover:translate-x-1 transition-all'}`}
-                 >
-                   {note.convertedToTask ? <CheckCircle size={14} /> : <ArrowRight size={14} />}
-                   {note.convertedToTask ? "Converted to Task" : "Convert to Task"}
-                 </button>
-                 
-                 <div className="flex items-center justify-between mt-2">
-                    <span className="text-[9px] font-bold text-black/40 flex items-center gap-1">
-                       <Clock size={10} /> Saved {timeAgo(note.createdAt)}
-                    </span>
-                    <div className="flex gap-2">
-                       <div className="flex gap-1 items-center bg-black/5 p-1 rounded-lg">
-                         {[
-                           '#d9e87b', // Lime
-                           '#ff7eb9', // Pink
-                           '#7afcff', // Blue-green
-                           '#feff9c', // Yellow
-                           '#ffcc80', // Orange
-                         ].map(c => (
-                           <button
-                             key={c}
-                             onClick={() => updateNoteColor(note._id, c)}
-                             className={`w-4 h-4 rounded-full border border-black/10 transition-transform hover:scale-125 ${note.color === c ? 'scale-110 ring-2 ring-black/20' : ''}`}
-                             style={{ backgroundColor: c }}
-                           />
-                         ))}
-                       </div>
-                       <button 
-                         onClick={() => deleteNote(note._id)}
-                         className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-700 hover:bg-rose-500/20 transition-all"
-                       >
-                          <Trash2 size={14} />
-                       </button>
-                    </div>
-                 </div>
-              </div>
-           </div>
-
-            {/* Corner fold effect */}
-            <div className="absolute bottom-0 right-0 w-12 h-12 opacity-30 rounded-tl-sm shadow-[-5px_-5px_15px_rgba(0,0,0,0.05)]" 
-                 style={{ backgroundColor: 'rgba(0,0,0,0.1)' }} />
-        </div>
-      </motion.div>
-    );
-  };
 
   return (
     <div className="min-h-screen pl-0 md:pl-20 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col w-full xl:max-w-7xl xl:mx-auto pb-28 md:pb-10 page-transition">
@@ -367,7 +369,13 @@ export default function ShortNotes() {
             ) : (
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {notes.map(note => (
-                    <StickyNote key={note._id} note={note} />
+                    <StickyNote 
+                      key={note._id} 
+                      note={note} 
+                      convertToTask={convertToTask}
+                      updateNoteColor={updateNoteColor}
+                      deleteNote={deleteNote}
+                    />
                   ))}
                </div>
             )}
