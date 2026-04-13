@@ -37,6 +37,16 @@ const chatWithAI = async (req, res) => {
       return { startTime, endTime, text: remainingText };
     };
 
+    // ─── HELPER: EXTRACT LOCATION ──────────────────────────────────────
+    const extractLocation = (str) => {
+      // Look for locations after "to" or "in"
+      const locationMatch = str.match(/(?:to|in|at)\s+([a-zA-Z\s]+)(?:$|\s|for|with)/i);
+      if (locationMatch && locationMatch[1]) {
+        return locationMatch[1].trim().split(/\s+for|\s+with|\s+and/i)[0].trim();
+      }
+      return null;
+    };
+
     // ─── 0. CONTEXTUAL FLOW HANDLING (Highest Priority) ─────────────────────
     if (user.aiContext?.flow) {
       if (msg === "cancel" || msg === "exit" || msg === "stop") {
@@ -148,21 +158,28 @@ const chatWithAI = async (req, res) => {
     }
 
     // ─── 3. RECOMMENDATIONS (High Priority - Movies, Music, Travel, Fitness) ──
-    const recKeywords = ["recommend", "reccomond", "suggest", "give", "show", "tell me", "find", "search", "something to", "look for", "plan my"];
-    if (recKeywords.some(k => msg.includes(k))) {
+    const recKeywords = ["recommend", "reccomond", "suggest", "give", "show", "tell me", "find", "search", "something to", "look for", "plan"];
+    if (recKeywords.some(k => msg.includes(k)) || msg.includes("trip") || msg.includes("vacation")) {
       // TRAVEL PLANNING
       if (msg.includes("trip") || msg.includes("travel") || msg.includes("vacation") || msg.includes("holiday") || msg.includes("flight") || msg.includes("hotel")) {
+        const location = extractLocation(msg);
+        const destination = location ? location.charAt(0).toUpperCase() + location.slice(1) : "your destination";
+        const query = location ? encodeURIComponent(location) : "";
+
         executedActions.push({ 
           type: "recommendations", 
-          category: "Travel & Exploration",
+          category: `Travel: ${destination}`,
           links: [
-            { title: "SkyScanner (Best Flights)", url: "https://www.skyscanner.com", type: "website" },
-            { title: "Booking.com (Top Stays)", url: "https://www.booking.com", type: "website" },
-            { title: "Google Travel (Trip Planner)", url: "https://www.google.com/travel", type: "website" },
-            { title: "TripAdvisor (Local Guides)", url: "https://www.tripadvisor.com", type: "website" }
+            { title: `${destination} Flights (SkyScanner)`, url: `https://www.skyscanner.com/transport/flights-from/anywhere/?destination=${query}`, type: "website" },
+            { title: `${destination} Stays (Booking.com)`, url: `https://www.booking.com/searchresults.html?ss=${query}`, type: "website" },
+            { title: `${destination} Trip Planning (Google)`, url: `https://www.google.com/travel/search?q=${query}+trip+planning`, type: "website" },
+            { title: `${destination} Things to Do (TripAdvisor)`, url: `https://www.tripadvisor.com/Search?q=${query}`, type: "website" }
           ]
         });
-        reply = "I've indexed prime travel nodes for your expedition. Exploration is essential for system rejuvenation. Would you like me to create a 'Travel Prep' task block?";
+        
+        reply = location 
+          ? `I've localized all prime nodes for your expedition to **${destination}**. I've indexed flights, stays, and regional guides below. Would you like me to create a 'Travel Prep' task block for this journey?`
+          : "I've indexed prime travel nodes for your expedition. Exploration is essential for system rejuvenation. Would you like me to create a 'Travel Prep' task block?";
       } 
       // MOVIES & SERIES
       else if (msg.includes("movie") || msg.includes("film") || msg.includes("series") || msg.includes("show")) {
