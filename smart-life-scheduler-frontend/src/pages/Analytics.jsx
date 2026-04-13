@@ -172,20 +172,70 @@ function Analytics() {
     { name: "Overdue", value: filteredSummary.overdue },
   ];
 
-  const last7DaysData = Array.from({ length: 7 }).map((_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (6 - i));
-    const dStr = d.toISOString().split('T')[0];
-    
-    const count = allTasks.filter(t => 
-      t.completed && t.date && new Date(t.date).toISOString().split('T')[0] === dStr
-    ).length;
+  const { last7DaysData, trendData, statTrends } = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // 1. Calculate Bar Data (Last 7 Days)
+    const last7 = Array.from({ length: 7 }).map((_, i) => {
+      const d = new Date(today);
+      d.setDate(today.getDate() - (6 - i));
+      const dStr = d.toISOString().split('T')[0];
+      const dayTasks = allTasks.filter(t => t.date && new Date(t.date).toISOString().split('T')[0] === dStr);
+      return {
+        date: d.toLocaleDateString(undefined, { weekday: 'short' }),
+        completed: dayTasks.filter(t => t.completed).length,
+        total: dayTasks.length
+      };
+    });
+
+    // 2. Calculate Trend Line (Last 7 Days Scores)
+    const trend = last7.map(day => ({
+      name: day.date,
+      score: day.total > 0 ? Math.round((day.completed / day.total) * 100) : 0
+    }));
+
+    // 3. Calculate Comparative Trends (%)
+    const getStatsForPeriod = (daysOffsetStart, daysOffsetEnd) => {
+      const start = new Date(today);
+      start.setDate(today.getDate() - daysOffsetStart);
+      const end = new Date(today);
+      end.setDate(today.getDate() - daysOffsetEnd);
+
+      const periodTasks = allTasks.filter(t => {
+        const tDate = new Date(t.date);
+        return tDate >= end && tDate <= start;
+      });
+
+      return {
+        completed: periodTasks.filter(t => t.completed).length,
+        total: periodTasks.length,
+        overdue: periodTasks.filter(t => t.overdue).length
+      };
+    };
+
+    const current = getStatsForPeriod(0, 6);
+    const previous = getStatsForPeriod(7, 13);
+
+    const calcTrend = (currVal, prevVal) => {
+      if (prevVal === 0) return { val: currVal > 0 ? "100%" : "0%", up: true };
+      const diff = ((currVal - prevVal) / prevVal) * 100;
+      return { val: `${Math.abs(Math.round(diff))}%`, up: diff >= 0 };
+    };
 
     return {
-      date: d.toLocaleDateString(undefined, { weekday: 'short' }),
-      completed: count
+      last7DaysData: last7,
+      trendData: trend,
+      statTrends: {
+        completed: calcTrend(current.completed, previous.completed),
+        overdue: calcTrend(current.overdue, previous.overdue),
+        efficiency: calcTrend(
+          current.total > 0 ? (current.completed / current.total) : 0,
+          previous.total > 0 ? (previous.completed / previous.total) : 0
+        )
+      }
     };
-  });
+  }, [allTasks]);
 
   if (loading) return (
     <div className="min-h-screen pl-0 md:pl-20 p-4 md:p-8 lg:p-12 text-white flex flex-col gap-12 max-w-7xl mx-auto">
@@ -208,15 +258,6 @@ function Analytics() {
 
   const hasNoData = !summary || (summary.completed === 0 && summary.pending === 0 && summary.overdue === 0);
 
-  const trendData = [
-    { name: "Mon", score: 65 },
-    { name: "Tue", score: 78 },
-    { name: "Wed", score: 72 },
-    { name: "Thu", score: 85 },
-    { name: "Fri", score: 92 },
-    { name: "Sat", score: 88 },
-    { name: "Sun", score: 95 },
-  ];
 
   return (
     <div className="min-h-screen pl-0 md:pl-20 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col w-full xl:max-w-7xl xl:mx-auto pb-28 md:pb-10 page-transition">
@@ -248,23 +289,23 @@ function Analytics() {
           icon={CheckCircle2} 
           title="Completed Tasks" 
           value={filteredSummary.completed} 
-          trend="12%" 
-          trendUp={true}
+          trend={statTrends.completed.val} 
+          trendUp={statTrends.completed.up}
           color="emerald"
         />
         <StatCard 
           icon={AlertCircle} 
           title="Missed Syncs" 
           value={filteredSummary.overdue} 
-          trend="2%" 
-          trendUp={false}
+          trend={statTrends.overdue.val} 
+          trendUp={!statTrends.overdue.up} // Down is good for overdue
           color="rose"
         />
         <StatCard 
           icon={Clock} 
           title="Focus Time" 
           value={summary?.focusTime || "0h"} 
-          trend="5.4%" 
+          trend="—" 
           trendUp={true}
           color="blue"
         />
@@ -272,8 +313,8 @@ function Analytics() {
           icon={Zap} 
           title="Smart Score" 
           value={`${Math.round((filteredSummary.completed / Math.max(1, filteredSummary.completed + filteredSummary.pending + filteredSummary.overdue)) * 100)}%`} 
-          trend="8.2%" 
-          trendUp={true}
+          trend={statTrends.efficiency.val} 
+          trendUp={statTrends.efficiency.up}
           color="lime"
         />
       </div>

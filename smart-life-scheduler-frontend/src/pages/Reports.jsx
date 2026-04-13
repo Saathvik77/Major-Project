@@ -266,14 +266,56 @@ export default function Reports() {
     { name: "Pending", value: pending, color: "rgba(255,255,255,0.05)" },
   ];
 
-  // Mocked historical data for bar chart
-  const barData = [
-    { name: "Mon", tasks: Math.max(0, completed - 2) },
-    { name: "Tue", tasks: Math.max(0, completed - 1) },
-    { name: "Wed", tasks: completed + 1 },
-    { name: "Thu", tasks: completed + 2 },
-    { name: "Fri", tasks: completed },
-  ];
+  // ─── Dynamic Data Processing ───────────────────────────────────────
+  const { barData, growthPercent, growthIsUp } = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // 1. Calculate Bar Data (Last 5 Days)
+    const last5Days = Array.from({ length: 5 }).map((_, i) => {
+      const d = new Date(today);
+      d.setDate(today.getDate() - (4 - i));
+      const dStr = d.toISOString().split('T')[0];
+      const dayTasks = tasks.filter(t => t.date && new Date(t.date).toISOString().split('T')[0] === dStr);
+      return {
+        name: d.toLocaleDateString('en-US', { weekday: 'short' }),
+        tasks: dayTasks.filter(t => t.completed).length,
+        total: dayTasks.length
+      };
+    });
+
+    // 2. Calculate Growth (This Week vs Last Week)
+    const getCompletionRate = (daysOffsetStart, daysOffsetEnd) => {
+      const start = new Date(today);
+      start.setDate(today.getDate() - daysOffsetStart);
+      const end = new Date(today);
+      end.setDate(today.getDate() - daysOffsetEnd);
+
+      const periodTasks = tasks.filter(t => {
+        const tDate = new Date(t.date);
+        return tDate >= end && tDate <= start;
+      });
+
+      if (periodTasks.length === 0) return 0;
+      return periodTasks.filter(t => t.completed).length / periodTasks.length;
+    };
+
+    const currentRate = getCompletionRate(0, 6);
+    const previousRate = getCompletionRate(7, 13);
+    
+    let growth = 0;
+    if (previousRate === 0) {
+      growth = currentRate > 0 ? 100 : 0;
+    } else {
+      growth = Math.round(((currentRate - previousRate) / previousRate) * 100);
+    }
+
+    return { 
+      barData: last5Days, 
+      growthPercent: Math.abs(growth), 
+      growthIsUp: growth >= 0 
+    };
+  }, [tasks]);
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -438,9 +480,11 @@ export default function Reports() {
           <div className="p-6 sm:p-8 rounded-[2rem] md:rounded-[2.5rem] backdrop-blur-2xl bg-white/5 border border-white/10 shadow-2xl relative overflow-hidden group h-full">
             <div className="flex justify-between items-center mb-10">
               <h2 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em]">Productivity Velocity</h2>
-              <div className="flex items-center gap-2 bg-lime-500/10 border border-lime-500/20 px-3 py-1 rounded-full">
-                <TrendingUp size={12} className="text-lime-500" />
-                <span className="text-[9px] font-black text-lime-500 uppercase tracking-widest">Growth +12%</span>
+              <div className={`flex items-center gap-2 ${growthIsUp ? 'bg-lime-500/10 border-lime-500/20' : 'bg-rose-500/10 border-rose-500/20'} border px-3 py-1 rounded-full`}>
+                <TrendingUp size={12} className={growthIsUp ? "text-lime-500" : "text-rose-500"} />
+                <span className={`text-[9px] font-black ${growthIsUp ? "text-lime-500" : "text-rose-500"} uppercase tracking-widest`}>
+                  Growth {growthIsUp ? "+" : "-"}{growthPercent}%
+                </span>
               </div>
             </div>
 

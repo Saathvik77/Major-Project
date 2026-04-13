@@ -140,7 +140,7 @@ const chatWithAI = async (req, res) => {
        });
        reply = "Operational load analyzed. I've optimized your schedule for maximum focus. Review your milestones above.";
     }
-    else if (msg.includes("productivity") || msg.includes("health") || msg.includes("report") || msg.includes("performance") || msg.includes("review")) {
+    else if ((msg.includes("report") || msg.includes("analyze") || msg.includes("review")) && (msg.includes("productivity") || msg.includes("health") || msg.includes("performance"))) {
        const allTasks = await Task.find({ user: userId });
        const completed = allTasks.filter(t => t.completed);
        const missed = allTasks.filter(t => !t.completed && (t.isOverdue || (t.endTime && t.endTime < new Date().toTimeString().split(' ')[0])));
@@ -183,8 +183,8 @@ const chatWithAI = async (req, res) => {
        ];
        reply = `Optimization Tip: ${tips[Math.floor(Math.random() * tips.length)]}`;
     }
-    // ─── 1. NAVIGATION INTENT (Strict matching to avoid collision) ───────────
-    else if (["go to", "open", "navigate", "take me to", "switch to"].some(k => msg.includes(k)) || 
+    // ─── 1. NAVIGATION INTENT (High Priority) ───────────────────────────────
+    if (["go to", "open", "navigate", "take me to", "switch to", "tab", "page", "section"].some(k => msg.includes(k)) || 
              (msg.includes("show") && (msg.includes("dashboard") || msg.includes("analytics") || msg.includes("task") || msg.includes("profile") || msg.includes("setting") || msg.includes("health") || msg.includes("ai") || msg.includes("report") || msg.includes("note")))) {
       if (msg.includes("dashboard") || msg.includes("home") || msg.includes("main")) {
         executedActions.push({ type: "navigation", path: "/dashboard" });
@@ -216,87 +216,11 @@ const chatWithAI = async (req, res) => {
       } else {
         reply = "Destination unrecognized. Core locations: Dashboard, Analytics, Tasks, Profile, Health, Settings, Reports, Notes.";
       }
+      return res.json({ reply, actions: executedActions });
     }
 
-    // ─── 2. DELETE TASK INTENT ──────────────────────────────────────────────
-    else if (msg.includes("delete") || msg.includes("remove") || msg.includes("cancel") || msg.includes("clear task")) {
-       let titleToFind = msg.replace(/delete|remove|cancel|the task|task|a task|clear task/g, "").trim();
-       
-       if (!titleToFind) {
-         reply = "Please specify which task you want to delete.";
-       } else {
-         const allPending = await Task.find({ user: userId, completed: false });
-         // Fuzzy match: check if task title contains the search term or vice versa
-         const targetTask = allPending.find(t => 
-           t.title.toLowerCase().includes(titleToFind) || 
-           titleToFind.includes(t.title.toLowerCase())
-         );
-         
-         if (targetTask) {
-            await Task.findByIdAndDelete(targetTask._id);
-            executedActions.push({ type: "task_deleted", title: targetTask.title });
-            reply = `Action Confirmed: Successfully decommissioned "${targetTask.title}" from your schedule.`;
-         } else {
-            reply = `Error: Could not locate any pending task matching "${titleToFind}".`;
-         }
-       }
-    }
-
-    // ─── 3. RESCHEDULE TASK INTENT ──────────────────────────────────────────
-    else if (msg.includes("reschedule") || msg.includes("move") || msg.includes("change time") || msg.includes("shift")) {
-       const { time, text } = extractTime(msg);
-       let titleToFind = text.replace(/reschedule|move|change time|the task|task|a task|shift|to/g, "").trim();
-       
-       if (time === "09:00" && !msg.match(/9\s*am/i)) { // If no time was actually found
-          reply = "Please specify the new time (e.g., 'Move meeting to 3pm').";
-       } else if (!titleToFind) {
-          reply = "Please specify which task you'd like to reschedule.";
-       } else {
-         const allPending = await Task.find({ user: userId, completed: false });
-         const targetTask = allPending.find(t => 
-           t.title.toLowerCase().includes(titleToFind) || 
-           titleToFind.includes(t.title.toLowerCase())
-         );
-         
-         if (targetTask) {
-            targetTask.startTime = time;
-            await targetTask.save();
-            executedActions.push({ type: "task_updated", title: targetTask.title, time: time });
-            reply = `Re-optimization Complete: "${targetTask.title}" has been shifted to ${time}.`;
-         } else {
-            reply = `Search Failure: No task matching "${titleToFind}" was found in your active schedule.`;
-         }
-       }
-    }
-
-    // ─── 4. CREATE TASK INTENT ──────────────────────────────────────────────
-    else if (msg.includes("create") || msg.includes("add") || msg.includes("schedule") || msg.includes("remind me") || msg.includes("put")) {
-      const { time, text } = extractTime(msg);
-      let title = text.replace(/create a task to|create task to|add a task to|add task to|schedule a task to|create a task for|create task for|add task for|remind me to|create|add|schedule|put|the task|a task|on my list/g, "").trim();
-      
-      if (!title) {
-        reply = "Please specify the task description (e.g., 'Add gym at 5pm').";
-      } else {
-        title = title.charAt(0).toUpperCase() + title.slice(1);
-
-        const newTask = await Task.create({
-          user: userId,
-          title: title,
-          priority: "High",
-          category: "Personal",
-          startTime: time,
-          endTime: "23:59",
-          date: new Date(),
-          completed: false
-        });
-        
-        executedActions.push({ type: "task_created", title: newTask.title, time: time });
-        reply = `Network Updated: Successfully scheduled "${newTask.title}" for ${time}.`;
-      }
-    }
-
-    // ─── 6. RECOMMENDATION INTENT (Enhanced) ──────────────────────────────
-    else if (
+    // ─── 2. RECOMMENDATION INTENT (High Priority) ──────────────────────────
+    if (
       msg.includes("recommend") || 
       msg.includes("reccomond") || // Handling common typo
       msg.includes("suggest") || 
@@ -385,7 +309,88 @@ const chatWithAI = async (req, res) => {
           reply = "Please specify a topic you'd like me to recommend or search for (e.g., 'Recommend some movies' or 'Tell me about space').";
         }
       }
+      return res.json({ reply, actions: executedActions });
     }
+
+    // ─── 3. EXISTING INTENTS (LOWER PRIORITY) ──────────────────────────────────
+
+    // ─── 2. DELETE TASK INTENT ──────────────────────────────────────────────
+    else if (msg.includes("delete") || msg.includes("remove") || msg.includes("cancel") || msg.includes("clear task")) {
+       let titleToFind = msg.replace(/delete|remove|cancel|the task|task|a task|clear task/g, "").trim();
+       
+       if (!titleToFind) {
+         reply = "Please specify which task you want to delete.";
+       } else {
+         const allPending = await Task.find({ user: userId, completed: false });
+         // Fuzzy match: check if task title contains the search term or vice versa
+         const targetTask = allPending.find(t => 
+           t.title.toLowerCase().includes(titleToFind) || 
+           titleToFind.includes(t.title.toLowerCase())
+         );
+         
+         if (targetTask) {
+            await Task.findByIdAndDelete(targetTask._id);
+            executedActions.push({ type: "task_deleted", title: targetTask.title });
+            reply = `Action Confirmed: Successfully decommissioned "${targetTask.title}" from your schedule.`;
+         } else {
+            reply = `Error: Could not locate any pending task matching "${titleToFind}".`;
+         }
+       }
+    }
+
+    // ─── 3. RESCHEDULE TASK INTENT ──────────────────────────────────────────
+    else if (msg.includes("reschedule") || msg.includes("move") || msg.includes("change time") || msg.includes("shift")) {
+       const { time, text } = extractTime(msg);
+       let titleToFind = text.replace(/reschedule|move|change time|the task|task|a task|shift|to/g, "").trim();
+       
+       if (time === "09:00" && !msg.match(/9\s*am/i)) { // If no time was actually found
+          reply = "Please specify the new time (e.g., 'Move meeting to 3pm').";
+       } else if (!titleToFind) {
+          reply = "Please specify which task you'd like to reschedule.";
+       } else {
+         const allPending = await Task.find({ user: userId, completed: false });
+         const targetTask = allPending.find(t => 
+           t.title.toLowerCase().includes(titleToFind) || 
+           titleToFind.includes(t.title.toLowerCase())
+         );
+         
+         if (targetTask) {
+            targetTask.startTime = time;
+            await targetTask.save();
+            executedActions.push({ type: "task_updated", title: targetTask.title, time: time });
+            reply = `Re-optimization Complete: "${targetTask.title}" has been shifted to ${time}.`;
+         } else {
+            reply = `Search Failure: No task matching "${titleToFind}" was found in your active schedule.`;
+         }
+       }
+    }
+
+    // ─── 4. CREATE TASK INTENT ──────────────────────────────────────────────
+    else if (msg.includes("create") || msg.includes("add") || msg.includes("schedule") || msg.includes("remind me") || msg.includes("put")) {
+      const { time, text } = extractTime(msg);
+      let title = text.replace(/create a task to|create task to|add a task to|add task to|schedule a task to|create a task for|create task for|add task for|remind me to|create|add|schedule|put|the task|a task|on my list/g, "").trim();
+      
+      if (!title) {
+        reply = "Please specify the task description (e.g., 'Add gym at 5pm').";
+      } else {
+        title = title.charAt(0).toUpperCase() + title.slice(1);
+
+        const newTask = await Task.create({
+          user: userId,
+          title: title,
+          priority: "High",
+          category: "Personal",
+          startTime: time,
+          endTime: "23:59",
+          date: new Date(),
+          completed: false
+        });
+        
+        executedActions.push({ type: "task_created", title: newTask.title, time: time });
+        reply = `Network Updated: Successfully scheduled "${newTask.title}" for ${time}.`;
+      }
+    }
+
 
     // ─── 6. FALLBACK ────────────────────────────────────────────────────────
     else {
