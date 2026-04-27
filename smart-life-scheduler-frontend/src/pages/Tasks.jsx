@@ -24,7 +24,12 @@ const formatTime12Hour = (time24) => {
   const h = parseInt(hours, 10);
   const ampm = h >= 12 ? 'PM' : 'AM';
   const h12 = h % 12 || 12;
-  return `${h12}:${minutes} ${ampm}`;
+  return `${String(h12).padStart(2, '0')}:${minutes} ${ampm}`;
+};
+
+const getCurrentTimeStr = () => {
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 };
 
 const getTaskStartMs = (task) => {
@@ -78,7 +83,7 @@ export default function Tasks() {
   console.log("DEBUG: Tasks component rendering...");
   const [tasks, setTasks]               = useState([]);
   const [title, setTitle]               = useState("");
-  const [startTime, setStartTime]       = useState("");
+  const [startTime, setStartTime]       = useState(getCurrentTimeStr());
   const [priority, setPriority]         = useState("Medium");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [expiredIds, setExpiredIds]         = useState(new Set());
@@ -254,9 +259,15 @@ export default function Tasks() {
         repeatFrequency,
         repeatDays: finalDays
       });
-      setTasks([...tasks, res.data.task]);
+      const newTask = res.data.task;
+      const updatedTasks = [...tasks, newTask].sort((a, b) => {
+        const aTime = a.startTime || "00:00";
+        const bTime = b.startTime || "00:00";
+        return aTime.localeCompare(bTime);
+      });
+      setTasks(updatedTasks);
       setTitle(""); 
-      setStartTime("");
+      setStartTime(getCurrentTimeStr());
       setRepeatFrequency("once");
       setRepeatDays([]);
       setToast("Task deployed successfully 🚀");
@@ -638,25 +649,25 @@ export default function Tasks() {
                            <div className="flex flex-col items-center gap-2">
                              <span className="text-xs font-black text-gray-600 uppercase tracking-wide">Hour</span>
                              <div className="text-5xl font-black text-white tracking-tighter flex items-end gap-1">
-                                {startTime?.includes(':') ? (() => {
-                                  const h24 = parseInt(startTime.split(':')[0]);
+                                {(() => {
+                                  const h24 = parseInt((startTime || "09:00").split(':')[0]);
                                   const h12 = h24 % 12 || 12;
                                   return String(h12).padStart(2, '0');
-                                })() : "09"}
+                                })()}
                                 <span className="text-sm text-gray-500 mb-2 font-bold">h</span>
                              </div>
                            </div>
                            <div className="flex flex-col items-center gap-2">
                              <span className="text-xs font-black text-gray-600 uppercase tracking-wide">Minute</span>
                              <div className="text-5xl font-black text-white tracking-tighter flex items-end gap-1">
-                                {startTime?.includes(':') ? startTime.split(':')[1] : "00"}
+                                {(startTime || "09:00").split(':')[1]}
                                 <span className="text-sm text-gray-500 mb-2 font-bold">min</span>
                              </div>
                            </div>
                            <div className="flex flex-col items-center gap-2">
                              <span className="text-xs font-black text-gray-600 uppercase tracking-wide">Period</span>
                              <div className="text-3xl font-black text-lime-500 tracking-tighter mt-2">
-                                {startTime?.includes(':') ? (parseInt(startTime.split(':')[0]) >= 12 ? "PM" : "AM") : "AM"}
+                                {parseInt((startTime || "09:00").split(':')[0]) >= 12 ? "PM" : "AM"}
                              </div>
                            </div>
                         </div>

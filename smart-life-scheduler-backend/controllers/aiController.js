@@ -19,7 +19,7 @@ const chatWithAI = async (req, res) => {
     const extractTime = (str) => {
       const timeMatch = str.match(/(?:at|for|by|to|from)\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/gi);
       if (!timeMatch || timeMatch.length < 1) return { time: "09:00", text: str };
-      
+
       const parseSingle = (tMatch) => {
         let tStr = tMatch.replace(/at|for|by|to|from|\s/gi, '').toLowerCase();
         let [rawHrs, mins] = tStr.replace(/am|pm/g, '').split(':');
@@ -32,7 +32,7 @@ const chatWithAI = async (req, res) => {
 
       const startTime = parseSingle(timeMatch[0]);
       const endTime = timeMatch[1] ? parseSingle(timeMatch[1]) : "17:00";
-      
+
       const remainingText = str.replace(timeMatch[0], "").replace(timeMatch[1] || "", "").trim();
       return { startTime, endTime, text: remainingText };
     };
@@ -70,7 +70,7 @@ const chatWithAI = async (req, res) => {
           reply = `Acknowledged. I've noted: ${subjects.join(", ")}.\n\nFinal step: What are your preferred daily timings for this roadmap? (e.g., 9am to 5pm)`;
         }
         return res.json({ reply, actions: [] });
-      } 
+      }
       else if (context.step === 2) {
         const { startTime, endTime } = extractTime(msg);
         const { subjects, days, topic } = context.data;
@@ -81,7 +81,7 @@ const chatWithAI = async (req, res) => {
 
         for (let i = 0; i < totalDays; i++) {
           const currentDate = new Date(startDate);
-          currentDate.setDate(startDate.getDate() + i + 1); 
+          currentDate.setDate(startDate.getDate() + i + 1);
           const dateStr = currentDate.toISOString().split('T')[0];
           const daySubjects = subjects.slice(i * subjectsPerDay, (i + 1) * subjectsPerDay);
 
@@ -166,8 +166,8 @@ const chatWithAI = async (req, res) => {
         const destination = location ? location.charAt(0).toUpperCase() + location.slice(1) : "your destination";
         const query = location ? encodeURIComponent(location) : "";
 
-        executedActions.push({ 
-          type: "recommendations", 
+        executedActions.push({
+          type: "recommendations",
           category: `Travel: ${destination}`,
           links: [
             { title: `${destination} Flights (SkyScanner)`, url: `https://www.skyscanner.com/transport/flights-from/anywhere/?destination=${query}`, type: "website" },
@@ -176,15 +176,15 @@ const chatWithAI = async (req, res) => {
             { title: `${destination} Things to Do (TripAdvisor)`, url: `https://www.tripadvisor.com/Search?q=${query}`, type: "website" }
           ]
         });
-        
-        reply = location 
+
+        reply = location
           ? `I've localized all prime nodes for your expedition to **${destination}**. I've indexed flights, stays, and regional guides below. Would you like me to create a 'Travel Prep' task block for this journey?`
           : "I've indexed prime travel nodes for your expedition. Exploration is essential for system rejuvenation. Would you like me to create a 'Travel Prep' task block?";
-      } 
+      }
       // MOVIES & SERIES
       else if (msg.includes("movie") || msg.includes("film") || msg.includes("series") || msg.includes("show")) {
-        executedActions.push({ 
-          type: "recommendations", 
+        executedActions.push({
+          type: "recommendations",
           category: "Movies & Series",
           links: [
             { title: "Inception (Sci-Fi / Action)", url: "https://www.imdb.com/title/tt1375666/", type: "movie" },
@@ -194,11 +194,11 @@ const chatWithAI = async (req, res) => {
           ]
         });
         reply = "Accessing high-rated cinematic nodes. Entertainment is vital for cognitive decompression.";
-      } 
+      }
       // MUSIC & AUDIO
       else if (msg.includes("music") || msg.includes("song") || msg.includes("playlist")) {
-        executedActions.push({ 
-          type: "recommendations", 
+        executedActions.push({
+          type: "recommendations",
           category: "Music & Audio",
           links: [
             { title: "Lo-Fi Beats for Focus", url: "https://www.youtube.com/watch?v=jfKfPfyJRdk", type: "video" },
@@ -210,8 +210,8 @@ const chatWithAI = async (req, res) => {
       }
       // EXERCISE & FITNESS
       else if (msg.includes("exercise") || msg.includes("workout") || msg.includes("fitness") || msg.includes("gym")) {
-        executedActions.push({ 
-          type: "recommendations", 
+        executedActions.push({
+          type: "recommendations",
           category: "Physical Optimization",
           links: [
             { title: "20 Min Full Body HIIT", url: "https://www.youtube.com/watch?v=ml6cT4AZdqI", type: "video" },
@@ -226,8 +226,8 @@ const chatWithAI = async (req, res) => {
         const topic = msg.replace(/recommend|reccomond|suggest|give|show|tell me|find|search|something|look for|a|the|about|to/g, "").trim();
         if (topic && topic.length > 2) {
           const capitalizedTopic = topic.charAt(0).toUpperCase() + topic.slice(1);
-          executedActions.push({ 
-            type: "recommendations", 
+          executedActions.push({
+            type: "recommendations",
             category: capitalizedTopic,
             links: [
               { title: `YouTube: ${capitalizedTopic}`, url: `https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}`, type: "video" },
@@ -236,51 +236,51 @@ const chatWithAI = async (req, res) => {
           });
           reply = `I have indexed the data nodes for "${capitalizedTopic}". Opening relevant external connections.`;
         } else {
-            // If they just said "recommend", don't fall back yet, ask what they want.
-            reply = "I can recommend movies, music, travel destinations, or exercises. What would you like to explore?";
+          // If they just said "recommend", don't fall back yet, ask what they want.
+          reply = "I can recommend movies, music, travel destinations, or exercises. What would you like to explore?";
         }
       }
       return res.json({ reply, actions: executedActions });
     }
 
     // ─── 4. OPERATIONAL COMMANDS (Plan Day, CRUD Tasks, etc.) ───────────────
-    
+
     // PLAN MY DAY / ANALYZE LOAD
     if (msg.includes("plan my day") || msg.includes("analyze my load") || (msg.includes("plan") && msg.includes("day"))) {
-       const todayDate = new Date();
-       todayDate.setHours(0, 0, 0, 0);
-       const todayStr = todayDate.toISOString().split('T')[0];
-       const overdueTasks = await Task.find({ user: userId, completed: false, date: { $lt: todayStr } });
-       if (overdueTasks.length > 0) {
-         await Task.updateMany({ _id: { $in: overdueTasks.map(t => t._id) } }, { $set: { date: todayStr } });
-       }
-       const tasks = await Task.find({ user: userId, date: todayStr });
-       const currentTimeStr = new Date().toTimeString().split(' ')[0];
-       executedActions.push({
-         type: "categorized_schedule",
-         recoveredCount: overdueTasks.length,
-         completed: tasks.filter(t => t.completed),
-         missed: tasks.filter(t => !t.completed && t.endTime < currentTimeStr),
-         pending: tasks.filter(t => !t.completed && t.endTime >= currentTimeStr)
-       });
-       reply = overdueTasks.length > 0 
-         ? `System analysis complete. recovered **${overdueTasks.length} missed objectives**. Total tasks today: ${tasks.length}.`
-         : `Operational load analyzed. Your current schedule is synchronized. Total targets today: ${tasks.length}.`;
-       return res.json({ reply, actions: executedActions });
+      const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
+      const todayStr = todayDate.toISOString().split('T')[0];
+      const overdueTasks = await Task.find({ user: userId, completed: false, date: { $lt: todayStr } });
+      if (overdueTasks.length > 0) {
+        await Task.updateMany({ _id: { $in: overdueTasks.map(t => t._id) } }, { $set: { date: todayStr } });
+      }
+      const tasks = await Task.find({ user: userId, date: todayStr });
+      const currentTimeStr = new Date().toTimeString().split(' ')[0];
+      executedActions.push({
+        type: "categorized_schedule",
+        recoveredCount: overdueTasks.length,
+        completed: tasks.filter(t => t.completed),
+        missed: tasks.filter(t => !t.completed && t.endTime < currentTimeStr),
+        pending: tasks.filter(t => !t.completed && t.endTime >= currentTimeStr)
+      });
+      reply = overdueTasks.length > 0
+        ? `System analysis complete. recovered **${overdueTasks.length} missed objectives**. Total tasks today: ${tasks.length}.`
+        : `Operational load analyzed. Your current schedule is synchronized. Total targets today: ${tasks.length}.`;
+      return res.json({ reply, actions: executedActions });
     }
 
     // DELETE TASK
     if (msg.includes("delete") || msg.includes("remove") || msg.includes("cancel") || msg.includes("clear task")) {
-       let titleToFind = msg.replace(/delete|remove|cancel|the task|task|a task|clear task/g, "").trim();
-       if (titleToFind) {
-         const targetTask = await Task.findOne({ user: userId, completed: false, title: new RegExp(titleToFind, 'i') });
-         if (targetTask) {
-           await Task.findByIdAndDelete(targetTask._id);
-           executedActions.push({ type: "task_deleted", title: targetTask.title });
-           reply = `Decommissioned "${targetTask.title}" from your schedule.`;
-         } else reply = `Failed to locate matching task "${titleToFind}".`;
-       } else reply = "Specify which task to delete.";
-       return res.json({ reply, actions: executedActions });
+      let titleToFind = msg.replace(/delete|remove|cancel|the task|task|a task|clear task/g, "").trim();
+      if (titleToFind) {
+        const targetTask = await Task.findOne({ user: userId, completed: false, title: new RegExp(titleToFind, 'i') });
+        if (targetTask) {
+          await Task.findByIdAndDelete(targetTask._id);
+          executedActions.push({ type: "task_deleted", title: targetTask.title });
+          reply = `Decommissioned "${targetTask.title}" from your schedule.`;
+        } else reply = `Failed to locate matching task "${titleToFind}".`;
+      } else reply = "Specify which task to delete.";
+      return res.json({ reply, actions: executedActions });
     }
 
     // CREATE TASK
@@ -298,19 +298,19 @@ const chatWithAI = async (req, res) => {
 
     // REPORTS / ANALYTICS
     if ((msg.includes("report") || msg.includes("analyze") || msg.includes("review")) && (msg.includes("productivity") || msg.includes("health") || msg.includes("performance"))) {
-       const allTasks = await Task.find({ user: userId });
-       const completed = allTasks.filter(t => t.completed);
-       const total = allTasks.length;
-       const efficiency = total > 0 ? Math.round((completed.length / total) * 100) : 100;
-       executedActions.push({
-         type: "comprehensive_report",
-         efficiency: efficiency,
-         completed: completed.map(t => ({ title: t.title })),
-         missed: allTasks.filter(t => !t.completed).map(t => ({ title: t.title })),
-         suggestion: "Maintain steady performance to hit your peak index."
-       });
-       reply = `Generating performance report. Efficiency: ${efficiency}%. Actionable feedback generated above.`;
-       return res.json({ reply, actions: executedActions });
+      const allTasks = await Task.find({ user: userId });
+      const completed = allTasks.filter(t => t.completed);
+      const total = allTasks.length;
+      const efficiency = total > 0 ? Math.round((completed.length / total) * 100) : 100;
+      executedActions.push({
+        type: "comprehensive_report",
+        efficiency: efficiency,
+        completed: completed.map(t => ({ title: t.title })),
+        missed: allTasks.filter(t => !t.completed).map(t => ({ title: t.title })),
+        suggestion: "Maintain steady performance to hit your peak index."
+      });
+      reply = `Generating performance report. Efficiency: ${efficiency}%. Actionable feedback generated above.`;
+      return res.json({ reply, actions: executedActions });
     }
 
     // ─── 5. FALLBACK ────────────────────────────────────────────────────────
