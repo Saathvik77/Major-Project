@@ -13,7 +13,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { motion } from "framer-motion";
 import TaskItem from "../components/TaskItem";
 import Toast from "../components/Toast";
-import CustomTimePicker from "../components/CustomTimePicker";
+import maleAvatar from "../assets/avatars/male_avatar.svg";
 import maleAvatar from "../assets/avatars/male_avatar.svg";
 import femaleAvatar from "../assets/avatars/female_avatar.svg";
 
@@ -105,7 +105,6 @@ export default function Tasks() {
   const autoRescheduledRef = useRef(new Set());
   const [notes, setNotes] = useState(() => localStorage.getItem("task_notes") || "");
   const [user, setUser] = useState(null);
-  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -644,46 +643,73 @@ export default function Tasks() {
                   />
                 </div>
 
-                    <div className="flex flex-col items-center gap-8 py-8 bg-white/[0.02] rounded-[2.5rem] border border-white/5">
-                        <div className="flex items-center gap-12">
-                           <div className="flex flex-col items-center gap-2">
-                             <span className="text-xs font-black text-gray-600 uppercase tracking-wide">Hour</span>
-                             <div className="text-5xl font-black text-white tracking-tighter flex items-end gap-1">
-                                {(() => {
-                                  const h24 = parseInt((startTime || "09:00").split(':')[0]);
-                                  const h12 = h24 % 12 || 12;
-                                  return String(h12).padStart(2, '0');
-                                })()}
-                                <span className="text-sm text-gray-500 mb-2 font-bold">h</span>
-                             </div>
-                           </div>
-                           <div className="flex flex-col items-center gap-2">
-                             <span className="text-xs font-black text-gray-600 uppercase tracking-wide">Minute</span>
-                             <div className="text-5xl font-black text-white tracking-tighter flex items-end gap-1">
-                                {(startTime || "09:00").split(':')[1]}
-                                <span className="text-sm text-gray-500 mb-2 font-bold">min</span>
-                             </div>
-                           </div>
-                           <div className="flex flex-col items-center gap-2">
-                             <span className="text-xs font-black text-gray-600 uppercase tracking-wide">Period</span>
-                             <div className="text-3xl font-black text-lime-500 tracking-tighter mt-2">
-                                {parseInt((startTime || "09:00").split(':')[0]) >= 12 ? "PM" : "AM"}
-                             </div>
-                           </div>
-                        </div>
+                     <div className="flex items-center gap-4 sm:gap-8 py-6 px-4 bg-white/[0.02] rounded-[2.5rem] border border-white/5 relative overflow-hidden group/time">
+                        {/* Gradient Masks */}
+                        <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-[#0f1115] to-transparent z-10 pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#0f1115] to-transparent z-10 pointer-events-none" />
 
-                        <CustomTimePicker 
-                          isOpen={isTimePickerOpen}
-                          onClose={() => setIsTimePickerOpen(false)}
-                          initialTime={startTime || "09:00"}
-                          onSelect={(newTime) => setStartTime(newTime)}
-                        />
-                        <button 
-                          onClick={() => setIsTimePickerOpen(true)}
-                          className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-black uppercase tracking-wide text-gray-400 hover:text-white hover:bg-white/10 transition-all"
-                        >
-                          Adjust Time
-                        </button>
+                        {[
+                          { label: 'Hour', type: 'h', items: Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')) },
+                          { label: 'Min', type: 'm', items: Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, '0')) },
+                          { label: 'AM/PM', type: 'p', items: ['AM', 'PM'] }
+                        ].map((col) => {
+                          const h24 = parseInt((startTime || "09:00").split(':')[0]);
+                          const m = (startTime || "09:00").split(':')[1];
+                          const p = h24 >= 12 ? 'PM' : 'AM';
+                          const h12 = String(h24 % 12 || 12).padStart(2, '0');
+
+                          const currentVal = col.type === 'h' ? h12 : col.type === 'm' ? m : p;
+
+                          return (
+                            <div key={col.label} className="flex flex-col items-center gap-2">
+                              <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">{col.label}</span>
+                              <div className="h-32 overflow-y-auto scrollbar-hide snap-y snap-mandatory py-10 px-2 scroll-smooth">
+                                {col.items.map((item) => {
+                                  const isActive = item === currentVal;
+                                  return (
+                                    <button
+                                      key={item}
+                                      onClick={() => {
+                                        let newH24 = h24;
+                                        let newM = m;
+                                        let newP = p;
+
+                                        if (col.type === 'h') {
+                                          let h = parseInt(item);
+                                          if (newP === 'PM' && h < 12) h += 12;
+                                          if (newP === 'AM' && h === 12) h = 0;
+                                          newH24 = h;
+                                        } else if (col.type === 'm') {
+                                          newM = item;
+                                        } else {
+                                          newP = item;
+                                          let h = parseInt(h12);
+                                          if (newP === 'PM' && h < 12) h += 12;
+                                          if (newP === 'AM' && h === 12) h = 0;
+                                          newH24 = h;
+                                        }
+                                        setStartTime(`${String(newH24).padStart(2, '0')}:${newM}`);
+                                      }}
+                                      className={`h-10 flex items-center justify-center snap-center transition-all duration-300 ${
+                                        isActive 
+                                          ? 'text-3xl font-black text-lime-500 scale-110' 
+                                          : 'text-xl font-bold text-gray-700 opacity-20 hover:opacity-100'
+                                      }`}
+                                    >
+                                      {item}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })}
+                        
+                        <div className="flex-1 flex flex-col items-center justify-center gap-1 opacity-0 group-hover/time:opacity-100 transition-opacity">
+                           <div className="w-1.5 h-1.5 rounded-full bg-lime-500/20" />
+                           <div className="w-1.5 h-1.5 rounded-full bg-lime-500/40" />
+                           <div className="w-1.5 h-1.5 rounded-full bg-lime-500/60" />
+                        </div>
                     </div>
 
                     {/* Mode Selector */}
