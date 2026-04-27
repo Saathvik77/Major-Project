@@ -14,7 +14,6 @@ import { motion } from "framer-motion";
 import TaskItem from "../components/TaskItem";
 import Toast from "../components/Toast";
 import maleAvatar from "../assets/avatars/male_avatar.svg";
-import maleAvatar from "../assets/avatars/male_avatar.svg";
 import femaleAvatar from "../assets/avatars/female_avatar.svg";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
