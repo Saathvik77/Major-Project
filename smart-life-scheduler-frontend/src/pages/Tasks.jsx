@@ -644,8 +644,8 @@ export default function Tasks() {
 
                      <div className="flex items-center gap-4 sm:gap-8 py-6 px-4 bg-white/[0.02] rounded-[2.5rem] border border-white/5 relative overflow-hidden group/time">
                         {/* Gradient Masks */}
-                        <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-[#0f1115] to-transparent z-10 pointer-events-none" />
-                        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#0f1115] to-transparent z-10 pointer-events-none" />
+                        <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-[#0f1115] to-transparent z-10 pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#0f1115] to-transparent z-10 pointer-events-none" />
 
                         {[
                           { label: 'Hour', type: 'h', items: Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')) },
@@ -661,7 +661,7 @@ export default function Tasks() {
 
                           return (
                             <div key={col.label} className="flex flex-col items-center gap-2">
-                              <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">{col.label}</span>
+                              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{col.label}</span>
                               <div className="h-32 overflow-y-auto scrollbar-hide snap-y snap-mandatory py-10 px-2 scroll-smooth">
                                 {col.items.map((item) => {
                                   const isActive = item === currentVal;
@@ -691,8 +691,8 @@ export default function Tasks() {
                                       }}
                                       className={`h-10 flex items-center justify-center snap-center transition-all duration-300 ${
                                         isActive 
-                                          ? 'text-3xl font-black text-lime-500 scale-110' 
-                                          : 'text-xl font-bold text-gray-700 opacity-20 hover:opacity-100'
+                                          ? 'text-3xl font-black text-lime-500 scale-110 drop-shadow-[0_0_15px_rgba(132,204,22,0.4)]' 
+                                          : 'text-xl font-bold text-gray-400 opacity-40 hover:opacity-100 hover:text-white'
                                       }`}
                                     >
                                       {item}
