@@ -99,7 +99,7 @@ const RecommendationCard = ({ link }) => {
   );
 };
 
-const AchievementVault = ({ ratio, tasks }) => {
+const AchievementVault = ({ ratio, tasks, stats }) => {
   const getRank = (r) => {
     if (r >= 1) return { title: "Nexus Grandmaster", color: "text-lime-500", glow: "shadow-lime-500/30" };
     if (r >= 0.8) return { title: "Operational Elite", color: "text-lime-400", glow: "shadow-lime-400/20" };
@@ -117,6 +117,14 @@ const AchievementVault = ({ ratio, tasks }) => {
 
   return (
     <div className="glass-card p-6 sm:p-8 flex flex-col gap-6 relative overflow-hidden group border-lime-500/20">
+      <div className="absolute top-0 right-0 p-4 flex flex-col items-end">
+        <div className="px-2 py-0.5 bg-lime-500 text-slate-900 rounded-lg text-[9px] font-black uppercase tracking-widest mb-1">
+          Lvl {stats.level}
+        </div>
+        <div className="text-[8px] font-black text-lime-500/60 uppercase tracking-tighter">
+          {stats.xp} XP
+        </div>
+      </div>
       <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 blur-[40px] -z-10 group-hover:bg-lime-500/10 transition-all" />
       
       <div className="flex items-center justify-between mb-2">
@@ -158,6 +166,66 @@ const AchievementVault = ({ ratio, tasks }) => {
     </div>
   );
 };
+const AISuggestionsPanel = ({ suggestions }) => (
+  <div className="space-y-4">
+    <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] ml-2 flex items-center gap-2">
+       <Sparkles size={14} className="text-cyan-400" />
+       AI Neural Nudges
+    </h3>
+    <div className="space-y-3">
+      {suggestions.map((suggestion, idx) => (
+        <motion.div
+          key={idx}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: idx * 0.1 }}
+          className="p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/20 backdrop-blur-sm relative overflow-hidden group"
+        >
+          <div className="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
+            <Zap size={12} className="text-cyan-400" />
+          </div>
+          <div className="flex gap-3">
+            <div className={`p-2 rounded-lg bg-cyan-500/10 text-cyan-400 shrink-0`}>
+              {suggestion.icon}
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white/90 leading-tight">{suggestion.text}</p>
+              <p className="text-[9px] font-black text-cyan-500/60 uppercase tracking-widest mt-1">{suggestion.category}</p>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+);
+
+const DailyMissions = ({ missions }) => (
+  <div className="space-y-4">
+    <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] ml-2 flex items-center gap-2">
+       <Trophy size={14} className="text-yellow-400" />
+       Daily Missions
+    </h3>
+    <div className="space-y-3">
+      {missions.map((mission, idx) => (
+        <div key={idx} className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-all">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <h5 className="text-[10px] font-black text-white uppercase tracking-wider">{mission.title}</h5>
+              <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">{mission.reward} XP</p>
+            </div>
+            <div className="text-[10px] font-black text-lime-400">{mission.progress}%</div>
+          </div>
+          <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-gradient-to-r from-lime-600 to-lime-400"
+              style={{ width: `${mission.progress}%` }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 const formatTime12Hour = (time24) => {
   if (!time24) return "—";
@@ -238,13 +306,41 @@ const AIAssistant = () => {
     }
   };
 
+  const [suggestions] = useState([
+    { icon: <Activity size={16} />, text: "You’ve been inactive for 2 hours — walk 10 mins", category: "Physical Recovery" },
+    { icon: <Brain size={16} />, text: "You focus better in evenings — schedule study now", category: "Productivity Peak" },
+    { icon: <Moon size={16} />, text: "Sleep was poor — reduce workload today", category: "Energy Management" }
+  ]);
+
+  const [missions, setMissions] = useState([]);
+  const [stats, setStats] = useState({ xp: 0, level: 1 });
+
+  const fetchGamificationData = async () => {
+    try {
+      const [missionsRes, statsRes] = await Promise.all([
+        api.get("/gamification/missions"),
+        api.get("/gamification/stats")
+      ]);
+      setMissions(missionsRes.data);
+      setStats(statsRes.data);
+    } catch (err) {
+      console.error("Gamification Fetch Error:", err);
+    }
+  };
+
   useEffect(() => {
     fetchAIAssistantData();
+    fetchGamificationData();
     
-    // Listen for updates
-    const handleUpdate = () => fetchAIAssistantData();
-    window.addEventListener("tasksUpdated", handleUpdate);
-    return () => window.removeEventListener("tasksUpdated", handleUpdate);
+    // Simulate auto-sync every 30 seconds for "magical" feel
+    const syncInterval = setInterval(async () => {
+        try {
+            await api.post("/sync/fitness");
+            fetchGamificationData(); // Refresh steps/progress
+        } catch (e) {}
+    }, 30000);
+    
+    return () => clearInterval(syncInterval);
   }, []);
 
   const handleSend = async (overrideInput) => {
@@ -612,6 +708,7 @@ const AIAssistant = () => {
         <div className="lg:col-span-4 flex flex-col gap-8 md:gap-12 pb-10 lg:pb-0">
           
           {/* Quick Actions Grid */}
+          {/* Quick Actions Grid */}
           <div className="space-y-4">
             <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em] ml-2 flex items-center gap-2">
                <Zap size={14} className="text-lime-500" />
@@ -625,8 +722,14 @@ const AIAssistant = () => {
             </div>
           </div>
 
+          {/* AI Suggestions Panel */}
+          <AISuggestionsPanel suggestions={suggestions} />
+
+          {/* Daily Missions */}
+          <DailyMissions missions={missions} />
+
           {/* Achievement Vault Panel */}
-          <AchievementVault ratio={insightData.ratio} tasks={allTasks} />
+          <AchievementVault ratio={insightData.ratio} tasks={allTasks} stats={stats} />
 
           {/* Mini Progress Card */}
           <div className="glass-card p-6 sm:p-8 flex items-center gap-6">

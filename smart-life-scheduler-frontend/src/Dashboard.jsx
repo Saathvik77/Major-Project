@@ -17,24 +17,55 @@ import {
   User,
   LogOut,
   Bell,
-  MoreHorizontal
+  MoreHorizontal,
+  Clock
 } from 'lucide-react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import api from './api';
 import maleAvatar from "./assets/avatars/male_avatar.svg";
 import femaleAvatar from "./assets/avatars/female_avatar.svg";
 
+const LiveClock = () => {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center lg:items-start">
+      <div className="flex items-baseline gap-2">
+        <span className="text-4xl md:text-5xl font-black tracking-tighter text-white">
+          {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+        </span>
+        <span className="text-lime-500 font-black text-xs animate-pulse uppercase tracking-widest">
+          {time.toLocaleTimeString([], { second: '2-digit' })}
+        </span>
+      </div>
+      <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mt-1">
+        System Synchronized • {time.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' })}
+      </p>
+    </div>
+  );
+};
+
 const StatBadge = ({ dotColor, label, value, isVisible }) => (
-  <div className="flex items-center gap-3">
-    <div className={`w-2 h-2 rounded-full ${dotColor}`} />
+  <motion.div 
+    whileHover={{ scale: 1.05, y: -2 }}
+    className="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 transition-colors cursor-default"
+  >
+    <div className={`w-2 h-2 rounded-full ${dotColor} shadow-[0_0_10px_currentColor]`} />
     <div>
-      <p className="text-xs font-black text-gray-500 uppercase tracking-wide leading-none mb-1">{label}</p>
+      <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1.5">{label}</p>
       <p className="text-xl font-black text-white leading-none">
         {isVisible ? value : "—"}
       </p>
     </div>
-  </div>
+  </motion.div>
 );
+
 
 
 const formatTime12Hour = (time24) => {
@@ -168,10 +199,15 @@ const Dashboard = () => {
           <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-lime-500 shadow-xl backdrop-blur-xl shrink-0">
             <LayoutDashboard size={20} className="md:w-6 md:h-6" strokeWidth={1.5} />
           </div>
-          <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black tracking-tighter text-white truncate">Smart Life Scheduler</h1>
-            <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1 truncate">Operational Overview</p>
+          <div className="min-w-0 flex flex-col sm:flex-row sm:items-center gap-4 md:gap-8">
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black tracking-tighter text-white truncate">Smart Life Scheduler</h1>
+              <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1 truncate">Operational Overview</p>
+            </div>
+            <div className="hidden lg:block h-10 w-px bg-white/5" />
+            <LiveClock />
           </div>
+
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -227,7 +263,12 @@ const Dashboard = () => {
 
       {/* ── Main Hero Card ────────────────────────────────────────── */}
       <div className="relative mb-8 md:mb-12 lg:mb-20">
-         <div className="hero-card p-6 sm:p-8 md:p-16 flex flex-col lg:flex-row items-center gap-8 md:gap-16 min-h-[300px] md:min-h-[450px]">
+         <motion.div 
+           initial={{ opacity: 0, y: 20 }}
+           animate={{ opacity: 1, y: 0 }}
+           className="hero-card p-6 sm:p-8 md:p-16 flex flex-col lg:flex-row items-center gap-8 md:gap-16 min-h-[300px] md:min-h-[450px]"
+         >
+
             
             {/* Data Visualization Column */}
             <div className="flex-1 w-full relative z-20 text-center lg:text-left">
@@ -307,15 +348,17 @@ const Dashboard = () => {
                  </div>
               </div>
            </div>
-        </div>
+         </motion.div>
       </div>
+
 
 
       {/* ── Bottom Content Row ───────────────────────────────────── */}
        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 lg:gap-20">
         
         {/* Quick Access Card */}
-        <div className="lg:col-span-8 glass-card w-full max-w-full overflow-hidden p-5 sm:p-6 md:p-8 lg:p-10 flex flex-col gap-6 md:gap-10 relative group min-h-[300px] md:min-h-[450px]">
+        <div className="lg:col-span-8 glass-card-premium w-full max-w-full overflow-hidden p-5 sm:p-6 md:p-8 lg:p-10 flex flex-col gap-6 md:gap-10 relative group min-h-[300px] md:min-h-[450px]">
+
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xl font-black text-white tracking-tight">Active Operational Flow</h3>
@@ -367,7 +410,8 @@ const Dashboard = () => {
         </div>
 
         {/* AI Insight Card */}
-        <div className="lg:col-span-4 glass-card w-full max-w-full overflow-hidden p-6 sm:p-8 md:p-10 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative group">
+        <div className="lg:col-span-4 glass-card-premium w-full max-w-full overflow-hidden p-6 sm:p-8 md:p-10 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative group">
+
            <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 blur-[40px] -z-10 group-hover:bg-lime-500/20 transition-all" />
            <div className="flex items-start justify-between mb-6 md:mb-8">
               <div className="w-12 h-12 rounded-2xl bg-lime-500/10 border border-lime-500/20 flex items-center justify-center text-lime-500 shadow-lg shadow-lime-500/5">

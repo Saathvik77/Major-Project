@@ -29,6 +29,9 @@ const intelligenceRoutes = require("./routes/intelligenceRoutes");
 const intelligenceHistoryRoutes = require("./routes/intelligenceHistoryRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const noteRoutes = require("./routes/noteRoutes");
+const goalRoutes = require("./routes/goalRoutes");
+const syncRoutes = require("./routes/syncRoutes");
+const gamificationRoutes = require("./routes/gamificationRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
@@ -36,6 +39,9 @@ app.use("/api/intelligence", intelligenceRoutes);
 app.use("/api/intelligence/history", intelligenceHistoryRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/notes", noteRoutes);
+app.use("/api/goals", goalRoutes);
+app.use("/api/sync", syncRoutes);
+app.use("/api/gamification", gamificationRoutes);
 
 /* =========================================
    TEST & HEALTH ROUTES

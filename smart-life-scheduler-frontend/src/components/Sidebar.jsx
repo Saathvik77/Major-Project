@@ -30,12 +30,12 @@ const NavItem = ({ icon: Icon, label, path, active, isBottom = false }) => (
       )}
     </div>
 
-    {active && (
       <motion.div
         layoutId="activeNav"
-        className={`absolute ${isBottom ? "top-0 left-1/4 right-1/4 h-1 rounded-b-full" : "left-0 top-1/4 bottom-1/4 w-1 rounded-r-full"} bg-lime-500 shadow-[0_0_15px_rgba(132,204,22,0.8)]`}
+        className={`absolute ${isBottom ? "bottom-0 left-2 right-2 h-1 rounded-t-full" : "right-0 top-2 bottom-2 w-1.5 rounded-l-full"} bg-lime-500 shadow-[0_0_20px_rgba(132,204,22,1)]`}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
       />
-    )}
+
 
     {!isBottom && (
       <div className="absolute left-20 px-3 py-2 bg-gray-900 text-white text-xs font-black uppercase tracking-widest rounded-xl opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all pointer-events-none whitespace-nowrap border border-white/10 shadow-2xl z-50">
@@ -61,6 +61,7 @@ const Sidebar = () => {
     { icon: PieChart, label: "Analytics", path: "/analytics" },
     { icon: Bot, label: "AI Assistant", path: "/ai-assistant" },
     { icon: Activity, label: "Health", path: "/health" },
+    { icon: Target, label: "Goals", path: "/goals" },
     { icon: BookOpen, label: "Short Notes", path: "/notes" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];

@@ -61,7 +61,7 @@ export default function AnimatedBackground() {
     };
 
     return (
-        <div className="fixed inset-0 pointer-events-none" style={{ zIndex: -1 }}>
+        <div className="fixed inset-0 pointer-events-none noise-bg" style={{ zIndex: -1 }}>
 
             {/* ── Lime Emerald Glow — top right ── */}
             <div
@@ -71,9 +71,9 @@ export default function AnimatedBackground() {
                     right: "-8%",
                     width: "55vw",
                     height: "55vh",
-                    background: "radial-gradient(ellipse, rgba(132,204,22,0.12) 0%, rgba(16,185,129,0.05) 45%, transparent 72%)",
+                    background: "radial-gradient(ellipse, rgba(132,204,22,0.15) 0%, rgba(16,185,129,0.08) 45%, transparent 72%)",
                     borderRadius: "50%",
-                    filter: "blur(50px)",
+                    filter: "blur(80px)",
                     animation: "stoneAmber 16s ease-in-out infinite alternate",
                 }}
             />
@@ -86,12 +86,15 @@ export default function AnimatedBackground() {
                     left: "20%",
                     width: "60vw",
                     height: "50vh",
-                    background: "radial-gradient(ellipse, rgba(132,204,22,0.05) 0%, transparent 65%)",
+                    background: "radial-gradient(ellipse, rgba(132,204,22,0.08) 0%, transparent 65%)",
                     borderRadius: "50%",
-                    filter: "blur(70px)",
+                    filter: "blur(100px)",
                     animation: "stoneAmber 22s ease-in-out infinite alternate-reverse",
                 }}
             />
+
+            {/* --- Additional Interactive Glow --- */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(132,204,22,0.03)_0%,transparent_50%)]" />
 
             {/* ── Very subtle dark vignette at bottom ──────────────────── */}
             <div

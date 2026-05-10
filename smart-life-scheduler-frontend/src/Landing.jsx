@@ -214,8 +214,9 @@ function Landing() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="bg-[#0d1116] border border-white/5 rounded-[48px] p-12 flex flex-col gap-10 relative overflow-hidden group shadow-2xl"
+            className="bg-[#0d1116] border border-white/5 rounded-[48px] p-12 flex flex-col gap-10 relative overflow-hidden group shadow-2xl glass-card-premium"
           >
+
             <div className="absolute top-0 right-0 w-80 h-80 bg-lime-500/5 blur-[120px] pointer-events-none" />
             
             <div className="flex flex-col gap-6">
@@ -504,10 +505,17 @@ function Landing() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.7, delay: idx * 0.1 }}
-                    whileHover={{ scale: 1.05, y: -15, zIndex: 10 }}
+                    whileHover={{ 
+                      scale: 1.05, 
+                      y: -15, 
+                      zIndex: 10,
+                      rotateX: 5,
+                      rotateY: 5
+                    }}
                     onClick={() => setSelectedFeature({ ...feature, id: idx })}
-                    className="glass-card p-16 rounded-[64px] flex flex-col items-center text-center gap-10 border border-white/[0.08] cursor-pointer group relative overflow-hidden hover:border-[#84cc16]/30 transition-all shadow-2xl"
+                    className="glass-card-premium p-16 rounded-[64px] flex flex-col items-center text-center gap-10 border border-white/[0.08] cursor-pointer group relative overflow-hidden hover:border-[#84cc16]/30 transition-all shadow-2xl"
                   >
+
                      <div className="absolute inset-0 bg-lime-500/[0.03] opacity-0 group-hover:opacity-100 transition-opacity blur-[60px] pointer-events-none" />
                      
                      {/* Gradient Border Glow */}

@@ -39,7 +39,15 @@ const userSchema = new mongoose.Schema(
       flow: { type: String, default: null },
       step: { type: Number, default: 0 },
       data: { type: mongoose.Schema.Types.Mixed, default: {} }
-    }
+    },
+    healthData: {
+      steps: { type: Number, default: 0 },
+      sleepHours: { type: Number, default: 0 },
+      screenTimeMinutes: { type: Number, default: 0 },
+      lastActive: { type: Date, default: Date.now }
+    },
+    xp: { type: Number, default: 0 },
+    level: { type: Number, default: 1 }
   },
   { timestamps: true }
 );
