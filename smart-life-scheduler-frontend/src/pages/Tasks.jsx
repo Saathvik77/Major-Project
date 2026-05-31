@@ -790,9 +790,8 @@ export default function Tasks() {
                     </div>
                   </div>
                 </div>
+                <FitnessTracker selectedDate={selectedDate} />
               </div>
-              <FitnessTracker selectedDate={selectedDate} />
-            </div>
 
           <div className="col-span-1 lg:col-span-4 flex flex-col gap-8 md:gap-16 lg:gap-20">
             <div className="glass-card w-full max-w-full overflow-hidden p-5 sm:p-8 bg-gradient-to-br from-lime-500/5 to-transparent border-lime-500/20 relative group">
