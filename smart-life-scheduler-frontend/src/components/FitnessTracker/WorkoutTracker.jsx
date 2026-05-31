@@ -51,22 +51,22 @@ export default function WorkoutTracker({ workouts, dateStr, onUpdate }) {
           onChange={e => setWorkoutType(e.target.value)}
           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
         />
-        <div className="flex gap-2">
+        <div className="grid grid-cols-2 gap-2">
           <input 
             type="number" 
             placeholder="Min" 
             value={workoutDuration}
             onChange={e => setWorkoutDuration(e.target.value)}
-            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
+            className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
           />
           <input 
             type="number" 
             placeholder="Calories" 
             value={calories}
             onChange={e => setCalories(e.target.value)}
-            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
+            className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none"
           />
-          <button onClick={logWorkout} className="px-6 py-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 font-black rounded-xl hover:bg-orange-500/40 transition-colors uppercase tracking-wide">
+          <button onClick={logWorkout} className="col-span-2 py-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 font-black rounded-xl hover:bg-orange-500/40 transition-colors uppercase tracking-wide">
             Save
           </button>
         </div>
