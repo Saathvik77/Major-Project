@@ -102,7 +102,7 @@ const NavigationSidebar = () => {
   ];
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-24 flex flex-col items-center py-8 z-50 overflow-hidden">
+    <aside className="hidden md:flex fixed left-0 top-0 h-full w-24 flex-col items-center py-8 z-50 overflow-hidden">
       {/* Premium Glass Sidebar - higher blur, slight transparency */}
       <div className="absolute inset-y-4 left-4 w-16 glass-sidebar rounded-full -z-10 shadow-2xl overflow-hidden" />
       
@@ -179,7 +179,7 @@ function Landing() {
       
       <NavigationSidebar />
 
-      <main className="flex-1 ml-28 mr-8 grid grid-cols-12 gap-8 items-start">
+      <main className="flex-1 px-4 md:ml-28 md:mr-8 grid grid-cols-12 gap-8 items-start">
         
         {/* Header Branding (Mobile/Top) */}
         <header className="col-span-12 flex justify-between items-center mb-6 px-2">
@@ -214,13 +214,13 @@ function Landing() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="bg-[#0d1116] border border-white/5 rounded-[48px] p-12 flex flex-col gap-10 relative overflow-hidden group shadow-2xl glass-card-premium"
+            className="bg-[#0d1116] border border-white/5 rounded-[32px] md:rounded-[48px] p-8 md:p-12 flex flex-col gap-10 relative overflow-hidden group shadow-2xl glass-card-premium"
           >
 
             <div className="absolute top-0 right-0 w-80 h-80 bg-lime-500/5 blur-[120px] pointer-events-none" />
             
             <div className="flex flex-col gap-6">
-              <h2 className="text-6xl font-black leading-[0.95] tracking-tighter">
+              <h2 className="text-4xl md:text-6xl font-black leading-[0.95] tracking-tighter">
                 DESIGN YOUR <span className="text-[#84cc16]">LIFE.</span><br />
                 MASTER YOUR <span className="text-[#84cc16]">TIME.</span>
               </h2>
@@ -229,14 +229,14 @@ function Landing() {
               </p>
             </div>
 
-            <div className="flex items-center gap-6">
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
                <button 
                 onClick={() => navigate(token ? "/dashboard" : "/login")}
                 className="bg-[#84cc16] hover:bg-lime-400 text-black px-10 py-5 rounded-2xl text-xs font-black uppercase tracking-[3px] transition-all shadow-2xl shadow-lime-500/30 active:scale-95"
                >
                  Get Started
                </button>
-               <button className="flex items-center gap-3 px-10 py-5 rounded-2xl border border-white/10 hover:bg-white/5 text-xs font-black uppercase tracking-widest transition-all">
+               <button className="w-full sm:w-auto flex justify-center items-center gap-3 px-10 py-5 rounded-2xl border border-white/10 hover:bg-white/5 text-xs font-black uppercase tracking-widest transition-all">
                  <Play size={16} fill="currentColor" />
                  Demo
                </button>
@@ -250,7 +250,7 @@ function Landing() {
             </div>
 
             {/* Premium Glass Floating Labels (Repositioned to avoid overlap) */}
-            <div className="absolute top-6 right-6 flex flex-col gap-4 scale-90 origin-top-right">
+            <div className="hidden sm:flex absolute top-6 right-6 flex-col gap-4 scale-90 origin-top-right">
                <motion.div 
                  initial={{ x: 50, opacity: 0 }}
                  whileInView={{ x: 0, opacity: 1 }}
@@ -286,18 +286,18 @@ function Landing() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="glass-card p-12 flex flex-col gap-10 border border-white/[0.08]"
+            className="glass-card p-6 md:p-12 flex flex-col gap-10 border border-white/[0.08]"
           >
              <div className="flex flex-col gap-2">
                 <span className="text-[10px] font-black text-[#84cc16] uppercase tracking-[5px] flex items-center gap-3">
                    <div className="w-2 h-2 rounded-full bg-[#84cc16] animate-pulse shadow-[0_0_10px_#84cc16]" />
                    SYSTEM ACTIVE
                 </span>
-                <h3 className="text-5xl font-black tracking-tighter leading-none">Strategic<br />Performance</h3>
+                <h3 className="text-4xl md:text-5xl font-black tracking-tighter leading-none">Strategic<br />Performance</h3>
              </div>
 
-             <div className="flex items-center justify-between gap-8">
-                <div className="flex flex-col gap-8 flex-1">
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+                <div className="flex flex-col gap-8 flex-1 w-full">
                    <div className="flex items-center gap-4">
                       <button className="bg-[#84cc16] text-black px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[2px] flex items-center gap-2 glow-active-emerald">
                         <Zap size={14} fill="currentColor" /> PLAN MY DAY
@@ -332,7 +332,7 @@ function Landing() {
           <motion.section 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="bg-[#0a0d11] border border-white/5 p-10 rounded-[40px] flex flex-col gap-10 shadow-xl"
+            className="bg-[#0a0d11] border border-white/5 p-6 md:p-10 rounded-[32px] md:rounded-[40px] flex flex-col gap-10 shadow-xl"
           >
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-5">
@@ -376,7 +376,7 @@ function Landing() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="glass-card p-10 flex flex-col gap-10 border border-white/[0.08]"
+            className="glass-card p-6 md:p-10 flex flex-col gap-10 border border-white/[0.08]"
           >
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-5">
@@ -492,7 +492,7 @@ function Landing() {
                className="flex flex-col items-center text-center gap-5 mb-24"
             >
                <span className="text-[10px] font-black text-[#84cc16] uppercase tracking-[8px]">CORE SYSTEMS</span>
-               <h3 className="text-7xl font-black tracking-tight uppercase leading-[0.9] text-white">INTELLIGENT <span className="text-[#84cc16]">UNITS</span></h3>
+               <h3 className="text-4xl md:text-7xl font-black tracking-tight uppercase leading-[0.9] text-white">INTELLIGENT <span className="text-[#84cc16]">UNITS</span></h3>
                <p className="text-white/30 text-lg max-w-xl font-medium mt-4">Unlocking hyper-performance through layered glassmorphism and neural optimization.</p>
             </motion.div>
 
@@ -582,9 +582,9 @@ function Landing() {
                        >
                           {selectedFeature.icon}
                        </motion.div>
-                       <div className="flex flex-col gap-4">
-                          <h2 className="text-6xl font-black tracking-tight leading-none text-white">{selectedFeature.title}</h2>
-                          <div className="flex items-center gap-4">
+                        <div className="flex flex-col gap-4 text-center md:text-left items-center md:items-start">
+                          <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-none text-white">{selectedFeature.title}</h2>
+                          <div className="flex flex-wrap justify-center md:justify-start items-center gap-4">
                              <div className="px-5 py-2 rounded-full bg-[#84cc16]/10 border border-[#84cc16]/20 text-[10px] font-black text-[#84cc16] uppercase tracking-[3px]">DEPLOYED</div>
                              <div className="px-5 py-2 rounded-full bg-white/[0.03] border border-white/[0.07] text-[10px] font-black text-white/30 uppercase tracking-[3px]">ENCRYPTED</div>
                           </div>
