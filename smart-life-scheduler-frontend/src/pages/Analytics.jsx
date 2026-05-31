@@ -264,23 +264,23 @@ function Analytics() {
 
 
   return (
-    <div className="min-h-screen pl-0 md:pl-20 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col w-full xl:max-w-7xl xl:mx-auto pb-28 md:pb-10 page-transition">
+    <div className="min-h-screen pl-0 md:pl-20 p-4 sm:p-6 md:p-8 lg:p-12 text-white relative flex flex-col w-full xl:max-w-7xl xl:mx-auto pb-28 md:pb-10 page-transition overflow-x-hidden">
       {/* Lighting FX */}
       <div className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-lime-500/5 rounded-full blur-[120px] -z-10" />
 
       {/* Header */}
-      <header className="flex items-center justify-between gap-4 mb-8 md:mb-16">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 md:mb-16">
         <div className="flex items-center gap-3 md:gap-6 min-w-0">
           <button onClick={() => navigate(-1)} className="p-2 sm:p-3.5 bg-white/5 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white shadow-xl shrink-0">
             <ChevronLeft size={20} className="sm:w-6 sm:h-6" />
           </button>
           <div className="min-w-0">
             <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter truncate">Intelligence Overview</h1>
-            <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1 text-lime-500/60 font-black truncate">Operational Data Feed</p>
+            <p className="text-xs font-black text-gray-500 uppercase tracking-wide mt-1 text-lime-500/60 truncate">Operational Data Feed</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl sm:p-1.5 sm:rounded-2xl border border-white/10 backdrop-blur-xl shrink-0">
+        <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl sm:p-1.5 sm:rounded-2xl border border-white/10 backdrop-blur-xl w-full sm:w-auto overflow-x-auto hide-scrollbar">
           <FilterButton label="Today" active={filter === "Today"} onClick={() => setFilter("Today")} />
           <FilterButton label="Week" active={filter === "Week"} onClick={() => setFilter("Week")} />
           <FilterButton label="Month" active={filter === "Month"} onClick={() => setFilter("Month")} />
