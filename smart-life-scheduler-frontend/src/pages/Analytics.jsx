@@ -13,7 +13,11 @@ import {
   ArrowUpRight,
   Clock,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Dumbbell,
+  Droplets,
+  Moon,
+  Scale
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
@@ -316,6 +320,42 @@ function Analytics() {
           trend={statTrends.efficiency.val} 
           trendUp={statTrends.efficiency.up}
           color="lime"
+        />
+      </div>
+
+      {/* Fitness Summary Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 md:mb-20 px-0 sm:px-2">
+        <StatCard 
+          icon={Dumbbell} 
+          title="Workouts (Week)" 
+          value={summary?.fitness?.workoutsThisWeek || 0} 
+          trend="—" 
+          trendUp={true}
+          color="orange"
+        />
+        <StatCard 
+          icon={Droplets} 
+          title="Avg Water (L)" 
+          value={summary?.fitness?.averageWater || "0.0"} 
+          trend="—" 
+          trendUp={true}
+          color="cyan"
+        />
+        <StatCard 
+          icon={Moon} 
+          title="Avg Sleep (h)" 
+          value={summary?.fitness?.averageSleep || "0.0"} 
+          trend="—" 
+          trendUp={true}
+          color="indigo"
+        />
+        <StatCard 
+          icon={Scale} 
+          title="Current Weight (kg)" 
+          value={summary?.fitness?.currentWeight || "—"} 
+          trend="—" 
+          trendUp={true}
+          color="emerald"
         />
       </div>
 

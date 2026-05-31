@@ -12,7 +12,6 @@ import Health from "./pages/Health";
 import AIAssistant from "./pages/AIAssistant";
 import Settings from "./pages/Settings";
 import ShortNotes from "./pages/ShortNotes";
-import Goals from "./pages/Goals";
 import { ThemeProvider } from "./ThemeContext";
 import AnimatedBackground from "./components/AnimatedBackground";
 import Layout from "./components/Layout";
@@ -121,16 +120,6 @@ function App() {
               <PrivateRoute>
                 <Layout>
                   <Settings />
-                </Layout>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/goals"
-            element={
-              <PrivateRoute>
-                <Layout>
-                  <Goals />
                 </Layout>
               </PrivateRoute>
             }

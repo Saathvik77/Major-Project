@@ -1,6 +1,10 @@
 const IntelligenceReport = require("../models/IntelligenceReport");
 const IntelligenceHistory = require("../models/IntelligenceHistory");
 const Task = require("../models/Task");
+const Workout = require("../models/Workout");
+const WaterLog = require("../models/WaterLog");
+const SleepLog = require("../models/SleepLog");
+const WeightLog = require("../models/WeightLog");
 
 const { runIntelligencePipeline } = require("../intelligence/intelligenceEngine");
 const calculateAdvancedAnalytics = require("../services/advancedAnalyticsService");
@@ -83,7 +87,17 @@ const getSummary = async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const tasks = await Task.find({ user: userId });
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const [tasks, workouts, waterLogs, sleepLogs, weightLogs] = await Promise.all([
+      Task.find({ user: userId }),
+      Workout.find({ user: userId, date: { $gte: sevenDaysAgo } }),
+      WaterLog.find({ user: userId, createdAt: { $gte: sevenDaysAgo } }),
+      SleepLog.find({ user: userId, createdAt: { $gte: sevenDaysAgo } }),
+      WeightLog.find({ user: userId }).sort({ date: -1 }).limit(1)
+    ]);
+
     const totalTasks = tasks.length;
     const completedTasks = tasks.filter(t => t.completed);
     const completed = completedTasks.length;
@@ -145,6 +159,19 @@ const getSummary = async (req, res) => {
       }
     }
 
+    // Calculate Fitness Stats
+    const workoutsThisWeek = workouts.length;
+    
+    let totalSleep = 0;
+    sleepLogs.forEach(log => totalSleep += (log.duration || 0));
+    const averageSleep = sleepLogs.length > 0 ? (totalSleep / sleepLogs.length).toFixed(1) : "0.0";
+
+    let totalWater = 0;
+    waterLogs.forEach(log => totalWater += (log.amount || 0));
+    const averageWater = waterLogs.length > 0 ? (totalWater / waterLogs.length).toFixed(1) : "0.0";
+
+    const currentWeight = weightLogs.length > 0 ? weightLogs[0].weight : null;
+
     // Dynamic Milestones
     const milestones = [];
     if (activeStreak >= 7) milestones.push({ icon: "Flame", label: "Focus Master", desc: `${activeStreak} Day Streak Achieved` });
@@ -164,7 +191,13 @@ const getSummary = async (req, res) => {
       productivityScore,
       focusTime: `${focusTimeHours}h`,
       activeStreak: `${activeStreak} Days`,
-      milestones
+      milestones,
+      fitness: {
+        workoutsThisWeek,
+        averageSleep,
+        averageWater,
+        currentWeight
+      }
     });
 
   } catch (error) {

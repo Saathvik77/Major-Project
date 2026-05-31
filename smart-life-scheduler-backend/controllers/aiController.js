@@ -1,5 +1,8 @@
 const Task = require("../models/Task");
 const User = require("../models/User");
+const Workout = require("../models/Workout");
+const SleepLog = require("../models/SleepLog");
+const WaterLog = require("../models/WaterLog");
 
 const chatWithAI = async (req, res) => {
   try {
@@ -297,19 +300,52 @@ const chatWithAI = async (req, res) => {
     }
 
     // REPORTS / ANALYTICS
-    if ((msg.includes("report") || msg.includes("analyze") || msg.includes("review")) && (msg.includes("productivity") || msg.includes("health") || msg.includes("performance"))) {
+    if ((msg.includes("report") || msg.includes("analyze") || msg.includes("review")) && (msg.includes("productivity") || msg.includes("health") || msg.includes("performance") || msg.includes("fitness"))) {
       const allTasks = await Task.find({ user: userId });
       const completed = allTasks.filter(t => t.completed);
       const total = allTasks.length;
       const efficiency = total > 0 ? Math.round((completed.length / total) * 100) : 100;
+      
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      
+      const [workouts, sleepLogs, waterLogs] = await Promise.all([
+        Workout.find({ user: userId, date: { $gte: sevenDaysAgo } }),
+        SleepLog.find({ user: userId, createdAt: { $gte: sevenDaysAgo } }),
+        WaterLog.find({ user: userId, createdAt: { $gte: sevenDaysAgo } })
+      ]);
+      
+      let avgSleep = 0;
+      if (sleepLogs.length > 0) {
+        avgSleep = sleepLogs.reduce((acc, log) => acc + log.duration, 0) / sleepLogs.length;
+      }
+      
+      let avgWater = 0;
+      if (waterLogs.length > 0) {
+        avgWater = waterLogs.reduce((acc, log) => acc + log.amount, 0) / waterLogs.length;
+      }
+
+      let fitnessAdvice = "";
+      if (avgSleep < 7 && avgSleep > 0) {
+        fitnessAdvice += ` Your sleep average is only ${avgSleep.toFixed(1)} hours, so consider going to bed 30 minutes earlier.`;
+      } else if (avgSleep >= 7) {
+        fitnessAdvice += ` Your sleep average is great at ${avgSleep.toFixed(1)} hours.`;
+      }
+      
+      if (avgWater < 2 && avgWater > 0) {
+        fitnessAdvice += ` You're drinking ${avgWater.toFixed(1)}L of water daily; try to increase it for better focus.`;
+      }
+      
+      fitnessAdvice += ` You've logged ${workouts.length} workouts this week.`;
+
       executedActions.push({
         type: "comprehensive_report",
         efficiency: efficiency,
         completed: completed.map(t => ({ title: t.title })),
         missed: allTasks.filter(t => !t.completed).map(t => ({ title: t.title })),
-        suggestion: "Maintain steady performance to hit your peak index."
+        suggestion: `Maintain steady performance. ${fitnessAdvice}`
       });
-      reply = `Generating performance report. Efficiency: ${efficiency}%. Actionable feedback generated above.`;
+      reply = `Generating performance report. Efficiency: ${efficiency}%. ${fitnessAdvice}`;
       return res.json({ reply, actions: executedActions });
     }
 
