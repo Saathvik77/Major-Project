@@ -4,7 +4,6 @@ import {
   LayoutDashboard, 
   ClipboardList,
   PieChart,
-  Settings,
   BarChart3, 
   BrainCircuit, 
   Plus,
@@ -83,7 +82,6 @@ const QuickLaunchHero = ({ onNavigate }) => {
   const launchOptions = [
     { label: "Tasks", icon: <ClipboardList />, path: "/tasks", color: "text-lime-500" },
     { label: "Analytics", icon: <PieChart />, path: "/analytics", color: "text-lime-500" },
-    { label: "Settings", icon: <Settings />, path: "/settings", color: "text-lime-500" },
     { label: "AI Assistant", icon: <Bot />, path: "/ai-assistant", color: "text-lime-500" },
   ];
 

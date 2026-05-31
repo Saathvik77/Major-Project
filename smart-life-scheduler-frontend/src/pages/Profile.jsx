@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { 
   User, 
-  Settings, 
   LogOut, 
   Shield, 
   Bell, 
@@ -337,7 +336,6 @@ function Profile() {
                   onClick={openEditModal}
                   className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[9px] font-black uppercase text-gray-400 hover:text-white hover:bg-white/10 transition-all"
                 >
-                  <Settings size={10} />
                   Edit Identity
                 </button>
              </div>
