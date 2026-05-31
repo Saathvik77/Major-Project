@@ -295,36 +295,8 @@ function Analytics() {
           value={filteredSummary.completed} 
           trend={statTrends.completed.val} 
           trendUp={statTrends.completed.up}
-          color="emerald"
-        />
-        <StatCard 
-          icon={AlertCircle} 
-          title="Missed Syncs" 
-          value={filteredSummary.overdue} 
-          trend={statTrends.overdue.val} 
-          trendUp={!statTrends.overdue.up} // Down is good for overdue
-          color="rose"
-        />
-        <StatCard 
-          icon={Clock} 
-          title="Focus Time" 
-          value={summary?.focusTime || "0h"} 
-          trend="—" 
-          trendUp={true}
-          color="blue"
-        />
-        <StatCard 
-          icon={Zap} 
-          title="Smart Score" 
-          value={`${Math.round((filteredSummary.completed / Math.max(1, filteredSummary.completed + filteredSummary.pending + filteredSummary.overdue)) * 100)}%`} 
-          trend={statTrends.efficiency.val} 
-          trendUp={statTrends.efficiency.up}
           color="lime"
         />
-      </div>
-
-      {/* Fitness Summary Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 md:mb-20 px-0 sm:px-2">
         <StatCard 
           icon={Dumbbell} 
           title="Workouts (Week)" 
@@ -348,14 +320,6 @@ function Analytics() {
           trend="—" 
           trendUp={true}
           color="indigo"
-        />
-        <StatCard 
-          icon={Scale} 
-          title="Current Weight (kg)" 
-          value={summary?.fitness?.currentWeight || "—"} 
-          trend="—" 
-          trendUp={true}
-          color="emerald"
         />
       </div>
 
