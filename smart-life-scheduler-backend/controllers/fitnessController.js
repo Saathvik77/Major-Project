@@ -3,6 +3,7 @@ const Workout = require("../models/Workout");
 const WaterLog = require("../models/WaterLog");
 const SleepLog = require("../models/SleepLog");
 const WeightLog = require("../models/WeightLog");
+const StepLog = require("../models/StepLog");
 
 // Helpers
 const getStartOfDay = (dateStr) => {
@@ -97,11 +98,12 @@ exports.getWorkouts = async (req, res) => {
 
 exports.createWorkout = async (req, res) => {
   try {
-    const { type, duration, date, notes } = req.body;
+    const { type, duration, calories, date, notes } = req.body;
     const newWorkout = new Workout({
       user: req.user.id,
       type,
       duration,
+      calories,
       date: new Date(date || Date.now()),
       notes
     });
@@ -199,6 +201,36 @@ exports.logWeight = async (req, res) => {
       await log.save();
     } else {
       log = new WeightLog({ user: req.user.id, weight, date });
+      await log.save();
+    }
+    res.json(log);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// --- STEP LOGS ---
+exports.getStepLogs = async (req, res) => {
+  try {
+    const { date } = req.query;
+    let filter = { userId: req.user.id };
+    if (date) filter.date = date;
+    const logs = await StepLog.find(filter).sort({ date: -1 });
+    res.json(logs);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.logSteps = async (req, res) => {
+  try {
+    const { steps, date } = req.body;
+    let log = await StepLog.findOne({ userId: req.user.id, date });
+    if (log) {
+      log.steps = steps;
+      await log.save();
+    } else {
+      log = new StepLog({ userId: req.user.id, steps, date });
       await log.save();
     }
     res.json(log);

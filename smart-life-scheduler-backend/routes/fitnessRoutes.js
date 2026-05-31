@@ -27,4 +27,8 @@ router.post("/sleep", fitnessController.logSleep);
 router.get("/weight", fitnessController.getWeightLogs);
 router.post("/weight", fitnessController.logWeight);
 
+// Step Logs
+router.get("/steps", fitnessController.getStepLogs);
+router.post("/steps", fitnessController.logSteps);
+
 module.exports = router;

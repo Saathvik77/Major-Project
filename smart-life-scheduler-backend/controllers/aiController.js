@@ -3,6 +3,7 @@ const User = require("../models/User");
 const Workout = require("../models/Workout");
 const SleepLog = require("../models/SleepLog");
 const WaterLog = require("../models/WaterLog");
+const StepLog = require("../models/StepLog");
 
 const chatWithAI = async (req, res) => {
   try {
@@ -309,10 +310,11 @@ const chatWithAI = async (req, res) => {
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
       
-      const [workouts, sleepLogs, waterLogs] = await Promise.all([
+      const [workouts, sleepLogs, waterLogs, stepLogs] = await Promise.all([
         Workout.find({ user: userId, date: { $gte: sevenDaysAgo } }),
-        SleepLog.find({ user: userId, createdAt: { $gte: sevenDaysAgo } }),
-        WaterLog.find({ user: userId, createdAt: { $gte: sevenDaysAgo } })
+        SleepLog.find({ user: userId, date: { $gte: sevenDaysAgo.toISOString().split('T')[0] } }),
+        WaterLog.find({ user: userId, date: { $gte: sevenDaysAgo.toISOString().split('T')[0] } }),
+        StepLog.find({ userId: userId, date: { $gte: sevenDaysAgo.toISOString().split('T')[0] } })
       ]);
       
       let avgSleep = 0;
@@ -325,27 +327,44 @@ const chatWithAI = async (req, res) => {
         avgWater = waterLogs.reduce((acc, log) => acc + log.amount, 0) / waterLogs.length;
       }
 
-      let fitnessAdvice = "";
-      if (avgSleep < 7 && avgSleep > 0) {
-        fitnessAdvice += ` Your sleep average is only ${avgSleep.toFixed(1)} hours, so consider going to bed 30 minutes earlier.`;
-      } else if (avgSleep >= 7) {
-        fitnessAdvice += ` Your sleep average is great at ${avgSleep.toFixed(1)} hours.`;
+      let avgSteps = 0;
+      if (stepLogs.length > 0) {
+        avgSteps = Math.round(stepLogs.reduce((acc, log) => acc + log.steps, 0) / stepLogs.length);
       }
-      
-      if (avgWater < 2 && avgWater > 0) {
-        fitnessAdvice += ` You're drinking ${avgWater.toFixed(1)}L of water daily; try to increase it for better focus.`;
+
+      const payload = {
+        tasksCompleted: completed.length,
+        tasksPending: total - completed.length,
+        workouts: workouts.length,
+        sleepHours: parseFloat(avgSleep.toFixed(1)),
+        water: parseFloat(avgWater.toFixed(1)),
+        steps: avgSteps
+      };
+
+      if (process.env.GEMINI_API_KEY) {
+        try {
+          const { GoogleGenerativeAI } = require("@google/generative-ai");
+          const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+          const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+          const prompt = `You are an AI Coach in a productivity app. Here is the user's weekly data: 
+${JSON.stringify(payload)}
+Analyze this and give a 2-3 sentence encouraging report and one tip.`;
+          const result = await model.generateContent(prompt);
+          reply = result.response.text().trim();
+        } catch (e) {
+          reply = `Great productivity this week. Your average sleep is ${payload.sleepHours} hours and water is ${payload.water}L. Try to improve your daily steps.`;
+        }
+      } else {
+        reply = `Great productivity this week. Your average sleep is ${payload.sleepHours} hours, water is ${payload.water}L, and average steps: ${payload.steps}. Keep it up!`;
       }
-      
-      fitnessAdvice += ` You've logged ${workouts.length} workouts this week.`;
 
       executedActions.push({
         type: "comprehensive_report",
         efficiency: efficiency,
         completed: completed.map(t => ({ title: t.title })),
         missed: allTasks.filter(t => !t.completed).map(t => ({ title: t.title })),
-        suggestion: `Maintain steady performance. ${fitnessAdvice}`
+        suggestion: reply
       });
-      reply = `Generating performance report. Efficiency: ${efficiency}%. ${fitnessAdvice}`;
       return res.json({ reply, actions: executedActions });
     }
 

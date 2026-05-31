@@ -5,6 +5,7 @@ const Workout = require("../models/Workout");
 const WaterLog = require("../models/WaterLog");
 const SleepLog = require("../models/SleepLog");
 const WeightLog = require("../models/WeightLog");
+const StepLog = require("../models/StepLog");
 
 const { runIntelligencePipeline } = require("../intelligence/intelligenceEngine");
 const calculateAdvancedAnalytics = require("../services/advancedAnalyticsService");
@@ -90,12 +91,13 @@ const getSummary = async (req, res) => {
     const sevenDaysAgo = new Date(today);
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    const [tasks, workouts, waterLogs, sleepLogs, weightLogs] = await Promise.all([
+    const [tasks, workouts, waterLogs, sleepLogs, weightLogs, stepLogs] = await Promise.all([
       Task.find({ user: userId }),
       Workout.find({ user: userId, date: { $gte: sevenDaysAgo } }),
-      WaterLog.find({ user: userId, createdAt: { $gte: sevenDaysAgo } }),
-      SleepLog.find({ user: userId, createdAt: { $gte: sevenDaysAgo } }),
-      WeightLog.find({ user: userId }).sort({ date: -1 }).limit(1)
+      WaterLog.find({ user: userId, date: { $gte: sevenDaysAgo.toISOString().split('T')[0] } }),
+      SleepLog.find({ user: userId, date: { $gte: sevenDaysAgo.toISOString().split('T')[0] } }),
+      WeightLog.find({ user: userId }).sort({ date: -1 }).limit(1),
+      StepLog.find({ userId: userId, date: { $gte: sevenDaysAgo.toISOString().split('T')[0] } })
     ]);
 
     const totalTasks = tasks.length;
@@ -172,6 +174,23 @@ const getSummary = async (req, res) => {
 
     const currentWeight = weightLogs.length > 0 ? weightLogs[0].weight : null;
 
+    let totalSteps = 0;
+    stepLogs.forEach(log => totalSteps += (log.steps || 0));
+    const averageSteps = stepLogs.length > 0 ? Math.round(totalSteps / stepLogs.length) : 0;
+
+    // Calculate Health Score
+    let healthScore = 0;
+    if (parseFloat(averageSleep) >= 7) healthScore += 25;
+    else if (parseFloat(averageSleep) >= 5) healthScore += 15;
+
+    if (parseFloat(averageWater) >= 2.5) healthScore += 25;
+    else if (parseFloat(averageWater) >= 1.5) healthScore += 15;
+
+    if (workoutsThisWeek >= 1) healthScore += 25;
+
+    if (averageSteps >= 8000) healthScore += 25;
+    else if (averageSteps >= 4000) healthScore += 15;
+
     // Dynamic Milestones
     const milestones = [];
     if (activeStreak >= 7) milestones.push({ icon: "Flame", label: "Focus Master", desc: `${activeStreak} Day Streak Achieved` });
@@ -192,11 +211,13 @@ const getSummary = async (req, res) => {
       focusTime: `${focusTimeHours}h`,
       activeStreak: `${activeStreak} Days`,
       milestones,
+      healthScore,
       fitness: {
         workoutsThisWeek,
         averageSleep,
         averageWater,
-        currentWeight
+        currentWeight,
+        averageSteps
       }
     });
 
