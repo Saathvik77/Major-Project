@@ -345,7 +345,7 @@ function Analytics() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
           
           {/* Productivity Velocity (Bar Chart) */}
-          <div className="col-span-12 lg:col-span-8">
+          <div className="lg:col-span-8">
             <div className="glass-card w-full max-w-full overflow-hidden p-4 sm:p-8 md:p-12 h-full chart-container min-h-[300px] sm:min-h-0">
               <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-12">
                 <div className="flex items-center gap-4">
@@ -383,7 +383,7 @@ function Analytics() {
           </div>
 
           {/* Smart Score Ring (Circular Progress) */}
-          <div className="col-span-12 lg:col-span-4">
+          <div className="lg:col-span-4">
             <div className="glass-card w-full max-w-full overflow-hidden p-6 sm:p-10 md:p-12 h-full chart-container flex flex-col items-center justify-center text-center relative group">
               <div className="absolute top-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
               
@@ -423,7 +423,7 @@ function Analytics() {
           </div>
 
           {/* Productivity Trend (Line/Area Chart) */}
-          <div className="col-span-12 lg:col-span-7">
+          <div className="lg:col-span-7">
             <div className="glass-card w-full max-w-full overflow-hidden p-6 sm:p-8 md:p-10 lg:p-12 h-full chart-container">
               <h3 className="text-xl font-black text-white tracking-tight mb-2">Activity Momentum</h3>
               <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-12">Cognitive Score Trend</p>
@@ -455,7 +455,7 @@ function Analytics() {
           </div>
 
           {/* AI Insights Summary */}
-          <div className="col-span-12 lg:col-span-5">
+          <div className="lg:col-span-5">
             <div className="glass-card w-full max-w-full overflow-hidden p-4 sm:p-8 md:p-10 h-full flex flex-col gap-6 md:gap-8 relative group">
               <div className="absolute bottom-0 right-0 w-48 h-48 bg-lime-500/5 rounded-full blur-[60px] -z-10 group-hover:bg-lime-500/10 transition-all" />
               
