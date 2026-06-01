@@ -53,16 +53,16 @@ export default function FitnessTracker({ selectedDate }) {
         <h3 className="text-xl font-black text-white tracking-tight">Fitness & Habits</h3>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+        <div className="flex flex-col gap-6 md:gap-8 h-full">
           <HabitTracker habits={habits} dateStr={dateStr} onUpdate={fetchData} />
           <WaterTracker waterAmount={waterAmount} dateStr={dateStr} onUpdate={fetchData} />
         </div>
         
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 md:gap-8 h-full">
           <WorkoutTracker workouts={workouts} dateStr={dateStr} onUpdate={fetchData} />
           <SleepTracker sleepLog={sleepLog} dateStr={dateStr} onUpdate={fetchData} />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
              <WeightTracker weight={weight} dateStr={dateStr} onUpdate={fetchData} />
              <StepTracker steps={steps} dateStr={dateStr} onUpdate={fetchData} />
           </div>

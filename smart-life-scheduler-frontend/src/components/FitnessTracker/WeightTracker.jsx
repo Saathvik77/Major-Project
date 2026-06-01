@@ -15,7 +15,7 @@ export default function WeightTracker({ weight, dateStr, onUpdate }) {
   };
 
   return (
-    <div className="glass-card p-6 border border-white/5 bg-white/[0.02] flex-1">
+    <div className="glass-card w-full max-w-full overflow-hidden p-5 sm:p-6 md:p-8 flex flex-col flex-1 border border-white/5 bg-white/[0.02] relative group">
       <h4 className="text-sm font-black text-gray-400 uppercase tracking-wide mb-4 flex items-center gap-2">
         <Scale size={16} className="text-emerald-400" /> Weight
       </h4>
