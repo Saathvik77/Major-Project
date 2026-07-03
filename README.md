@@ -150,4 +150,4 @@ The app should now be running locally, with the frontend on Vite's default port 
 
 ## 📄 License
 
-No license file is currently included in this repository. Add one (e.g. MIT) if you intend for others to reuse this code.
+No license file is currently included in this repository.
